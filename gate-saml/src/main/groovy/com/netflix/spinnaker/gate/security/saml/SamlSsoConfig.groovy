@@ -90,7 +90,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
     List<String> requiredRoles
     UserAttributeMapping userAttributeMapping = new UserAttributeMapping()
-    long maxAuthenticationAge = 7200
+    long maxAuthenticationAge = 28800
 
     /**
      * Ensure that the keystore exists and can be accessed with the given keyStorePassword and keyStoreAliasName
