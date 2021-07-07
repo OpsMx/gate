@@ -151,9 +151,10 @@ class OpsmxOesController {
   Object deleteOesResponse5(@PathVariable("type") String type,
                             @PathVariable("source") String source,
                             @PathVariable("source1") String source1,
-                            @PathVariable("source2") String source2) {
+                            @PathVariable("source2") String source2,
+                            @RequestParam(value = "accountId", required = false) Integer accountId) {
 
-    return opsmxOesService.deleteOesResponse5(type, source, source1, source2)
+    return opsmxOesService.deleteOesResponse5(type, source, source1, source2, accountId)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
