@@ -281,7 +281,7 @@ class OpsmxOesController {
     return addOrUpdateSpinnakerCloudProverAccount(files, postData.get("postData"))
   }
 
-  @ApiOperation(value = "Add or Update V1 Spinnaker x509")
+  @ApiOperation(value = "Add or Update Spinnaker x509")
   @RequestMapping(value = "/accountsConfig/{version}/spinnakerX509", method = RequestMethod.POST)
   Object addOrUpdateSpinnakerSetupV1(@PathVariable("version") String version, @RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
 	return createOrUpdateSpinnaker(files, postData.get("postData"), version)
