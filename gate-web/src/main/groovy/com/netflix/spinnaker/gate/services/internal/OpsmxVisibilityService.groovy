@@ -25,7 +25,7 @@ interface OpsmxVisibilityService {
   Response triggerApprovalGate(@Path('version') String version,
                                @Path('id') Integer id,
                                @Body Object data,
-                               @Headers(value = "x-spinnaker-user") String xSpinnakerUser)
+                               @Header('x-spinnaker-user') String xSpinnakerUser)
 
   @GET("/visibilityservice/{version}/{type}")
   Object getVisibilityResponse1(@Path('version') String version,
