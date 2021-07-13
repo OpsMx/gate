@@ -64,7 +64,7 @@ class OpsmxVisibilityController {
   @ResponseBody Object triggerApprovalGate(@PathVariable("version") String version,
                                            @PathVariable("id") Integer id,
                                              @RequestBody(required = false) Object data,
-                                           @RequestHeader(value = "x-spinnaker-user") String xSpinnakerUser) throws Exception {
+                                           @Headers(value = "x-spinnaker-user") String xSpinnakerUser) throws Exception {
 
     Response response = opsmxVisibilityService.triggerApprovalGate(version, id, data,xSpinnakerUser)
     InputStream inputStream = null
