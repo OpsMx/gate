@@ -82,14 +82,16 @@ class OpsmxPlatformController {
   @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
   Object getPlatformResponse5(@PathVariable("version") String version,
-                          @PathVariable("type") String type,
-                          @PathVariable("source") String source,
-                          @PathVariable("source1") String source1,
-                          @PathVariable("source2") String source2,
-                          @RequestParam(value = "permissionId", required = false) String permissionId,
-                          @RequestParam(value = "resourceType", required = false) String resourceType) {
+                              @PathVariable("type") String type,
+                              @PathVariable("source") String source,
+                              @PathVariable("source1") String source1,
+                              @PathVariable("source2") String source2,
+                              @RequestParam(value = "permissionId", required = false) String permissionId,
+                              @RequestParam(value = "resourceType", required = false) String resourceType,
+                              @RequestParam(value = "approvalGateParameterId", required = false) Integer approvalGateParameterId,
+                              @RequestParam(value = "accountName", required = false) String accountName) {
 
-    return opsmxPlatformService.getPlatformResponse5(version, type, source, source1, source2, permissionId, resourceType)
+    return opsmxPlatformService.getPlatformResponse5(version, type, source, source1, source2, permissionId, resourceType, approvalGateParameterId, accountName)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
@@ -115,6 +117,13 @@ class OpsmxPlatformController {
                               @PathVariable("source4") String source4) {
 
     return opsmxPlatformService.getPlatformResponse7(version, type, source, source1, source2, source3, source4)
+  }
+
+  @ApiOperation(value = "Endpoint for platform rest services")
+  @RequestMapping(value = "/{version}/datasource/plugins/{pluginName}/image", method = RequestMethod.GET, produces = "image/png")
+  Object getPlatformResponse8(@PathVariable("version") String version,
+                              @PathVariable("pluginName") String pluginName) {
+    return opsmxPlatformService.getPlatformResponse8(version, pluginName)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
