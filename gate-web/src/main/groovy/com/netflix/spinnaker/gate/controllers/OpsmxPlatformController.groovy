@@ -125,7 +125,6 @@ class OpsmxPlatformController {
 
   @ApiOperation(value = "Endpoint for Insights controller to download csv file")
   @GetMapping(value = "v1/insights/download", produces = "test/csv")
-  @ResponseBody
   Object downloadCsvFile(@RequestParam(value = "chartId", required = false) Integer chartId,
                          @RequestParam(value = "noOfDays", required = false) Integer noOfDays) {
     Response response = opsmxPlatformService.downloadCSVFile(chartId, noOfDays)

@@ -120,8 +120,8 @@ class OpsmxAuditClientServiceController {
   }
 
   @ApiOperation(value = "Endpoint for Insights controller to download csv file")
-  @GetMapping(value = "/v1/users/{username}/{source}/download", produces = "text/csv")
-  Object getAuditClientResponse3(@PathVariable("username") String username,
+  @RequestMapping(value = "/v1/users/{username}/{source}/download", produces = "text/csv", method = RequestMethod.GET)
+  Object downloadCSVFileAuditService(@PathVariable("username") String username,
                                  @PathVariable("source") String source,
                                  @RequestParam(value = "isTreeView", required = false) Boolean isTreeView,
                                  @RequestParam(value = "isLatest", required = false) Boolean isLatest,
