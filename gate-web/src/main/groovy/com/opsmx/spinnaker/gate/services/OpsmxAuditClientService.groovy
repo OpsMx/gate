@@ -16,6 +16,7 @@
 
 package com.opsmx.spinnaker.gate.services
 
+import retrofit.client.Response
 import retrofit.http.GET
 import retrofit.http.Path
 import retrofit.http.Query
@@ -74,5 +75,16 @@ interface OpsmxAuditClientService {
                                  @Path('source3') String source3,
                                  @Path('source4') String source4,
                                  @Path('source5') String source5)
+
+  @GET("/auditclientservice/{version}/{type}/{source}/{source1}/{source2}")
+  Response downloadCSVFile(@Path('version') String version,
+                           @Path('type') String type,
+                           @Path('source') String source,
+                           @Path('source1') String source1,
+                           @Path('source2') String source2,
+                           @Query("isTreeView") Boolean isTreeView,
+                           @Query("isLatest") Boolean isLatest,
+                           @Query("pageNo") Integer pageNo,
+                           @Query("size") Integer size)
 
 }

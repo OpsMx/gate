@@ -16,7 +16,7 @@
 
 package com.netflix.spinnaker.gate.services.internal
 
-
+import retrofit.client.Response
 import retrofit.http.*
 
 interface OpsmxPlatformService {
@@ -69,6 +69,10 @@ interface OpsmxPlatformService {
                               @Path('source2') String source2,
                               @Path('source3') String source3,
                               @Path('source4') String source4)
+
+  @GET("/platformservice/v1/insights/download")
+  Response downloadCSVFile(@Query("chartId") Integer chartId,
+                           @Query("noOfDays") Integer noOfDays)
 
   @DELETE("/platformservice/{version}/{type}")
   Object deletePlatformResponse(@Path('version') String version,
