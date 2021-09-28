@@ -26,6 +26,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
 import org.springframework.web.bind.annotation.*
 import retrofit.client.Response
+import org.apache.commons.io.IOUtils;
 
 @RequestMapping("/platformservice")
 @RestController

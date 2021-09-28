@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.http.HttpHeaders
 import retrofit.client.Response
-
+import org.apache.commons.io.IOUtils;
 @RequestMapping("/auditclientservice")
 @RestController
 @Slf4j
