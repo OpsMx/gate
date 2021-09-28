@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.http.HttpHeaders
 import retrofit.client.Response
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.MediaType;
+
 @RequestMapping("/auditclientservice")
 @RestController
 @Slf4j
@@ -118,7 +120,7 @@ class OpsmxAuditClientServiceController {
   }
 
   @ApiOperation(value = "Endpoint for Insights controller to download csv file")
-  @RequestMapping(value = "/v1/users/{username}/{source}/download", method = RequestMethod.GET)
+  @GetMapping(value = "/v1/users/{username}/{source}/download", produces = "text/csv")
   Object getAuditClientResponse3(@PathVariable("username") String username,
                                  @PathVariable("source") String source,
                                  @RequestParam(value = "isTreeView", required = false) Boolean isTreeView,

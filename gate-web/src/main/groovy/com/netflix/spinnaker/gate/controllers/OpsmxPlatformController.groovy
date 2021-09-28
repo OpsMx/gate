@@ -27,6 +27,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.web.bind.annotation.*
 import retrofit.client.Response
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.MediaType;
 
 @RequestMapping("/platformservice")
 @RestController
