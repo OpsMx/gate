@@ -118,17 +118,16 @@ class OpsmxAuditClientServiceController {
   }
 
   @ApiOperation(value = "Endpoint for Insights controller to download csv file")
-  @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
+  @RequestMapping(value = "/{version}/{type}/{source}/{source1}/download", method = RequestMethod.GET)
   Object getAuditClientResponse3(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
                                  @PathVariable("source") String source,
                                  @PathVariable("source1") String source1,
-                                 @PathVariable("source2") String source2,
                                  @RequestParam(value = "isTreeView", required = false) Boolean isTreeView,
                                  @RequestParam(value = "isLatest", required = false) Boolean isLatest,
                                  @RequestParam(value = "pageNo", required = false) Integer pageNo,
                                  @RequestParam(value = "size", required = false) Integer size) {
-    Response response = opsmxAuditClientService.downloadCSVFile(version, type, source, source1, source2, isTreeView, isLatest, pageNo, size)
+    Response response = opsmxAuditClientService.downloadCSVFile(version, type, source, source1, isTreeView, isLatest, pageNo, size)
     InputStream inputStream = response.getBody().in()
     try {
       byte[] csvFile = IOUtils.toByteArray(inputStream)
