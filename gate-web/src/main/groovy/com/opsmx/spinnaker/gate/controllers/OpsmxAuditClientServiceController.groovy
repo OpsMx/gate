@@ -31,6 +31,7 @@ import retrofit.client.Response
 import org.apache.commons.io.IOUtils
 import org.springframework.http.MediaType
 import java.util.stream.Collectors
+import org.springframework.http.ResponseEntity
 
 @RequestMapping("/auditclientservice")
 @RestController
