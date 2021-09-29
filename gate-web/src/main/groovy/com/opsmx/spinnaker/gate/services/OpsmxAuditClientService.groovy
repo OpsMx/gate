@@ -76,8 +76,9 @@ interface OpsmxAuditClientService {
                                  @Path('source4') String source4,
                                  @Path('source5') String source5)
 
-  @GET("/auditclientservice/v1/users/{username}/{source}/download")
-  Response downloadCSVFile(@Path('username') String username,
+  @GET("/auditclientservice/{version}/users/{username}/{source}/download")
+  Response downloadCSVFile(@Path('version') String version,
+                           @Path('username') String username,
                            @Path('source') String source,
                            @Query("isTreeView") Boolean isTreeView,
                            @Query("isLatest") Boolean isLatest,

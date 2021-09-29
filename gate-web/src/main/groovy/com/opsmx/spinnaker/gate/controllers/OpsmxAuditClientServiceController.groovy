@@ -122,14 +122,15 @@ class OpsmxAuditClientServiceController {
   }
 
   @ApiOperation(value = "Endpoint for Insights controller to download csv file")
-  @RequestMapping(value = "/v1/users/{username}/{source}/download", produces = "text/csv", method = RequestMethod.GET)
-  Object downloadCSVFileAuditService(@PathVariable("username") String username,
-                                 @PathVariable("source") String source,
-                                 @RequestParam(value = "isTreeView", required = false) Boolean isTreeView,
-                                 @RequestParam(value = "isLatest", required = false) Boolean isLatest,
-                                 @RequestParam(value = "pageNo", required = false) Integer pageNo,
-                                 @RequestParam(value = "size", required = false) Integer size) {
-    Response response = opsmxAuditClientService.downloadCSVFile(username, source, isTreeView, isLatest, pageNo, size)
+  @RequestMapping(value = "/{version}/users/{username}/{source}/download", produces = "text/csv", method = RequestMethod.GET)
+  Object downloadCSVFileAuditService(@PathVariable("version") String version,
+                                     @PathVariable("username") String username,
+                                     @PathVariable("source") String source,
+                                     @RequestParam(value = "isTreeView", required = false) Boolean isTreeView,
+                                     @RequestParam(value = "isLatest", required = false) Boolean isLatest,
+                                     @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                     @RequestParam(value = "size", required = false) Integer size) {
+    Response response = opsmxAuditClientService.downloadCSVFile(version, username, source, isTreeView, isLatest, pageNo, size)
     log.info("response for the insgiths endpoint:" + response.getHeaders());
     InputStream inputStream = response.getBody().in()
     try {

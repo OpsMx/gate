@@ -70,8 +70,9 @@ interface OpsmxPlatformService {
                               @Path('source3') String source3,
                               @Path('source4') String source4)
 
-  @GET("/platformservice/v1/insights/download")
-  Response downloadCSVFile(@Query("chartId") Integer chartId,
+  @GET("/platformservice/{version}/insights/download")
+  Response downloadCSVFile(@Path('version') String version,
+                           @Query("chartId") Integer chartId,
                            @Query("noOfDays") Integer noOfDays)
 
   @DELETE("/platformservice/{version}/{type}")

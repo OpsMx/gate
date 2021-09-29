@@ -126,10 +126,11 @@ class OpsmxPlatformController {
   }
 
   @ApiOperation(value = "Endpoint for Insights controller to download csv file")
-  @GetMapping(value = "v1/insights/download", produces = "text/csv")
-  Object downloadCsvFile(@RequestParam(value = "chartId", required = false) Integer chartId,
+  @GetMapping(value = "/{version}/insights/download", produces = "text/csv")
+  Object downloadCsvFile(@PathVariable("version") String version,
+                         @RequestParam(value = "chartId", required = false) Integer chartId,
                          @RequestParam(value = "noOfDays", required = false) Integer noOfDays) {
-    Response response = opsmxPlatformService.downloadCSVFile(chartId, noOfDays)
+    Response response = opsmxPlatformService.downloadCSVFile(version, chartId, noOfDays)
     InputStream inputStream = response.getBody().in()
     try {
       byte[] csvFile = IOUtils.toByteArray(inputStream)
