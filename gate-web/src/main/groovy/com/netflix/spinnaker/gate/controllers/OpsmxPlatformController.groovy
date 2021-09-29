@@ -26,8 +26,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
 import org.springframework.web.bind.annotation.*
 import retrofit.client.Response
-import org.apache.commons.io.IOUtils;
-import org.springframework.http.MediaType;
+import org.apache.commons.io.IOUtils
+import org.springframework.http.MediaType
+import java.util.stream.Collectors
 
 @RequestMapping("/platformservice")
 @RestController
@@ -124,7 +125,7 @@ class OpsmxPlatformController {
   }
 
   @ApiOperation(value = "Endpoint for Insights controller to download csv file")
-  @GetMapping(value = "v1/insights/download", produces = "test/csv")
+  @GetMapping(value = "v1/insights/download", produces = "text/csv")
   Object downloadCsvFile(@RequestParam(value = "chartId", required = false) Integer chartId,
                          @RequestParam(value = "noOfDays", required = false) Integer noOfDays) {
     Response response = opsmxPlatformService.downloadCSVFile(chartId, noOfDays)

@@ -28,8 +28,9 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.http.HttpHeaders
 import retrofit.client.Response
-import org.apache.commons.io.IOUtils;
-import org.springframework.http.MediaType;
+import org.apache.commons.io.IOUtils
+import org.springframework.http.MediaType
+import java.util.stream.Collectors
 
 @RequestMapping("/auditclientservice")
 @RestController
@@ -128,6 +129,7 @@ class OpsmxAuditClientServiceController {
                                  @RequestParam(value = "pageNo", required = false) Integer pageNo,
                                  @RequestParam(value = "size", required = false) Integer size) {
     Response response = opsmxAuditClientService.downloadCSVFile(username, source, isTreeView, isLatest, pageNo, size)
+    log.info("response for the insgiths endpoint:" + response.getHeaders());
     InputStream inputStream = response.getBody().in()
     try {
       byte[] csvFile = IOUtils.toByteArray(inputStream)
@@ -135,7 +137,6 @@ class OpsmxAuditClientServiceController {
       headers.setContentType(MediaType.parseMediaType("text/csv"));
       headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
       return ResponseEntity.ok().headers(headers).body(csvFile)
-
     } finally {
       if (inputStream != null) {
         inputStream.close()
