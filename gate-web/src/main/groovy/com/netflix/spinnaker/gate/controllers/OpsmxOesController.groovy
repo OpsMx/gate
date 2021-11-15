@@ -132,6 +132,31 @@ class OpsmxOesController {
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
+  @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}", method = RequestMethod.GET)
+  Object getOesResponse8(@PathVariable("type") String type,
+                         @PathVariable("source") String source,
+                         @PathVariable("source1") String source1,
+                         @PathVariable("source2") String source2,
+                         @PathVariable("source3") String source3,
+                         @PathVariable("source4") String source4,
+                         @PathVariable("source5") String source5) {
+    return opsmxOesService.getOesResponse8(type, source, source1, source2, source3, source4, source5)
+  }
+
+  @ApiOperation(value = "Endpoint for Oes rest services")
+  @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}/{source6}", method = RequestMethod.GET)
+  Object getOesResponse9(@PathVariable("type") String type,
+                         @PathVariable("source") String source,
+                         @PathVariable("source1") String source1,
+                         @PathVariable("source2") String source2,
+                         @PathVariable("source3") String source3,
+                         @PathVariable("source4") String source4,
+                         @PathVariable("source5") String source5,
+                         @PathVariable("source6") String source6) {
+    return opsmxOesService.getOesResponse9(type, source, source1, source2, source3, source4, source5, source6)
+  }
+
+  @ApiOperation(value = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}", method = RequestMethod.DELETE)
   Object deleteOesResponse(@PathVariable("type") String type,
                            @PathVariable("source") String source,
@@ -223,6 +248,19 @@ class OpsmxOesController {
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
+  @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.POST)
+  Object postOesResponse7(@PathVariable("type") String type,
+                          @PathVariable("source") String source,
+                          @PathVariable("source1") String source1,
+                          @PathVariable("source2") String source2,
+                          @PathVariable("source3") String source3,
+                          @PathVariable("source4") String source4,
+                          @RequestBody(required = false) Object data) {
+
+    return opsmxOesService.postOesResponse7(type, source, source1, source2, source3, source4, data)
+  }
+
+  @ApiOperation(value = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}", method = RequestMethod.PUT)
   Object updateOesResponse(@PathVariable("type") String type,
                            @PathVariable("source") String source,
@@ -306,16 +344,16 @@ class OpsmxOesController {
         .post(uploadFileOkHttp(data,files))
         .build()
 
-      def response = okHttpClient.newCall(request).execute()	  
-	  return response     
+      def response = okHttpClient.newCall(request).execute()
+	  return response
     }.call() as okhttp3.Response
 	if (!obj.isSuccessful()) {
-		def error = obj.body().string();		
+		def error = obj.body().string();
 		throw new OesRequestException(error)
 	  } else{
 		return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
 	  }
-	
+
   }
 
   Object addOrUpdateSpinnaker(MultipartFile files, String data) {
@@ -481,6 +519,25 @@ class OpsmxOesController {
   @ResponseBody Object getDownloadAgentManifestFile(@PathVariable("agentName") String agentName){
 
     Response response = opsmxOesService.agentManifestDownloadFile(agentName)
+    InputStream inputStream = response.getBody().in()
+    try {
+      byte [] manifestFile = IOUtils.toByteArray(inputStream)
+      HttpHeaders headers = new HttpHeaders()
+      headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+      return ResponseEntity.ok().headers(headers).body(manifestFile)
+    } finally{
+      if (inputStream!=null){
+        inputStream.close()
+      }
+    }
+  }
+
+  @ApiOperation(value = "download the manifest file")
+  @GetMapping(value = "/accountsConfig/{version}/agents/{agentName}/manifest", produces = "application/octet-stream")
+  @ResponseBody Object downloadAgentManifestFile(@PathVariable("agentName") String agentName,
+                                                 @PathVariable("version") String version){
+
+    Response response = opsmxOesService.agentManifestDownloadFile(agentName, version)
     InputStream inputStream = response.getBody().in()
     try {
       byte [] manifestFile = IOUtils.toByteArray(inputStream)
