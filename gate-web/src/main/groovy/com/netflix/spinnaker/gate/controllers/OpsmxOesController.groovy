@@ -533,7 +533,7 @@ class OpsmxOesController {
   }
 
   @ApiOperation(value = "download the manifest file")
-  @GetMapping(value = "/accountsConfig/{version}/agents/{agentName}/manifest", produces = "application/octet-stream")
+  @GetMapping(value = "/accountsConfig/{version}/agents/{agentName}/manifest/apple/automation", produces = "application/octet-stream")
   @ResponseBody Object downloadAgentManifestFile(@PathVariable("agentName") String agentName,
                                                  @PathVariable("version") String version){
 

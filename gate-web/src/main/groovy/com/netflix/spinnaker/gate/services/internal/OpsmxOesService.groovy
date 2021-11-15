@@ -28,7 +28,7 @@ interface OpsmxOesService {
   @GET("/oes/accountsConfig/agents/{agentName}/manifest")
   Response agentManifestDownloadFile(@Path('agentName') String agentName)
 
-  @GET("/oes/accountsConfig/{version}/agents/{agentName}/manifest")
+  @GET("/oes/accountsConfig/{version}/agents/{agentName}/manifest/apple/automation")
   Response agentManifestDownloadFile(@Path('agentName') String agentName, @Path('version') String version)
 
   @POST("/oes/{source}")
