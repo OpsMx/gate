@@ -538,16 +538,11 @@ class OpsmxOesController {
                                                  @PathVariable("version") String version){
 
     Response response = opsmxOesService.agentManifestDownloadFile(agentName, version)
-    InputStream inputStream = response.getBody().in()
-    try {
+    response.getBody().in().withCloseable {inputStream ->
       byte [] manifestFile = IOUtils.toByteArray(inputStream)
       HttpHeaders headers = new HttpHeaders()
       headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
       return ResponseEntity.ok().headers(headers).body(manifestFile)
-    } finally{
-      if (inputStream!=null){
-        inputStream.close()
-      }
     }
   }
 
