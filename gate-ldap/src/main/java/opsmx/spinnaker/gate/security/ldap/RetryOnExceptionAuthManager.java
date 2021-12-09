@@ -1,4 +1,4 @@
-package com.netflix.spinnaker.gate.security.ldap;
+package opsmx.spinnaker.gate.security.ldap;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ldap.UncategorizedLdapException;
