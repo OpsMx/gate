@@ -76,7 +76,6 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   LoginProps loginProps
 
-
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder());
@@ -136,6 +135,11 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
     }
 
     }
+
+  @Override
+  protected AuthenticationManager authenticationManager() throws Exception {
+    return new RetryOnExceptionAuthManager(super.authenticationManager());
+  }
 
   @Override
   void configure(WebSecurity web) throws Exception {
