@@ -69,9 +69,10 @@ class OpsmxAuditClientServiceController {
                               @RequestParam(value = "isTreeView", required = false) Boolean isTreeView,
                                  @RequestParam(value = "isLatest", required = false) Boolean isLatest,
                               @RequestParam(value = "pageNo", required = false) Integer pageNo,
-                                 @RequestParam(value = "size", required = false) Integer size) {
+                                 @RequestParam(value = "pageLimit", required = false) Integer pageLimit,
+                                 @RequestParam(value = "search", required = false) String search) {
 
-    return opsmxAuditClientService.getAuditClientResponse3(version, type, source, source1, isTreeView, isLatest, pageNo, size)
+    return opsmxAuditClientService.getAuditClientResponse3(version, type, source, source1, isTreeView, isLatest, pageNo, pageLimit,search)
   }
 
   @ApiOperation(value = "Endpoint for audit-client rest services")
