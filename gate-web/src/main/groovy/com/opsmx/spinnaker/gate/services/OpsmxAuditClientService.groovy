@@ -45,6 +45,7 @@ interface OpsmxAuditClientService {
                                  @Query("isLatest") Boolean isLatest,
                                  @Query("pageNo") Integer pageNo,
                                  @Query("pageLimit") Integer pageLimit,
+                                 @Query("noOfDays") String noOfDays,
                                  @Query("search") String search)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}/{source2}")
@@ -60,7 +61,8 @@ interface OpsmxAuditClientService {
                               @Path('source') String source,
                               @Path('source1') String source1,
                               @Path('source2') String source2,
-                              @Path('source3') String source3)
+                              @Path('source3') String source3,
+                              @Query("noOfDays") String noOfDays)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}")
   Object getAuditClientResponse6(@Path('version') String version,
