@@ -17,6 +17,7 @@
 package com.opsmx.spinnaker.gate.controllers
 
 
+import com.netflix.spinnaker.gate.exceptions.OesRequestException
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Value
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpSession
-import java.sql.Timestamp
 
 @RequestMapping("/session")
 @RestController
@@ -47,15 +47,12 @@ class OpsmxSessionController {
   @ApiOperation(value = "extend session by given duration")
   @GetMapping(value = "/extendSession")
   void extendSession(@RequestParam("duration") int duration, HttpServletRequest request) {
+    if(duration <= 0) {
+      throw new OesRequestException("Invalid duration passed. Session cant be extended.")
+    }
     HttpSession session = request.getSession()
-
-    int currentInterval = session.getMaxInactiveInterval()
-    int extendedInterval = currentInterval + duration
-
-    session.setMaxInactiveInterval(extendedInterval)
-
-    Timestamp time = new Timestamp(session.getLastAccessedTime())
-    log.info("Last access time: {}" , time.toString())
+    session.setMaxInactiveInterval(duration)
+    log.debug("Session timeout is overridden by {} seconds" , duration)
   }
 
 }
