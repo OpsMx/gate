@@ -22,6 +22,7 @@ import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -35,7 +36,7 @@ import javax.servlet.http.HttpSession
 class OpsmxSessionController {
 
   @Value('${server.session.timeout-in-seconds:3600}')
-  private int sessionTimeout
+  int sessionTimeout
 
   @ApiOperation(value = "get session timeout")
   @GetMapping(value = "/getSessionTimeout")
@@ -45,7 +46,7 @@ class OpsmxSessionController {
   }
 
   @ApiOperation(value = "extend session by given duration")
-  @GetMapping(value = "/extendSession")
+  @PutMapping(value = "/extendSession")
   void extendSession(@RequestParam("duration") int duration, HttpServletRequest request) {
     if(duration <= 0) {
       throw new OesRequestException("Invalid duration passed. Session cant be extended.")
