@@ -16,8 +16,11 @@
 
 package com.opsmx.spinnaker.gate.service;
 
+import org.springframework.scheduling.annotation.Async;
+
 public interface DashboardCachingService {
 
+  @Async
   void cacheResponse(Object response, String userName);
 
   boolean isCacheNotEmpty(String userName);
