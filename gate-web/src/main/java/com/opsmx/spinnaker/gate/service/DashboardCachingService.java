@@ -17,7 +17,9 @@
 package com.opsmx.spinnaker.gate.service;
 
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 
+@EnableAsync
 public interface DashboardCachingService {
 
   @Async
