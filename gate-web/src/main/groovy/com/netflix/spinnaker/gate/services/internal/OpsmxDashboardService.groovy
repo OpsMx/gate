@@ -148,11 +148,12 @@ interface OpsmxDashboardService {
                                @Path('source') String source,
                                @Body Object data)
 
-  @POST("/dashboardservice/{version}/{type}/{source}/{source1}")
+  @POST("/dashboardservice/{version}/{type}/{source}/{source1}/{source2}")
   Object postDashboardResponse4(@Path('version') String version,
                           @Path('type') String type,
                           @Path('source') String source,
                           @Path('source1') String source1,
+                          @Path('source2') String source2,
                           @Body Object data)
 
   @POST("/dashboardservice/{version}/{type}/{source}/{source1}/{source2}")

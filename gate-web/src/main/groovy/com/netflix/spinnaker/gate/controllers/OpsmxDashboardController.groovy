@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.*
 
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 
 @RequestMapping("/dashboardservice")
@@ -281,9 +282,17 @@ class OpsmxDashboardController {
                            @PathVariable("type") String type,
                            @PathVariable("source") String source,
                            @PathVariable("source1") String source1,
-                           @RequestBody(required = false) Object data) {
+                           @RequestBody(required = false) Object data,
+                            HttpServletRequest request) {
+    Cookie[] cookies = request.getCookies()
+    String cookieValue = null;
+    Optional.ofNullable(cookies).ifPresent({ arr ->
+        Arrays.stream(arr).filter({ cookie -> cookie.getName().equalsIgnoreCase("SESSION") }).findFirst().ifPresent({ c ->
+          cookieValue = c.getValue()
+        })
+    })
 
-    return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, data)
+    return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, cookieValue, data)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
