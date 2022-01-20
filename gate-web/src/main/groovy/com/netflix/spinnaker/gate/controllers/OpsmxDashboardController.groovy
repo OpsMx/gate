@@ -284,15 +284,8 @@ class OpsmxDashboardController {
                            @PathVariable("source1") String source1,
                            @RequestBody(required = false) Object data,
                             HttpServletRequest request) {
-    Cookie[] cookies = request.getCookies()
-    String cookieValue = null;
-    Optional.ofNullable(cookies).ifPresent({ arr ->
-        Arrays.stream(arr).filter({ cookie -> cookie.getName().equalsIgnoreCase("SESSION") }).findFirst().ifPresent({ c ->
-          cookieValue = c.getValue()
-        })
-    })
-
-    return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, cookieValue, data)
+    String cookie = request.getHeader("Cookie")
+    return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, cookie, data)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
