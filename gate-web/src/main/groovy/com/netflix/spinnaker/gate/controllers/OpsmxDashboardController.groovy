@@ -238,9 +238,11 @@ class OpsmxDashboardController {
                                   @PathVariable("source1") String source1,
                                   @PathVariable("source2") String source2,
                                   @PathVariable("source3") String source3,
-                                  @PathVariable("source4") String source4) {
+                                  @PathVariable("source4") String source4,
+                                  HttpServletRequest request) {
+    String cookie = request.getHeader("Cookie")
 
-    return opsmxDashboardService.deleteDashboardResponse7(version, type, source, source1, source2, source3, source4)
+    return opsmxDashboardService.deleteDashboardResponse7(version, type, source, source1, source2, source3, source4, cookie)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
@@ -252,10 +254,8 @@ class OpsmxDashboardController {
                                   @PathVariable("source2") String source2,
                                   @PathVariable("source3") String source3,
                                   @PathVariable("source4") String source4,
-                                  @PathVariable("source5") String source5,
-                                  HttpServletRequest request) {
-    String cookie = request.getHeader("Cookie")
-    return opsmxDashboardService.deleteDashboardResponse8(version, type, source, source1, source2, source3, source4, source5, cookie)
+                                  @PathVariable("source5") String source5) {
+    return opsmxDashboardService.deleteDashboardResponse8(version, type, source, source1, source2, source3, source4, source5)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
