@@ -135,7 +135,8 @@ interface OpsmxDashboardService {
                                   @Path('source2') String source2,
                                   @Path('source3') String source3,
                                   @Path('source4') String source4,
-                                  @Path('source5') String source5)
+                                  @Path('source5') String source5,
+                                  @Header('x-user-cookie') String cookie)
 
   @POST("/dashboardservice/{version}/{type}")
   Object postDashboardResponse(@Path('version') String version,
