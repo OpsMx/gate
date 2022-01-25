@@ -379,9 +379,11 @@ class OpsmxDashboardController {
                                  @PathVariable("source") String source,
                                  @PathVariable("source1") String source1,
                                  @PathVariable("source2") String source2,
-                                 @RequestBody(required = false) Object data) {
+                                 @RequestBody(required = false) Object data,
+                                  HttpServletRequest request) {
+    String cookie = request.getHeader("Cookie")
 
-    return opsmxDashboardService.updateDashboardResponse3(version, type, source, source1, source2, data)
+    return opsmxDashboardService.updateDashboardResponse3(version, type, source, source1, source2, data, cookie)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
