@@ -116,6 +116,20 @@ class OpsmxPlatformController {
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
+  @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
+  Object getPlatformResponse8(@PathVariable("version") String version,
+                              @PathVariable("type") String type,
+                              @PathVariable("source") String source,
+                              @PathVariable("source1") String source1,
+                              @RequestParam(value = "datasourceType", required = false) String datasourceType,
+                              @RequestParam(value = "permissionId", required = false) String permissionId,
+                              @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                              @RequestParam(value = "pageLimit", required = false) Integer pageLimit,
+                              @RequestParam(value = "search", required = false) String search) {
+    response = opsmxPlatformService.getPlatformResponse8(version, type, source, source1, datasourceType, permissionId, pageNo, pageLimit, search)
+  }
+
+  @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
   Object getPlatformResponse5(@PathVariable("version") String version,
                               @PathVariable("type") String type,

@@ -59,6 +59,17 @@ class OpsmxDashboardController {
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.GET)
+  Object getDashboardResponse0(@PathVariable("version") String version,
+                               @PathVariable("type") String type,
+                               @RequestParam(value = "datasourceType", required = false) String datasourceType,
+                               @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                               @RequestParam(value = "pageLimit", required = false) Integer pageLimit,
+                               @RequestParam(value = "search", required = false) String search) {
+    response = opsmxDashboardService.getDashboardResponse0(version, type, pageNo, pageLimit, search)
+  }
+
+  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @RequestMapping(value = "/{version}/{type}", method = RequestMethod.GET)
   Object getDashboardResponse1(@PathVariable("version") String version,
                              @PathVariable("type") String type, HttpServletRequest httpServletRequest) {
 
