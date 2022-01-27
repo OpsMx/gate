@@ -80,9 +80,9 @@ interface OpsmxPlatformService {
                               @Path('source1') String source1,
                               @Query("datasourceType") String datasourceType,
                               @Query("permissionId") String permissionId,
-                              @Query("datasourceType") String pageNo,
-                              @Query("permissionId") String pageLimit,
-                              @Query("datasourceType") String search)
+                              @Query("pageNo") String pageNo,
+                              @Query("pageLimit") String pageLimit,
+                              @Query("search") String search)
 
   @GET("/platformservice/{version}/insights/download")
   Response downloadCSVFile(@Path('version') String version,

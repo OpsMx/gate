@@ -65,7 +65,7 @@ class OpsmxDashboardController {
                                @RequestParam(value = "pageNo", required = false) Integer pageNo,
                                @RequestParam(value = "pageLimit", required = false) Integer pageLimit,
                                @RequestParam(value = "search", required = false) String search) {
-    response = opsmxDashboardService.getDashboardResponse0(version, type, pageNo, pageLimit, search)
+    response = opsmxDashboardService.getDashboardResponse0(version, datasourceType, type, pageNo, pageLimit, search)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
