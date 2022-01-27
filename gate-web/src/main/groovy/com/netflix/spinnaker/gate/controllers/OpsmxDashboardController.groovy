@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.*
 
+import javax.servlet.http.HttpServletRequest
+
 @RequestMapping("/dashboardservice")
 @RestController
 @Slf4j
@@ -197,9 +199,11 @@ class OpsmxDashboardController {
                                   @PathVariable("source1") String source1,
                                   @PathVariable("source2") String source2,
                                   @PathVariable("source3") String source3,
-                                  @PathVariable("source4") String source4) {
+                                  @PathVariable("source4") String source4,
+                                  HttpServletRequest request) {
+    String cookie = request.getHeader("Cookie")
 
-    return opsmxDashboardService.deleteDashboardResponse7(version, type, source, source1, source2, source3, source4)
+    return opsmxDashboardService.deleteDashboardResponse7(version, type, source, source1, source2, source3, source4, cookie)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
@@ -241,9 +245,10 @@ class OpsmxDashboardController {
                            @PathVariable("type") String type,
                            @PathVariable("source") String source,
                            @PathVariable("source1") String source1,
-                           @RequestBody(required = false) Object data) {
-
-    return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, data)
+                           @RequestBody(required = false) Object data,
+                            HttpServletRequest request) {
+    String cookie = request.getHeader("Cookie")
+    return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, cookie, data)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
@@ -337,9 +342,11 @@ class OpsmxDashboardController {
                                  @PathVariable("source") String source,
                                  @PathVariable("source1") String source1,
                                  @PathVariable("source2") String source2,
-                                 @RequestBody(required = false) Object data) {
+                                 @RequestBody(required = false) Object data,
+                                  HttpServletRequest request) {
+    String cookie = request.getHeader("Cookie")
 
-    return opsmxDashboardService.updateDashboardResponse3(version, type, source, source1, source2, data)
+    return opsmxDashboardService.updateDashboardResponse3(version, type, source, source1, source2, data, cookie)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
