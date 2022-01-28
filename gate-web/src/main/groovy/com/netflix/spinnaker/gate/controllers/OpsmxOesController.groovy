@@ -87,9 +87,9 @@ class OpsmxOesController {
   @RequestMapping(value = "/{type}/{source}/{source1}", method = RequestMethod.GET)
   Object getOesResponse4(@PathVariable("type") String type,
                          @PathVariable("source") String source,
-                         @PathVariable("source1") String source1,
-                         @RequestParam(value = "ids", required = false) List<Integer> accountIds) {
-    return opsmxOesService.getOesResponse4(type, source, source1, accountIds)
+                         @PathVariable("source1") String source1) {
+
+    return opsmxOesService.getOesResponse4(type, source, source1)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -99,9 +99,9 @@ class OpsmxOesController {
                          @PathVariable("source1") String source1,
                          @PathVariable("source2") String source2,
                          @RequestParam(value = "isTreeView", required = false) boolean isTreeView,
-                         @RequestParam(value = "isLatest", required = false) boolean isLatest,
-                         @RequestParam(value = "ids", required = false) List<Integer> accountIds) {
-    return opsmxOesService.getOesResponse5(type, source, source1, source2, isTreeView, isLatest, accountIds)
+                         @RequestParam(value = "isLatest", required = false) boolean isLatest) {
+
+    return opsmxOesService.getOesResponse5(type, source, source1, source2,isTreeView,isLatest)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")

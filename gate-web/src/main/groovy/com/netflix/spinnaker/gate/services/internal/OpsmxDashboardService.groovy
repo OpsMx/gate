@@ -22,16 +22,12 @@ import retrofit.http.*
 interface OpsmxDashboardService {
 
   @GET("/dashboardservice/{version}/{type}")
-  Object getDashboardResponse0(@Path('version') String version,
+  Object getDashboardResponse1(@Path('version') String version,
                                @Path('type') String type,
                                @Query("datasourceType") String datasourceType,
                                @Query("pageNo") String pageNo,
                                @Query("pageLimit") String pageLimit,
                                @Query("search") String search)
-
-  @GET("/dashboardservice/{version}/{type}")
-  Object getDashboardResponse1(@Path('version') String version,
-                              @Path('type') String type)
 
   @GET("/dashboardservice/{version}/{type}/{source}")
   Object getDashboardResponse(@Path('version') String version,

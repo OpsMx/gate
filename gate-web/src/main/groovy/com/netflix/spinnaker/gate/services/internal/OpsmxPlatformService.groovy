@@ -73,17 +73,6 @@ interface OpsmxPlatformService {
                               @Path('source3') String source3,
                               @Path('source4') String source4)
 
-  @GET("/platformservice/{version}/{type}/{source}/{source1}")
-  Object getPlatformResponse8(@Path('version') String version,
-                              @Path('type') String type,
-                              @Path('source') String source,
-                              @Path('source1') String source1,
-                              @Query("datasourceType") String datasourceType,
-                              @Query("permissionId") String permissionId,
-                              @Query("pageNo") String pageNo,
-                              @Query("pageLimit") String pageLimit,
-                              @Query("search") String search)
-
   @GET("/platformservice/{version}/insights/download")
   Response downloadCSVFile(@Path('version') String version,
                            @Query("chartId") Integer chartId,
