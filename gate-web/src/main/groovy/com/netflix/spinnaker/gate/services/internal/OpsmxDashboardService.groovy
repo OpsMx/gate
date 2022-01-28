@@ -25,8 +25,8 @@ interface OpsmxDashboardService {
   Object getDashboardResponse1(@Path('version') String version,
                                @Path('type') String type,
                                @Query("datasourceType") String datasourceType,
-                               @Query("pageNo") String pageNo,
-                               @Query("pageLimit") String pageLimit,
+                               @Query("pageNo") Integer pageNo,
+                               @Query("pageLimit") Integer pageLimit,
                                @Query("search") String search)
 
   @GET("/dashboardservice/{version}/{type}/{source}")
