@@ -399,9 +399,8 @@ class OpsmxDashboardController {
                                  @RequestBody(required = false) Object data,
                                   HttpServletRequest request) {
     String cookie = "no-cookie"
-    if(gateInstallationMode.equals(GateInstallationModes.common)){
+    if(gateInstallationMode != null && gateInstallationMode.equals(GateInstallationModes.common)){
       cookie = request.getHeader("Cookie")
-      log.info("Cookie is: " + cookie)
     }
 
     return opsmxDashboardService.updateDashboardResponse3(version, type, source, source1, source2, data, cookie)
