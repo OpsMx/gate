@@ -16,12 +16,12 @@
 
 package com.netflix.spinnaker.gate.controllers
 
-
 import com.netflix.spinnaker.gate.services.internal.OpsmxDashboardService
+import com.opsmx.spinnaker.gate.enums.GateInstallationModes
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
-import okhttp3.OkHttpClient
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.*
 
@@ -50,6 +50,9 @@ class OpsmxDashboardController {
 
   @Autowired
   OpsmxDashboardService opsmxDashboardService
+
+  @Value('${gate.installation.mode}')
+  GateInstallationModes gateInstallationMode
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.GET)
@@ -201,8 +204,10 @@ class OpsmxDashboardController {
                                   @PathVariable("source3") String source3,
                                   @PathVariable("source4") String source4,
                                   HttpServletRequest request) {
-    String cookie = request.getHeader("Cookie")
-
+    String cookie = "no-cookie"
+    if(gateInstallationMode.equals(GateInstallationModes.common)){
+      cookie = request.getHeader("Cookie")
+    }
     return opsmxDashboardService.deleteDashboardResponse7(version, type, source, source1, source2, source3, source4, cookie)
   }
 
@@ -216,7 +221,6 @@ class OpsmxDashboardController {
                                   @PathVariable("source3") String source3,
                                   @PathVariable("source4") String source4,
                                   @PathVariable("source5") String source5) {
-
     return opsmxDashboardService.deleteDashboardResponse8(version, type, source, source1, source2, source3, source4, source5)
   }
 
@@ -247,7 +251,10 @@ class OpsmxDashboardController {
                            @PathVariable("source1") String source1,
                            @RequestBody(required = false) Object data,
                             HttpServletRequest request) {
-    String cookie = request.getHeader("Cookie")
+    String cookie = "no-cookie"
+    if(gateInstallationMode.equals(GateInstallationModes.common)){
+      cookie = request.getHeader("Cookie")
+    }
     return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, cookie, data)
   }
 
@@ -344,7 +351,10 @@ class OpsmxDashboardController {
                                  @PathVariable("source2") String source2,
                                  @RequestBody(required = false) Object data,
                                   HttpServletRequest request) {
-    String cookie = request.getHeader("Cookie")
+    String cookie = "no-cookie"
+    if(gateInstallationMode != null && gateInstallationMode.equals(GateInstallationModes.common)){
+      cookie = request.getHeader("Cookie")
+    }
 
     return opsmxDashboardService.updateDashboardResponse3(version, type, source, source1, source2, data, cookie)
   }
