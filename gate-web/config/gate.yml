@@ -180,3 +180,6 @@ security:
       firstName:
       lastName: name
       username: login
+
+authenticate:
+  agentOnboardingAPIs: true
