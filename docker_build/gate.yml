@@ -109,3 +109,7 @@ management:
     health:
       show-details: always
       show-components: always
+
+gate:
+  installation:
+    mode: common
