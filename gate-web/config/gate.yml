@@ -181,5 +181,7 @@ security:
       lastName: name
       username: login
 
-authenticate:
-  agentOnboardingAPIs: true
+#If the flag is false, the corresponding endpoints will move to protected mode and redirect the user to the login page.
+#Otherwise, it will allow unauthenticated access to the endpoints. Default will be false.
+allowUnauthenticatedAccess:
+  agentAPI: false
