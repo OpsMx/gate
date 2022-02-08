@@ -16,12 +16,10 @@
 
 package com.netflix.spinnaker.gate.controllers
 
-
 import com.netflix.spinnaker.gate.services.internal.OpsmxDashboardService
 import com.opsmx.spinnaker.gate.enums.GateInstallationModes
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
-import okhttp3.OkHttpClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
