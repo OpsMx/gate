@@ -58,3 +58,7 @@ spring:
 spinnaker:
   extensions:
     applicationName: spinnakerpluginstest
+
+gate:
+  installation:
+    mode: common
