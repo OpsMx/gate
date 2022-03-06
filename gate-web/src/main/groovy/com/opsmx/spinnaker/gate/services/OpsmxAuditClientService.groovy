@@ -36,6 +36,13 @@ interface OpsmxAuditClientService {
                                  @Query('startTime') Long startTime,
                                  @Query('endTime') Long endTime)
 
+  @GET("/auditclientservice/{version}/{type}/{source}")
+  Object getDeliveryInsightCharts(@Path('version') String version,
+                                 @Path('type') String type,
+                                 @Path('source') String source,
+                                 @Query('chartId') Integer chartId,
+                                 @Query('days') Integer days)
+
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}")
   Object getAuditClientResponse3(@Path('version') String version,
                                  @Path('type') String type,

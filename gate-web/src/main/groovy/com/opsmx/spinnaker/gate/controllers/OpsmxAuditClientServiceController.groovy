@@ -61,6 +61,16 @@ class OpsmxAuditClientServiceController {
   }
 
   @ApiOperation(value = "Endpoint for audit-client rest services")
+  @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.GET)
+  Object getDeliveryInsightCharts(@PathVariable("version") String version,
+                                 @PathVariable("type") String type,
+                                 @PathVariable("source") String source,
+                                 @RequestParam(value = "chartId", required = false) Integer chartId,
+                                 @RequestParam(value = "days", required = false) Integer days) {
+    return opsmxAuditClientService.getDeliveryInsightCharts(version, type, source, chartId, days)
+  }
+
+  @ApiOperation(value = "Endpoint for audit-client rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
   Object getAuditClientResponse3(@PathVariable("version") String version,
                               @PathVariable("type") String type,
