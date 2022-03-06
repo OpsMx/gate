@@ -99,12 +99,19 @@ interface OpsmxAuditClientService {
                            @Query("pageNo") Integer pageNo,
                            @Query("size") Integer size)
 
+//  @GET("/auditclientservice/{version}/{type}/{source}/download")
+//  Response downloadDeliveryInsightsCSVFile(@Path('version') String version,
+//                                         @Path('type') String type,
+//                                         @Path('source') String source,
+//                                         @Query('chartId') Integer chartId,
+//                                         @Query('startTime') Long startTime,
+//                                         @Query('endTime') Long endTime)
+
   @GET("/auditclientservice/{version}/{type}/{source}/download")
   Response downloadDeliveryInsightsCSVFile(@Path('version') String version,
-                                         @Path('type') String type,
-                                         @Path('source') String source,
-                                         @Query('chartId') Integer chartId,
-                                         @Query('startTime') Long startTime,
-                                         @Query('endTime') Long endTime)
+                                           @Path('type') String type,
+                                           @Path('source') String source,
+                                           @Query('chartId') Integer chartId,
+                                           @Query('Integer') Long days)
 
 }
