@@ -28,13 +28,13 @@ interface OpsmxAuditClientService {
   Object getAuditClientResponse1(@Path('version') String version,
                               @Path('type') String type)
 
-  @GET("/auditclientservice/{version}/{type}/{source}")
-  Object getAuditClientResponse2(@Path('version') String version,
-                                 @Path('type') String type,
-                                 @Path('source') String source,
-                                 @Query('chartId') Integer chartId,
-                                 @Query('startTime') Long startTime,
-                                 @Query('endTime') Long endTime)
+//  @GET("/auditclientservice/{version}/{type}/{source}")
+//  Object getAuditClientResponse2(@Path('version') String version,
+//                                 @Path('type') String type,
+//                                 @Path('source') String source,
+//                                 @Query('chartId') Integer chartId,
+//                                 @Query('startTime') Long startTime,
+//                                 @Query('endTime') Long endTime)
 
   @GET("/auditclientservice/{version}/{type}/{source}")
   Object getDeliveryInsightCharts(@Path('version') String version,
