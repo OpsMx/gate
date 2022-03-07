@@ -112,6 +112,6 @@ interface OpsmxAuditClientService {
                                            @Path('type') String type,
                                            @Path('source') String source,
                                            @Query('chartId') Integer chartId,
-                                           @Query('Integer') Long days)
+                                           @Query('days') Integer days)
 
 }
