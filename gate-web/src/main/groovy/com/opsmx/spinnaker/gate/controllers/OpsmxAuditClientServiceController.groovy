@@ -199,7 +199,7 @@ class OpsmxAuditClientServiceController {
                                      @PathVariable("source") String source,
                                      @RequestParam(value = "chartId", required = false) Integer chartId,
                                      @RequestParam(value = "days", required = false) Long days) {
-    Response response = opsmxAuditClientService.downloadDeliveryInsightsCSVFile(version, type, source, chartId, days)
+    Response response = opsmxAuditClientService.downloadDeliveryInsightsCSVFile1(version, type, source, chartId, days)
     log.info("response for the delivery insights endpoint:" + response.getHeaders())
     if (response.getBody()!=null) {
       InputStream inputStream = response.getBody().in()
