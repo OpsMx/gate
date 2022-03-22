@@ -56,8 +56,9 @@ class OpsmxAuditClientServiceController {
                                  @PathVariable("source") String source,
                                  @RequestParam(value = "chartId", required = false) Integer chartId,
                                  @RequestParam(value = "startTime", required = false) Long startTime,
-                                 @RequestParam(value = "endTime", required = false) Long endTime) {
-    return opsmxAuditClientService.getAuditClientResponse2(version, type, source, chartId, startTime, endTime)
+                                 @RequestParam(value = "endTime", required = false) Long endTime,
+                                 @RequestParam(value = "days", required = false) Integer days) {
+    return opsmxAuditClientService.getAuditClientResponse2(version, type, source, chartId, startTime, endTime, days)
   }
 
   @ApiOperation(value = "Endpoint for audit-client rest services")
@@ -125,16 +126,6 @@ class OpsmxAuditClientServiceController {
     return opsmxAuditClientService.getAuditClientResponse7(version, type, source, source1, source2, source3, source4, source5)
   }
 
-  @ApiOperation(value = "Endpoint for audit-client rest services")
-  @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.GET)
-  Object getAuditClientResponse8(@PathVariable("version") String version,
-                                 @PathVariable("type") String type,
-                                 @PathVariable("source") String source,
-                                 @RequestParam(value = "chartId", required = false) Integer chartId,
-                                 @RequestParam(value = "days", required = false) Integer days) {
-    return opsmxAuditClientService.getAuditClientResponse8(version, type, source, chartId, days)
-  }
-
 
 
   @ApiOperation(value = "Endpoint for Insights controller to download csv file")
@@ -172,34 +163,9 @@ class OpsmxAuditClientServiceController {
                                      @PathVariable("source") String source,
                                      @RequestParam(value = "chartId", required = false) Integer chartId,
                                      @RequestParam(value = "startTime", required = false) Long startTime,
-                                     @RequestParam(value = "endTime", required = false) Long endTime) {
-    Response response = opsmxAuditClientService.downloadDeliveryInsightsCSVFile(version, type, source, chartId, startTime, endTime)
-    log.info("response for the delivery insights endpoint:" + response.getHeaders())
-    if (response.getBody()!=null) {
-      InputStream inputStream = response.getBody().in()
-      try {
-        byte[] csvFile = IOUtils.toByteArray(inputStream)
-        HttpHeaders headers = new HttpHeaders()
-        headers.setContentType(MediaType.parseMediaType("text/csv"));
-        headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
-        return ResponseEntity.ok().headers(headers).body(csvFile)
-      } finally {
-        if (inputStream != null) {
-          inputStream.close()
-        }
-      }
-    }
-    return ResponseEntity.status(response.getStatus()).build()
-  }
-
-  @ApiOperation(value = "Endpoint for Delivery Insights controller to download csv file")
-  @RequestMapping(value = "/{version}/{type}/{source}/download", produces = "text/csv", method = RequestMethod.GET)
-  Object downloadCSVFileAuditService1(@PathVariable("version") String version,
-                                     @PathVariable("type") String type,
-                                     @PathVariable("source") String source,
-                                     @RequestParam(value = "chartId", required = false) Integer chartId,
-                                     @RequestParam(value = "days", required = false) Long days) {
-    Response response = opsmxAuditClientService.downloadDeliveryInsightsCSVFile1(version, type, source, chartId, days)
+                                     @RequestParam(value = "endTime", required = false) Long endTime,
+                                     @RequestParam(value = "days", required = false) Integer days) {
+    Response response = opsmxAuditClientService.downloadDeliveryInsightsCSVFile(version, type, source, chartId, startTime, endTime, days)
     log.info("response for the delivery insights endpoint:" + response.getHeaders())
     if (response.getBody()!=null) {
       InputStream inputStream = response.getBody().in()

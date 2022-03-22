@@ -34,7 +34,8 @@ interface OpsmxAuditClientService {
                                  @Path('source') String source,
                                  @Query('chartId') Integer chartId,
                                  @Query('startTime') Long startTime,
-                                 @Query('endTime') Long endTime)
+                                 @Query('endTime') Long endTime,
+                                 @Query('days') Integer  days)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}")
   Object getAuditClientResponse3(@Path('version') String version,
@@ -83,13 +84,6 @@ interface OpsmxAuditClientService {
                                  @Path('source4') String source4,
                                  @Path('source5') String source5)
 
-  @GET("/auditclientservice/{version}/{type}/{source}")
-  Object getAuditClientResponse8(@Path('version') String version,
-                                 @Path('type') String type,
-                                 @Path('source') String source,
-                                 @Query('chartId') Integer chartId,
-                                 @Query('days') Integer days)
-
   @GET("/auditclientservice/{version}/users/{username}/{source}/download")
   Response downloadCSVFile(@Path('version') String version,
                            @Path('username') String username,
@@ -105,13 +99,8 @@ interface OpsmxAuditClientService {
                                          @Path('source') String source,
                                          @Query('chartId') Integer chartId,
                                          @Query('startTime') Long startTime,
-                                         @Query('endTime') Long endTime)
+                                         @Query('endTime') Long endTime,
+                                           @Query('days') Integer  days)
 
-  @GET("/auditclientservice/{version}/{type}/{source}/download")
-  Response downloadDeliveryInsightsCSVFile1(@Path('version') String version,
-                                           @Path('type') String type,
-                                           @Path('source') String source,
-                                           @Query('chartId') Integer chartId,
-                                           @Query('days') Long days)
 
 }
