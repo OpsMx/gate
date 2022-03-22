@@ -83,6 +83,13 @@ interface OpsmxAuditClientService {
                                  @Path('source4') String source4,
                                  @Path('source5') String source5)
 
+  @GET("/auditclientservice/{version}/{type}/{source}")
+  Object getAuditClientResponse8(@Path('version') String version,
+                                 @Path('type') String type,
+                                 @Path('source') String source,
+                                 @Query('chartId') Integer chartId,
+                                 @Query('days') Integer days)
+
   @GET("/auditclientservice/{version}/users/{username}/{source}/download")
   Response downloadCSVFile(@Path('version') String version,
                            @Path('username') String username,
@@ -99,5 +106,12 @@ interface OpsmxAuditClientService {
                                          @Query('chartId') Integer chartId,
                                          @Query('startTime') Long startTime,
                                          @Query('endTime') Long endTime)
+
+  @GET("/auditclientservice/{version}/{type}/{source}/download")
+  Response downloadDeliveryInsightsCSVFile(@Path('version') String version,
+                                           @Path('type') String type,
+                                           @Path('source') String source,
+                                           @Query('chartId') Integer chartId,
+                                           @Query('days') Long days)
 
 }
