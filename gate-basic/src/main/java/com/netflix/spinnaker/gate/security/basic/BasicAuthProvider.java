@@ -52,7 +52,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
     User user = new User();
     user.setEmail(name);
     user.setUsername(name);
-    user.setRoles(Collections.singletonList("USER"));
+    user.setRoles(Collections.singletonList("admin"));
     return new UsernamePasswordAuthenticationToken(user, password, new ArrayList<>());
   }
 
