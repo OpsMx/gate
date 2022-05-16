@@ -76,7 +76,7 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
       }
 
       //      response.sendRedirect("/saml/SSO");
-
+      SecurityContextHolder.clearContext();
       response.setContentType("text/html");
       PrintWriter out = response.getWriter();
 
