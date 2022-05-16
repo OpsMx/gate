@@ -17,6 +17,7 @@
 package com.opsmx.spinnaker.gate.security.saml;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -74,7 +75,19 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
                 + authentication);
       }
 
-      response.sendRedirect("/saml/SSO");
+      //      response.sendRedirect("/saml/SSO");
+
+      response.setContentType("text/html");
+      PrintWriter out = response.getWriter();
+
+      out.println("<html>");
+      out.println("<head>");
+      out.println("<title>Hola</title>");
+      out.println("</head>");
+      out.println("<body bgcolor=\"white\">");
+      out.println("</body>");
+      out.println("</html>");
+
       return;
       //      throw new AccessDeniedException("Previously Authenticated token Expired.");
 
