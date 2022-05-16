@@ -29,6 +29,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.providers.ExpiringUsernameAuthenticationToken;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
@@ -68,7 +69,8 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     logger.debug("Previously Authenticated is : " + authentication);
-    if (!authentication.isAuthenticated()) {
+    if (authentication instanceof ExpiringUsernameAuthenticationToken
+        && !authentication.isAuthenticated()) {
       if (logger.isDebugEnabled()) {
         logger.debug(
             "Previously Authenticated token Expired; redirecting to authentication entry point. \n Previously Authenticated is : "
