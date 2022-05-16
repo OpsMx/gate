@@ -52,6 +52,7 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor
 import org.springframework.security.web.authentication.RememberMeServices
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.session.web.http.DefaultCookieSerializer
 import org.springframework.stereotype.Component
 
@@ -180,7 +181,8 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 //      authenticationEntryPoint = exceptionConf.getAuthenticationEntryPoint()
 //    }
     SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter()
-    http.addFilter(authTokenUpdateFilter)
+    http.addFilterAfter(authTokenUpdateFilter,
+        BasicAuthenticationFilter.class)
 //    http
 //      .addFilterBefore(authTokenUpdateFilter, ExceptionTranslationFilter.class)
     // @formatter:on
