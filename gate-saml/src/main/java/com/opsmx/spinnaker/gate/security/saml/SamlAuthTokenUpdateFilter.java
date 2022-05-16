@@ -42,7 +42,8 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
     if (authentication instanceof ExpiringUsernameAuthenticationToken
         && !authentication.isAuthenticated()) {
       if (logger.isDebugEnabled()) {
-        logger.debug("Previously Authenticated token Expired; Logging out the user");
+        logger.debug(
+            "Previously Authenticated token Expired; redirecting to authentication entry point.");
       }
 
       HttpSession session = request.getSession();
