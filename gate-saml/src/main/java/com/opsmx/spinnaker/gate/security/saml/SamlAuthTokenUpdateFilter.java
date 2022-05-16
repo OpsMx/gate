@@ -24,40 +24,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.providers.ExpiringUsernameAuthenticationToken;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.web.filter.GenericFilterBean;
 
 public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
-
-  private AuthenticationEntryPoint authenticationEntryPoint;
-
-  private RequestCache requestCache = new HttpSessionRequestCache();
-
-  private final MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
-
-  //  public SamlAuthTokenUpdateFilter(AuthenticationEntryPoint authenticationEntryPoint) {
-  //    this(authenticationEntryPoint, new HttpSessionRequestCache());
-  //  }
-  //
-  //  public SamlAuthTokenUpdateFilter(
-  //      AuthenticationEntryPoint authenticationEntryPoint, RequestCache requestCache) {
-  //    Assert.notNull(authenticationEntryPoint, "authenticationEntryPoint cannot be null");
-  //    Assert.notNull(requestCache, "requestCache cannot be null");
-  //    this.authenticationEntryPoint = authenticationEntryPoint;
-  //    this.requestCache = requestCache;
-  //  }
-  //
-  //  @Override
-  //  public void afterPropertiesSet() {
-  //    Assert.notNull(authenticationEntryPoint, "authenticationEntryPoint must be specified");
-  //  }
 
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
       throws IOException, ServletException {
@@ -70,9 +42,7 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
     if (authentication instanceof ExpiringUsernameAuthenticationToken
         && !authentication.isAuthenticated()) {
       if (logger.isDebugEnabled()) {
-        logger.debug(
-            "Previously Authenticated token Expired; redirecting to authentication entry point. \n Previously Authenticated is : "
-                + authentication);
+        logger.debug("Previously Authenticated token Expired; Logging out the user");
       }
 
       SecurityContextHolder.clearContext();
@@ -81,42 +51,11 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
         session.invalidate();
       }
       response.sendRedirect("/gate/auth/logout");
-      //      response.setContentType("text/html");
-      //      PrintWriter out = response.getWriter();
-      //
-      //      out.println("<html>");
-      //      out.println("<head>");
-      //      out.println("<title>Hola</title>");
-      //      out.println("</head>");
-      //      out.println("<body bgcolor=\"white\">");
-      //      out.println("</body>");
-      //      out.println("</html>");
 
       return;
-      //      throw new AccessDeniedException("Previously Authenticated token Expired.");
-
-      //      sendStartAuthentication(
-      //          request,
-      //          response,
-      //          chain,
-      //          new InsufficientAuthenticationException("Previously Authenticated token
-      // Expired."));
     }
-
     logger.debug("SamlAuthTokenUpdateFilter doFilter ended");
 
     chain.doFilter(request, response);
   }
-
-  //  protected void sendStartAuthentication(
-  //      HttpServletRequest request,
-  //      HttpServletResponse response,
-  //      FilterChain chain,
-  //      AuthenticationException reason)
-  //      throws ServletException, IOException {
-  //    SecurityContextHolder.getContext().setAuthentication(null);
-  //    requestCache.saveRequest(request, response);
-  //    logger.debug("Calling Authentication entry point.");
-  //    authenticationEntryPoint.commence(request, response, reason);
-  //  }
 }

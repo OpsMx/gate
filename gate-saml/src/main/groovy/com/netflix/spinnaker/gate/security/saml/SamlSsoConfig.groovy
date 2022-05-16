@@ -41,15 +41,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.extensions.saml2.config.SAMLConfigurer
 import org.springframework.security.saml.SAMLCredential
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService
 import org.springframework.security.saml.websso.WebSSOProfileConsumerImpl
-import org.springframework.security.web.AuthenticationEntryPoint
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor
 import org.springframework.security.web.authentication.RememberMeServices
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
@@ -173,18 +170,9 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
           .keyPassword(samlSecurityConfigProperties.keyStorePassword)
 
       saml.init(http)
-
-//    AuthenticationEntryPoint authenticationEntryPoint = null;
-//    ExceptionHandlingConfigurer<?> exceptionConf = http
-//      .getConfigurer(ExceptionHandlingConfigurer.class)
-//    if (exceptionConf != null) {
-//      authenticationEntryPoint = exceptionConf.getAuthenticationEntryPoint()
-//    }
     SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter()
     http.addFilterAfter(authTokenUpdateFilter,
         BasicAuthenticationFilter.class)
-//    http
-//      .addFilterBefore(authTokenUpdateFilter, ExceptionTranslationFilter.class)
     // @formatter:on
 
   }
