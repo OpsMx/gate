@@ -73,8 +73,9 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
             "Previously Authenticated token Expired; redirecting to authentication entry point. \n Previously Authenticated is : "
                 + authentication);
       }
-
-      throw new SAMLAuthenticationException("Previously Authenticated token Expired.");
+      response.sendRedirect("/auth/logout");
+      return;
+      //      throw new SAMLAuthenticationException("Previously Authenticated token Expired.");
 
       //      sendStartAuthentication(
       //          request,
