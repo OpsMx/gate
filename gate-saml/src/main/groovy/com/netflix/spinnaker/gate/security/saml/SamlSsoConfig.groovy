@@ -180,8 +180,9 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 //      authenticationEntryPoint = exceptionConf.getAuthenticationEntryPoint()
 //    }
     SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter()
-    http
-      .addFilterBefore(authTokenUpdateFilter, ExceptionTranslationFilter.class)
+    http.addFilter(authTokenUpdateFilter)
+//    http
+//      .addFilterBefore(authTokenUpdateFilter, ExceptionTranslationFilter.class)
     // @formatter:on
 
   }
