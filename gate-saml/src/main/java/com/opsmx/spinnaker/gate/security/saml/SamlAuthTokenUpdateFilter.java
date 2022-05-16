@@ -74,7 +74,7 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
                 + authentication);
       }
 
-      response.sendRedirect("/saml/login");
+      response.sendRedirect("/saml/SSO");
       return;
       //      throw new AccessDeniedException("Previously Authenticated token Expired.");
 
