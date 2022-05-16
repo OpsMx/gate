@@ -173,15 +173,15 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
       saml.init(http)
 
-    AuthenticationEntryPoint authenticationEntryPoint = null;
-    ExceptionHandlingConfigurer<?> exceptionConf = http
-      .getConfigurer(ExceptionHandlingConfigurer.class)
-    if (exceptionConf != null) {
-      authenticationEntryPoint = exceptionConf.getAuthenticationEntryPoint()
-    }
-    SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter(authenticationEntryPoint)
+//    AuthenticationEntryPoint authenticationEntryPoint = null;
+//    ExceptionHandlingConfigurer<?> exceptionConf = http
+//      .getConfigurer(ExceptionHandlingConfigurer.class)
+//    if (exceptionConf != null) {
+//      authenticationEntryPoint = exceptionConf.getAuthenticationEntryPoint()
+//    }
+    SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter()
     http
-      .addFilterBefore(authTokenUpdateFilter, FilterSecurityInterceptor.class)
+      .addFilterBefore(authTokenUpdateFilter, ExceptionTranslationFilter.class)
     // @formatter:on
 
   }

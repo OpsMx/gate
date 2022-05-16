@@ -24,16 +24,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.providers.ExpiringUsernameAuthenticationToken;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
-import org.springframework.util.Assert;
 import org.springframework.web.filter.GenericFilterBean;
 
 public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
@@ -44,22 +41,22 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
 
   private final MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
-  public SamlAuthTokenUpdateFilter(AuthenticationEntryPoint authenticationEntryPoint) {
-    this(authenticationEntryPoint, new HttpSessionRequestCache());
-  }
-
-  public SamlAuthTokenUpdateFilter(
-      AuthenticationEntryPoint authenticationEntryPoint, RequestCache requestCache) {
-    Assert.notNull(authenticationEntryPoint, "authenticationEntryPoint cannot be null");
-    Assert.notNull(requestCache, "requestCache cannot be null");
-    this.authenticationEntryPoint = authenticationEntryPoint;
-    this.requestCache = requestCache;
-  }
-
-  @Override
-  public void afterPropertiesSet() {
-    Assert.notNull(authenticationEntryPoint, "authenticationEntryPoint must be specified");
-  }
+  //  public SamlAuthTokenUpdateFilter(AuthenticationEntryPoint authenticationEntryPoint) {
+  //    this(authenticationEntryPoint, new HttpSessionRequestCache());
+  //  }
+  //
+  //  public SamlAuthTokenUpdateFilter(
+  //      AuthenticationEntryPoint authenticationEntryPoint, RequestCache requestCache) {
+  //    Assert.notNull(authenticationEntryPoint, "authenticationEntryPoint cannot be null");
+  //    Assert.notNull(requestCache, "requestCache cannot be null");
+  //    this.authenticationEntryPoint = authenticationEntryPoint;
+  //    this.requestCache = requestCache;
+  //  }
+  //
+  //  @Override
+  //  public void afterPropertiesSet() {
+  //    Assert.notNull(authenticationEntryPoint, "authenticationEntryPoint must be specified");
+  //  }
 
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
       throws IOException, ServletException {
@@ -77,11 +74,14 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
                 + authentication);
       }
 
-      sendStartAuthentication(
-          request,
-          response,
-          chain,
-          new InsufficientAuthenticationException("Previously Authenticated token Expired."));
+      throw new SAMLAuthenticationException("Previously Authenticated token Expired.");
+
+      //      sendStartAuthentication(
+      //          request,
+      //          response,
+      //          chain,
+      //          new InsufficientAuthenticationException("Previously Authenticated token
+      // Expired."));
     }
 
     logger.debug("SamlAuthTokenUpdateFilter doFilter ended");
@@ -89,15 +89,15 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
     chain.doFilter(request, response);
   }
 
-  protected void sendStartAuthentication(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      FilterChain chain,
-      AuthenticationException reason)
-      throws ServletException, IOException {
-    SecurityContextHolder.getContext().setAuthentication(null);
-    requestCache.saveRequest(request, response);
-    logger.debug("Calling Authentication entry point.");
-    authenticationEntryPoint.commence(request, response, reason);
-  }
+  //  protected void sendStartAuthentication(
+  //      HttpServletRequest request,
+  //      HttpServletResponse response,
+  //      FilterChain chain,
+  //      AuthenticationException reason)
+  //      throws ServletException, IOException {
+  //    SecurityContextHolder.getContext().setAuthentication(null);
+  //    requestCache.saveRequest(request, response);
+  //    logger.debug("Calling Authentication entry point.");
+  //    authenticationEntryPoint.commence(request, response, reason);
+  //  }
 }
