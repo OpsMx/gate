@@ -24,6 +24,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -73,9 +74,9 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
             "Previously Authenticated token Expired; redirecting to authentication entry point. \n Previously Authenticated is : "
                 + authentication);
       }
-      response.sendRedirect("/auth/logout");
-      return;
-      //      throw new SAMLAuthenticationException("Previously Authenticated token Expired.");
+      //      response.sendRedirect("/auth/logout");
+      //      return;
+      throw new AccessDeniedException("Previously Authenticated token Expired.");
 
       //      sendStartAuthentication(
       //          request,
