@@ -1,4 +1,20 @@
-package com.netflix.spinnaker.gate.security.saml;
+/*
+ * Copyright 2022 Netflix, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.opsmx.spinnaker.gate.security.saml;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -21,9 +37,6 @@ import org.springframework.web.filter.GenericFilterBean;
 
 public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
 
-  // ~ Instance fields
-  // ================================================================================================
-
   private AuthenticationEntryPoint authenticationEntryPoint;
 
   private RequestCache requestCache = new HttpSessionRequestCache();
@@ -42,9 +55,6 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
     this.requestCache = requestCache;
   }
 
-  // ~ Methods
-  // ========================================================================================================
-
   @Override
   public void afterPropertiesSet() {
     Assert.notNull(authenticationEntryPoint, "authenticationEntryPoint must be specified");
@@ -52,10 +62,12 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
 
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
       throws IOException, ServletException {
+    logger.debug("SamlAuthTokenUpdateFilter doFilter started");
     HttpServletRequest request = (HttpServletRequest) req;
     HttpServletResponse response = (HttpServletResponse) res;
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+    logger.debug("Previously Authenticated is : " + authentication);
     if (!authentication.isAuthenticated()) {
       if (logger.isDebugEnabled()) {
         logger.debug(
@@ -70,6 +82,8 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
           new InsufficientAuthenticationException("Previously Authenticated token Expired."));
     }
 
+    logger.debug("SamlAuthTokenUpdateFilter doFilter ended");
+
     chain.doFilter(request, response);
   }
 
@@ -79,8 +93,6 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
       FilterChain chain,
       AuthenticationException reason)
       throws ServletException, IOException {
-    // SEC-112: Clear the SecurityContextHolder's Authentication, as the
-    // existing Authentication is no longer considered valid
     SecurityContextHolder.getContext().setAuthentication(null);
     requestCache.saveRequest(request, response);
     logger.debug("Calling Authentication entry point.");
