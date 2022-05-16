@@ -45,13 +45,10 @@ public class SamlAuthTokenUpdateFilter extends GenericFilterBean {
         logger.debug("Previously Authenticated token Expired; Logging out the user");
       }
 
-      //      SecurityContextHolder.clearContext();
       HttpSession session = request.getSession();
       if (session != null) {
         session.invalidate();
       }
-      //      response.sendRedirect("/gate/auth/logout");
-      //      return;
       throw new SAMLAuthenticationException("Previously Authenticated token Expired");
     }
     logger.debug("SamlAuthTokenUpdateFilter doFilter ended");
