@@ -56,6 +56,7 @@ import javax.annotation.PostConstruct
 import java.security.KeyStore
 
 import static org.springframework.security.extensions.saml2.config.SAMLConfigurer.saml
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 
 @ConditionalOnExpression('${saml.enabled:false}')
 @Configuration
