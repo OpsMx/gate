@@ -103,6 +103,7 @@ class PermissionService {
           permissionEvaluator.invalidatePermission(userId)
         })
       } catch (RetrofitError e) {
+        log.error("Exception caught while updating the roles. Will wait and retry: {}" , e)
         throw classifyError(e)
       }
     }
