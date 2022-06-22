@@ -91,10 +91,12 @@ interface OpsmxAuditClientService {
 
   @GET("/auditclientservice/{version}/{type}/{source}/download")
   Response downloadDeliveryInsightsCSVFile(@Path('version') String version,
-                                 @Path('type') String type,
-                                 @Path('source') String source,
-                                 @Query('chartId') Integer chartId,
-                                 @Query('startTime') Long startTime,
-                                 @Query('endTime') Long endTime)
+                                           @Path('type') String type,
+                                           @Path('source') String source,
+                                           @Query('chartId') Integer chartId,
+                                           @Query('startTime') Long startTime,
+                                           @Query('endTime') Long endTime,
+                                           @Query('days') Integer days)
+
 
 }
