@@ -145,6 +145,13 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     defaultCookieSerializer.setCookieName("gateCookie")
     authConfig.configure(http)
 
+    http.
+      headers().
+      httpStrictTransportSecurity().
+      maxAgeInSeconds(31536000).
+      includeSubDomains(true)
+      .preload(false)
+
     http
       .rememberMe()
         .rememberMeServices(rememberMeServices(userDetailsService()))
@@ -173,6 +180,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter()
     http.addFilterAfter(authTokenUpdateFilter,
         BasicAuthenticationFilter.class)
+
     // @formatter:on
 
   }
