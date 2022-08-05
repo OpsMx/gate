@@ -329,6 +329,7 @@ class AuthConfig {
     if (webhookDefaultAuthEnabled) {
       http.authorizeRequests().antMatchers(HttpMethod.POST, '/webhooks/**').authenticated()
     }
+    http.headers().httpStrictTransportSecurity().includeSubDomains(true).maxAgeInSeconds(31536000).requestMatcher(AnyRequestMatcher.INSTANCE)
 
     http.logout()
         .logoutUrl("/auth/logout")
@@ -399,6 +400,7 @@ class AuthConfig {
          .antMatchers('/metrics').permitAll()
          .anyRequest().authenticated()
        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+       http.headers().httpStrictTransportSecurity().includeSubDomains(true).maxAgeInSeconds(31536000).requestMatcher(AnyRequestMatcher.INSTANCE)
      }else if(isAgentAPIUnauthenticatedAccessEnabled){
        http
          .csrf()
@@ -456,6 +458,8 @@ class AuthConfig {
          .antMatchers('/metrics').permitAll()
          .anyRequest().authenticated()
        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+       http.headers().httpStrictTransportSecurity().includeSubDomains(true).maxAgeInSeconds(31536000).requestMatcher(AnyRequestMatcher.INSTANCE)
+
      }else if(isSpinnakerWebhooksUnauthenticatedAccessEnabled){
        http
          .csrf()
@@ -504,6 +508,8 @@ class AuthConfig {
          .antMatchers('/metrics').permitAll()
          .anyRequest().authenticated()
        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+       http.headers().httpStrictTransportSecurity().includeSubDomains(true).maxAgeInSeconds(31536000).requestMatcher(AnyRequestMatcher.INSTANCE)
+
      }else{
        http
          .csrf()
@@ -551,6 +557,8 @@ class AuthConfig {
          .antMatchers('/metrics').permitAll()
          .anyRequest().authenticated()
        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+       http.headers().httpStrictTransportSecurity().includeSubDomains(true).maxAgeInSeconds(31536000).requestMatcher(AnyRequestMatcher.INSTANCE)
+
      }
   }
 
