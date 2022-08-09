@@ -94,6 +94,9 @@ class AuthConfig {
   @Value('${allowUnauthenticatedAccess.webhooks:false}')
   boolean isSpinnakerWebhooksUnauthenticatedAccessEnabled
 
+  @Value('${security.contentSecurityPolicy:\'object-src \'none\'; script-src \'unsafe-eval\' \'unsafe-inline\' https: http:;\'}')
+  String contentSecurityPolicy
+
   void configure(HttpSecurity http) throws Exception {
     // @formatter:off
     if(isAgentAPIUnauthenticatedAccessEnabled && isSpinnakerWebhooksUnauthenticatedAccessEnabled){
@@ -317,6 +320,8 @@ class AuthConfig {
     if (webhookDefaultAuthEnabled) {
       http.authorizeRequests().antMatchers(HttpMethod.POST, '/webhooks/**').authenticated()
     }
+
+    http.headers().contentSecurityPolicy(contentSecurityPolicy)
 
     http.logout()
         .logoutUrl("/auth/logout")
