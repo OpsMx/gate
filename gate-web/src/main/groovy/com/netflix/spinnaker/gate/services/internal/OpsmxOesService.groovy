@@ -135,7 +135,7 @@ interface OpsmxOesService {
   Object postOesResponse4(@Path('type') String type,
                           @Path('source') String source,
                           @Path('source1') String source1,
-                          @Query("spinnaker") boolean isSpinnaker,
+                          @Query("spinnaker") String isSpinnaker,
                           @Body Object data)
 
   @POST("/oes/{type}/{source}/{source1}/{source2}")
