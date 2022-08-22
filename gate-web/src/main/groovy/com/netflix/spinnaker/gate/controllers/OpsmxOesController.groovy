@@ -194,7 +194,7 @@ class OpsmxOesController {
   Object postOesResponse4(@PathVariable("type") String type,
                           @PathVariable("source") String source,
                           @PathVariable("source1") String source1,
-                          @RequestParam(value = "spinnaker", required = false) boolean isSpinnaker,
+                          @RequestParam(value = "spinnaker", required = false) String isSpinnaker,
                           @RequestBody(required = false) Object data) {
 
     return opsmxOesService.postOesResponse4(type, source, source1, data)
