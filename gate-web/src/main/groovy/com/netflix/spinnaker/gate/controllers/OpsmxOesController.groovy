@@ -194,10 +194,9 @@ class OpsmxOesController {
   Object postOesResponse4(@PathVariable("type") String type,
                           @PathVariable("source") String source,
                           @PathVariable("source1") String source1,
-                          @RequestParam(value = "cdType", required = false) String cdType,
                           @RequestBody(required = false) Object data) {
 
-    return opsmxOesService.postOesResponse4(type, source, source1, cdType, data)
+    return opsmxOesService.postOesResponse4(type, source, source1, data)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
@@ -206,9 +205,10 @@ class OpsmxOesController {
                           @PathVariable("source") String source,
                           @PathVariable("source1") String source1,
                           @PathVariable("source2") String source2,
+                          @RequestParam(value = "cdType", required = false) String cdType,
                           @RequestBody(required = false) Object data) {
 
-    return opsmxOesService.postOesResponse5(type, source, source1, source2, data)
+    return opsmxOesService.postOesResponse5(type, source, source1, source2, cdType, data)
   }
 
   @ApiOperation(value = "Endpoint for Oes rest services")
