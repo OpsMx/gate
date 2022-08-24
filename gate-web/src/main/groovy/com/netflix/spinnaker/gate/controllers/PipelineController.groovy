@@ -117,6 +117,7 @@ class PipelineController {
       ]
     ]
     def result = taskService.createAndWaitForCompletion(operation)
+    log.info("result of save pipeline : {}", result)
     String resultStatus = result.get("status")
 
     if (!"SUCCEEDED".equalsIgnoreCase(resultStatus)) {
