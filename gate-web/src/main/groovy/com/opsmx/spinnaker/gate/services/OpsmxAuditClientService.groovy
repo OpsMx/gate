@@ -41,7 +41,8 @@ interface OpsmxAuditClientService {
                                  @Query('chartId') Integer chartId,
                                  @Query('startTime') Long startTime,
                                  @Query('endTime') Long endTime,
-                                 @Query('days') Integer days)
+                                 @Query('days') Integer days,
+                                 @Query('argoName') String argoName)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}")
   Object getAuditClientResponse3(@Path('version') String version,

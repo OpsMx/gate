@@ -63,8 +63,9 @@ class OpsmxAuditClientServiceController {
                                  @RequestParam(value = "chartId", required = false) Integer chartId,
                                  @RequestParam(value = "startTime", required = false) Long startTime,
                                  @RequestParam(value = "endTime", required = false) Long endTime,
-                                 @RequestParam(value = "days", required = false) Integer days) {
-    return opsmxAuditClientService.getDeliveryInsightCharts(version, type, source, chartId, startTime, endTime, days)
+                                 @RequestParam(value = "days", required = false) Integer days,
+                                 @RequestParam(value = "argoName", required = false) String  argoName) {
+    return opsmxAuditClientService.getDeliveryInsightCharts(version, type, source, chartId, startTime, endTime, days,argoName)
   }
 
   @ApiOperation(value = "Endpoint for audit-client rest services")
