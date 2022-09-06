@@ -114,5 +114,7 @@ interface OpsmxAuditClientService {
                                          @Query('chartId') Integer chartId,
                                          @Query('startTime') Long startTime,
                                          @Query('endTime') Long endTime,
-                                           @Query('days') Integer days)
+                                         @Query('days') Integer days,
+                                         @Query('argoName') String argoName,
+                                         @Query('search') String search)
 }
