@@ -360,7 +360,7 @@ class OpsmxAutopilotController {
 
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
-  @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
+  @RequestMapping(value = "/api/v5/global/template", method = RequestMethod.GET)
   Object getAutoResponse11(@PathVariable("type") String type,
                           @PathVariable("source") String source,
                           @PathVariable("source1") String source1,
@@ -372,7 +372,7 @@ class OpsmxAutopilotController {
   }
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
-  @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
+  @RequestMapping(value = "/api/v5/global/templates", method = RequestMethod.GET)
   Object getAutoResponse12(@PathVariable("type") String type,
                           @PathVariable("source") String source,
                           @PathVariable("source1") String source1,
@@ -452,7 +452,7 @@ class OpsmxAutopilotController {
   }
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
-  @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "/api/v5/global/templates", method = RequestMethod.DELETE)
   Object deleteAutoResponse7(@PathVariable("type") String type,
                              @PathVariable("source") String source,
                              @PathVariable("source1") String source1,

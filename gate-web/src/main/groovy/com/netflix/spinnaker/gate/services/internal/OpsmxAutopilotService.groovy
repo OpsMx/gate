@@ -188,23 +188,23 @@ interface OpsmxAutopilotService {
                            @Query("gateIds") String gateIds)
 
 
-  @GET("/autopilot/{type}/{source}/{source1}/{source2}")
-  Object getAutoResponse12(@Path('type') String type,
-                           @Path('source') String source,
-                           @Path('source1') String source1,
-                           @Path('source2') String source2,
-                           @Query("templateType") String templateType,
-                           @Query("templateName") String templateName,
-                           @Query("isFindAllVersions") String isFindAllVersions)
-
-
-  @GET("/autopilot/{type}/{source}/{source1}/{source2}")
+  @GET("/autopilot/api/v5/global/template")
   Object getAutoResponse11(@Path('type') String type,
                            @Path('source') String source,
                            @Path('source1') String source1,
                            @Path('source2') String source2,
                            @Query("templateType") String templateType,
+                           @Query("templateName") String templateName,
                            @Query("versionNo") String versionNo)
+
+
+  @GET("/autopilot/api/v5/global/templates")
+  Object getAutoResponse12(@Path('type') String type,
+                           @Path('source') String source,
+                           @Path('source1') String source1,
+                           @Path('source2') String source2,
+                           @Query("templateType") String templateType,
+                           @Query("isFindAllVersions") String isFindAllVersions)
 
   @DELETE("/autopilot/{type}")
   Object deleteAutoResponse1(@Path('type') String type)
@@ -250,7 +250,7 @@ interface OpsmxAutopilotService {
                              @Path('source4') String source4)
 
 
-  @DELETE("/autopilot/{type}/{source}")
+  @DELETE("/autopilot/api/v5/global/templates")
   Object deleteAutoResponse7(@Path('type') String type,
                              @Path('source') String source,
                              @Path('source1') String source1,
