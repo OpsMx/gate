@@ -361,11 +361,7 @@ class OpsmxAutopilotController {
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/api/v5/global/template", method = RequestMethod.GET)
-  Object getAutoResponse11(@PathVariable("type") String type,
-                          @PathVariable("source") String source,
-                          @PathVariable("source1") String source1,
-                          @PathVariable("source2") String source2,
-                          @RequestParam(value = "templateType") String templateType,
+  Object getAutoResponse11(@RequestParam(value = "templateType") String templateType,
                           @RequestParam(value = "templateName") String templateName,
                           @RequestParam(value = "versionNo", required = false) String versionNo) {
     return opsmxAutopilotService.getAutoResponse11(type, source, source1, source2, templateType, templateName, versionNo)
@@ -373,11 +369,7 @@ class OpsmxAutopilotController {
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/api/v5/global/templates", method = RequestMethod.GET)
-  Object getAutoResponse12(@PathVariable("type") String type,
-                          @PathVariable("source") String source,
-                          @PathVariable("source1") String source1,
-                          @PathVariable("source2") String source2,
-                          @RequestParam(value = "templateType") String templateType,
+  Object getAutoResponse12(@RequestParam(value = "templateType") String templateType,
                            @RequestParam(value = "isFindAllVersions", required = false) String isFindAllVersions) {
 
     return opsmxAutopilotService.getAutoResponse12(type, source, source1, source2, templateType)
@@ -453,11 +445,7 @@ class OpsmxAutopilotController {
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/api/v5/global/templates", method = RequestMethod.DELETE)
-  Object deleteAutoResponse7(@PathVariable("type") String type,
-                             @PathVariable("source") String source,
-                             @PathVariable("source1") String source1,
-                             @PathVariable("source2")String source2,
-                             @RequestParam(value = "templateType") String templateType,
+  Object deleteAutoResponse7(@RequestParam(value = "templateType") String templateType,
                              @RequestParam(value = "templateName") String templateName,
                              @RequestParam(value = "versionNo", required = false) String versionNo) {
 

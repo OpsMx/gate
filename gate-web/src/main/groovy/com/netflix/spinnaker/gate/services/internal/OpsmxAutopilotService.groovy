@@ -189,21 +189,13 @@ interface OpsmxAutopilotService {
 
 
   @GET("/autopilot/api/v5/global/template")
-  Object getAutoResponse11(@Path('type') String type,
-                           @Path('source') String source,
-                           @Path('source1') String source1,
-                           @Path('source2') String source2,
-                           @Query("templateType") String templateType,
+  Object getAutoResponse11(@Query("templateType") String templateType,
                            @Query("templateName") String templateName,
                            @Query("versionNo") String versionNo)
 
 
   @GET("/autopilot/api/v5/global/templates")
-  Object getAutoResponse12(@Path('type') String type,
-                           @Path('source') String source,
-                           @Path('source1') String source1,
-                           @Path('source2') String source2,
-                           @Query("templateType") String templateType,
+  Object getAutoResponse12(@Query("templateType") String templateType,
                            @Query("isFindAllVersions") String isFindAllVersions)
 
   @DELETE("/autopilot/{type}")
@@ -251,12 +243,7 @@ interface OpsmxAutopilotService {
 
 
   @DELETE("/autopilot/api/v5/global/templates")
-  Object deleteAutoResponse7(@Path('type') String type,
-                             @Path('source') String source,
-                             @Path('source1') String source1,
-                             @Path('source2') String source2,
-                            @Query("applicationId") Integer applicationId,
-                            @Query("templateType") String templateType,
+  Object deleteAutoResponse7(@Query("templateType") String templateType,
                             @Query("templateName") String templateName,
                             @Query("versionNo") String versionNo)
 
