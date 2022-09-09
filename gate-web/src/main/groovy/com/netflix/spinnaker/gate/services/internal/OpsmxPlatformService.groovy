@@ -55,6 +55,8 @@ interface OpsmxPlatformService {
                               @Path('type') String type,
                               @Path('source') String source,
                               @Path('source1') String source1,
+                              @Query("agentName") String agentName,
+                              @Query("cdName") String cdName,
                               @Query("datasourceType") String datasourceType,
                               @Query("permissionId") String permissionId)
 
@@ -96,10 +98,6 @@ interface OpsmxPlatformService {
                               @Path('source5') String source5,
                               @Path('source6') String source6,
                               @Query("type") String gateType)
-
-  @GET("/platformservice/v7/datasource/groups")
-  Object getPlatformResponse9(@Query("name") String name,
-                              @Query("isArgoEnabled") boolean isArgoEnabled)
 
 
   @GET("/platformservice/{version}/insights/download")

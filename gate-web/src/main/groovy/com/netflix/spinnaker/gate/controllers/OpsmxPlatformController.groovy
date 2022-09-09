@@ -83,7 +83,7 @@ class OpsmxPlatformController {
                               @RequestParam(value = "filterBy", required = false) String filterBy,
                               @RequestParam(value = "cdTool", required = false) String cdTool) {
     return opsmxPlatformService.getPlatformResponse1(version, type, datasourceType, accountName, source, permission,
-       search, username, pageNo, pageLimit, sortBy, sortOrder, applicationId, applicationName, noOfDays, filterBy, cdTool)
+      search, username, pageNo, pageLimit, sortBy, sortOrder, applicationId, applicationName, noOfDays, filterBy, cdTool)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
@@ -102,25 +102,27 @@ class OpsmxPlatformController {
                               @PathVariable("type") String type,
                               @PathVariable("source") String source,
                               @PathVariable("source1") String source1,
+                              @RequestParam(value = "agentName", required = false) String agentName,
+                              @RequestParam(value = "cdName", required = false) String cdName,
                               @RequestParam(value = "datasourceType", required = false) String datasourceType,
                               @RequestParam(value = "permissionId", required = false) String permissionId, HttpServletRequest httpServletRequest) {
 
     String path = httpServletRequest.getRequestURI()
     if (CacheUtil.isRegisteredCachingEndpoint(path)) {
-      return handleCaching(path, httpServletRequest, version, type, source, source1, datasourceType, permissionId)
+      return handleCaching(path, httpServletRequest, version, type, source, source1, agentName, cdName, datasourceType, permissionId)
     } else {
-      return opsmxPlatformService.getPlatformResponse4(version, type, source, source1, datasourceType, permissionId)
+      return opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId)
     }
   }
 
-  private Object handleCaching(String path, HttpServletRequest httpServletRequest, String version, String type, String source, String source1, String datasourceType, String permissionId) {
+  private Object handleCaching(String path, HttpServletRequest httpServletRequest, String version, String type, String source, String source1, String agentName, String cdName, String datasourceType, String permissionId) {
     Object response
     PlatformCachingService platformCachingService = platformCachingServiceBeanFactory.getBean(path)
 
     String userName = httpServletRequest.getUserPrincipal().getName()
     response = platformCachingService.fetchResponseFromCache(userName)
     if (response == null) {
-      response = opsmxPlatformService.getPlatformResponse4(version, type, source, source1, datasourceType, permissionId)
+      response = opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId)
       platformCachingService.cacheResponse(response, userName)
     }
     return response
@@ -177,13 +179,6 @@ class OpsmxPlatformController {
                               @PathVariable("source6") String source6,
                               @RequestParam(value = "type", required = false) String gateType) {
     return opsmxPlatformService.getPlatformResponse8(version, type, source, source1, source2, source3, source4, source5, source6, gateType)
-  }
-
-  @ApiOperation(value = "Endpoint for platform rest services")
-  @RequestMapping(value ="/v7/datasource/groups", method = RequestMethod.GET)
-  Object getPlatformResponse9(@RequestParam(required = false) String name,
-    @RequestParam("isArgoEnabled") Boolean isArgoEnabled){
-    return opsmxPlatformService.getPlatformResponse9(name,isArgoEnabled)
   }
 
   @ApiOperation(value = "Endpoint for Insights controller to download csv file")
