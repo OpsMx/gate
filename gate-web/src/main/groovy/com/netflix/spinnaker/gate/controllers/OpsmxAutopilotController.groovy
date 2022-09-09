@@ -361,7 +361,7 @@ class OpsmxAutopilotController {
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
-  Object getAutoResponse5(@PathVariable("type") String type,
+  Object getAutoResponse11(@PathVariable("type") String type,
                           @PathVariable("source") String source,
                           @PathVariable("source1") String source1,
                           @PathVariable("source2") String source2,
@@ -373,23 +373,23 @@ class OpsmxAutopilotController {
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
-  Object getAutoResponse5(@PathVariable("type") String type,
+  Object getAutoResponse12(@PathVariable("type") String type,
                           @PathVariable("source") String source,
                           @PathVariable("source1") String source1,
                           @PathVariable("source2") String source2,
                           @RequestParam(value = "templateType") String templateType) {
-    return opsmxAutopilotService.getAutoResponse11(type, source, source1, source2, templateType)
+    return opsmxAutopilotService.getAutoResponse12(type, source, source1, source2, templateType)
   }
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
-  Object getAutoResponse5(@PathVariable("type") String type,
+  Object getAutoResponse13(@PathVariable("type") String type,
                           @PathVariable("source") String source,
                           @PathVariable("source1") String source1,
                           @PathVariable("source2") String source2,
                           @RequestParam(value = "templateType") String templateType,
                            @RequestParam(value = "isFindAllVersions", required = false) String isFindAllVersions) {
-    return opsmxAutopilotService.getAutoResponse11(type, source, source1, source2, templateType,  isFindAllVersions)
+    return opsmxAutopilotService.getAutoResponse13(type, source, source1, source2, templateType,  isFindAllVersions)
   }
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
@@ -462,7 +462,7 @@ class OpsmxAutopilotController {
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.DELETE)
-  Object deleteAutoResponse4(@PathVariable("type") String type,
+  Object deleteAutoResponse7(@PathVariable("type") String type,
                              @PathVariable("source") String source,
                              @PathVariable("source1") String source1,
                              @PathVariable("source2")String source2,
@@ -470,7 +470,7 @@ class OpsmxAutopilotController {
                              @RequestParam(value = "templateName") String templateName,
                              @RequestParam(value = "versionNo", required = false) String versionNo) {
 
-    return opsmxAutopilotService.deleteAutoResponse4(type, source, source1, source2, templateType, templateName, versionNo)
+    return opsmxAutopilotService.deleteAutoResponse7(type, source, source1, source2, templateType, templateName, versionNo)
   }
 
 
