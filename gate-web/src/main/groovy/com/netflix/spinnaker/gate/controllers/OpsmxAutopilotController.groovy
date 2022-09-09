@@ -377,19 +377,10 @@ class OpsmxAutopilotController {
                           @PathVariable("source") String source,
                           @PathVariable("source1") String source1,
                           @PathVariable("source2") String source2,
-                          @RequestParam(value = "templateType") String templateType) {
-    return opsmxAutopilotService.getAutoResponse12(type, source, source1, source2, templateType)
-  }
-
-  @ApiOperation(value = "Endpoint for autopilot rest services")
-  @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
-  Object getAutoResponse13(@PathVariable("type") String type,
-                          @PathVariable("source") String source,
-                          @PathVariable("source1") String source1,
-                          @PathVariable("source2") String source2,
                           @RequestParam(value = "templateType") String templateType,
                            @RequestParam(value = "isFindAllVersions", required = false) String isFindAllVersions) {
-    return opsmxAutopilotService.getAutoResponse13(type, source, source1, source2, templateType,  isFindAllVersions)
+
+    return opsmxAutopilotService.getAutoResponse12(type, source, source1, source2, templateType)
   }
 
   @ApiOperation(value = "Endpoint for autopilot rest services")

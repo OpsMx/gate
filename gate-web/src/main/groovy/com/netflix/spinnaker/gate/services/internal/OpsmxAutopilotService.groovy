@@ -187,6 +187,25 @@ interface OpsmxAutopilotService {
                            @Query("canaryIds") String canaryIds,
                            @Query("gateIds") String gateIds)
 
+
+  @GET("/autopilot/{type}/{source}/{source1}/{source2}")
+  Object getAutoResponse12(@Path('type') String type,
+                           @Path('source') String source,
+                           @Path('source1') String source1,
+                           @Path('source2') String source2,
+                           @Query("templateType") String templateType,
+                           @Query("templateName") String templateName,
+                           @Query("isFindAllVersions") String isFindAllVersions)
+
+
+  @GET("/autopilot/{type}/{source}/{source1}/{source2}")
+  Object getAutoResponse11(@Path('type') String type,
+                           @Path('source') String source,
+                           @Path('source1') String source1,
+                           @Path('source2') String source2,
+                           @Query("templateType") String templateType,
+                           @Query("versionNo") String versionNo)
+
   @DELETE("/autopilot/{type}")
   Object deleteAutoResponse1(@Path('type') String type)
 
@@ -229,6 +248,17 @@ interface OpsmxAutopilotService {
                              @Path('source2') String source2,
                              @Path('source3') String source3,
                              @Path('source4') String source4)
+
+
+  @DELETE("/autopilot/{type}/{source}")
+  Object deleteAutoResponse7(@Path('type') String type,
+                             @Path('source') String source,
+                             @Path('source1') String source1,
+                             @Path('source2') String source2,
+                            @Query("applicationId") Integer applicationId,
+                            @Query("templateType") String templateType,
+                            @Query("templateName") String templateName,
+                            @Query("versionNo") String versionNo)
 
   @POST("/autopilot/{type}")
   Object postAutoResponse(@Path('type') String type,
