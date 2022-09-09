@@ -364,7 +364,7 @@ class OpsmxAutopilotController {
   Object getAutoResponse11(@RequestParam(value = "templateType") String templateType,
                           @RequestParam(value = "templateName") String templateName,
                           @RequestParam(value = "versionNo", required = false) String versionNo) {
-    return opsmxAutopilotService.getAutoResponse11(type, source, source1, source2, templateType, templateName, versionNo)
+    return opsmxAutopilotService.getAutoResponse11(templateType, templateName, versionNo)
   }
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
@@ -372,7 +372,7 @@ class OpsmxAutopilotController {
   Object getAutoResponse12(@RequestParam(value = "templateType") String templateType,
                            @RequestParam(value = "isFindAllVersions", required = false) String isFindAllVersions) {
 
-    return opsmxAutopilotService.getAutoResponse12(type, source, source1, source2, templateType)
+    return opsmxAutopilotService.getAutoResponse12( templateType, isFindAllVersions)
   }
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
@@ -449,7 +449,7 @@ class OpsmxAutopilotController {
                              @RequestParam(value = "templateName") String templateName,
                              @RequestParam(value = "versionNo", required = false) String versionNo) {
 
-    return opsmxAutopilotService.deleteAutoResponse7(type, source, source1, source2, templateType, templateName, versionNo)
+    return opsmxAutopilotService.deleteAutoResponse7( templateType, templateName, versionNo)
   }
 
 
