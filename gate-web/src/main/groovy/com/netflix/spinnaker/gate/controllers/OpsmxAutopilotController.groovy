@@ -369,11 +369,20 @@ class OpsmxAutopilotController {
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/api/v5/global/templates", method = RequestMethod.GET)
-  Object getAutoResponse12(@RequestParam(value = "templateType") String templateType,
-                           @RequestParam(value = "isFindAllVersions", required = false) String isFindAllVersions) {
-
-    return opsmxAutopilotService.getAutoResponse12( templateType, isFindAllVersions)
+  Object getAutoResponse12(@RequestParam(value = "templateType", required = false) String templateType,
+                           @RequestParam(value = "isFindAllVersions", required = false) String isFindAllVersions,
+                           @RequestParam(value = "search", required = false) String search,
+                           @RequestParam(value = "sort", required = false) String sort,
+                           @RequestParam(value = "size", required = false)Integer size,
+                           @RequestParam(value = "sortBy", required = false) String sortBy,
+                           @RequestParam(value = "noOfDays", required = false) String days,
+                           @RequestParam(value = "pageNo", required = false) Integer page,
+                           @RequestParam(value = "pageLimit", required = false) Integer pageLimit) {
+    return opsmxAutopilotService.getAutoResponse12( templateType, isFindAllVersions, search, sort, size, sortBy, days, page, pageLimit)
   }
+
+
+
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/{type}", method = RequestMethod.DELETE)
