@@ -376,9 +376,8 @@ class OpsmxAutopilotController {
                            @RequestParam(value = "size", required = false)Integer size,
                            @RequestParam(value = "sortBy", required = false) String sortBy,
                            @RequestParam(value = "noOfDays", required = false) String days,
-                           @RequestParam(value = "pageNo", required = false) Integer page,
-                           @RequestParam(value = "pageLimit", required = false) Integer pageLimit) {
-    return opsmxAutopilotService.getAutoResponse12( templateType, isFindAllVersions, search, sort, size, sortBy, days, page, pageLimit)
+                           @RequestParam(value = "pageNo", required = false) Integer page) {
+    return opsmxAutopilotService.getAutoResponse12( templateType, isFindAllVersions, search, sort, size, sortBy, days, page)
   }
 
 

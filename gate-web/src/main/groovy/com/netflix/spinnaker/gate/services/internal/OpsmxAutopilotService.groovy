@@ -203,8 +203,7 @@ interface OpsmxAutopilotService {
                            @Query( "size")Integer size,
                            @Query( "sortBy") String sortBy,
                            @Query( "noOfDays") String days,
-                           @Query( "pageNo") Integer page,
-                           @Query("pageLimit") Integer pageLimit)
+                           @Query( "pageNo") Integer page)
 
   @DELETE("/autopilot/{type}")
   Object deleteAutoResponse1(@Path('type') String type)
