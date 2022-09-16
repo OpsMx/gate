@@ -204,7 +204,8 @@ interface OpsmxPlatformService {
                                  @Body Object data)
 
   @GET("/platformservice/{version}/argo/sampleTemplate")
-  Response downloadSampleTemplate(@Query(value = "file") String file)
+  Response downloadSampleTemplate(@Path('version') String version,
+                                  @Query(value = "file") String file)
 
 
 
