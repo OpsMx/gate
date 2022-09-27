@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import retrofit.client.Response
 import retrofit.http.*
 
+import javax.servlet.http.HttpServletRequest
+
 interface OpsmxAutopilotService {
 
   @GET("/autopilot/canaries/debugLogsData")
@@ -38,7 +40,7 @@ interface OpsmxAutopilotService {
                                @Query("testCaseId") Integer testCaseId)
 
   @POST("/autopilot/api/{version}/registerCanary")
-  Response triggerRegisterCanary(@Path('version') String version, @Body Object data,@Header('x-spinnaker-user') String xSpinnakerUser)
+  Response triggerRegisterCanary(@Path('version') String version, @Body Object data, @Header('x-spinnaker-user') String xSpinnakerUser, HttpServletRequest request)
 
   @GET("/autopilot/{type}/{source}")
   Object getAutoResponse(@Path('type') String type,

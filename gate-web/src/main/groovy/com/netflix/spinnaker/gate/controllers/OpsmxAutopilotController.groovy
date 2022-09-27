@@ -150,39 +150,39 @@ class OpsmxAutopilotController {
   Object triggerRegisterCanary(@PathVariable("version") String version, @RequestBody(required = false) Object data,
                                @RequestHeader(value = "x-spinnaker-user",required = false) String xSpinnakerUser, HttpServletRequest request) throws Exception {
 
-//    if (applicationFeatureRbac!=null){
-//      applicationFeatureRbac.authorizeUserForVerificationAndTestVerificationGateTrigger(request, data)
-//    }
+    if (applicationFeatureRbac!=null){
+      applicationFeatureRbac.authorizeUserForVerificationAndTestVerificationGateTrigger(request, data)
+    }
 
     log.info("triggerRegisterCanary custom headers X-SOURCE-TYPE : {}", request.getHeader("X-SOURCE-TYPE"))
     log.info("triggerRegisterCanary custom headers X-SOURCE-NAME : {}", request.getHeader("X-SOURCE-NAME"))
 
-//    Response response = opsmxAutopilotService.triggerRegisterCanary(version, data,xSpinnakerUser)
-//    InputStream inputStream = null
-//
-//    try {
-//      HttpHeaders headers = new HttpHeaders()
-//      List<Header> locationHeaders = response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Location") }).collect(Collectors.toList())
-//      if (locationHeaders!=null && !locationHeaders.isEmpty()){
-//        headers.add("Location", locationHeaders.get(0).value)
-//      }
-//
-//      inputStream = response.getBody().in()
-//      String responseBody = new String(IOUtils.toByteArray(inputStream))
-//      try {
-//        RegisterCanaryResponseModel registerCanaryResponseModel = gson.fromJson(responseBody, RegisterCanaryResponseModel.class)
-//        return new ResponseEntity(registerCanaryResponseModel, headers, HttpStatus.valueOf(response.getStatus()))
-//      }catch(JsonSyntaxException jse){
-//        log.error("JSON parsing failed and hence passing the String value : {}", jse.getMessage())
-//      }
-//
-//      return new ResponseEntity(responseBody, headers, HttpStatus.valueOf(response.getStatus()))
-//
-//    } finally{
-//      if (inputStream!=null){
-//        inputStream.close()
-//      }
-//    }
+    Response response = opsmxAutopilotService.triggerRegisterCanary(version, data,xSpinnakerUser, request)
+    InputStream inputStream = null
+
+    try {
+      HttpHeaders headers = new HttpHeaders()
+      List<Header> locationHeaders = response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Location") }).collect(Collectors.toList())
+      if (locationHeaders!=null && !locationHeaders.isEmpty()){
+        headers.add("Location", locationHeaders.get(0).value)
+      }
+
+      inputStream = response.getBody().in()
+      String responseBody = new String(IOUtils.toByteArray(inputStream))
+      try {
+        RegisterCanaryResponseModel registerCanaryResponseModel = gson.fromJson(responseBody, RegisterCanaryResponseModel.class)
+        return new ResponseEntity(registerCanaryResponseModel, headers, HttpStatus.valueOf(response.getStatus()))
+      }catch(JsonSyntaxException jse){
+        log.error("JSON parsing failed and hence passing the String value : {}", jse.getMessage())
+      }
+
+      return new ResponseEntity(responseBody, headers, HttpStatus.valueOf(response.getStatus()))
+
+    } finally{
+      if (inputStream!=null){
+        inputStream.close()
+      }
+    }
   }
 
 
