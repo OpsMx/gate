@@ -198,6 +198,7 @@ public class ApplicationFeatureRbac {
                         null,
                         null,
                         null,
+                        null,
                         username)
                     .getBody()
                     .get("isEnabled"));
@@ -221,6 +222,7 @@ public class ApplicationFeatureRbac {
                         username,
                         PermissionEnum.edit.name(),
                         serviceId,
+                        null,
                         null,
                         null,
                         null,
@@ -286,6 +288,7 @@ public class ApplicationFeatureRbac {
                         null,
                         null,
                         null,
+                        null,
                         username)
                     .getBody()
                     .get("isEnabled"));
@@ -310,6 +313,7 @@ public class ApplicationFeatureRbac {
                         PermissionEnum.edit.name(),
                         null,
                         pipelineId,
+                        null,
                         null,
                         null,
                         null,
@@ -376,6 +380,7 @@ public class ApplicationFeatureRbac {
                         null,
                         null,
                         null,
+                        null,
                         username)
                     .getBody()
                     .get("isEnabled"));
@@ -401,6 +406,7 @@ public class ApplicationFeatureRbac {
                         null,
                         null,
                         gateId,
+                        null,
                         null,
                         null,
                         null,
@@ -470,6 +476,7 @@ public class ApplicationFeatureRbac {
                         null,
                         null,
                         null,
+                        null,
                         username)
                     .getBody()
                     .get("isEnabled"));
@@ -497,6 +504,7 @@ public class ApplicationFeatureRbac {
                         null,
                         null,
                         approvalGateId,
+                        null,
                         null,
                         null,
                         null,
@@ -559,6 +567,7 @@ public class ApplicationFeatureRbac {
                         null,
                         null,
                         null,
+                        null,
                         username)
                     .getBody()
                     .get("isEnabled"));
@@ -589,6 +598,7 @@ public class ApplicationFeatureRbac {
                         null,
                         null,
                         approvalGateInstanceId,
+                        null,
                         null,
                         null,
                         null,
@@ -650,6 +660,7 @@ public class ApplicationFeatureRbac {
                         approvalPolicyId,
                         null,
                         null,
+                        null,
                         username)
                     .getBody()
                     .get("isEnabled"));
@@ -681,6 +692,7 @@ public class ApplicationFeatureRbac {
                         null,
                         null,
                         approvalPolicyId,
+                        null,
                         null,
                         null,
                         username)
@@ -754,6 +766,7 @@ public class ApplicationFeatureRbac {
                     null,
                     null,
                     null,
+                    null,
                     username)
                 .getBody()
                 .get("isEnabled"));
@@ -802,6 +815,7 @@ public class ApplicationFeatureRbac {
                     null,
                     appName,
                     null,
+                    null,
                     username)
                 .getBody()
                 .get("isEnabled"));
@@ -826,6 +840,7 @@ public class ApplicationFeatureRbac {
     JsonObject inputJson = gson.fromJson(inputStr, JsonObject.class);
     String appName = null;
     String sourceName = null;
+    String sourceType = null;
 
     if (inputJson.has("application")) {
       appName = inputJson.get("application").getAsString();
@@ -833,6 +848,9 @@ public class ApplicationFeatureRbac {
 
     if (inputJson.has("sourceName")) {
       sourceName = inputJson.get("sourceName").getAsString();
+    }
+    if (inputJson.has("sourceType")) {
+      sourceType = inputJson.get("sourceType").getAsString();
     }
 
     Boolean isAuthorized;
@@ -853,6 +871,7 @@ public class ApplicationFeatureRbac {
                     null,
                     appName,
                     sourceName,
+                    sourceType,
                     username)
                 .getBody()
                 .get("isEnabled"));
