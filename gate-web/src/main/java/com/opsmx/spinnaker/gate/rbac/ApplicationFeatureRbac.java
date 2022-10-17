@@ -811,9 +811,14 @@ public class ApplicationFeatureRbac {
     String inputStr = gson.toJson(input);
     JsonObject inputJson = gson.fromJson(inputStr, JsonObject.class);
     String appName = null;
+    String sourceName = null;
 
     if (inputJson.has("application")) {
       appName = inputJson.get("application").getAsString();
+    }
+
+    if (inputJson.has("sourceName")) {
+      sourceName = inputJson.get("sourceName").getAsString();
     }
 
     Boolean isAuthorized;
@@ -833,6 +838,7 @@ public class ApplicationFeatureRbac {
                     null,
                     null,
                     appName,
+                    sourceName,
                     username)
                 .getBody()
                 .get("isEnabled"));
