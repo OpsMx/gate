@@ -291,7 +291,7 @@ class OpsmxAutopilotController {
                           @RequestParam(value = "verificationType", required = false) String verificationType,
                           @RequestParam(value = "permissionId", required = false) String permissionId,
                           @RequestParam(value = "templateName", required = false) String templateName,
-                          @RequestParam(value = "sha1") String sha1Key) {
+                          @RequestParam(value = "sha1", required = false) String sha1Key) {
     return opsmxAutopilotService.getAutoResponse5(type, source, source1, source2, canaryId, verificationType, permissionId, templateName, sha1Key)
   }
 
@@ -524,13 +524,13 @@ class OpsmxAutopilotController {
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.POST)
   Object postAutoResponse5(@PathVariable("type") String type,
-                          @PathVariable("source") String source,
-                          @PathVariable("source1") String source1,
-                          @PathVariable("source2") String source2,
+                           @PathVariable("source") String source,
+                           @PathVariable("source1") String source1,
+                           @PathVariable("source2") String source2,
                            @RequestParam(value = "isEdit", required = false) Boolean isEdit,
-                          @RequestBody(required = false) Object data) {
-
-    return opsmxAutopilotService.postAutoResponse5(type, source, source1, source2, isEdit, data)
+                           @RequestParam(value = "sha1", required = false) String sha1Key,
+                           @RequestBody(required = false) Object data) {
+    return opsmxAutopilotService.postAutoResponse5(type, source, source1, source2, isEdit, sha1Key, data)
   }
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
