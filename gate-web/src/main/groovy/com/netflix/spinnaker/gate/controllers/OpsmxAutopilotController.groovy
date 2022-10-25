@@ -289,8 +289,10 @@ class OpsmxAutopilotController {
                           @PathVariable("source2") String source2,
                           @RequestParam(value = "canaryId", required = false) Integer canaryId,
                           @RequestParam(value = "verificationType", required = false) String verificationType,
-                          @RequestParam(value = "permissionId", required = false) String permissionId) {
-    return opsmxAutopilotService.getAutoResponse5(type, source, source1, source2, canaryId, verificationType, permissionId)
+                          @RequestParam(value = "permissionId", required = false) String permissionId,
+                          @RequestParam(value = "templateName", required = false) String templateName,
+                          @RequestParam(value = "sha1") String sha1Key) {
+    return opsmxAutopilotService.getAutoResponse5(type, source, source1, source2, canaryId, verificationType, permissionId, templateName, sha1Key)
   }
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
