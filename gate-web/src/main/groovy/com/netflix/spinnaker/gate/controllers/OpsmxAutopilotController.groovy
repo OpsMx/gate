@@ -291,7 +291,7 @@ class OpsmxAutopilotController {
                           @RequestParam(value = "verificationType", required = false) String verificationType,
                           @RequestParam(value = "permissionId", required = false) String permissionId,
                           @RequestParam(value = "templateName", required = false) String templateName,
-                          @RequestParam("templateType") String templateType,
+                          @RequestParam(value = "templateType", required = false) String templateType,
                           @RequestParam(value = "sha1", required = false) String sha1Key) {
     return opsmxAutopilotService.getAutoResponse5(type, source, source1, source2, canaryId, verificationType, permissionId, templateName, templateType, sha1Key)
   }
