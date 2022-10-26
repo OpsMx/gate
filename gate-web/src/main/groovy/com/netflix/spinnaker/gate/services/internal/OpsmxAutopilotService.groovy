@@ -136,6 +136,7 @@ interface OpsmxAutopilotService {
                           @Query("verificationType") String verificationType,
                           @Query("permissionId") String permissionId,
                           @Query("templateName") String templateName,
+                          @Query("templateType") String templateType,
                           @Query("sha1") String sha1)
 
   @GET("/autopilot/{type}/{source}/{source1}/{source2}/{source3}")
@@ -300,6 +301,7 @@ interface OpsmxAutopilotService {
                            @Path('source2') String source2,
                            @Query("isEdit") Boolean isEdit,
                            @Query("sha1") String sha1,
+                           @Query("templateType") String templateType,
                            @Body Object data)
 
   @POST("/autopilot/{type}/{source}/{source1}/{source2}/{source3}")
