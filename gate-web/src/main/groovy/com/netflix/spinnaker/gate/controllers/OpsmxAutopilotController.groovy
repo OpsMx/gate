@@ -530,7 +530,7 @@ class OpsmxAutopilotController {
                            @PathVariable("source2") String source2,
                            @RequestParam(value = "isEdit", required = false) Boolean isEdit,
                            @RequestParam(value = "sha1", required = false) String sha1Key,
-                           @RequestParam("templateType") String templateType,
+                           @RequestParam(value = "templateType", required = false) String templateType,
                            @RequestBody(required = false) Object data) {
     return opsmxAutopilotService.postAutoResponse5(type, source, source1, source2, isEdit, sha1Key, templateType, data)
   }
