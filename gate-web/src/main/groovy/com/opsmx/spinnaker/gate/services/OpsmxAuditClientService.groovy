@@ -62,7 +62,7 @@ interface OpsmxAuditClientService {
                                  @Query("pageLimit") Integer pageLimit,
                                  @Query("noOfDays") String noOfDays,
                                  @Query("search") String search,
-                                 @Query("sort") String sort,
+                                 @Query("sortOrder") String sortOrder,
                                  @Query("sortBy") String sortBy)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}/{source2}")
