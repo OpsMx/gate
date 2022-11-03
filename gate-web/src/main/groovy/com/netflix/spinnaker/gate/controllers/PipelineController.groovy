@@ -255,6 +255,8 @@ class PipelineController {
   HttpEntity invokePipelineConfigViaEcho(@PathVariable("application") String application,
                                          @PathVariable("pipelineNameOrId") String pipelineNameOrId,
                                          @RequestBody(required = false) Map trigger) {
+    log.info("****************** start of the pipeline execution********")
+    log.info("Unable to trigger pipeline (application: {}, pipelineId: {})",value("application", application), value("pipelineId", pipelineNameOrId))
     trigger = trigger ?: [:]
     AuthenticatedRequest.setApplication(application)
     try {
@@ -265,6 +267,7 @@ class PipelineController {
         value("application", application), value("pipelineId", pipelineNameOrId), e)
       throw e
     }
+    log.info("****************** end of the pipeline execution********")
   }
 
   @ApiOperation(value = "Evaluate a pipeline expression using the provided execution as context", response = HashMap.class)
