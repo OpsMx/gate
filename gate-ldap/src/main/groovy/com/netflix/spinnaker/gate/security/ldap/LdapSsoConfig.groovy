@@ -130,6 +130,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
       http.formLogin()
       authConfig.configure(http)
       http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter)
+      http.addFilterBefore(new TokenAuthFilter(), BasicAuthenticationFilter)
     }
     else if (loginProps.mode !=null && loginProps.mode.equalsIgnoreCase("token")) {
       authConfig.jwtconfigure(http)

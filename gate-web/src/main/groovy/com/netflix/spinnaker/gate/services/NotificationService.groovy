@@ -67,7 +67,7 @@ class NotificationService {
     this.echoEndpoint = serviceConfiguration.getServiceEndpoint("echo")
     this.keelEndpoint = serviceConfiguration.getServiceEndpoint("keel")
     this.echoOkHttpClient =  okHttpClientProvider.getClient(new DefaultServiceEndpoint("echo", echoEndpoint.url))
-    this.keelOkHttpClient =  okHttpClientProvider.getClient(new DefaultServiceEndpoint("keel", keelEndpoint.url))
+    this.keelOkHttpClient =  okHttpClientProvider.getClient(new DefaultServiceEndpoint("echo", echoEndpoint.url))
   }
 
   Map getNotificationConfigs(String type, String app) {

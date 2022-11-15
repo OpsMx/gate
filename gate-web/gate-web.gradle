@@ -6,7 +6,7 @@ ext {
 }
 
 run {
-  systemProperty('spring.config.additional-location', project.springConfigLocation)
+  systemProperty('spring.config.additional-location', '/home/rahul/Documents/codebase/gate/gate-web/config/gate.yml')
   systemProperty('spring.profiles.active', project.springProfiles)
 }
 mainClassName = 'com.netflix.spinnaker.gate.Main'

@@ -44,7 +44,6 @@ class Main {
     'netflix.environment': 'test',
     'netflix.account': '${netflix.environment}',
     'netflix.stack': 'test',
-    'spring.config.additional-location': '${user.home}/.spinnaker/',
     'spring.application.name': 'gate',
     'spring.config.name': 'spinnaker,${spring.application.name}',
     'spring.profiles.active': '${netflix.environment},local'
