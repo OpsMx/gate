@@ -145,6 +145,7 @@ class AuthConfig {
         .antMatchers(HttpMethod.GET,'/autopilot/api/v1/getClusterTags').permitAll()
         .antMatchers(HttpMethod.GET,'/autopilot/logs/getDataSourceResponseKeys').permitAll()
         .antMatchers(HttpMethod.GET,'/autopilot/logs/updateFeedbackLogTemplate').permitAll()
+        .antMatchers(HttpMethod.GET,'/platformservice/v1/users/{username}/verifications/applications').permitAll()
         // End of report page APIs
         .antMatchers(HttpMethod.POST,'/visibilityservice/v1/approvalGates/{id}/trigger').permitAll()
         .antMatchers(HttpMethod.POST,'/visibilityservice/v2/approvalGates/{id}/trigger').permitAll()
@@ -229,6 +230,7 @@ class AuthConfig {
         .antMatchers(HttpMethod.GET,'/autopilot/api/v1/getClusterTags').permitAll()
         .antMatchers(HttpMethod.GET,'/autopilot/logs/getDataSourceResponseKeys').permitAll()
         .antMatchers(HttpMethod.GET,'/autopilot/logs/updateFeedbackLogTemplate').permitAll()
+        .antMatchers(HttpMethod.GET,'/platformservice/v1/users/{username}/verifications/applications').permitAll()
          // End of report page APIs
         .antMatchers(HttpMethod.POST,'/visibilityservice/v1/approvalGates/{id}/trigger').permitAll()
         .antMatchers(HttpMethod.POST,'/visibilityservice/v2/approvalGates/{id}/trigger').permitAll()
@@ -312,6 +314,7 @@ class AuthConfig {
         .antMatchers(HttpMethod.GET,'/autopilot/api/v1/getClusterTags').permitAll()
         .antMatchers(HttpMethod.GET,'/autopilot/logs/getDataSourceResponseKeys').permitAll()
         .antMatchers(HttpMethod.GET,'/autopilot/logs/updateFeedbackLogTemplate').permitAll()
+        .antMatchers(HttpMethod.GET,'/platformservice/v1/users/{username}/verifications/applications').permitAll()
          // End of report page APIs
         .antMatchers(HttpMethod.POST,'/visibilityservice/v1/approvalGates/{id}/trigger').permitAll()
         .antMatchers(HttpMethod.POST,'/visibilityservice/v2/approvalGates/{id}/trigger').permitAll()
@@ -386,6 +389,7 @@ class AuthConfig {
         .antMatchers(HttpMethod.GET,'/autopilot/api/v1/getClusterTags').permitAll()
         .antMatchers(HttpMethod.GET,'/autopilot/logs/getDataSourceResponseKeys').permitAll()
         .antMatchers(HttpMethod.GET,'/autopilot/logs/updateFeedbackLogTemplate').permitAll()
+        .antMatchers(HttpMethod.GET,'/platformservice/v1/users/{username}/verifications/applications').permitAll()
          // End of report page APIs
         .antMatchers(HttpMethod.POST,'/visibilityservice/v1/approvalGates/{id}/trigger').permitAll()
         .antMatchers(HttpMethod.POST,'/visibilityservice/v2/approvalGates/{id}/trigger').permitAll()
@@ -485,6 +489,7 @@ class AuthConfig {
          .antMatchers(HttpMethod.GET,'/autopilot/api/v1/getClusterTags').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/logs/getDataSourceResponseKeys').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/logs/updateFeedbackLogTemplate').permitAll()
+         .antMatchers(HttpMethod.GET,'/platformservice/v1/users/{username}/verifications/applications').permitAll()
           // End of report page APIs
          .antMatchers(HttpMethod.GET,'/autopilot/api/v2/autopilot/canaries/{id}').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/api/v1/autopilot/canaries/{id}').permitAll()
@@ -567,6 +572,7 @@ class AuthConfig {
          .antMatchers(HttpMethod.GET,'/autopilot/api/v1/getClusterTags').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/logs/getDataSourceResponseKeys').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/logs/updateFeedbackLogTemplate').permitAll()
+         .antMatchers(HttpMethod.GET,'/platformservice/v1/users/{username}/verifications/applications').permitAll()
           // End of report page APIs
          .antMatchers(HttpMethod.GET,'/autopilot/api/v2/autopilot/canaries/{id}').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/api/v1/autopilot/canaries/{id}').permitAll()
@@ -648,6 +654,7 @@ class AuthConfig {
          .antMatchers(HttpMethod.GET,'/autopilot/api/v1/getClusterTags').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/logs/getDataSourceResponseKeys').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/logs/updateFeedbackLogTemplate').permitAll()
+         .antMatchers(HttpMethod.GET,'/platformservice/v1/users/{username}/verifications/applications').permitAll()
           // End of report page APIs
          .antMatchers(HttpMethod.GET,'/autopilot/api/v2/autopilot/canaries/{id}').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/api/v1/autopilot/canaries/{id}').permitAll()
@@ -720,6 +727,7 @@ class AuthConfig {
          .antMatchers(HttpMethod.GET,'/autopilot/api/v1/getClusterTags').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/logs/getDataSourceResponseKeys').permitAll()
          .antMatchers(HttpMethod.GET,'/autopilot/logs/updateFeedbackLogTemplate').permitAll()
+         .antMatchers(HttpMethod.GET,'/platformservice/v1/users/{username}/verifications/applications').permitAll()
           // End of report page APIs
          .antMatchers(HttpMethod.POST,'/visibilityservice/v1/approvalGates/{id}/trigger').permitAll()
          .antMatchers(HttpMethod.POST,'/visibilityservice/v2/approvalGates/{id}/trigger').permitAll()
