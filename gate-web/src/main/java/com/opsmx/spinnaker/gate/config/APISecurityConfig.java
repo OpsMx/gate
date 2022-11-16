@@ -34,23 +34,26 @@ import org.springframework.security.core.AuthenticationException;
 @Order(1)
 public class APISecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Value("${auth.token.header}")
+  @Value("${auth.token.principal.header}")
   private String principalRequestHeader;
 
-  @Value("${auth.token.value}")
-  private String principalRequestValue;
+  @Value("${auth.token.credential.header}")
+  private String credentialRequestHeader;
+
+  @Value("${auth.token.credential.value}")
+  private String credentialRequestValue;
 
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
-    APIKeyAuthFilter filter = new APIKeyAuthFilter(principalRequestHeader);
+    APIKeyAuthFilter filter = new APIKeyAuthFilter(principalRequestHeader, credentialRequestHeader);
     filter.setAuthenticationManager(
         new AuthenticationManager() {
 
           @Override
           public Authentication authenticate(Authentication authentication)
               throws AuthenticationException {
-            String principal = (String) authentication.getPrincipal();
-            if (!principalRequestValue.equals(principal)) {
+            String credentials = (String) authentication.getCredentials();
+            if (!credentialRequestValue.equals(credentials)) {
               throw new BadCredentialsException(
                   "The API key was not found or not the expected value.");
             }
@@ -59,7 +62,7 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
           }
         });
     httpSecurity
-        .antMatcher("")
+        .antMatcher("/autopilot/api/v2/applications/getApplicationHealth")
         .csrf()
         .disable()
         .sessionManagement()

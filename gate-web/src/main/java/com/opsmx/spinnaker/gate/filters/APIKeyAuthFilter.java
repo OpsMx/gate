@@ -22,9 +22,11 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 public class APIKeyAuthFilter extends AbstractPreAuthenticatedProcessingFilter {
 
   private String principalRequestHeader;
+  private String credentialRequestHeader;
 
-  public APIKeyAuthFilter(String principalRequestHeader) {
+  public APIKeyAuthFilter(String principalRequestHeader, String credentialRequestHeader) {
     this.principalRequestHeader = principalRequestHeader;
+    this.credentialRequestHeader = credentialRequestHeader;
   }
 
   @Override
@@ -34,6 +36,6 @@ public class APIKeyAuthFilter extends AbstractPreAuthenticatedProcessingFilter {
 
   @Override
   protected Object getPreAuthenticatedCredentials(HttpServletRequest request) {
-    return "N/A";
+    return request.getHeader(credentialRequestHeader);
   }
 }
