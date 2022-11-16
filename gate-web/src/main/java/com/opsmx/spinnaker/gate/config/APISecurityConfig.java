@@ -15,6 +15,7 @@ package com.opsmx.spinnaker.gate.config; /*
                                           */
 
 import com.opsmx.spinnaker.gate.filters.APIKeyAuthFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,11 +32,11 @@ import org.springframework.security.core.AuthenticationException;
 @Order(1)
 public class APISecurityConfig extends WebSecurityConfigurerAdapter {
 
-  //  @Value("${yourapp.http.auth-token-header-name}")
-  private String principalRequestHeader = "OPSMX_TOKEN";
+  @Value("${auth.token.header}")
+  private String principalRequestHeader;
 
-  //  @Value("${yourapp.http.auth-token}")
-  private String principalRequestValue = "topsecret";
+  @Value("${auth.token.value}")
+  private String principalRequestValue;
 
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
