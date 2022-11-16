@@ -17,6 +17,7 @@
 package com.opsmx.spinnaker.gate.config;
 
 import com.opsmx.spinnaker.gate.filters.APIKeyAuthFilter;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -28,6 +29,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -46,6 +48,7 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
     APIKeyAuthFilter filter = new APIKeyAuthFilter(principalRequestHeader, credentialRequestHeader);
+    filter.setRequiresAuthenticationRequestMatcher(new AuthHeaderCheckingRequestMatcher());
     filter.setAuthenticationManager(
         new AuthenticationManager() {
 
@@ -72,5 +75,14 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .anyRequest()
         .authenticated();
+  }
+
+  private class AuthHeaderCheckingRequestMatcher implements RequestMatcher {
+
+    @Override
+    public boolean matches(HttpServletRequest request) {
+      String header = request.getHeader(principalRequestHeader);
+      return header != null;
+    }
   }
 }
