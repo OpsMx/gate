@@ -106,24 +106,27 @@ class OpsmxPlatformController {
                               @RequestParam(value = "agentName", required = false) String agentName,
                               @RequestParam(value = "cdName", required = false) String cdName,
                               @RequestParam(value = "datasourceType", required = false) String datasourceType,
-                              @RequestParam(value = "permissionId", required = false) String permissionId, HttpServletRequest httpServletRequest) {
+                              @RequestParam(value = "permissionId", required = false) String permissionId, HttpServletRequest httpServletRequest,
+                              @RequestHeader(value = "x-spinnaker-user",required = false) String xSpinnakerUser) {
 
     String path = httpServletRequest.getRequestURI()
     if (CacheUtil.isRegisteredCachingEndpoint(path)) {
-      return handleCaching(path, httpServletRequest, version, type, source, source1, agentName, cdName, datasourceType, permissionId)
+      return handleCaching(path, httpServletRequest, version, type, source, source1, agentName, cdName, datasourceType, permissionId, xSpinnakerUser)
     } else {
-      return opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId)
+      return opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId, xSpinnakerUser)
     }
   }
 
-  private Object handleCaching(String path, HttpServletRequest httpServletRequest, String version, String type, String source, String source1, String agentName, String cdName, String datasourceType, String permissionId) {
+  private Object handleCaching(String path, HttpServletRequest httpServletRequest, String version, String type,
+                               String source, String source1, String agentName, String cdName, String datasourceType,
+                               String permissionId, String xSpinnakerUser) {
     Object response
     PlatformCachingService platformCachingService = platformCachingServiceBeanFactory.getBean(path)
 
     String userName = httpServletRequest.getUserPrincipal().getName()
     response = platformCachingService.fetchResponseFromCache(userName)
     if (response == null) {
-      response = opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId)
+      response = opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId, xSpinnakerUser)
       platformCachingService.cacheResponse(response, userName)
     }
     return response
@@ -139,9 +142,10 @@ class OpsmxPlatformController {
                               @RequestParam(value = "permissionId", required = false) String permissionId,
                               @RequestParam(value = "resourceType", required = false) String resourceType,
                               @RequestParam(value = "featureType", required = false) String featureType,
-                              @RequestParam(value = "sourceName", required = false) String sourceName) {
+                              @RequestParam(value = "sourceName", required = false) String sourceName,
+                              @RequestHeader(value = "x-spinnaker-user",required = false) String xSpinnakerUser) {
 
-    return opsmxPlatformService.getPlatformResponse5(version, type, source, source1, source2, permissionId, resourceType,featureType,sourceName)
+    return opsmxPlatformService.getPlatformResponse5(version, type, source, source1, source2, permissionId, resourceType,featureType,sourceName, xSpinnakerUser)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
