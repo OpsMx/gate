@@ -143,9 +143,10 @@ class OpsmxDashboardController {
                                @RequestParam(value = "pageLimit", required = false) Integer pageLimit,
                                @RequestParam(value = "sortBy", required = false) String sortBy,
                                @RequestParam(value = "sortOrder", required = false) String sortOrder,
-                               @RequestParam(value = "noOfDays", required = false) Integer noOfDays) {
+                               @RequestParam(value = "noOfDays", required = false) Integer noOfDays,
+                               @RequestHeader(value = "x-spinnaker-user",required = false) String xSpinnakerUser) {
 
-    return opsmxDashboardService.getDashboardResponse5(version, type, source, source1, source2, pageNo, pageLimit, sortBy, sortOrder, noOfDays)
+    return opsmxDashboardService.getDashboardResponse5(version, type, source, source1, source2, pageNo, pageLimit, sortBy, sortOrder, noOfDays, xSpinnakerUser)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
