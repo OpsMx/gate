@@ -21,10 +21,14 @@ import com.netflix.spinnaker.gate.security.AllowedAccountsSupport
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.security.ldap.APIKeyAuthFilter
+import com.opsmx.spinnaker.gate.security.ldap.APIKeyAuthenticationManager
+import com.opsmx.spinnaker.gate.security.ldap.RequestPathAndKeyMatcher
 import groovy.util.logging.Slf4j
 import com.opsmx.spinnaker.gate.security.ldap.RetryOnExceptionAuthManager
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -33,11 +37,14 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.ldap.core.DirContextAdapter
 import org.springframework.ldap.core.DirContextOperations
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -76,6 +83,19 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   LoginProps loginProps
+
+  @Value('${auth.token.principal.header}')
+  private String principalRequestHeader;
+
+  @Value('${auth.token.credential.header}')
+  private String credentialRequestHeader;
+
+  @Value('${auth.token.credential.value}')
+  private String credentialRequestValue;
+
+  @Value('${auth.token.url}')
+  private String allowedUrl;
+
 
   @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -130,12 +150,20 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
       http.formLogin()
       authConfig.configure(http)
       http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter)
+      http.addFilterBefore(apiKeyAuthFilter(), BasicAuthenticationFilter)
     }
     else if (loginProps.mode !=null && loginProps.mode.equalsIgnoreCase("token")) {
       authConfig.jwtconfigure(http)
     }
 
     }
+
+    private APIKeyAuthFilter apiKeyAuthFilter(){
+    APIKeyAuthFilter filter = new APIKeyAuthFilter(principalRequestHeader, credentialRequestHeader);
+    filter.setRequiresAuthenticationRequestMatcher(new RequestPathAndKeyMatcher(principalRequestHeader, Arrays.asList(allowedUrl)));
+    filter.setAuthenticationManager(new APIKeyAuthenticationManager(credentialRequestValue));
+      return filter;
+  }
 
   @Override
   protected AuthenticationManager authenticationManager() throws Exception {
