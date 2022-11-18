@@ -16,6 +16,13 @@
 
 package com.opsmx.spinnaker.gate.security.ldap;
 
+import java.io.IOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -34,13 +41,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 @Slf4j
 public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEventPublisherAware {
 
@@ -52,7 +52,6 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
     this.credentialRequestHeader = credentialRequestHeader;
   }
 
-
   protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
     return request.getHeader(principalRequestHeader);
   }
@@ -62,7 +61,8 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
   }
 
   private ApplicationEventPublisher eventPublisher = null;
-  private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
+  private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource =
+      new WebAuthenticationDetailsSource();
   private AuthenticationManager authenticationManager = null;
   private boolean continueFilterChainOnUnsuccessfulAuthentication = true;
   private boolean checkForPrincipalChanges;
@@ -71,14 +71,11 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
   private AuthenticationFailureHandler authenticationFailureHandler = null;
   private RequestMatcher requiresAuthenticationRequestMatcher;
 
-  /**
-   * Check whether all required properties have been set.
-   */
+  /** Check whether all required properties have been set. */
   public void afterPropertiesSet() {
     try {
       super.afterPropertiesSet();
-    }
-    catch (ServletException e) {
+    } catch (ServletException e) {
       // convert to RuntimeException for passivity on afterPropertiesSet signature
       throw new RuntimeException(e);
     }
@@ -86,15 +83,16 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
   }
 
   /**
-   * Try to authenticate a pre-authenticated user with Spring Security if the user has
-   * not yet been authenticated.
+   * Try to authenticate a pre-authenticated user with Spring Security if the user has not yet been
+   * authenticated.
    */
-  public void doFilter(ServletRequest request, ServletResponse response,
-                       FilterChain chain) throws IOException, ServletException {
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
 
     if (log.isDebugEnabled()) {
-      log.debug("Checking secure context token: "
-        + SecurityContextHolder.getContext().getAuthentication());
+      log.debug(
+          "Checking secure context token: "
+              + SecurityContextHolder.getContext().getAuthentication());
     }
 
     if (requiresAuthenticationRequestMatcher.matches((HttpServletRequest) request)) {
@@ -108,19 +106,20 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
    * Determines if the current principal has changed. The default implementation tries
    *
    * <ul>
-   * <li>If the {@link #getPreAuthenticatedPrincipal(HttpServletRequest)} is a String, the {@link Authentication#getName()} is compared against the pre authenticated principal</li>
-   * <li>Otherwise, the {@link #getPreAuthenticatedPrincipal(HttpServletRequest)} is compared against the {@link Authentication#getPrincipal()}
+   *   <li>If the {@link #getPreAuthenticatedPrincipal(HttpServletRequest)} is a String, the {@link
+   *       Authentication#getName()} is compared against the pre authenticated principal
+   *   <li>Otherwise, the {@link #getPreAuthenticatedPrincipal(HttpServletRequest)} is compared
+   *       against the {@link Authentication#getPrincipal()}
    * </ul>
    *
-   * <p>
-   * Subclasses can override this method to determine when a principal has changed.
-   * </p>
+   * <p>Subclasses can override this method to determine when a principal has changed.
    *
    * @param request
    * @param currentAuthentication
    * @return true if the principal has changed, else false
    */
-  protected boolean principalChanged(HttpServletRequest request, Authentication currentAuthentication) {
+  protected boolean principalChanged(
+      HttpServletRequest request, Authentication currentAuthentication) {
 
     Object principal = getPreAuthenticatedPrincipal(request);
 
@@ -133,15 +132,17 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
     }
 
     if (log.isDebugEnabled()) {
-      log.debug("Pre-authenticated principal has changed to " + principal + " and will be reauthenticated");
+      log.debug(
+          "Pre-authenticated principal has changed to "
+              + principal
+              + " and will be reauthenticated");
     }
     return true;
   }
 
-  /**
-   * Do the actual authentication for a pre-authenticated user.
-   */
-  private void doAuthenticate(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+  /** Do the actual authentication for a pre-authenticated user. */
+  private void doAuthenticate(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
     Authentication authResult;
 
     Object principal = getPreAuthenticatedPrincipal(request);
@@ -156,18 +157,16 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
     }
 
     if (log.isDebugEnabled()) {
-      log.debug("preAuthenticatedPrincipal = " + principal
-        + ", trying to authenticate");
+      log.debug("preAuthenticatedPrincipal = " + principal + ", trying to authenticate");
     }
 
     try {
-      PreAuthenticatedAuthenticationToken authRequest = new PreAuthenticatedAuthenticationToken(
-        principal, credentials);
+      PreAuthenticatedAuthenticationToken authRequest =
+          new PreAuthenticatedAuthenticationToken(principal, credentials);
       authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
       authResult = authenticationManager.authenticate(authRequest);
       successfulAuthentication(request, response, authResult);
-    }
-    catch (AuthenticationException failed) {
+    } catch (AuthenticationException failed) {
       unsuccessfulAuthentication(request, response, failed);
 
       if (!continueFilterChainOnUnsuccessfulAuthentication) {
@@ -177,19 +176,20 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
   }
 
   /**
-   * Puts the <code>Authentication</code> instance returned by the authentication
-   * manager into the secure context.
+   * Puts the <code>Authentication</code> instance returned by the authentication manager into the
+   * secure context.
    */
-  protected void successfulAuthentication(HttpServletRequest request,
-                                          HttpServletResponse response, Authentication authResult) throws IOException, ServletException {
+  protected void successfulAuthentication(
+      HttpServletRequest request, HttpServletResponse response, Authentication authResult)
+      throws IOException, ServletException {
     if (log.isDebugEnabled()) {
       log.debug("Authentication success: " + authResult);
     }
     SecurityContextHolder.getContext().setAuthentication(authResult);
     // Fire event
     if (this.eventPublisher != null) {
-      eventPublisher.publishEvent(new InteractiveAuthenticationSuccessEvent(
-        authResult, this.getClass()));
+      eventPublisher.publishEvent(
+          new InteractiveAuthenticationSuccessEvent(authResult, this.getClass()));
     }
 
     if (authenticationSuccessHandler != null) {
@@ -198,13 +198,14 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
   }
 
   /**
-   * Ensures the authentication object in the secure context is set to null when
-   * authentication fails.
-   * <p>
-   * Caches the failure exception as a request attribute
+   * Ensures the authentication object in the secure context is set to null when authentication
+   * fails.
+   *
+   * <p>Caches the failure exception as a request attribute
    */
-  protected void unsuccessfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+  protected void unsuccessfulAuthentication(
+      HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
+      throws IOException, ServletException {
     SecurityContextHolder.clearContext();
 
     if (log.isDebugEnabled()) {
@@ -217,21 +218,15 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
     }
   }
 
-  /**
-   * @param anApplicationEventPublisher The ApplicationEventPublisher to use
-   */
-  public void setApplicationEventPublisher(
-    ApplicationEventPublisher anApplicationEventPublisher) {
+  /** @param anApplicationEventPublisher The ApplicationEventPublisher to use */
+  public void setApplicationEventPublisher(ApplicationEventPublisher anApplicationEventPublisher) {
     this.eventPublisher = anApplicationEventPublisher;
   }
 
-  /**
-   * @param authenticationDetailsSource The AuthenticationDetailsSource to use
-   */
+  /** @param authenticationDetailsSource The AuthenticationDetailsSource to use */
   public void setAuthenticationDetailsSource(
-    AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource) {
-    Assert.notNull(authenticationDetailsSource,
-      "AuthenticationDetailsSource required");
+      AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource) {
+    Assert.notNull(authenticationDetailsSource, "AuthenticationDetailsSource required");
     this.authenticationDetailsSource = authenticationDetailsSource;
   }
 
@@ -239,31 +234,29 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
     return authenticationDetailsSource;
   }
 
-  /**
-   * @param authenticationManager The AuthenticationManager to use
-   */
+  /** @param authenticationManager The AuthenticationManager to use */
   public void setAuthenticationManager(AuthenticationManager authenticationManager) {
     this.authenticationManager = authenticationManager;
   }
 
   /**
-   * If set to {@code true} (the default), any {@code AuthenticationException} raised by the
-   * {@code AuthenticationManager} will be swallowed, and the request will be allowed to
-   * proceed, potentially using alternative authentication mechanisms. If {@code false},
-   * authentication failure will result in an immediate exception.
+   * If set to {@code true} (the default), any {@code AuthenticationException} raised by the {@code
+   * AuthenticationManager} will be swallowed, and the request will be allowed to proceed,
+   * potentially using alternative authentication mechanisms. If {@code false}, authentication
+   * failure will result in an immediate exception.
    *
-   * @param shouldContinue set to {@code true} to allow the request to proceed after a
-   * failed authentication.
+   * @param shouldContinue set to {@code true} to allow the request to proceed after a failed
+   *     authentication.
    */
   public void setContinueFilterChainOnUnsuccessfulAuthentication(boolean shouldContinue) {
     continueFilterChainOnUnsuccessfulAuthentication = shouldContinue;
   }
 
   /**
-   * If set, the pre-authenticated principal will be checked on each request and
-   * compared against the name of the current <tt>Authentication</tt> object. A check to
-   * determine if {@link Authentication#getPrincipal()} is equal to the principal will
-   * also be performed. If a change is detected, the user will be reauthenticated.
+   * If set, the pre-authenticated principal will be checked on each request and compared against
+   * the name of the current <tt>Authentication</tt> object. A check to determine if {@link
+   * Authentication#getPrincipal()} is equal to the principal will also be performed. If a change is
+   * detected, the user will be reauthenticated.
    *
    * @param checkForPrincipalChanges
    */
@@ -272,38 +265,33 @@ public class APIKeyAuthFilter extends GenericFilterBean implements ApplicationEv
   }
 
   /**
-   * If <tt>checkForPrincipalChanges</tt> is set, and a change of principal is detected,
-   * determines whether any existing session should be invalidated before proceeding to
-   * authenticate the new principal.
+   * If <tt>checkForPrincipalChanges</tt> is set, and a change of principal is detected, determines
+   * whether any existing session should be invalidated before proceeding to authenticate the new
+   * principal.
    *
-   * @param invalidateSessionOnPrincipalChange <tt>false</tt> to retain the existing
-   * session. Defaults to <tt>true</tt>.
+   * @param invalidateSessionOnPrincipalChange <tt>false</tt> to retain the existing session.
+   *     Defaults to <tt>true</tt>.
    */
-  public void setInvalidateSessionOnPrincipalChange(
-    boolean invalidateSessionOnPrincipalChange) {
+  public void setInvalidateSessionOnPrincipalChange(boolean invalidateSessionOnPrincipalChange) {
     this.invalidateSessionOnPrincipalChange = invalidateSessionOnPrincipalChange;
   }
 
-  /**
-   * Sets the strategy used to handle a successful authentication.
-   */
-  public void setAuthenticationSuccessHandler(AuthenticationSuccessHandler authenticationSuccessHandler) {
+  /** Sets the strategy used to handle a successful authentication. */
+  public void setAuthenticationSuccessHandler(
+      AuthenticationSuccessHandler authenticationSuccessHandler) {
     this.authenticationSuccessHandler = authenticationSuccessHandler;
   }
 
-  /**
-   * Sets the strategy used to handle a failed authentication.
-   */
-  public void setAuthenticationFailureHandler(AuthenticationFailureHandler authenticationFailureHandler) {
+  /** Sets the strategy used to handle a failed authentication. */
+  public void setAuthenticationFailureHandler(
+      AuthenticationFailureHandler authenticationFailureHandler) {
     this.authenticationFailureHandler = authenticationFailureHandler;
   }
 
-  /**
-   * Sets the request matcher to check whether to proceed the request further.
-   */
-  public void setRequiresAuthenticationRequestMatcher(RequestMatcher requiresAuthenticationRequestMatcher) {
+  /** Sets the request matcher to check whether to proceed the request further. */
+  public void setRequiresAuthenticationRequestMatcher(
+      RequestMatcher requiresAuthenticationRequestMatcher) {
     Assert.notNull(requiresAuthenticationRequestMatcher, "requestMatcher cannot be null");
     this.requiresAuthenticationRequestMatcher = requiresAuthenticationRequestMatcher;
   }
-
 }

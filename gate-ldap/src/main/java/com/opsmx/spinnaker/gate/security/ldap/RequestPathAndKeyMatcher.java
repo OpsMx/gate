@@ -17,11 +17,10 @@
 
 package com.opsmx.spinnaker.gate.security.ldap;
 
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Slf4j
 public class RequestPathAndKeyMatcher implements RequestMatcher {
@@ -37,11 +36,11 @@ public class RequestPathAndKeyMatcher implements RequestMatcher {
   public boolean matches(HttpServletRequest request) {
     String uri = request.getRequestURI();
     String header = request.getHeader(principalRequestHeader);
-    log.info("********************The uri is: {}" , uri);
-    log.info("********************The header is: {}" , header);
-    for(String path: allowedUrlPaths){
-      log.info("********************* the path is: {}" , path);
-      if(uri.endsWith(path) && header != null){
+    log.info("********************The uri is: {}", uri);
+    log.info("********************The header is: {}", header);
+    for (String path : allowedUrlPaths) {
+      log.info("********************* the path is: {}", path);
+      if (uri.endsWith(path) && header != null) {
         log.info("********************The header and path matched !!!");
         return true;
       }

@@ -47,7 +47,8 @@ interface OpsmxDashboardService {
                                @Query("sortBy") String sortBy,
                                @Query("sortOrder") String sortOrder,
                                @Query("search") String search,
-                               @Query("noOfDays") Integer noOfDays)
+                               @Query("noOfDays") Integer noOfDays,
+                               @Header(value = "x-spinnaker-user") String xSpinnakerUser)
 
   @GET("/dashboardservice/{version}/{type}/{source}/{source1}/{source2}")
   Object getDashboardResponse5(@Path('version') String version,

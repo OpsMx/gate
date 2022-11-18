@@ -29,8 +29,7 @@ public class APIKeyAuthenticationManager implements AuthenticationManager {
   }
 
   @Override
-  public Authentication authenticate(Authentication authentication)
-    throws AuthenticationException {
+  public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     String credentials = (String) authentication.getCredentials();
     if (!credentialRequestValue.equals(credentials)) {
       throw new BadCredentialsException("The API key was not found or not the expected value.");
