@@ -65,7 +65,7 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
           }
         });
     httpSecurity
-        .antMatcher("/autopilot/api/v2/applications/getApplicationHealth")
+        .antMatcher("/dashboardservice/v2/users/user2/dynamicMenu")
         .csrf()
         .disable()
         .sessionManagement()
