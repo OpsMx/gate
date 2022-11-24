@@ -16,8 +16,6 @@
 
 package com.opsmx.spinnaker.gate.security.saml;
 
-import com.netflix.spinnaker.gate.security.saml.SamlSsoConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -57,14 +55,8 @@ public class MultipleAuthConfig {
     }
   }
 
-  @Configuration
-  public static class SamlConfigurerAdapter extends WebSecurityConfigurerAdapter {
-
-    @Autowired SamlSsoConfig samlSsoConfig;
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-      samlSsoConfig.configure(http);
-    }
-  }
+  //  @Configuration
+  //  public static class LdapConfigurerAdapter extends LdapSsoConfig {
+  //
+  //  }
 }
