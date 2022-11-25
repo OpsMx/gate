@@ -33,17 +33,24 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.ldap.core.DirContextAdapter
 import org.springframework.ldap.core.DirContextOperations
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
+import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.session.web.http.DefaultCookieSerializer
@@ -78,6 +85,9 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
   LoginProps loginProps
 
   @Autowired
+  CustomAuthProvider customAuthProvider
+
+  @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder());
   }
@@ -97,7 +107,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
     def ldapConfigurer =
-        auth.ldapAuthentication()
+        auth.authenticationProvider(customAuthProvider).ldapAuthentication()
             .contextSource()
               .url(ldapConfigProps.url)
               .managerDn(ldapConfigProps.managerDn)
@@ -120,6 +130,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
     if (ldapConfigProps.userSearchFilter) {
       ldapConfigurer.userSearchFilter(ldapConfigProps.userSearchFilter)
     }
+
   }
 
   @Override
@@ -198,5 +209,48 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
   @ConfigurationProperties("authn")
   static class LoginProps {
     String mode
+  }
+
+  @Component
+  static class CustomAuthProvider implements AuthenticationProvider{
+
+    @Override
+    Authentication authenticate(Authentication authentication) throws AuthenticationException {
+      UserDetailsService userDetailsService = userDetailsService()
+      final String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName()
+      if (StringUtils.isEmpty(username)) {
+        throw new BadCredentialsException("invalid login details")
+      }
+      // get user details using Spring security user details service
+      UserDetails user = null
+      try {
+        user = userDetailsService.loadUserByUsername(username)
+
+      } catch (UsernameNotFoundException exception) {
+        throw new BadCredentialsException("invalid login details")
+      }
+      return createSuccessfulAuthentication(authentication, user)
+    }
+
+    @Override
+    boolean supports(Class<?> authentication) {
+      return authentication.equals(UsernamePasswordAuthenticationToken.class)
+    }
+
+    private Authentication createSuccessfulAuthentication(final Authentication authentication, final UserDetails user) {
+      UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), authentication.getCredentials(), user.getAuthorities())
+      token.setDetails(authentication.getDetails())
+      return token;
+    }
+
+    @Bean("multiAuth")
+    public UserDetailsService userDetailsService() throws Exception {
+      InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager()
+      manager.createUser(org.springframework.security.core.userdetails.User.withUsername("user").password("password").roles("USER").build())
+      manager.createUser(
+        org.springframework.security.core.userdetails.User.withUsername("admin").password("password").roles("USER", "ADMIN").build())
+      return manager
+    }
+
   }
 }
