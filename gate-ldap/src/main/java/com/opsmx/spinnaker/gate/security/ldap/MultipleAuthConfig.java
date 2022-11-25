@@ -47,8 +47,10 @@ public class MultipleAuthConfig {
 
     @Autowired AuthConfig authConfig;
 
+    @Autowired UserDetailsService userDetailsService;
+
     protected void configure(HttpSecurity http) throws Exception {
-      http.antMatcher("/**").userDetailsService(userDetailsService());
+      http.antMatcher("/**").userDetailsService(userDetailsService);
       authConfig.configure(http);
     }
   }
