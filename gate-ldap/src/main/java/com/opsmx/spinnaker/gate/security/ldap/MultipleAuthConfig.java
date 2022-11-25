@@ -17,7 +17,9 @@
 package com.opsmx.spinnaker.gate.security.saml;
 
 import com.netflix.spinnaker.gate.config.AuthConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -28,11 +30,12 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class MultipleAuthConfig {
 
-  @Bean
+  @Bean("multiAuth")
   public UserDetailsService userDetailsService() throws Exception {
     InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
     manager.createUser(User.withUsername("user").password("password").roles("USER").build());
@@ -47,9 +50,12 @@ public class MultipleAuthConfig {
 
     @Autowired AuthConfig authConfig;
 
-    @Autowired UserDetailsService userDetailsService;
+    @Autowired
+    @Qualifier("multiAuth")
+    UserDetailsService userDetailsService;
 
     protected void configure(HttpSecurity http) throws Exception {
+      log.info("multiAuth bean : {}", userDetailsService);
       http.antMatcher("/**").userDetailsService(userDetailsService);
       authConfig.configure(http);
     }
