@@ -16,6 +16,8 @@
 
 package com.opsmx.spinnaker.gate.security.saml;
 
+import com.netflix.spinnaker.gate.config.AuthConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -42,16 +44,12 @@ public class MultipleAuthConfig {
   @Configuration
   @Order(1)
   public static class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
-    protected void configure(HttpSecurity http) throws Exception {
-      http.antMatcher("**")
-          .userDetailsService(userDetailsService())
-          .authorizeRequests()
-          .anyRequest()
-          .hasRole("ADMIN")
-          .and()
-          .httpBasic();
 
-      http.formLogin().loginPage("/login").permitAll();
+    @Autowired AuthConfig authConfig;
+
+    protected void configure(HttpSecurity http) throws Exception {
+      http.antMatcher("/**").userDetailsService(userDetailsService());
+      authConfig.configure(http);
     }
   }
 
