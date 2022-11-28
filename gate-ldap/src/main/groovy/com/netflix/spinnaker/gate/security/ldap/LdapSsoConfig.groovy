@@ -226,6 +226,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
       UserDetails user = null
       try {
         user = userDetailsService.loadUserByUsername(username)
+        log.info("Custom auth password : {}", user.getPassword())
         if (user.getPassword()!=null && !user.getPassword().isBlank() && user.getPassword().equals("password")){
           log.info("Successfully logged in")
         } else {
