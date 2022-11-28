@@ -24,6 +24,7 @@ import com.netflix.spinnaker.gate.interceptors.RequestIdInterceptor
 import com.netflix.spinnaker.gate.retrofit.UpstreamBadRequest
 import com.netflix.spinnaker.kork.dynamicconfig.DynamicConfigService
 import com.netflix.spinnaker.kork.web.interceptors.MetricsInterceptor
+import com.opsmx.spinnaker.gate.exception.XSpinnakerUserHeaderMissingException
 import com.opsmx.spinnaker.gate.interceptors.ApplicationIdRbacInterceptor
 import com.opsmx.spinnaker.gate.interceptors.ApprovalGateIdRbacInterceptor
 import com.opsmx.spinnaker.gate.interceptors.ApprovalGateInstanceIdRbacInterceptor
@@ -34,6 +35,7 @@ import com.opsmx.spinnaker.gate.interceptors.OesServiceInterceptor
 import com.opsmx.spinnaker.gate.interceptors.FeatureVisibilityRbacInterceptor
 import com.opsmx.spinnaker.gate.interceptors.PipelineIdRbacInterceptor
 import com.opsmx.spinnaker.gate.interceptors.ServiceIdRbacInterceptor
+import com.opsmx.spinnaker.gate.interceptors.XSpinnakerUserHeaderInterceptor
 import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -100,6 +102,9 @@ public class GateWebConfig implements WebMvcConfigurer {
   @Autowired(required = false)
   CustomGatesTriggerRbacInterceptor customGatesTriggerRbacInterceptor
 
+  @Autowired
+  XSpinnakerUserHeaderInterceptor xSpinnakerUserHeaderInterceptor
+
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(
@@ -127,6 +132,9 @@ public class GateWebConfig implements WebMvcConfigurer {
       registry.addInterceptor(approvalPolicyIdInterceptor).addPathPatterns(ApplicationFeatureRbac.endpointsWithApprovalPolicyId).order(8)
       registry.addInterceptor(customGatesTriggerRbacInterceptor).addPathPatterns(ApplicationFeatureRbac.runtime_access).order(9)
     }
+
+    registry.addInterceptor(xSpinnakerUserHeaderInterceptor).addPathPatterns("/dashboardservice/**", "/platformservice/**", "/oes/**", "/visibilityservice/**")
+
 
   }
 

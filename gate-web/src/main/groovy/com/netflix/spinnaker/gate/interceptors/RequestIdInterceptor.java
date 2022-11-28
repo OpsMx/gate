@@ -33,7 +33,6 @@ public class RequestIdInterceptor extends HandlerInterceptorAdapter {
       HttpServletRequest request, HttpServletResponse response, Object handler) {
     AuthenticatedRequest.getSpinnakerRequestId()
         .ifPresent(requestId -> response.setHeader(REQUEST_ID.getHeader(), requestId));
-    response.setHeader("x-spinnaker-user", request.getUserPrincipal().getName());
     return true;
   }
 }
