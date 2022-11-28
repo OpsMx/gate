@@ -211,6 +211,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
     String mode
   }
 
+  @Slf4j
   @Component
   static class CustomAuthProvider implements AuthenticationProvider{
 
@@ -240,6 +241,9 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
     private Authentication createSuccessfulAuthentication(final Authentication authentication, final UserDetails user) {
       UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), authentication.getCredentials(), user.getAuthorities())
       token.setDetails(authentication.getDetails())
+      log.info("token : {}", token)
+      log.info("principal : {}", token.getPrincipal())
+      log.info("credentials : {}", token.getCredentials())
       return token;
     }
 
