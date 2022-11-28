@@ -29,6 +29,8 @@ public class XSpinnakerUserHeaderInterceptor extends HandlerInterceptorAdapter {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
+    log.info("Inside XSpinnakerUserHeaderInterceptor");
+    response.setHeader("x-spinnaker-user", request.getUserPrincipal().getName());
     request.setAttribute("x-spinnaker-user", request.getUserPrincipal().getName());
     return true;
   }
