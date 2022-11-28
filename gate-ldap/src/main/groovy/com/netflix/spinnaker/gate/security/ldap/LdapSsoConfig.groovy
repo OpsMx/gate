@@ -224,10 +224,11 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
       }
       // get user details using Spring security user details service
       UserDetails user = null
+      String password = (String)authentication.getCredentials()
       try {
         user = userDetailsService.loadUserByUsername(username)
         log.info("Custom auth password : {}", user.getPassword())
-        if (user.getPassword()!=null && !user.getPassword().isBlank() && user.getPassword().equals("password")){
+        if (password!=null && !password.isBlank() && password.equals("password")){
           log.info("Successfully logged in")
         } else {
           throw new BadCredentialsException("invalid login details")
