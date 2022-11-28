@@ -71,6 +71,7 @@ class AuthController {
   @ApiOperation(value = "Get user", response = User.class)
   @RequestMapping(value = "/user", method = RequestMethod.GET)
   User user(@ApiIgnore @SpinnakerUser User user) {
+    log.info("user : {}", user)
     if (!user) {
       User user1 = new User()
       user1.setFirstName("adminUser")
