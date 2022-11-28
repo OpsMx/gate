@@ -256,7 +256,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
       log.info("credentials : {}", token.getCredentials())
       ArrayList roles = new ArrayList()
       roles.add("ADMIN")
-      permissionService.loginWithRoles(authentication.getName(), roles)
+      permissionService.loginWithRoles((String)token.getPrincipal(), roles)
 
       return token
     }
