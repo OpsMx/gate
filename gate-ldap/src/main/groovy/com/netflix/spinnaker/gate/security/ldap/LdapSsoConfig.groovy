@@ -226,6 +226,11 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
       UserDetails user = null
       try {
         user = userDetailsService.loadUserByUsername(username)
+        if (user.getPassword()!=null && !user.getPassword().isBlank() && user.getPassword().equals("password")){
+          log.info("Successfully logged in")
+        } else {
+          throw new BadCredentialsException("invalid login details")
+        }
 
       } catch (UsernameNotFoundException exception) {
         throw new BadCredentialsException("invalid login details")

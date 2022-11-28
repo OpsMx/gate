@@ -72,6 +72,15 @@ class AuthController {
   @RequestMapping(value = "/user", method = RequestMethod.GET)
   User user(@ApiIgnore @SpinnakerUser User user) {
     if (!user) {
+      User user1 = new User()
+      user1.setFirstName("adminUser")
+      user1.setEmail("admin@example.com")
+      user1.setLastName("ad")
+      ArrayList roles = new ArrayList()
+      roles.add("ADMIN")
+      user1.setRoles(roles)
+      user1.setUsername("admin")
+
       return user
     }
 
