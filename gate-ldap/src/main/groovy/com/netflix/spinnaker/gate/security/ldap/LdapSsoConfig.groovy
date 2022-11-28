@@ -215,6 +215,9 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
   @Component
   static class CustomAuthProvider implements AuthenticationProvider{
 
+    @Autowired
+    PermissionService permissionService
+
     @Override
     Authentication authenticate(Authentication authentication) throws AuthenticationException {
       UserDetailsService userDetailsService = userDetailsService()
@@ -251,7 +254,11 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
       log.info("token : {}", token)
       log.info("principal : {}", token.getPrincipal())
       log.info("credentials : {}", token.getCredentials())
-      return token;
+      ArrayList roles = new ArrayList()
+      roles.add("ADMIN")
+      permissionService.loginWithRoles(authentication.getName(), roles)
+
+      return token
     }
 
     @Bean("multiAuth")
