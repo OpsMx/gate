@@ -82,7 +82,7 @@ class AuthController {
       user1.setRoles(roles)
       user1.setUsername("admin")
 
-      return user
+      return user1
     }
 
     def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
