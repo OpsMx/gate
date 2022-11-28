@@ -244,11 +244,11 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean("multiAuth")
-    public UserDetailsService userDetailsService() throws Exception {
+    static UserDetailsService userDetailsService() throws Exception {
       InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager()
-      manager.createUser(org.springframework.security.core.userdetails.User.withUsername("user").password("password").roles("USER").build())
+      manager.createUser(org.springframework.security.core.userdetails.User.withUsername("user").password("password").authorities("ROLE_ADMIN").roles("USER").build())
       manager.createUser(
-        org.springframework.security.core.userdetails.User.withUsername("admin").password("password").roles("USER", "ADMIN").build())
+        org.springframework.security.core.userdetails.User.withUsername("admin").password("password").authorities("ROLE_ADMIN").roles("USER", "ADMIN").build())
       return manager
     }
 
