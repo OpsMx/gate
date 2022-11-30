@@ -31,19 +31,18 @@ public class EmbeddedArgoUIController {
 
   @GetMapping(value = "/load")
   public void load(
-      @RequestParam(value = "argoid") Integer argoid,
+      @RequestParam(value = "argoid") String argoid,
       @RequestParam(value = "path") String path,
       @RequestHeader(value = "x-spinnaker-user") String username,
       HttpServletResponse response) {
-    log.info(
-        "**************************argoid is : {} and path is: {} and username is {}",
-        argoid,
-        path,
-        username);
+
     String location = embeddedArgoUIService.getBounceEndpoint(username, argoid, path);
-    log.info("**************************Location: {}", location);
     response.setStatus(302);
     response.setHeader("Location", location);
-    log.info("**************************Loading ended", location);
+    log.debug(
+        "Successfully generated token and redirecting to path {} where argoid is : {} and username is {}",
+        path,
+        argoid,
+        username);
   }
 }

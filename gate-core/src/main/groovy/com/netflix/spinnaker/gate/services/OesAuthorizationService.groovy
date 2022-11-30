@@ -32,5 +32,5 @@ interface OesAuthorizationService {
                                                        @RequestParam("applicationName") String applicationName,@RequestParam("sourceName") String sourceName ,@RequestParam("sourceType") String sourceType ,@RequestHeader(value = "x-spinnaker-user") String userName)
 
   @GetMapping("platformservice/v1/users/{username}/usergroups")
-  ResponseEntity<List<String>> getUserGroupsByUsername(@PathVariable("username") String username);
+  ResponseEntity<List<String>> getUserGroupsByUsername(@PathVariable("username") String username, @RequestHeader(value = "x-spinnaker-user") String userName);
 }

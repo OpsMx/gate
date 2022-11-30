@@ -17,5 +17,5 @@
 package com.opsmx.spinnaker.gate.service;
 
 public interface EmbeddedArgoUIService {
-  String getBounceEndpoint(String userName, Integer argoid, String path);
+  String getBounceEndpoint(String userName, String argoid, String path);
 }

@@ -41,8 +41,9 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
   private String bounceUrl;
 
   @Override
-  public String getBounceEndpoint(String username, Integer argoId, String path) {
-    List<String> groups = oesAuthorizationService.getUserGroupsByUsername(username).getBody();
+  public String getBounceEndpoint(String username, String argoId, String path) {
+    List<String> groups =
+        oesAuthorizationService.getUserGroupsByUsername(username, username).getBody();
     Date currentDate = new Date(System.currentTimeMillis());
     String token =
         Jwts.builder()
@@ -57,7 +58,6 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
             .setNotBefore(currentDate)
             .signWith(SignatureAlgorithm.HS256, secret)
             .compact();
-    log.info("************ The token is {}", token);
     return bounceUrl + "/" + token;
   }
 }
