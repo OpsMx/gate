@@ -35,8 +35,15 @@ public class EmbeddedArgoUIController {
       @RequestParam(value = "path") String path,
       @RequestHeader(value = "x-spinnaker-user") String username,
       HttpServletResponse response) {
+    log.info(
+        "**************************argoid is : {} and path is: {} and username is {}",
+        argoid,
+        path,
+        username);
     String location = embeddedArgoUIService.getBounceEndpoint(username, argoid, path);
+    log.info("**************************Location: {}", location);
     response.setStatus(302);
     response.setHeader("Location", location);
+    log.info("**************************Loading ended", location);
   }
 }
