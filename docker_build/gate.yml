@@ -121,3 +121,7 @@ management:
     health:
       show-details: always
       show-components: always
+jwt:
+  secret: argo_navis
+vela:
+  bounceUrl: https://qateam-saml.isd-dev.opsmx.net/bounce
