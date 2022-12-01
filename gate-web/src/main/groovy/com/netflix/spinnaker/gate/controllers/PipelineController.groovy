@@ -41,6 +41,8 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import retrofit.RetrofitError
 
+import java.util.stream.Collectors
+
 import static net.logstash.logback.argument.StructuredArguments.value
 
 @Slf4j

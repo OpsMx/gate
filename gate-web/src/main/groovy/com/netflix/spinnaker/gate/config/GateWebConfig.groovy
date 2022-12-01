@@ -24,6 +24,17 @@ import com.netflix.spinnaker.gate.interceptors.RequestIdInterceptor
 import com.netflix.spinnaker.gate.retrofit.UpstreamBadRequest
 import com.netflix.spinnaker.kork.dynamicconfig.DynamicConfigService
 import com.netflix.spinnaker.kork.web.interceptors.MetricsInterceptor
+import com.opsmx.spinnaker.gate.interceptors.ApplicationIdRbacInterceptor
+import com.opsmx.spinnaker.gate.interceptors.ApprovalGateIdRbacInterceptor
+import com.opsmx.spinnaker.gate.interceptors.ApprovalGateInstanceIdRbacInterceptor
+import com.opsmx.spinnaker.gate.interceptors.ApprovalPolicyIdInterceptor
+import com.opsmx.spinnaker.gate.interceptors.CustomGatesTriggerRbacInterceptor
+import com.opsmx.spinnaker.gate.interceptors.GateIdRbacInterceptor
+import com.opsmx.spinnaker.gate.interceptors.OesServiceInterceptor
+import com.opsmx.spinnaker.gate.interceptors.FeatureVisibilityRbacInterceptor
+import com.opsmx.spinnaker.gate.interceptors.PipelineIdRbacInterceptor
+import com.opsmx.spinnaker.gate.interceptors.ServiceIdRbacInterceptor
+import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
@@ -36,6 +47,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector
 import retrofit.RetrofitError
@@ -58,6 +70,36 @@ public class GateWebConfig implements WebMvcConfigurer {
   @Value('${rate-limit.learning:true}')
   Boolean rateLimitLearningMode
 
+  @Value('${rbac.feature.application.enabled:true}')
+  Boolean isRbacEnabled
+
+  @Autowired(required = false)
+  FeatureVisibilityRbacInterceptor featureVisibilityRbacInterceptor
+
+  @Autowired(required = false)
+  ApplicationIdRbacInterceptor applicationIdRbacInterceptor
+
+  @Autowired(required = false)
+  ServiceIdRbacInterceptor serviceIdRbacInterceptor
+
+  @Autowired(required = false)
+  PipelineIdRbacInterceptor pipelineIdRbacInterceptor
+
+  @Autowired(required = false)
+  GateIdRbacInterceptor gateIdRbacInterceptor
+
+  @Autowired(required = false)
+  ApprovalGateIdRbacInterceptor approvalGateIdRbacInterceptor
+
+  @Autowired(required = false)
+  ApprovalGateInstanceIdRbacInterceptor approvalGateInstanceIdRbacInterceptor
+
+  @Autowired(required = false)
+  ApprovalPolicyIdInterceptor approvalPolicyIdInterceptor
+
+  @Autowired(required = false)
+  CustomGatesTriggerRbacInterceptor customGatesTriggerRbacInterceptor
+
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(
@@ -68,6 +110,24 @@ public class GateWebConfig implements WebMvcConfigurer {
 
     registry.addInterceptor(new RequestIdInterceptor())
     registry.addInterceptor(new RequestContextInterceptor())
+
+    List<String> oesServicePathPatterns = new ArrayList<>()
+    oesServicePathPatterns.add("/datasource/cache/save")
+    oesServicePathPatterns.add("/datasource/cache/evict")
+    registry.addInterceptor(new OesServiceInterceptor()).addPathPatterns(oesServicePathPatterns)
+
+    if (isRbacEnabled) {
+      registry.addInterceptor(featureVisibilityRbacInterceptor).addPathPatterns(ApplicationFeatureRbac.applicationFeatureRbacEndpoints).order(1)
+      registry.addInterceptor(applicationIdRbacInterceptor).addPathPatterns(ApplicationFeatureRbac.endpointsWithApplicationId).order(2)
+      registry.addInterceptor(serviceIdRbacInterceptor).addPathPatterns(ApplicationFeatureRbac.endpointsWithServiceId).order(3)
+      registry.addInterceptor(pipelineIdRbacInterceptor).addPathPatterns(ApplicationFeatureRbac.endpointsWithPipelineId).order(4)
+      registry.addInterceptor(gateIdRbacInterceptor).addPathPatterns(ApplicationFeatureRbac.endpointsWithGateId).order(5)
+      registry.addInterceptor(approvalGateIdRbacInterceptor).addPathPatterns(ApplicationFeatureRbac.endpointsWithApprovalGateId).order(6)
+      registry.addInterceptor(approvalGateInstanceIdRbacInterceptor).addPathPatterns(ApplicationFeatureRbac.endpointsWithApprovalGateInstanceId).order(7)
+      registry.addInterceptor(approvalPolicyIdInterceptor).addPathPatterns(ApplicationFeatureRbac.endpointsWithApprovalPolicyId).order(8)
+      registry.addInterceptor(customGatesTriggerRbacInterceptor).addPathPatterns(ApplicationFeatureRbac.runtime_access).order(9)
+    }
+
   }
 
   @Bean
@@ -121,5 +181,9 @@ public class GateWebConfig implements WebMvcConfigurer {
   @Override
   void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
     configurer.favorPathExtension(false)
+  }
+
+  public void addViewControllers(ViewControllerRegistry registry) {
+    registry.addViewController("/login").setViewName("login")
   }
 }

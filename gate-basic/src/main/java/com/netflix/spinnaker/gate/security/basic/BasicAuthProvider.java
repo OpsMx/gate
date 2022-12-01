@@ -15,27 +15,36 @@
  */
 package com.netflix.spinnaker.gate.security.basic;
 
+import com.netflix.spinnaker.gate.services.OesAuthorizationService;
+import com.netflix.spinnaker.gate.services.PermissionService;
 import com.netflix.spinnaker.security.User;
 import java.util.ArrayList;
 import java.util.Collections;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+@Slf4j
 public class BasicAuthProvider implements AuthenticationProvider {
 
-  private final SecurityProperties securityProperties;
+  private final PermissionService permissionService;
+  private final OesAuthorizationService oesAuthorizationService;
 
-  public BasicAuthProvider(SecurityProperties securityProperties) {
-    this.securityProperties = securityProperties;
+  private List<String> roles;
+  private String name;
+  private String password;
 
-    if (securityProperties.getUser() == null) {
-      throw new AuthenticationServiceException("User credentials are not configured");
-    }
+  public BasicAuthProvider(
+      PermissionService permissionService, OesAuthorizationService oesAuthorizationService) {
+    this.permissionService = permissionService;
+    this.oesAuthorizationService = oesAuthorizationService;
   }
 
   @Override
@@ -44,20 +53,45 @@ public class BasicAuthProvider implements AuthenticationProvider {
     String password =
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
 
-    if (!securityProperties.getUser().getName().equals(name)
-        || !securityProperties.getUser().getPassword().equals(password)) {
+    if (!this.name.equals(name) || !this.password.equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
 
+    log.debug("roles configured for user: {} are roles: {}", name, roles);
     User user = new User();
     user.setEmail(name);
     user.setUsername(name);
     user.setRoles(Collections.singletonList("USER"));
-    return new UsernamePasswordAuthenticationToken(user, password, new ArrayList<>());
+
+    List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+
+    if (roles != null && !roles.isEmpty() && permissionService != null) {
+      user.setRoles(roles);
+      grantedAuthorities =
+          roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+      // Updating roles in fiat service
+      permissionService.loginWithRoles(name, roles);
+      // Updating roles in platform service
+      oesAuthorizationService.cacheUserGroups(roles, name);
+    }
+
+    return new UsernamePasswordAuthenticationToken(user, password, grantedAuthorities);
   }
 
   @Override
   public boolean supports(Class<?> authentication) {
     return authentication == UsernamePasswordAuthenticationToken.class;
+  }
+
+  public void setRoles(List<String> roles) {
+    this.roles = roles;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 }
