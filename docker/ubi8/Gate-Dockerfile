@@ -24,7 +24,7 @@ RUN sed -i 's/"VERIFICATION_SHASUM"/'\""$(sha512sum /opt/spinnaker/plugins/Verif
     && sed -i 's/"APPROVAL_SHASUM"/'\""$(sha512sum /opt/spinnaker/plugins/ApprovalStagePlugin-v1.0.1-SNAPSHOT.zip | awk '{print $1}')"\"'/g' /opt/spinnaker/plugins/plugins.json
 RUN chown -R spinnaker:spinnaker /opt/spinnaker
 
-RUN chmod -R 777 /opt/echo/plugins/
+RUN chmod -R 777 /opt/gate/plugins/
 RUN chown -R spinnaker:spinnaker /opt/
 USER spinnaker
 CMD ["/opt/gate/bin/gate"]
