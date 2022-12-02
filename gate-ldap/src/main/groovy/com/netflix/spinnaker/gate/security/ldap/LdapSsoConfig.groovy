@@ -19,10 +19,10 @@ package com.netflix.spinnaker.gate.security.ldap
 import com.netflix.spinnaker.gate.config.AuthConfig
 import com.netflix.spinnaker.gate.security.AllowedAccountsSupport
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig
-import com.netflix.spinnaker.gate.security.basic.BasicAuthProvider
 import com.netflix.spinnaker.gate.services.OesAuthorizationService
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.security.ldap.BasicAuthenticationProvider
 import groovy.util.logging.Slf4j
 import com.opsmx.spinnaker.gate.security.ldap.RetryOnExceptionAuthManager
 import org.apache.commons.lang3.StringUtils
@@ -89,7 +89,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   OesAuthorizationService oesAuthorizationService
 
-  BasicAuthProvider basicAuthProvider
+  BasicAuthenticationProvider basicAuthProvider
 
   @Value('${security.user.roles:}')
   String roles
@@ -119,7 +119,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-    basicAuthProvider = new BasicAuthProvider(permissionService, oesAuthorizationService)
+    basicAuthProvider = new BasicAuthenticationProvider(permissionService, oesAuthorizationService)
 
     if (roles == null || roles.isEmpty()) {
       log.warn(
