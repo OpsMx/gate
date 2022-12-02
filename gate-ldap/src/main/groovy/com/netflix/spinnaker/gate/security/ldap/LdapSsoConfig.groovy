@@ -19,12 +19,15 @@ package com.netflix.spinnaker.gate.security.ldap
 import com.netflix.spinnaker.gate.config.AuthConfig
 import com.netflix.spinnaker.gate.security.AllowedAccountsSupport
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig
+import com.netflix.spinnaker.gate.security.basic.BasicAuthProvider
+import com.netflix.spinnaker.gate.services.OesAuthorizationService
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
 import com.opsmx.spinnaker.gate.security.ldap.RetryOnExceptionAuthManager
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -48,6 +51,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.session.web.http.DefaultCookieSerializer
 import org.springframework.stereotype.Component
+
+import java.util.stream.Collectors
+import java.util.stream.Stream
 
 @Slf4j
 @ConditionalOnExpression('${ldap.enabled:false}')
@@ -78,6 +84,23 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
   LoginProps loginProps
 
   @Autowired
+  PermissionService permissionService
+
+  @Autowired
+  OesAuthorizationService oesAuthorizationService
+
+  BasicAuthProvider basicAuthProvider
+
+  @Value('${security.user.roles:}')
+  String roles
+
+  @Value('${security.user.name:}')
+  String name
+
+  @Value('${security.user.password:}')
+  String password
+
+  @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder());
   }
@@ -96,8 +119,22 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
+    basicAuthProvider = new BasicAuthProvider(permissionService, oesAuthorizationService)
+
+    if (roles == null || roles.isEmpty()) {
+      log.warn(
+        "No roles are configured for the user. This would leads to authorizations issues if RBAC is enabled")
+    } else {
+      List<String> basicAuthRoles = new ArrayList<>();
+      basicAuthRoles.add("admin")
+      basicAuthProvider.setRoles(basicAuthRoles)
+    }
+
+    basicAuthProvider.setName(this.name);
+    basicAuthProvider.setPassword(this.password);
+
     def ldapConfigurer =
-        auth.ldapAuthentication()
+        auth.authenticationProvider(basicAuthProvider).ldapAuthentication()
             .contextSource()
               .url(ldapConfigProps.url)
               .managerDn(ldapConfigProps.managerDn)
