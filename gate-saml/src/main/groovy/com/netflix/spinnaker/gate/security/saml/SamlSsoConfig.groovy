@@ -21,9 +21,11 @@ import com.netflix.spinnaker.fiat.shared.FiatClientConfigurationProperties
 import com.netflix.spinnaker.gate.config.AuthConfig
 import com.netflix.spinnaker.gate.security.AllowedAccountsSupport
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig
+import com.netflix.spinnaker.gate.services.OesAuthorizationService
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.kork.core.RetrySupport
 import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.security.saml.BasicAuthProvider
 import com.opsmx.spinnaker.gate.security.saml.SamlAuthTokenUpdateFilter
 import groovy.util.logging.Slf4j
 import org.opensaml.saml2.core.Assertion
@@ -31,12 +33,15 @@ import org.opensaml.saml2.core.Attribute
 import org.opensaml.xml.schema.XSAny
 import org.opensaml.xml.schema.XSString
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.web.ServerProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -55,6 +60,8 @@ import org.springframework.stereotype.Component
 
 import javax.annotation.PostConstruct
 import java.security.KeyStore
+import java.util.stream.Collectors
+import java.util.stream.Stream
 
 import static org.springframework.security.extensions.saml2.config.SAMLConfigurer.saml
 
@@ -73,6 +80,23 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   AuthConfig authConfig
+
+  @Autowired
+  OesAuthorizationService oesAuthorizationService
+
+  @Autowired
+  PermissionService permissionSvc
+
+  BasicAuthProvider authProvider
+
+  @Value('${security.user.roles:}')
+  String roles
+
+  @Value('${security.user.name:}')
+  String name
+
+  @Value('${security.user.password:}')
+  String password
 
   @Component
   @ConfigurationProperties("saml")
@@ -179,6 +203,31 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
   void configure(WebSecurity web) throws Exception {
     authConfig.configure(web)
+  }
+
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    super.configure(auth)
+    this.authProvider = new BasicAuthProvider(permissionSvc, oesAuthorizationService)
+
+    if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
+      throw new AuthenticationServiceException(
+        "User credentials are not configured properly. Please check username and password are properly configured")
+    }
+
+    if (roles == null || roles.isEmpty()) {
+      log.warn(
+        "No roles are configured for the user. This would leads to authorizations issues if RBAC is enabled")
+    } else {
+      authProvider.setRoles(
+        Stream.of(roles.split(",")).map({ role -> role.trim() }).collect(Collectors.toList()))
+    }
+
+    authProvider.setName(this.name)
+    authProvider.setPassword(this.password)
+
+
+    auth.authenticationProvider(authProvider)
   }
 
   public WebSSOProfileConsumerImpl getWebSSOProfileConsumerImpl() {

@@ -97,6 +97,10 @@ class AuthConfig {
   @Value('${security.contentSecurityPolicy:\'object-src \'none\'; script-src \'unsafe-eval\' \'unsafe-inline\' https: http:;\'}')
   String contentSecurityPolicy
 
+  @Value('${security.adminLogin.enabled:false}')
+  boolean isAdminLoginEnabled
+
+
   void configure(HttpSecurity http) throws Exception {
     // @formatter:off
     if(isAgentAPIUnauthenticatedAccessEnabled && isSpinnakerWebhooksUnauthenticatedAccessEnabled){
@@ -341,7 +345,7 @@ class AuthConfig {
     }
 
 
-    if (ldapEnabled) {
+    if (ldapEnabled || isAdminLoginEnabled) {
       http.formLogin().loginPage("/login").permitAll()
     }
 
