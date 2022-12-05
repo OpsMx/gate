@@ -48,6 +48,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.extensions.saml2.config.SAMLConfigurer
 import org.springframework.security.saml.SAMLCredential
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService
@@ -162,6 +164,9 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   SAMLUserDetailsService samlUserDetailsService
 
+  @Autowired
+  UserDetailsService userDataService
+
   @Override
   void configure(HttpSecurity http) {
     //We need our session cookie to come across when we get redirected back from the IdP:
@@ -197,12 +202,17 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter()
     http.addFilterAfter(authTokenUpdateFilter,
         BasicAuthenticationFilter.class)
-    // @formatter:on
+    // @formatter:onUserDetailsService
 
   }
 
   void configure(WebSecurity web) throws Exception {
     authConfig.configure(web)
+  }
+
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
   }
 
   @Override
@@ -228,6 +238,8 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
 
     auth.authenticationProvider(authProvider)
+    auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder())
+
   }
 
   public WebSSOProfileConsumerImpl getWebSSOProfileConsumerImpl() {
