@@ -70,7 +70,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
     if (roles != null && !roles.isEmpty() && permissionService != null) {
       user.setRoles(roles);
       grantedAuthorities =
-          roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+          roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
       // Updating roles in fiat service
       permissionService.loginWithRoles(name, roles);
       // Updating roles in platform service

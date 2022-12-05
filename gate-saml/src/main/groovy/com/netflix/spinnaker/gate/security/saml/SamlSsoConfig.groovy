@@ -59,6 +59,7 @@ import org.springframework.security.web.authentication.rememberme.TokenBasedReme
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.session.web.http.DefaultCookieSerializer
 import org.springframework.stereotype.Component
+import org.springframework.security.crypto.factory.PasswordEncoderFactories
 
 import javax.annotation.PostConstruct
 import java.security.KeyStore
@@ -167,6 +168,8 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   UserDetailsService userDataService
 
+  PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
+
   @Override
   void configure(HttpSecurity http) {
     //We need our session cookie to come across when we get redirected back from the IdP:
@@ -234,7 +237,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     }
 
     authProvider.setName(this.name)
-    authProvider.setPassword(this.password)
+    authProvider.setPassword(encoder.encode(this.password))
 
 
     auth.authenticationProvider(authProvider)
