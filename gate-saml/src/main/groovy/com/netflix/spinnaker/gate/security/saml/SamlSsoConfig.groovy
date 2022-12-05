@@ -168,8 +168,6 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   UserDetailsService userDataService
 
-  PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
-
   @Override
   void configure(HttpSecurity http) {
     //We need our session cookie to come across when we get redirected back from the IdP:
@@ -236,12 +234,15 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
         Stream.of(roles.split(",")).map({ role -> role.trim() }).collect(Collectors.toList()))
     }
 
+    BCryptPasswordEncoder passwordEncoder = passwordEncoder() as BCryptPasswordEncoder
+
+
     authProvider.setName(this.name)
-    authProvider.setPassword(encoder.encode(this.password))
+    authProvider.setPassword(passwordEncoder.encode(this.password))
 
 
     auth.authenticationProvider(authProvider)
-    auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder())
+    auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder)
 
   }
 
