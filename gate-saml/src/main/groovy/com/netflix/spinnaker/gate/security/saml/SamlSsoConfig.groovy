@@ -216,9 +216,8 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    super.configure(auth)
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     this.authProvider = new BasicAuthProvider(permissionSvc, oesAuthorizationService)
 
     if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
@@ -234,16 +233,11 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
         Stream.of(roles.split(",")).map({ role -> role.trim() }).collect(Collectors.toList()))
     }
 
-    BCryptPasswordEncoder passwordEncoder = passwordEncoder() as BCryptPasswordEncoder
-
 
     authProvider.setName(this.name)
-    authProvider.setPassword(passwordEncoder.encode(this.password))
-
+    authProvider.setPassword(this.password)
 
     auth.authenticationProvider(authProvider)
-    auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder)
-
   }
 
   public WebSSOProfileConsumerImpl getWebSSOProfileConsumerImpl() {
