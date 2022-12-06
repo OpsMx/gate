@@ -211,13 +211,8 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     authConfig.configure(web)
   }
 
-  @Bean
-  PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
-
   @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     this.authProvider = new BasicAuthProvider(permissionSvc, oesAuthorizationService)
 
     if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
