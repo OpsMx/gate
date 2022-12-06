@@ -488,8 +488,11 @@ class OpsmxOesController {
                                       @PathVariable("source") String source,
                                       @PathVariable("source1") String source1,
                                       @RequestParam(value = "description", required = false) String description,
-                                      @RequestParam("isExists") Boolean isExists) {
-    Response response = opsmxOesService.agentManifestDownloadFile(type, source, source1, description, isExists)
+                                      @RequestParam(value ="isExists", required = false) Boolean isExists,
+                                      @RequestParam(value = "namespace", required = false) String namespace,
+                                      @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
+                                      @RequestParam(value = "argoRolloutUrl", required = false) String argoRolloutUrl) {
+    Response response = opsmxOesService.agentManifestDownloadFile(type, source, source1, description, isExists, namespace, argoCdUrl, argoRolloutUrl)
     InputStream inputStream = response.getBody().in()
     try {
       byte [] manifestFile = IOUtils.toByteArray(inputStream)
