@@ -480,11 +480,19 @@ class OpsmxOesController {
 	  }
 	}
   }
-  @ApiOperation(value = "download the manifest file")
-  @GetMapping(value = "accountsConfig/agents/{agentName}/manifest", produces = "application/octet-stream")
-  @ResponseBody Object getDownloadAgentManifestFile(@PathVariable("agentName") String agentName){
 
-    Response response = opsmxOesService.agentManifestDownloadFile(agentName)
+  @ApiOperation(value = "download the manifest file")
+  @GetMapping(value = "/{type}/{source}/{source1}/manifest", produces = "application/octet-stream")
+  @ResponseBody
+  Object getDownloadAgentManifestFile(@PathVariable("type") String type,
+                                      @PathVariable("source") String source,
+                                      @PathVariable("source1") String source1,
+                                      @RequestParam(value = "description", required = false) String description,
+                                      @RequestParam(value ="isExists", required = false) Boolean isExists,
+                                      @RequestParam(value = "namespace", required = false) String namespace,
+                                      @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
+                                      @RequestParam(value = "argoRolloutUrl", required = false) String argoRolloutUrl) {
+    Response response = opsmxOesService.agentManifestDownloadFile(type, source, source1, description, isExists, namespace, argoCdUrl, argoRolloutUrl)
     InputStream inputStream = response.getBody().in()
     try {
       byte [] manifestFile = IOUtils.toByteArray(inputStream)
