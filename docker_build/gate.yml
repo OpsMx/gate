@@ -123,5 +123,6 @@ management:
       show-components: always
 jwt:
   secret: argo_navis
+  key: argo_key
 vela:
   bounceUrl: https://qateam-saml.isd-dev.opsmx.net/bounce

@@ -19,7 +19,9 @@ package com.opsmx.spinnaker.gate.service;
 import com.netflix.spinnaker.gate.services.OesAuthorizationService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import java.security.Key;
 import java.util.*;
+import javax.crypto.spec.SecretKeySpec;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +36,9 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
   @Value("${jwt.secret}")
   private String secret;
 
+  @Value("${jwt.key}")
+  private String key;
+
   @Value("${jwt.token.durationInSeconds:36000}")
   private Integer durationInSeconds;
 
@@ -45,18 +50,18 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
     List<String> groups =
         oesAuthorizationService.getUserGroupsByUsername(username, username).getBody();
     Date currentDate = new Date(System.currentTimeMillis());
+    Key signingKey = new SecretKeySpec(secret.getBytes(), key);
     String token =
         Jwts.builder()
             .claim("groups", groups)
             .claim("argoId", argoId)
             .claim("path", path)
-            .claim("key", System.currentTimeMillis())
             .setSubject(username)
             .setIssuer("isd")
             .setIssuedAt(currentDate)
             .setExpiration(new Date(System.currentTimeMillis() + 1000L * durationInSeconds))
             .setNotBefore(currentDate)
-            .signWith(SignatureAlgorithm.HS256, secret)
+            .signWith(SignatureAlgorithm.HS256, signingKey)
             .compact();
     return bounceUrl + "/" + token;
   }
