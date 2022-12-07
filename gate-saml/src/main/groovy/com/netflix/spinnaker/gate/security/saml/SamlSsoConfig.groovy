@@ -36,6 +36,7 @@ import org.springframework.boot.autoconfigure.web.ServerProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
@@ -63,6 +64,7 @@ import static org.springframework.security.extensions.saml2.config.SAMLConfigure
 @SpinnakerAuthConfig
 @EnableWebSecurity
 @Slf4j
+@Order(2)
 class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
@@ -143,7 +145,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     //We need our session cookie to come across when we get redirected back from the IdP:
     defaultCookieSerializer.setSameSite(null)
     defaultCookieSerializer.setCookieName("gateCookie")
-    authConfig.configure(http)
+    authConfig.configure(http, Boolean.FALSE)
 
     http
       .rememberMe()
