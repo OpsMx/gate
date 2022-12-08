@@ -607,8 +607,6 @@ class AuthConfig {
 
     if (ldapEnabled || isFormLogin) {
       http.formLogin().loginPage("/login").permitAll()
-    } else {
-      http.formLogin().disable()
     }
 
     if (webhookDefaultAuthEnabled) {
