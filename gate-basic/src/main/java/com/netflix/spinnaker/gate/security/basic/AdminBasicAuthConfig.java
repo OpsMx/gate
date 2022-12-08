@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,6 +50,9 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
 
   private final BasicAuthProvider authProvider;
 
+  @Autowired
+  private AuthConfig.PermissionRevokingLogoutSuccessHandler permissionRevokingLogoutSuccessHandler;
+
   @Autowired DefaultCookieSerializer defaultCookieSerializer;
 
   @Value("${security.admin.user.roles:}")
@@ -59,6 +63,10 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
 
   @Value("${security.admin.user.password:}")
   String password;
+
+  @Value(
+      "${security.contentSecurityPolicy:\'object-src \'none\'; script-src \'unsafe-eval\' \'unsafe-inline\' https: http:;\'}")
+  String contentSecurityPolicy;
 
   @Autowired PermissionService permissionService;
 
@@ -100,8 +108,107 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
     //      .httpBasic()
     //      .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     http.antMatcher("/admin/**").authorizeRequests().anyRequest().authenticated();
+
+    http.authorizeRequests()
+        .antMatchers("/error")
+        .permitAll()
+        .antMatchers("/favicon.ico")
+        .permitAll()
+        .antMatchers("/resources/**")
+        .permitAll()
+        .antMatchers("/images/**")
+        .permitAll()
+        .antMatchers("/js/**")
+        .permitAll()
+        .antMatchers("/fonts/**")
+        .permitAll()
+        .antMatchers("/css/**")
+        .permitAll()
+        .antMatchers("/**/favicon.ico")
+        .permitAll()
+        .antMatchers(HttpMethod.OPTIONS, "/**")
+        .permitAll()
+        .antMatchers("/auth/loggedOut")
+        .permitAll()
+        .antMatchers("/auth/user")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/autopilot/registerCanary")
+        .permitAll()
+        //      .antMatchers(HttpMethod.GET,'/autopilot/api/v2/autopilot/canaries/{id}').permitAll()
+        //      .antMatchers(HttpMethod.GET,'/autopilot/api/v1/autopilot/canaries/{id}').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/autopilot/api/v1/registerCanary').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/autopilot/api/v2/registerCanary').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/autopilot/api/v3/registerCanary').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/autopilot/api/v5/registerCanary').permitAll()
+        //      .antMatchers(HttpMethod.GET,'/autopilot/canaries/{id}').permitAll()
+        //      .antMatchers(HttpMethod.GET,'/autopilot/v5/canaries/{id}').permitAll()
+        //      .antMatchers(HttpMethod.GET,'/autopilot/api/v5/external/template').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/autopilot/api/v5/external/template').permitAll()
+        //
+        // .antMatchers(HttpMethod.POST,'/visibilityservice/v1/approvalGates/{id}/trigger').permitAll()
+        //
+        // .antMatchers(HttpMethod.POST,'/visibilityservice/v2/approvalGates/{id}/trigger').permitAll()
+        //
+        // .antMatchers(HttpMethod.POST,'/visibilityservice/v4/approvalGates/{id}/trigger').permitAll()
+        //
+        // .antMatchers(HttpMethod.POST,'/visibilityservice/v5/approvalGates/{id}/trigger').permitAll()
+        //
+        // .antMatchers(HttpMethod.GET,'/visibilityservice/v2/approvalGateInstances/{id}/status').permitAll()
+        //
+        // .antMatchers(HttpMethod.GET,'/visibilityservice/v1/approvalGateInstances/{id}/status').permitAll()
+        //
+        // .antMatchers(HttpMethod.PUT,'/visibilityservice/v1/approvalGateInstances/{id}/spinnakerReview').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/oes/echo').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/oes/echo/').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/auditservice/v1/echo/events/data').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/auditservice/v1/echo/events/data/').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/v1/data/**').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/v1/staticPolicy/eval').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/v1/staticPolicy/eval/').permitAll()
+        //      .antMatchers(HttpMethod.GET,'/autopilot/mgmt/**').permitAll()
+        //      .antMatchers(HttpMethod.POST,'/datasource/cache/save').permitAll()
+        //      .antMatchers(HttpMethod.DELETE,'/datasource/cache/evict').permitAll()
+        .antMatchers("plugins/deck/**")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/webhooks/**")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/notifications/callbacks/**")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/managed/notifications/callbacks/**")
+        .permitAll()
+        .antMatchers("/health")
+        .permitAll()
+        .antMatchers("/prometheus")
+        .permitAll()
+        .antMatchers("/info")
+        .permitAll()
+        .antMatchers("/metrics")
+        .permitAll();
+
+    //    if (fiatSessionFilterEnabled) {
+    //      Filter fiatSessionFilter = new FiatSessionFilter(
+    //        fiatSessionFilterEnabled,
+    //        fiatStatus,
+    //        permissionEvaluator)
+    //
+    //      http.addFilterBefore(fiatSessionFilter, AnonymousAuthenticationFilter.class)
+    //    }
+
     http.formLogin().loginPage("/login").permitAll();
-    //    authConfig.configure(http, Boolean.TRUE);
+
+    //    if (webhookDefaultAuthEnabled) {
+    //      http.authorizeRequests().antMatchers(HttpMethod.POST, '/webhooks/**').authenticated()
+    //    }
+
+    http.headers().contentSecurityPolicy(contentSecurityPolicy);
+
+    http.logout()
+        .logoutUrl("/auth/logout")
+        .logoutSuccessHandler(permissionRevokingLogoutSuccessHandler)
+        .permitAll()
+        .and()
+        .csrf()
+        .disable();
   }
 
   @Override
