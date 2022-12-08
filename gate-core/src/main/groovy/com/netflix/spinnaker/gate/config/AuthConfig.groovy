@@ -603,10 +603,12 @@ class AuthConfig {
 
       http.addFilterBefore(fiatSessionFilter, AnonymousAuthenticationFilter.class)
     }
-
+    log.info("isFormLogin in auth config : {}", isFormLogin)
 
     if (ldapEnabled || isFormLogin) {
       http.formLogin().loginPage("/login").permitAll()
+    } else {
+      http.formLogin().disable()
     }
 
     if (webhookDefaultAuthEnabled) {
