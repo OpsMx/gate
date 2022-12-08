@@ -113,7 +113,8 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
     http.antMatcher("/admin/**")
         .authorizeRequests(authroize -> authroize.anyRequest().authenticated())
         .formLogin()
-        .loginPage("/login");
+        .loginPage("/login")
+        .permitAll();
 
     //    http.requestMatcher(requestMatcherProvider.requestMatcher())
     //        .authorizeRequests()
