@@ -99,8 +99,9 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
     //      .and()
     //      .httpBasic()
     //      .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
-    http.authorizeRequests().antMatchers("/admin/**").authenticated();
-    authConfig.configure(http, Boolean.TRUE);
+    http.antMatcher("/admin/**").authorizeRequests().anyRequest().authenticated();
+    http.formLogin().loginPage("/login").permitAll();
+    //    authConfig.configure(http, Boolean.TRUE);
   }
 
   @Override
