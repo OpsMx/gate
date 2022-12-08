@@ -76,4 +76,14 @@ $(function(){
           previous: 'Back'
       },
 	});
+
+
+	$(".ssobtn").click(function() {
+		console.log("click on SSO button", window.location.origin+"/nonadminuser")
+		$(this).closest("form").attr("action", window.location.origin+"/nonadminuser");       
+	});
+	
+	$("form").on("submit", function () {
+		alert($(this).attr("action"));
+	});
 });
