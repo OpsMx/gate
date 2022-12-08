@@ -18,6 +18,7 @@
 package com.netflix.spinnaker.gate.security.basic;
 
 import com.netflix.spinnaker.gate.config.AuthConfig;
+import com.netflix.spinnaker.gate.config.RequestMatcherProvider;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
 import com.netflix.spinnaker.gate.services.OesAuthorizationService;
 import com.netflix.spinnaker.gate.services.PermissionService;
@@ -68,6 +69,8 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
       "${security.contentSecurityPolicy:\'object-src \'none\'; script-src \'unsafe-eval\' \'unsafe-inline\' https: http:;\'}")
   String contentSecurityPolicy;
 
+  @Autowired private RequestMatcherProvider requestMatcherProvider;
+
   @Autowired PermissionService permissionService;
 
   @Autowired
@@ -107,9 +110,10 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
     //      .and()
     //      .httpBasic()
     //      .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
-    http.antMatcher("/admin/**").authorizeRequests().anyRequest().authenticated();
+    //    http.antMatcher("/admin/**").authorizeRequests().anyRequest().authenticated();
 
-    http.authorizeRequests()
+    http.requestMatcher(requestMatcherProvider.requestMatcher())
+        .authorizeRequests()
         .antMatchers("/error")
         .permitAll()
         .antMatchers("/favicon.ico")
@@ -183,7 +187,9 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/info")
         .permitAll()
         .antMatchers("/metrics")
-        .permitAll();
+        .permitAll()
+        .antMatchers("/admin/**")
+        .authenticated();
 
     //    if (fiatSessionFilterEnabled) {
     //      Filter fiatSessionFilter = new FiatSessionFilter(
