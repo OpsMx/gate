@@ -78,12 +78,10 @@ $(function(){
 	});
 
 
-	$(".ssobtn").click(function() {
+	$(".btnSSO").click(function() {
 		console.log("click on SSO button", window.location.origin+"/nonadminuser")
-		$(this).closest("form").attr("action", window.location.origin+"/nonadminuser");       
+		var url = window.location.origin+"/nonadminuser";
+		window.location.href = url;
 	});
 	
-	$("form").on("submit", function () {
-		alert($(this).attr("action"));
-	});
 });
