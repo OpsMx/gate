@@ -595,25 +595,25 @@ class AuthConfig {
         .antMatchers('/nonadminuser/**').authenticated()
     }
 
-    if (fiatSessionFilterEnabled) {
-      Filter fiatSessionFilter = new FiatSessionFilter(
-        fiatSessionFilterEnabled,
-        fiatStatus,
-        permissionEvaluator)
-
-      http.addFilterBefore(fiatSessionFilter, AnonymousAuthenticationFilter.class)
-    }
-    log.info("isFormLogin in auth config : {}", isFormLogin)
-
-    if (ldapEnabled || isFormLogin) {
-      http.formLogin().loginPage("/login").permitAll()
-    }
-
-    if (webhookDefaultAuthEnabled) {
-      http.authorizeRequests().antMatchers(HttpMethod.POST, '/webhooks/**').authenticated()
-    }
-
-    http.headers().contentSecurityPolicy(contentSecurityPolicy)
+//    if (fiatSessionFilterEnabled) {
+//      Filter fiatSessionFilter = new FiatSessionFilter(
+//        fiatSessionFilterEnabled,
+//        fiatStatus,
+//        permissionEvaluator)
+//
+//      http.addFilterBefore(fiatSessionFilter, AnonymousAuthenticationFilter.class)
+//    }
+//    log.info("isFormLogin in auth config : {}", isFormLogin)
+//
+//    if (ldapEnabled || isFormLogin) {
+//      http.formLogin().loginPage("/login").permitAll()
+//    }
+//
+//    if (webhookDefaultAuthEnabled) {
+//      http.authorizeRequests().antMatchers(HttpMethod.POST, '/webhooks/**').authenticated()
+//    }
+//
+//    http.headers().contentSecurityPolicy(contentSecurityPolicy)
 
     http.logout()
       .logoutUrl("/auth/logout")

@@ -227,7 +227,7 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
     //     '/webhooks/**').authenticated()
     //            }
 
-    http.headers().contentSecurityPolicy(contentSecurityPolicy);
+    // http.headers().contentSecurityPolicy(contentSecurityPolicy);
 
     http.logout()
         .logoutUrl("/admin/auth/logout")
