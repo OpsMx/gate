@@ -232,10 +232,7 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
     http.logout()
         .logoutUrl("/admin/auth/logout")
         .logoutSuccessHandler(permissionRevokingLogoutSuccessHandler)
-        .permitAll()
-        .and()
-        .csrf()
-        .disable();
+        .permitAll();
   }
 
   @Override

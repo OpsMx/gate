@@ -619,9 +619,6 @@ class AuthConfig {
       .logoutUrl("/auth/logout")
       .logoutSuccessHandler(permissionRevokingLogoutSuccessHandler)
       .permitAll()
-      .and()
-      .csrf()
-      .disable()
     // @formatter:on
   }
 
