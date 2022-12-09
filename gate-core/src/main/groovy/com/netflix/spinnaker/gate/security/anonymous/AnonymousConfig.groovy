@@ -42,8 +42,8 @@ import java.util.concurrent.CopyOnWriteArrayList
 @ConditionalOnMissingBean(annotation = SpinnakerAuthConfig.class)
 @Configuration
 @Slf4j
-@EnableWebSecurity
-@Order(Ordered.LOWEST_PRECEDENCE)
+
+@Order(4)
 class AnonymousConfig extends WebSecurityConfigurerAdapter {
   static String key = "spinnaker-anonymous"
   static String defaultEmail = "anonymous"

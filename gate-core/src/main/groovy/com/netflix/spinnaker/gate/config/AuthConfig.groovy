@@ -425,7 +425,7 @@ class AuthConfig {
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()
         .antMatchers('/metrics').permitAll()
-        .antMatchers('/nonadminuser/**').authenticated()
+        .antMatchers('/**').authenticated()
     }else if(isAgentAPIUnauthenticatedAccessEnabled){
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
@@ -487,7 +487,7 @@ class AuthConfig {
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()
         .antMatchers('/metrics').permitAll()
-        .antMatchers('nonadminuser/**').authenticated()
+        .antMatchers('/**').authenticated()
     }else if(isSpinnakerWebhooksUnauthenticatedAccessEnabled){
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
@@ -540,7 +540,7 @@ class AuthConfig {
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()
         .antMatchers('/metrics').permitAll()
-        .antMatchers('/nonadminuser/**').authenticated()
+        .antMatchers('/**').authenticated()
     }else{
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
@@ -592,7 +592,7 @@ class AuthConfig {
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()
         .antMatchers('/metrics').permitAll()
-        .antMatchers('/nonadminuser/**').authenticated()
+        .antMatchers('/**').authenticated()
     }
 
 //    if (fiatSessionFilterEnabled) {

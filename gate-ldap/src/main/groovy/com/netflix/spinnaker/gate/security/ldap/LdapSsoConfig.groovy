@@ -30,6 +30,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import org.springframework.ldap.core.DirContextAdapter
 import org.springframework.ldap.core.DirContextOperations
 import org.springframework.security.authentication.AuthenticationManager
@@ -53,7 +54,7 @@ import org.springframework.stereotype.Component
 @ConditionalOnExpression('${ldap.enabled:false}')
 @Configuration
 @SpinnakerAuthConfig
-@EnableWebSecurity
+@Order(8)
 class LdapSsoConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired

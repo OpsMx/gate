@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.saml.SAMLProcessingFilter;
 import org.springframework.security.web.FilterChainProxy;
@@ -19,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @ConditionalOnExpression("${saml.enabled:false}")
 @Configuration
 @Slf4j
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(11)
 public class SamlSsoEventPublishConfig {
 
   private ApplicationEventPublisher applicationEventPublisher;

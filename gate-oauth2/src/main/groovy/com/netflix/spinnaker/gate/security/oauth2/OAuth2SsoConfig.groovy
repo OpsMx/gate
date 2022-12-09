@@ -28,6 +28,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -47,7 +48,7 @@ import javax.servlet.http.HttpServletResponse
 
 @Configuration
 @SpinnakerAuthConfig
-@EnableWebSecurity
+@Order(9)
 @EnableOAuth2Sso
 @EnableConfigurationProperties
 // Note the 4 single-quotes below - this is a raw groovy string, because SpEL and groovy
