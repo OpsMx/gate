@@ -25,7 +25,7 @@ import com.netflix.spinnaker.gate.services.OesAuthorizationService
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.kork.core.RetrySupport
 import com.netflix.spinnaker.security.User
-import com.opsmx.spinnaker.gate.security.saml.BasicAuthProvider
+import com.opsmx.spinnaker.gate.security.saml.AdminAuthProvider
 import com.opsmx.spinnaker.gate.security.saml.SamlAuthTokenUpdateFilter
 import groovy.util.logging.Slf4j
 import org.opensaml.saml2.core.Assertion
@@ -34,11 +34,13 @@ import org.opensaml.xml.schema.XSAny
 import org.opensaml.xml.schema.XSString
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.beans.factory.config.ConfigurableBeanFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.web.ServerProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Scope
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -48,8 +50,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.extensions.saml2.config.SAMLConfigurer
 import org.springframework.security.saml.SAMLCredential
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService
@@ -59,7 +59,6 @@ import org.springframework.security.web.authentication.rememberme.TokenBasedReme
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.session.web.http.DefaultCookieSerializer
 import org.springframework.stereotype.Component
-import org.springframework.security.crypto.factory.PasswordEncoderFactories
 
 import javax.annotation.PostConstruct
 import java.security.KeyStore
@@ -90,16 +89,19 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   PermissionService permissionSvc
 
-  BasicAuthProvider authProvider
+  AdminAuthProvider authProvider
 
-  @Value('${security.user.roles:}')
+  @Value('${security.admin.user.roles:}')
   String roles
 
-  @Value('${security.user.name:}')
+  @Value('${security.admin.user.name:}')
   String name
 
-  @Value('${security.user.password:}')
+  @Value('${security.admin.user.password:}')
   String password
+
+  @Value('${security.admin.login.enabled:false}')
+  boolean isAdminLoginEnabled
 
   @Component
   @ConfigurationProperties("saml")
@@ -211,28 +213,33 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     authConfig.configure(web)
   }
 
-  @Autowired
-  void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    this.authProvider = new BasicAuthProvider(permissionSvc, oesAuthorizationService)
+  @Bean
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  AuthenticationManagerBuilder configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    if (isAdminLoginEnabled) {
+      log.info("configuring AuthenticationManagerBuilder")
+      this.authProvider = new AdminAuthProvider(permissionSvc, oesAuthorizationService)
 
-    if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
-      throw new AuthenticationServiceException(
-        "User credentials are not configured properly. Please check username and password are properly configured")
+      if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
+        throw new AuthenticationServiceException(
+          "User credentials are not configured properly. Please check username and password are properly configured")
+      }
+
+      if (roles == null || roles.isEmpty()) {
+        log.warn(
+          "No roles are configured for the user. This would leads to authorizations issues if RBAC is enabled")
+      } else {
+        authProvider.setRoles(
+          Stream.of(roles.split(",")).map({ role -> role.trim() }).collect(Collectors.toList()))
+      }
+
+
+      authProvider.setName(this.name)
+      authProvider.setPassword(this.password)
+
+      auth.authenticationProvider(authProvider)
     }
-
-    if (roles == null || roles.isEmpty()) {
-      log.warn(
-        "No roles are configured for the user. This would leads to authorizations issues if RBAC is enabled")
-    } else {
-      authProvider.setRoles(
-        Stream.of(roles.split(",")).map({ role -> role.trim() }).collect(Collectors.toList()))
-    }
-
-
-    authProvider.setName(this.name)
-    authProvider.setPassword(this.password)
-
-    auth.authenticationProvider(authProvider)
+    return auth
   }
 
   public WebSSOProfileConsumerImpl getWebSSOProfileConsumerImpl() {

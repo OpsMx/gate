@@ -34,7 +34,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Slf4j
-public class BasicAuthProvider implements AuthenticationProvider {
+public class AdminAuthProvider implements AuthenticationProvider {
 
   private final PermissionService permissionService;
   private final OesAuthorizationService oesAuthorizationService;
@@ -43,7 +43,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
   private String name;
   private String password;
 
-  public BasicAuthProvider(
+  public AdminAuthProvider(
       PermissionService permissionService, OesAuthorizationService oesAuthorizationService) {
     this.permissionService = permissionService;
     this.oesAuthorizationService = oesAuthorizationService;
@@ -54,9 +54,6 @@ public class BasicAuthProvider implements AuthenticationProvider {
     String name = authentication.getName();
     String password =
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
-
-    log.info("password set : {}", this.password);
-    log.info("Entered password : {}", password);
 
     if (!this.name.equals(name) || !this.password.equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");

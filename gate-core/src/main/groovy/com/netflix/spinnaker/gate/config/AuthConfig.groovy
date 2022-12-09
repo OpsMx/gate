@@ -97,7 +97,7 @@ class AuthConfig {
   @Value('${security.contentSecurityPolicy:\'object-src \'none\'; script-src \'unsafe-eval\' \'unsafe-inline\' https: http:;\'}')
   String contentSecurityPolicy
 
-  @Value('${security.adminLogin.enabled:false}')
+  @Value('${security.admin.login.enabled:false}')
   boolean isAdminLoginEnabled
 
 
@@ -346,7 +346,7 @@ class AuthConfig {
 
 
     if (ldapEnabled || isAdminLoginEnabled) {
-      //http.formLogin().loginPage("/login").permitAll()
+      http.formLogin().loginPage("/login").permitAll()
     }
 
     if (webhookDefaultAuthEnabled) {
