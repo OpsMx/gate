@@ -107,7 +107,6 @@ class AuthConfig {
 
   @Bean
   @Primary
-  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   HttpSecurity configure(HttpSecurity http) throws Exception {
     // @formatter:off
     if(isAgentAPIUnauthenticatedAccessEnabled && isSpinnakerWebhooksUnauthenticatedAccessEnabled){
