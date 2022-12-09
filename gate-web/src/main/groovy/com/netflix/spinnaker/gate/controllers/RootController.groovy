@@ -46,16 +46,13 @@ class RootController {
 
   @RequestMapping("/admin/{baseUrl}/application")
   void adminBaseUrl(HttpServletResponse response, @PathVariable("baseUrl") String baseUrl){
-    if(baseUrl.trim().equalsIgnoreCase(uiBaseUrl)) {
       response.sendRedirect("/ui" + "/application")
-    }
   }
 
   @RequestMapping("/nonadminuser/{baseUrl}/application")
   void nonAdminBaseUrl(HttpServletResponse response, @PathVariable("baseUrl") String baseUrl){
-    if(baseUrl.trim().equalsIgnoreCase(uiBaseUrl)) {
-      response.sendRedirect("/ui" + "/application")
-    }
+    response.sendRedirect("/ui" + "/application")
+
   }
 
   @RequestMapping("/nonadminuser")
