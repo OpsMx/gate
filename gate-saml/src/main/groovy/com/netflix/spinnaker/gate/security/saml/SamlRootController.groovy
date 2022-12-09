@@ -36,6 +36,8 @@ public class SamlRootController {
   @Value('${services.oesui.externalUrl:}')
   String uiBaseUrl
 
+  static boolean isFormLoginDisabled = Boolean.FALSE
+
   @Autowired SamlSsoConfig samlSsoConfig
 
   @RequestMapping("/nonadminuser")
@@ -43,7 +45,11 @@ public class SamlRootController {
     log.info("uiBaseUrl : {}", uiBaseUrl)
 
     HttpSecurity httpSecurity = BeanUtil.getBean(HttpSecurity.class)
-    httpSecurity.formLogin().disable()
+    if (!isFormLoginDisabled) {
+      httpSecurity.formLogin().disable()
+      httpSecurity.formLogin().configure(httpSecurity)
+      isFormLoginDisabled = Boolean.TRUE
+    }
 
     //    AuthenticationManagerBuilder authenticationManagerBuilder =
     // BeanUtil.getBean(AuthenticationManagerBuilder.class);
