@@ -40,6 +40,7 @@ import org.springframework.boot.autoconfigure.web.ServerProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Scope
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.authentication.BadCredentialsException
@@ -214,6 +215,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
+  @Primary
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   AuthenticationManagerBuilder configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     if (isAdminLoginEnabled) {
