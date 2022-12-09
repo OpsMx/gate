@@ -27,7 +27,7 @@ $(function(){
     $('.modal').on('shown.bs.modal', function () {
 	    $('[autofocus]').focus();
 	    // setFormHeight();
-	}) 
+	})
 
     $('.data_list').click(function(){
     	$(this).siblings().removeClass('active')
@@ -71,9 +71,17 @@ $(function(){
 		autoAdjustHeight:true,
 		transitionEffect:'fade',
 		showStepURLhash: false,
-		lang: { 
+		lang: {
           next: 'Next',
           previous: 'Back'
       },
 	});
+
+
+	$(".btnSSO").click(function() {
+		console.log("click on SSO button", window.location.origin+"/nonadminuser")
+		var url = window.location.origin+"/nonadminuser";
+		window.location.href = url;
+	});
+
 });

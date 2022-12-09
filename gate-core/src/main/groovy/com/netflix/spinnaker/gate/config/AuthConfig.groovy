@@ -107,6 +107,7 @@ class AuthConfig {
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
         .authorizeRequests()
+        .antMatchers("/nonadminuser").permitAll()
         .antMatchers("/error").permitAll()
         .antMatchers('/favicon.ico').permitAll()
         .antMatchers("/resources/**").permitAll()
@@ -170,6 +171,7 @@ class AuthConfig {
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
         .authorizeRequests()
+        .antMatchers("/nonadminuser").permitAll()
         .antMatchers("/error").permitAll()
         .antMatchers('/favicon.ico').permitAll()
         .antMatchers("/resources/**").permitAll()
@@ -232,6 +234,7 @@ class AuthConfig {
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
         .authorizeRequests()
+        .antMatchers("/nonadminuser").permitAll()
         .antMatchers("/error").permitAll()
         .antMatchers('/favicon.ico').permitAll()
         .antMatchers("/resources/**").permitAll()
@@ -285,6 +288,7 @@ class AuthConfig {
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
         .authorizeRequests()
+        .antMatchers("/nonadminuser").permitAll()
         .antMatchers("/error").permitAll()
         .antMatchers('/favicon.ico').permitAll()
         .antMatchers("/resources/**").permitAll()
