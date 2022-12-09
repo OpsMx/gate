@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -108,126 +109,133 @@ public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {
     //      .httpBasic()
     //      .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     //    http.antMatcher("/admin/**").authorizeRequests().anyRequest().authenticated();
-    http.antMatcher("/admin/**")
-        .authorizeRequests(authroize -> authroize.anyRequest().authenticated())
-        .formLogin()
-        .loginPage("/login")
-        .permitAll();
+    //    http.antMatcher("/admin/**")
+    //        .authorizeRequests(authroize -> authroize.anyRequest().authenticated())
+    //        .formLogin()
+    //        .loginPage("/login")
+    //        .permitAll();
 
-    //    http.requestMatcher(requestMatcherProvider.requestMatcher())
-    //        .authorizeRequests()
-    //        .antMatchers("/admin/error")
-    //        .permitAll()
-    //        .antMatchers("/admin/favicon.ico")
-    //        .permitAll()
-    //        .antMatchers("/admin/resources/**")
-    //        .permitAll()
-    //        .antMatchers("/admin/images/**")
-    //        .permitAll()
-    //        .antMatchers("/admin/js/**")
-    //        .permitAll()
-    //        .antMatchers("/admin/fonts/**")
-    //        .permitAll()
-    //        .antMatchers("/admin/css/**")
-    //        .permitAll()
-    //        .antMatchers("/admin/**/favicon.ico")
-    //        .permitAll()
-    //        .antMatchers(HttpMethod.OPTIONS, "/**")
-    //        .permitAll()
-    //        .antMatchers("/admin/auth/loggedOut")
-    //        .permitAll()
-    //        .antMatchers("/admin/auth/user")
-    //        .permitAll()
-    //        .antMatchers(HttpMethod.POST, "/admin/autopilot/registerCanary")
-    //        .permitAll()
-    //        //
-    // .antMatchers(HttpMethod.GET,'/autopilot/api/v2/autopilot/canaries/{id}').permitAll()
-    //        //
-    // .antMatchers(HttpMethod.GET,'/autopilot/api/v1/autopilot/canaries/{id}').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/autopilot/api/v1/registerCanary').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/autopilot/api/v2/registerCanary').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/autopilot/api/v3/registerCanary').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/autopilot/api/v5/registerCanary').permitAll()
-    //        //      .antMatchers(HttpMethod.GET,'/autopilot/canaries/{id}').permitAll()
-    //        //      .antMatchers(HttpMethod.GET,'/autopilot/v5/canaries/{id}').permitAll()
-    //        //      .antMatchers(HttpMethod.GET,'/autopilot/api/v5/external/template').permitAll()
-    //        //
-    // .antMatchers(HttpMethod.POST,'/autopilot/api/v5/external/template').permitAll()
-    //        //
-    //        //
-    // .antMatchers(HttpMethod.POST,'/visibilityservice/v1/approvalGates/{id}/trigger').permitAll()
-    //        //
-    //        //
-    // .antMatchers(HttpMethod.POST,'/visibilityservice/v2/approvalGates/{id}/trigger').permitAll()
-    //        //
-    //        //
-    // .antMatchers(HttpMethod.POST,'/visibilityservice/v4/approvalGates/{id}/trigger').permitAll()
-    //        //
-    //        //
-    // .antMatchers(HttpMethod.POST,'/visibilityservice/v5/approvalGates/{id}/trigger').permitAll()
-    //        //
-    //        //
-    // .antMatchers(HttpMethod.GET,'/visibilityservice/v2/approvalGateInstances/{id}/status').permitAll()
-    //        //
-    //        //
-    // .antMatchers(HttpMethod.GET,'/visibilityservice/v1/approvalGateInstances/{id}/status').permitAll()
-    //        //
-    //        //
-    // .antMatchers(HttpMethod.PUT,'/visibilityservice/v1/approvalGateInstances/{id}/spinnakerReview').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/oes/echo').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/oes/echo/').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/auditservice/v1/echo/events/data').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/auditservice/v1/echo/events/data/').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/v1/data/**').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/v1/staticPolicy/eval').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/v1/staticPolicy/eval/').permitAll()
-    //        //      .antMatchers(HttpMethod.GET,'/autopilot/mgmt/**').permitAll()
-    //        //      .antMatchers(HttpMethod.POST,'/datasource/cache/save').permitAll()
-    //        //      .antMatchers(HttpMethod.DELETE,'/datasource/cache/evict').permitAll()
-    //        .antMatchers("/admin/plugins/deck/**")
-    //        .permitAll()
-    //        .antMatchers(HttpMethod.POST, "/admin/webhooks/**")
-    //        .permitAll()
-    //        .antMatchers(HttpMethod.POST, "/admin/notifications/callbacks/**")
-    //        .permitAll()
-    //        .antMatchers(HttpMethod.POST, "/admin/managed/notifications/callbacks/**")
-    //        .permitAll()
-    //        .antMatchers("/admin/health")
-    //        .permitAll()
-    //        .antMatchers("/admin/prometheus")
-    //        .permitAll()
-    //        .antMatchers("/admin/info")
-    //        .permitAll()
-    //        .antMatchers("/admin/metrics")
-    //        .permitAll()
-    //        .antMatchers("/admin/**")
-    //        .authenticated();
+    http.requestMatcher(requestMatcherProvider.requestMatcher())
+        .authorizeRequests()
+        .antMatchers("/admin/error")
+        .permitAll()
+        .antMatchers("/admin/favicon.ico")
+        .permitAll()
+        .antMatchers("/admin/resources/**")
+        .permitAll()
+        .antMatchers("/admin/images/**")
+        .permitAll()
+        .antMatchers("/admin/js/**")
+        .permitAll()
+        .antMatchers("/admin/fonts/**")
+        .permitAll()
+        .antMatchers("/admin/css/**")
+        .permitAll()
+        .antMatchers("/admin/**/favicon.ico")
+        .permitAll()
+        .antMatchers(HttpMethod.OPTIONS, "/**")
+        .permitAll()
+        .antMatchers("/admin/auth/loggedOut")
+        .permitAll()
+        .antMatchers("/admin/auth/user")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/admin/autopilot/registerCanary")
+        .permitAll()
+        //
+        // .antMatchers(HttpMethod.GET,'/autopilot/api/v2/autopilot/canaries/{id}').permitAll()
+        //        //
+        // .antMatchers(HttpMethod.GET,'/autopilot/api/v1/autopilot/canaries/{id}').permitAll()
+        //        //
+        // .antMatchers(HttpMethod.POST,'/autopilot/api/v1/registerCanary').permitAll()
+        //        //
+        // .antMatchers(HttpMethod.POST,'/autopilot/api/v2/registerCanary').permitAll()
+        //        //
+        // .antMatchers(HttpMethod.POST,'/autopilot/api/v3/registerCanary').permitAll()
+        //        //
+        // .antMatchers(HttpMethod.POST,'/autopilot/api/v5/registerCanary').permitAll()
+        //        //      .antMatchers(HttpMethod.GET,'/autopilot/canaries/{id}').permitAll()
+        //        //      .antMatchers(HttpMethod.GET,'/autopilot/v5/canaries/{id}').permitAll()
+        //        //
+        // .antMatchers(HttpMethod.GET,'/autopilot/api/v5/external/template').permitAll()
+        //        //
+        // .antMatchers(HttpMethod.POST,'/autopilot/api/v5/external/template').permitAll()
+        //        //
+        //        //
+        // .antMatchers(HttpMethod.POST,'/visibilityservice/v1/approvalGates/{id}/trigger').permitAll()
+        //        //
+        //        //
+        // .antMatchers(HttpMethod.POST,'/visibilityservice/v2/approvalGates/{id}/trigger').permitAll()
+        //        //
+        //        //
+        // .antMatchers(HttpMethod.POST,'/visibilityservice/v4/approvalGates/{id}/trigger').permitAll()
+        //        //
+        //        //
+        // .antMatchers(HttpMethod.POST,'/visibilityservice/v5/approvalGates/{id}/trigger').permitAll()
+        //        //
+        //        //
+        // .antMatchers(HttpMethod.GET,'/visibilityservice/v2/approvalGateInstances/{id}/status').permitAll()
+        //        //
+        //        //
+        // .antMatchers(HttpMethod.GET,'/visibilityservice/v1/approvalGateInstances/{id}/status').permitAll()
+        //        //
+        //        //
+        // .antMatchers(HttpMethod.PUT,'/visibilityservice/v1/approvalGateInstances/{id}/spinnakerReview').permitAll()
+        //        //      .antMatchers(HttpMethod.POST,'/oes/echo').permitAll()
+        //        //      .antMatchers(HttpMethod.POST,'/oes/echo/').permitAll()
+        //        //
+        // .antMatchers(HttpMethod.POST,'/auditservice/v1/echo/events/data').permitAll()
+        //        //
+        // .antMatchers(HttpMethod.POST,'/auditservice/v1/echo/events/data/').permitAll()
+        //        //      .antMatchers(HttpMethod.POST,'/v1/data/**').permitAll()
+        //        //      .antMatchers(HttpMethod.POST,'/v1/staticPolicy/eval').permitAll()
+        //        //      .antMatchers(HttpMethod.POST,'/v1/staticPolicy/eval/').permitAll()
+        //        //      .antMatchers(HttpMethod.GET,'/autopilot/mgmt/**').permitAll()
+        //        //      .antMatchers(HttpMethod.POST,'/datasource/cache/save').permitAll()
+        //        //      .antMatchers(HttpMethod.DELETE,'/datasource/cache/evict').permitAll()
+        .antMatchers("/admin/plugins/deck/**")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/admin/webhooks/**")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/admin/notifications/callbacks/**")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/admin/managed/notifications/callbacks/**")
+        .permitAll()
+        .antMatchers("/admin/health")
+        .permitAll()
+        .antMatchers("/admin/prometheus")
+        .permitAll()
+        .antMatchers("/admin/info")
+        .permitAll()
+        .antMatchers("/admin/metrics")
+        .permitAll()
+        .antMatchers("/admin/**")
+        .authenticated();
+
+    //    if (fiatSessionFilterEnabled) {
+    //      Filter fiatSessionFilter = new FiatSessionFilter(
+    //        fiatSessionFilterEnabled,
+    //        fiatStatus,
+    //        permissionEvaluator)
     //
-    //    //    if (fiatSessionFilterEnabled) {
-    //    //      Filter fiatSessionFilter = new FiatSessionFilter(
-    //    //        fiatSessionFilterEnabled,
-    //    //        fiatStatus,
-    //    //        permissionEvaluator)
-    //    //
-    //    //      http.addFilterBefore(fiatSessionFilter, AnonymousAuthenticationFilter.class)
-    //    //    }
-    //
-    //    http.formLogin().loginPage("/login").permitAll();
-    //
-    //    //    if (webhookDefaultAuthEnabled) {
-    //    //      http.authorizeRequests().antMatchers(HttpMethod.POST,
-    // '/webhooks/**').authenticated()
-    //    //    }
-    //
-    //    http.headers().contentSecurityPolicy(contentSecurityPolicy);
-    //
-    //    http.logout()
-    //        .logoutUrl("/auth/logout")
-    //        .logoutSuccessHandler(permissionRevokingLogoutSuccessHandler)
-    //        .permitAll()
-    //        .and()
-    //        .csrf()
-    //        .disable();
+    //      http.addFilterBefore(fiatSessionFilter, AnonymousAuthenticationFilter.class)
+    //    }
+
+    http.formLogin().loginPage("/login").permitAll();
+
+    //            if (webhookDefaultAuthEnabled) {
+    //              http.authorizeRequests().antMatchers(HttpMethod.POST,
+    //     '/webhooks/**').authenticated()
+    //            }
+
+    http.headers().contentSecurityPolicy(contentSecurityPolicy);
+
+    http.logout()
+        .logoutUrl("/admin/auth/logout")
+        .logoutSuccessHandler(permissionRevokingLogoutSuccessHandler)
+        .permitAll()
+        .and()
+        .csrf()
+        .disable();
   }
 
   @Override
