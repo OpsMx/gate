@@ -18,6 +18,7 @@ package com.netflix.spinnaker.gate.controllers
 
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -30,9 +31,32 @@ class RootController {
   @Value('${services.oesui.externalUrl:}')
   String uiBaseUrl
 
+  @Value('${security.admin.login.enabled:false}')
+  boolean isAdminLogin
+
   @RequestMapping("/")
   void root(HttpServletResponse response) {
     log.info("uiBaseUrl : {}", uiBaseUrl)
-    response.sendRedirect(uiBaseUrl + "/application")
+    if (isAdminLogin){
+      response.sendRedirect("/admin/" + uiBaseUrl + "/application")
+    } else {
+      response.sendRedirect("/nonadminuser/" + uiBaseUrl + "/application")
+    }
   }
+
+  @RequestMapping("/admin/{baseUrl}/application")
+  void adminBaseUrl(HttpServletResponse response, @PathVariable("baseUrl") String baseUrl){
+    if(baseUrl.trim().equalsIgnoreCase(uiBaseUrl)) {
+      response.sendRedirect(uiBaseUrl + "/application")
+    }
+  }
+
+  @RequestMapping("/nonadminuser/{baseUrl}/application")
+  void nonAdminBaseUrl(HttpServletResponse response, @PathVariable("baseUrl") String baseUrl){
+    if(baseUrl.trim().equalsIgnoreCase(uiBaseUrl)) {
+      response.sendRedirect(uiBaseUrl + "/application")
+    }
+  }
+
+
 }

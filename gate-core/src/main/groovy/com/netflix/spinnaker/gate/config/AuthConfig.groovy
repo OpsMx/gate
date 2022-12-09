@@ -161,7 +161,7 @@ class AuthConfig {
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()
         .antMatchers('/metrics').permitAll()
-        .antMatchers('/**').authenticated()
+        .antMatchers('/nonadminuser/**').authenticated()
     }else if(isAgentAPIUnauthenticatedAccessEnabled){
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
@@ -223,7 +223,7 @@ class AuthConfig {
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()
         .antMatchers('/metrics').permitAll()
-        .antMatchers('/**').authenticated()
+        .antMatchers('/nonadminuser/**').authenticated()
     }else if(isSpinnakerWebhooksUnauthenticatedAccessEnabled){
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
@@ -425,7 +425,7 @@ class AuthConfig {
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()
         .antMatchers('/metrics').permitAll()
-        .antMatchers('/**').authenticated()
+        .antMatchers('/nonadminuser/**').authenticated()
     }else if(isAgentAPIUnauthenticatedAccessEnabled){
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
@@ -487,7 +487,7 @@ class AuthConfig {
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()
         .antMatchers('/metrics').permitAll()
-        .antMatchers('/**').authenticated()
+        .antMatchers('nonadminuser/**').authenticated()
     }else if(isSpinnakerWebhooksUnauthenticatedAccessEnabled){
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
@@ -540,7 +540,7 @@ class AuthConfig {
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()
         .antMatchers('/metrics').permitAll()
-        .antMatchers('/**').authenticated()
+        .antMatchers('/nonadminuser/**').authenticated()
     }else{
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
@@ -592,7 +592,7 @@ class AuthConfig {
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()
         .antMatchers('/metrics').permitAll()
-        .antMatchers('/**').authenticated()
+        .antMatchers('/nonadminuser/**').authenticated()
     }
 
     if (fiatSessionFilterEnabled) {
