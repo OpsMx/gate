@@ -34,14 +34,12 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
 @Slf4j
 @Order(1)
 @Configuration
-@EnableWebSecurity
 @SpinnakerAuthConfig
 @ConditionalOnExpression("${security.admin.login.enabled:false}")
 public class AdminBasicAuthConfig extends WebSecurityConfigurerAdapter {

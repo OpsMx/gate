@@ -62,7 +62,6 @@ import static org.springframework.security.extensions.saml2.config.SAMLConfigure
 @ConditionalOnExpression('${saml.enabled:false}')
 @Configuration
 @SpinnakerAuthConfig
-@EnableWebSecurity
 @Slf4j
 @Order(2)
 class SamlSsoConfig extends WebSecurityConfigurerAdapter {
