@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 OpsMx, Inc.
+ * Copyright 2022 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,41 @@
  * limitations under the License.
  */
 
-package com.opsmx.spinnaker.gate.security.saml;
+package com.netflix.spinnaker.gate.security.saml;
 
-import com.netflix.spinnaker.gate.security.saml.SamlSsoConfig;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.netflix.spinnaker.gate.security.saml.SamlSsoConfig
+import groovy.util.logging.Slf4j
+
+import javax.servlet.http.HttpServletResponse
+
+import com.opsmx.spinnaker.gate.security.saml.BeanUtil
+
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @Slf4j
 @RestController
 public class SamlRootController {
 
-  @Value("${services.oesui.externalUrl:}")
-  private String uiBaseUrl;
+  @Value('${services.oesui.externalUrl:}')
+  String uiBaseUrl
 
-  @Autowired private SamlSsoConfig samlSsoConfig;
+  @Autowired SamlSsoConfig samlSsoConfig
 
   @RequestMapping("/nonadminuser")
   void nonadminuser(HttpServletResponse response) throws Exception {
-    log.info("uiBaseUrl : {}", uiBaseUrl);
+    log.info("uiBaseUrl : {}", uiBaseUrl)
 
-    HttpSecurity httpSecurity = BeanUtil.getBean(HttpSecurity.class);
-    httpSecurity.formLogin().disable();
+    HttpSecurity httpSecurity = BeanUtil.getBean(HttpSecurity.class)
+    httpSecurity.formLogin().disable()
 
     //    AuthenticationManagerBuilder authenticationManagerBuilder =
     // BeanUtil.getBean(AuthenticationManagerBuilder.class);
     //    samlSsoConfig.configureGlobal(authenticationManagerBuilder);
 
-    response.sendRedirect(uiBaseUrl + "/application");
+    response.sendRedirect(uiBaseUrl + "/application")
   }
 }
