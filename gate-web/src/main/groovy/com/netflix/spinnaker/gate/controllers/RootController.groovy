@@ -38,24 +38,30 @@ class RootController {
   void root(HttpServletResponse response) {
     log.info("uiBaseUrl : {}", uiBaseUrl)
     if (isAdminLogin){
-      response.sendRedirect("/admin/" + uiBaseUrl + "/application")
+      response.sendRedirect("/admin/" + "ui" + "/application")
     } else {
-      response.sendRedirect("/nonadminuser/" + uiBaseUrl + "/application")
+      response.sendRedirect("/nonadminuser/" + "ui" + "/application")
     }
   }
 
   @RequestMapping("/admin/{baseUrl}/application")
   void adminBaseUrl(HttpServletResponse response, @PathVariable("baseUrl") String baseUrl){
     if(baseUrl.trim().equalsIgnoreCase(uiBaseUrl)) {
-      response.sendRedirect(uiBaseUrl + "/application")
+      response.sendRedirect("/ui" + "/application")
     }
   }
 
   @RequestMapping("/nonadminuser/{baseUrl}/application")
   void nonAdminBaseUrl(HttpServletResponse response, @PathVariable("baseUrl") String baseUrl){
     if(baseUrl.trim().equalsIgnoreCase(uiBaseUrl)) {
-      response.sendRedirect(uiBaseUrl + "/application")
+      response.sendRedirect("/ui" + "/application")
     }
+  }
+
+  @RequestMapping("/nonadminuser")
+  void loginWithSso(HttpServletResponse response){
+    response.sendRedirect("/nonadminuser/" + "ui" + "/application")
+
   }
 
 
