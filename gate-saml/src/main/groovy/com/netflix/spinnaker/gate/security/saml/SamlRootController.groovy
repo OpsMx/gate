@@ -39,7 +39,7 @@ class SamlRootController  {
     log.info("uiBaseUrl : {}", uiBaseUrl)
     DefaultListableBeanFactory defaultListableBeanFactory = new DefaultListableBeanFactory()
     defaultListableBeanFactory.removeBeanDefinition("adminAuthConfig")
-    defaultListableBeanFactory.destroySingleton("adminAuthConfig")
+    //defaultListableBeanFactory.destroySingleton("adminAuthConfig")
     GenericBeanDefinition genericBeanDefinition = new GenericBeanDefinition()
     genericBeanDefinition.setBeanClass(SamlSsoUIConfig.class)
 
