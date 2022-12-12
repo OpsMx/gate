@@ -17,11 +17,15 @@
 
 package com.netflix.spinnaker.gate.security.saml
 
+import com.netflix.spinnaker.gate.security.saml.util.BeanUtil
 import groovy.util.logging.Slf4j
-import org.springframework.beans.MutablePropertyValues
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory
+import org.springframework.beans.factory.config.BeanDefinition
+import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.beans.factory.support.GenericBeanDefinition
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -37,13 +41,26 @@ class SamlRootController  {
   @RequestMapping("/nonadminuser")
   void root(HttpServletResponse response) {
     log.info("uiBaseUrl : {}", uiBaseUrl)
-    DefaultListableBeanFactory defaultListableBeanFactory = new DefaultListableBeanFactory()
-    defaultListableBeanFactory.removeBeanDefinition("adminAuthConfiguration")
-    //defaultListableBeanFactory.destroySingleton("adminAuthConfig")
-    GenericBeanDefinition genericBeanDefinition = new GenericBeanDefinition()
-    genericBeanDefinition.setBeanClass(SamlSsoUIConfig.class)
+//    AnnotationConfigApplicationContext context =
+//      new AnnotationConfigApplicationContext(AdminAuthConfig.class)
+//
+//    //defaultListableBeanFactory.destroySingleton("adminAuthConfig")
+//    GenericBeanDefinition genericBeanDefinition = new GenericBeanDefinition()
+//    genericBeanDefinition.setBeanClass(SamlSsoUIConfig.class)
+//
+////    defaultListableBeanFactory.registerBeanDefinition("samlSsoUiConfig", genericBeanDefinition)
+//
+//    context.registerBeanDefinition("samlSsoUiConfig", genericBeanDefinition)
 
-    defaultListableBeanFactory.registerBeanDefinition("samlSsoUiConfig", genericBeanDefinition)
+    AutowireCapableBeanFactory autowireCapableBeanFactory = BeanUtil.getApplicationContext().getAutowireCapableBeanFactory()
+    BeanDefinitionRegistry registry = (BeanDefinitionRegistry) autowireCapableBeanFactory
+
+    registry.removeBeanDefinition("adminAuthConfiguration")
+
+    GenericBeanDefinition myBeanDefinition = new GenericBeanDefinition()
+    myBeanDefinition.setBeanClass(SamlSsoUIConfig.class);
+
+    registry.registerBeanDefinition("samlSsoConfiguration", myBeanDefinition)
 
     response.sendRedirect("/ui" + "/application")
   }
