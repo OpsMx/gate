@@ -19,7 +19,9 @@ package com.netflix.spinnaker.gate.security.saml.util
 import org.springframework.beans.BeansException
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
+import org.springframework.stereotype.Component
 
+@Component
 class BeanUtil implements ApplicationContextAware{
 
   static ApplicationContext applicationContext
