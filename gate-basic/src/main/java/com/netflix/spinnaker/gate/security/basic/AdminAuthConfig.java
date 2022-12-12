@@ -39,7 +39,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @Slf4j
 @EnableWebSecurity
 @SpinnakerAuthConfig
-@Configuration("adminAuthConfig")
+@Configuration(value = "adminAuthConfiguration")
 @ConditionalOnExpression("${security.admin.login.enabled:false}")
 public class AdminAuthConfig extends WebSecurityConfigurerAdapter {
 
