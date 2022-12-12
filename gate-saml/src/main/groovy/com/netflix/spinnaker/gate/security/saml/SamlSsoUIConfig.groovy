@@ -1,17 +1,18 @@
 /*
- * Copyright 2014 Netflix, Inc.
+ * Copyright 2022 OpsMx, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package com.netflix.spinnaker.gate.security.saml
@@ -31,15 +32,12 @@ import org.opensaml.saml2.core.Attribute
 import org.opensaml.xml.schema.XSAny
 import org.opensaml.xml.schema.XSString
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.web.ServerProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -58,12 +56,9 @@ import java.security.KeyStore
 
 import static org.springframework.security.extensions.saml2.config.SAMLConfigurer.saml
 
-@ConditionalOnExpression('${saml.enabled.something:false}')
-@Configuration
-@SpinnakerAuthConfig
-@EnableWebSecurity
 @Slf4j
-class SamlSsoConfig extends WebSecurityConfigurerAdapter {
+@SpinnakerAuthConfig
+class SamlSsoUIConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   ServerProperties serverProperties
@@ -76,7 +71,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
   @Component
   @ConfigurationProperties("saml")
-  static class SAMLSecurityConfigProperties {
+  static class SAMLSecurityConfigProps {
     String keyStore
     String keyStorePassword
     String keyStoreAliasName
@@ -133,7 +128,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Autowired
-  SAMLSecurityConfigProperties samlSecurityConfigProperties
+  SAMLSecurityConfigProps samlSecurityConfigProperties
 
   @Autowired
   SAMLUserDetailsService samlUserDetailsService
@@ -147,32 +142,32 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
     http
       .rememberMe()
-        .rememberMeServices(rememberMeServices(userDetailsService()))
+      .rememberMeServices(rememberMeServices(userDetailsService()))
 
     // @formatter:off
-      SAMLConfigurer saml = saml()
-      saml
-        .userDetailsService(samlUserDetailsService)
-        .identityProvider()
-          .metadataFilePath(samlSecurityConfigProperties.metadataUrl)
-          .discoveryEnabled(false)
-          .and()
-        .webSSOProfileConsumer(getWebSSOProfileConsumerImpl())
-        .serviceProvider()
-          .entityId(samlSecurityConfigProperties.issuerId)
-          .protocol(samlSecurityConfigProperties.redirectProtocol)
-          .hostname(samlSecurityConfigProperties.redirectHostname ?: serverProperties?.address?.hostName)
-          .basePath(samlSecurityConfigProperties.redirectBasePath)
-          .keyStore()
-          .storeFilePath(samlSecurityConfigProperties.keyStore)
-          .password(samlSecurityConfigProperties.keyStorePassword)
-          .keyname(samlSecurityConfigProperties.keyStoreAliasName)
-          .keyPassword(samlSecurityConfigProperties.keyStorePassword)
+    SAMLConfigurer saml = saml()
+    saml
+      .userDetailsService(samlUserDetailsService)
+      .identityProvider()
+      .metadataFilePath(samlSecurityConfigProperties.metadataUrl)
+      .discoveryEnabled(false)
+      .and()
+      .webSSOProfileConsumer(getWebSSOProfileConsumerImpl())
+      .serviceProvider()
+      .entityId(samlSecurityConfigProperties.issuerId)
+      .protocol(samlSecurityConfigProperties.redirectProtocol)
+      .hostname(samlSecurityConfigProperties.redirectHostname ?: serverProperties?.address?.hostName)
+      .basePath(samlSecurityConfigProperties.redirectBasePath)
+      .keyStore()
+      .storeFilePath(samlSecurityConfigProperties.keyStore)
+      .password(samlSecurityConfigProperties.keyStorePassword)
+      .keyname(samlSecurityConfigProperties.keyStoreAliasName)
+      .keyPassword(samlSecurityConfigProperties.keyStorePassword)
 
-      saml.init(http)
+    saml.init(http)
     SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter()
     http.addFilterAfter(authTokenUpdateFilter,
-        BasicAuthenticationFilter.class)
+      BasicAuthenticationFilter.class)
     // @formatter:on
 
   }
@@ -235,8 +230,8 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
         }
 
         def id = registry
-            .createId("fiat.login")
-            .withTag("type", "saml")
+          .createId("fiat.login")
+          .withTag("type", "saml")
 
         try {
           retrySupport.retry({ ->
@@ -247,11 +242,11 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
           id = id.withTag("success", true).withTag("fallback", "none")
         } catch (Exception e) {
           log.debug(
-              "Unsuccessful SAML authentication (user: {}, roleCount: {}, roles: {}, legacyFallback: {})",
-              username,
-              roles.size(),
-              roles,
-              fiatClientConfigurationProperties.legacyFallback
+            "Unsuccessful SAML authentication (user: {}, roleCount: {}, roles: {}, legacyFallback: {})",
+            username,
+            roles.size(),
+            roles,
+            fiatClientConfigurationProperties.legacyFallback
           )
           id = id.withTag("success", false).withTag("fallback", fiatClientConfigurationProperties.legacyFallback)
 
