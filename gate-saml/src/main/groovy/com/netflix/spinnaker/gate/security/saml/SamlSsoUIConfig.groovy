@@ -136,6 +136,7 @@ class SamlSsoUIConfig extends WebSecurityConfigurerAdapter {
   @Override
   void configure(HttpSecurity http) {
     //We need our session cookie to come across when we get redirected back from the IdP:
+    log.info("configuring http security")
     defaultCookieSerializer.setSameSite(null)
     defaultCookieSerializer.setCookieName("gateCookie")
     authConfig.configure(http)
@@ -184,6 +185,7 @@ class SamlSsoUIConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public RememberMeServices rememberMeServices(UserDetailsService userDetailsService) {
+    log.info("inside rememberMeServices")
     TokenBasedRememberMeServices rememberMeServices = new TokenBasedRememberMeServices("password", userDetailsService)
     rememberMeServices.setCookieName("cookieName")
     rememberMeServices.setParameter("rememberMe")
@@ -211,6 +213,7 @@ class SamlSsoUIConfig extends WebSecurityConfigurerAdapter {
 
       @Override
       User loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
+        log.info("inside loadUserBySAML")
         def assertion = credential.authenticationAssertion
         def attributes = extractAttributes(assertion)
         def userAttributeMapping = samlSecurityConfigProperties.userAttributeMapping

@@ -24,6 +24,8 @@ import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Primary
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -71,8 +73,10 @@ public class AdminAuthConfig extends WebSecurityConfigurerAdapter {
     this.authProvider = new BasicAuthProvider(permissionService, oesAuthorizationService)
   }
 
-  @Autowired
-  void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
+  @Primary
+  @Bean(value = "authManagerBuilder")
+  AuthenticationManagerBuilder configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
       throw new AuthenticationServiceException(
         "User credentials are not configured properly. Please check username and password are properly configured")
@@ -91,6 +95,7 @@ public class AdminAuthConfig extends WebSecurityConfigurerAdapter {
     authProvider.setPassword(this.password)
 
     auth.authenticationProvider(authProvider)
+    return auth
   }
 
   @Override

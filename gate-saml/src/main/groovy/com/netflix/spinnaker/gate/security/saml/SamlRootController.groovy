@@ -55,7 +55,21 @@ class SamlRootController  {
     AutowireCapableBeanFactory autowireCapableBeanFactory = BeanUtil.getApplicationContext().getAutowireCapableBeanFactory()
     BeanDefinitionRegistry registry = (BeanDefinitionRegistry) autowireCapableBeanFactory
 
-    registry.removeBeanDefinition("adminAuthConfiguration")
+    if (registry.containsBeanDefinition("adminAuthConfiguration")) {
+      log.info("removing bean definition adminAuthConfiguration")
+      registry.removeBeanDefinition("adminAuthConfiguration")
+    }
+
+
+    if (registry.containsBeanDefinition("basicAuthProvider")){
+      log.info("removing bean definition basicAuthProvider")
+      registry.removeBeanDefinition("basicAuthProvider")
+    }
+
+    if (registry.containsBeanDefinition("authManagerBuilder")){
+      log.info("removing bean definition authManagerBuilder")
+      registry.removeBeanDefinition("authManagerBuilder")
+    }
 
     GenericBeanDefinition myBeanDefinition = new GenericBeanDefinition()
     myBeanDefinition.setBeanClass(SamlSsoUIConfig.class);
