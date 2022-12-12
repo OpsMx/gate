@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,11 +34,12 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.session.web.http.DefaultCookieSerializer;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @EnableWebSecurity
 @SpinnakerAuthConfig
-@Configuration(value = "adminAuthConfiguration")
+@Component(value = "adminAuthConfiguration")
 @ConditionalOnExpression("${security.admin.login.enabled:false}")
 public class AdminAuthConfig extends WebSecurityConfigurerAdapter {
 
