@@ -19,6 +19,7 @@ package com.netflix.spinnaker.gate.security.saml
 import com.netflix.spectator.api.Registry
 import com.netflix.spinnaker.fiat.shared.FiatClientConfigurationProperties
 import com.netflix.spinnaker.gate.config.AuthConfig
+import com.netflix.spinnaker.gate.filters.TokenAuthFilter
 import com.netflix.spinnaker.gate.security.AllowedAccountsSupport
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig
 import com.netflix.spinnaker.gate.services.PermissionService
@@ -173,6 +174,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter()
     http.addFilterAfter(authTokenUpdateFilter,
         BasicAuthenticationFilter.class)
+    http.addFilterBefore(new TokenAuthFilter(), BasicAuthenticationFilter)
     // @formatter:on
 
   }
