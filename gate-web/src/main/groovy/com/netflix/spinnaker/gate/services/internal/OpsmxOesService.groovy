@@ -33,7 +33,8 @@ interface OpsmxOesService {
                                      @Query("isExists") boolean isExists,
                                      @Query("namespace") String namespace,
                                      @Query("argoCdUrl") String argoCdUrl,
-                                     @Query("argoRolloutUrl") String argoRolloutUrl)
+                                     @Query("argoRolloutUrl") String argoRolloutUrl,
+                                     @Query("rolloutsEnabled") boolean rolloutsEnabled)
 
   @GET("/oes/accountsConfig/{version}/agents/{agentName}/manifest/apple/automation")
   Response agentManifestDownloadFile(@Path('agentName') String agentName, @Path('version') String version)
