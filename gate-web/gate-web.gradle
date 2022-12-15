@@ -1,14 +1,5 @@
 apply plugin: 'io.spinnaker.package'
 
-ext {
-  springConfigLocation = System.getProperty('spring.config.additional-location', "${System.getProperty('user.home')}/.spinnaker/".toString())
-  springProfiles = System.getProperty('spring.profiles.active', "test,local")
-}
-
-run {
-  systemProperty('spring.config.additional-location', project.springConfigLocation)
-  systemProperty('spring.profiles.active', project.springProfiles)
-}
 mainClassName = 'com.netflix.spinnaker.gate.Main'
 
 repositories {
@@ -44,6 +35,7 @@ dependencies {
   implementation "com.netflix.hystrix:hystrix-core"
 
   implementation "commons-io:commons-io"
+  implementation "org.codehaus.groovy:groovy-templates"
   implementation "org.springframework.session:spring-session-data-redis"
   implementation "de.huxhorn.sulky:de.huxhorn.sulky.ulid"
   implementation "org.apache.commons:commons-lang3"
