@@ -631,5 +631,29 @@ class OpsmxAutopilotController {
 
     return opsmxAutopilotService.updateAutopilotResponse6(type, source, source1, source2, source3, source4, source5, data)
   }
+  
+  @ApiOperation(value = "Endpoint for autopilot rest services")
+  @GetMapping(value = "/api/v5/downloadUpdatedLogtemplate", produces = "application/octet-stream")
+  @ResponseBody Object downloadUpdatedLogtemplate(@RequestParam(value = "version", required = false) String version,
+                                           @RequestParam(value = "templateType", required = false) String templateType,
+                                           @RequestParam(value = "templateName", required = false) String templateName){
+
+    Response response = opsmxAutopilotService.downloadUpdatedLogtemplate(templateName, templateType,version)
+    InputStream inputStream = response.getBody().in()
+    try {
+      byte [] yamlFile = IOUtils.toByteArray(inputStream)
+      HttpHeaders headers = new HttpHeaders()
+      headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> 		    header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+      return ResponseEntity.ok().headers(headers).body(yamlFile)
+
+    } finally{   
+      if (inputStream!=null){
+        inputStream.close()
+      }
+    }
+
+  }
+
+
 
 }
