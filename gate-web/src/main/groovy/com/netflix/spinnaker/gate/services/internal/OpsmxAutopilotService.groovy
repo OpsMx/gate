@@ -363,5 +363,10 @@ interface OpsmxAutopilotService {
                                   @Path('source4') String source4,
                                   @Path('source5') String source5,
                                   @Body Object data)
+                                  
+  @GET("/autopilot/api/v5/downloadUpdatedLogtemplate")
+  Response downloadUpdatedLogtemplate(@Query("version") String version,
+                               @Query("templateType") String templateType,
+                               @Query("templateName") String templateName)
 
 }
