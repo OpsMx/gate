@@ -63,7 +63,7 @@ import static org.springframework.security.extensions.saml2.config.SAMLConfigure
 @Configuration
 @SpinnakerAuthConfig
 @Slf4j
-@Order(1)
+@Order(1111)
 class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
