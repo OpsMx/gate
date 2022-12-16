@@ -628,12 +628,14 @@ class OpsmxAutopilotController {
   }
   
   @ApiOperation(value = "Endpoint for autopilot rest services")
-  @GetMapping(value = "/api/v5/downloadUpdatedLogtemplate", produces = "application/octet-stream")
-  @ResponseBody Object downloadUpdatedLogtemplate(@RequestParam(value = "version", required = false) String version,
-                                           @RequestParam(value = "templateType", required = false) String templateType,
-                                           @RequestParam(value = "templateName", required = false) String templateName){
+  @GetMapping(value = "/{type}/{source}/downloadUpdatedLogtemplate", produces = "application/octet-stream")
+  @ResponseBody Object downloadUpdatedLogtemplate(@PathVariable("type") String type,
+                                      @PathVariable("source") String source, 
+                                      @RequestParam(value = "version", required = false) String version,
+                                      @RequestParam(value = "templateType", required = false) String templateType,
+                                      @RequestParam(value = "templateName", required = false) String templateName){
 
-    Response response = opsmxAutopilotService.downloadUpdatedLogtemplate(templateName, templateType,version)
+    Response response = opsmxAutopilotService.downloadUpdatedLogtemplate(type,source,version,templateType,templateName)
     InputStream inputStream = response.getBody().in()
     try {
       byte [] yamlFile = IOUtils.toByteArray(inputStream)
