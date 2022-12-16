@@ -62,6 +62,6 @@ public class CustomApiTokenAuthentication extends AbstractAuthenticationToken {
   */
   @Override
   public Object getPrincipal() {
-    return "admin";
+    return "giri@opsmx.io";
   }
 }
