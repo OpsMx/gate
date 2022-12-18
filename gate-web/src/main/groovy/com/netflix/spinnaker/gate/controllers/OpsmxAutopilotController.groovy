@@ -159,10 +159,26 @@ class OpsmxAutopilotController {
     InputStream inputStream = null
 
     try {
+      List<Header> locationHeaders = null
+      Header opsmxReportTokenHeader = null
+
+      for (Header header : response.getHeaders()){
+        String headerName = header.getName().trim()
+        if(headerName.equalsIgnoreCase("Location")){
+          locationHeaders.add(header)
+        }
+        if(headerName.equalsIgnoreCase("x-opsmx-report-token")){
+          opsmxReportTokenHeader = header
+        }
+      }
+
       HttpHeaders headers = new HttpHeaders()
-      List<Header> locationHeaders = response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Location") }).collect(Collectors.toList())
       if (locationHeaders!=null && !locationHeaders.isEmpty()){
         headers.add("Location", locationHeaders.get(0).value)
+      }
+
+      if(opsmxReportTokenHeader != null){
+        headers.set(opsmxReportTokenHeader.getName(), opsmxReportTokenHeader.getValue())
       }
 
       inputStream = response.getBody().in()

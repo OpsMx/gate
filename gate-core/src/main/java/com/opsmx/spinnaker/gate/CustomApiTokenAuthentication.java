@@ -1,21 +1,6 @@
-/*
- * Copyright 2022 Netflix, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.opsmx.spinnaker.gate;
 
+import java.util.Objects;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Transient;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -27,6 +12,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 public class CustomApiTokenAuthentication extends AbstractAuthenticationToken {
 
   private String apiToken;
+  private String username;
 
   /*
    GrantedAuthority as being a "permission" or a "right". Those "permissions" are (normally) expressed as
@@ -56,12 +42,29 @@ public class CustomApiTokenAuthentication extends AbstractAuthenticationToken {
   }
 
   /*
-
    The identity of the principal being authenticated. In the case of an authentication
    request with username and password, this would be the username.
   */
   @Override
   public Object getPrincipal() {
-    return "giri@opsmx.io";
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    CustomApiTokenAuthentication that = (CustomApiTokenAuthentication) o;
+    return Objects.equals(username, that.username);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), username);
   }
 }
