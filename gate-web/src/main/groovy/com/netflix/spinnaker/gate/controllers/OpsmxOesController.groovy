@@ -482,6 +482,24 @@ class OpsmxOesController {
   }
 
   @ApiOperation(value = "download the manifest file")
+  @GetMapping(value = "accountsConfig/agents/{agentName}/manifest", produces = "application/octet-stream")
+  @ResponseBody Object getDownloadAgentManifestFile(@PathVariable("agentName") String agentName){
+
+    Response response = opsmxOesService.agentManifestDownloadFile(agentName)
+    InputStream inputStream = response.getBody().in()
+    try {
+      byte [] manifestFile = IOUtils.toByteArray(inputStream)
+      HttpHeaders headers = new HttpHeaders()
+      headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+      return ResponseEntity.ok().headers(headers).body(manifestFile)
+    } finally{
+      if (inputStream!=null){
+        inputStream.close()
+      }
+    }
+  }
+
+  @ApiOperation(value = "download the argo manifest file")
   @GetMapping(value = "/{type}/{source}/{source1}/manifest", produces = "application/octet-stream")
   @ResponseBody
   Object getDownloadAgentManifestFile(@PathVariable("type") String type,
