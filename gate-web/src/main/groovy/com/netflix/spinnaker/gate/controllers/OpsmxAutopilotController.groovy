@@ -159,7 +159,7 @@ class OpsmxAutopilotController {
     InputStream inputStream = null
 
     try {
-      List<Header> locationHeaders = null
+      List<Header> locationHeaders = new ArrayList<>()
       Header opsmxReportTokenHeader = null
 
       for (Header header : response.getHeaders()){
