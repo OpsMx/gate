@@ -25,6 +25,9 @@ interface OpsmxOesService {
    @GET("/oes/accountsConfig/cloudProviders/manifestfile/{agentName}")
    Response manifestDownloadFile(@Path('agentName') String agentName)
 
+  @GET("/oes/accountsConfig/agents/{agentName}/manifest")
+  Response agentManifestDownloadFile(@Path('agentName') String agentName)
+
   @GET("/oes/{type}/{source}/{source1}/manifest")
   Response agentManifestDownloadFile(@Path('type') String type,
                                      @Path('source') String source,
