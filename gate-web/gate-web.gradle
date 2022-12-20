@@ -32,7 +32,6 @@ dependencies {
   implementation "io.spinnaker.kork:kork-web"
   implementation "com.netflix.frigga:frigga"
   implementation "redis.clients:jedis"
-  implementation "com.netflix.hystrix:hystrix-core"
 
   implementation "commons-io:commons-io"
   implementation "org.codehaus.groovy:groovy-templates"
@@ -55,6 +54,10 @@ dependencies {
 
 
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.4.RELEASE'
+
+  // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '2.7.2'
+
 
 
   runtimeOnly "io.spinnaker.kork:kork-runtime"
