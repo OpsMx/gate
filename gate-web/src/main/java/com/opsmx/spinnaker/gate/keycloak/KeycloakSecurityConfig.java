@@ -16,20 +16,34 @@
 
 package com.opsmx.spinnaker.gate.keycloak;
 
-// @Configuration
-// @EnableWebSecurity
+import com.netflix.spinnaker.gate.config.AuthConfig;
+import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+
+@Configuration
+@EnableWebSecurity
+@SpinnakerAuthConfig
 public class KeycloakSecurityConfig {
 
-  //  private AuthConfig authConfig;
-  //
-  //  @Bean
-  //  protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-  //    return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
-  //  }
-  //
-  //  @Bean
-  //  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-  //    authConfig.configure(http);
-  //    return http.build();
-  //  }
+  private AuthConfig authConfig;
+
+  @Bean
+  protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+    return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
+  }
+
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    authConfig.configure(http);
+    http.authorizeRequests().antMatchers("/**").permitAll();
+    http.oauth2Login();
+    return http.build();
+  }
 }
