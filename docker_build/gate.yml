@@ -127,9 +127,14 @@ spring:
     oauth2:
       client:
         registration:
-          keycloak:
+          isd-gitops:
             client-id: isd-gitops
+            client-secret: 1360d3fb-70c2-4935-8de7-74a9175286a6
             authorization-grant-type: authorization_code
-            scope: openid
-            issuer-uri: http://localhost:8180/auth/realms/master
+            scope: openid, profile, roles
+            redirect-uri: http://localhost:8080/login/oauth2/code/isd-gitops
             user-name-attribute: preferred_username
+        provider:
+          isd-gitops:
+            issuer-uri: http://localhost:8080/auth/realms/master
+
