@@ -2,6 +2,7 @@ package com.opsmx.spinnaker.gate;
 
 import com.netflix.spinnaker.kork.common.Header;
 import com.netflix.spinnaker.security.AuthenticatedRequest;
+import com.squareup.okhttp.HttpUrl;
 import java.io.IOException;
 import java.util.Optional;
 import javax.servlet.FilterChain;
@@ -9,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +32,22 @@ public class CustomTokenAuthenticationFilter extends AbstractAuthenticationProce
     this.setAuthenticationManager(authenticationManager);
   }
 
+  private static String getFullRequestURL(HttpServletRequest request) {
+    return request.getRequestURL().append("?").append(request.getQueryString()).toString();
+  }
+
+  private static int getCanaryIdFromQueryParam(String requestUrl) {
+    final HttpUrl url = HttpUrl.parse(requestUrl);
+    int canaryId = -1;
+    if (url != null) {
+      canaryId = NumberUtils.toInt(url.queryParameter("canaryId"), -1);
+      if (canaryId == -1) {
+        canaryId = NumberUtils.toInt(url.queryParameter("id"), -1);
+      }
+    }
+    return canaryId;
+  }
+
   @Override
   public Authentication attemptAuthentication(
       HttpServletRequest request, HttpServletResponse response) {
@@ -40,6 +58,13 @@ public class CustomTokenAuthenticationFilter extends AbstractAuthenticationProce
         apiTokenOptional
             .map(CustomApiTokenAuthentication::new)
             .orElse(new CustomApiTokenAuthentication());
+
+    String requestUrl = getFullRequestURL(request);
+    int canaryIdFromQueryParam = getCanaryIdFromQueryParam(requestUrl);
+
+    if (canaryIdFromQueryParam != -1) {
+      token.setCanaryId(canaryIdFromQueryParam);
+    }
     return getAuthenticationManager().authenticate(token);
   }
 

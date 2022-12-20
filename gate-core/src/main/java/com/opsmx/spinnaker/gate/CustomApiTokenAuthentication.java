@@ -13,6 +13,7 @@ public class CustomApiTokenAuthentication extends AbstractAuthenticationToken {
 
   private String apiToken;
   private String username;
+  private Integer canaryId;
 
   /*
    GrantedAuthority as being a "permission" or a "right". Those "permissions" are (normally) expressed as
@@ -52,6 +53,14 @@ public class CustomApiTokenAuthentication extends AbstractAuthenticationToken {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public Integer getCanaryId() {
+    return canaryId;
+  }
+
+  public void setCanaryId(Integer canaryId) {
+    this.canaryId = canaryId;
   }
 
   @Override
