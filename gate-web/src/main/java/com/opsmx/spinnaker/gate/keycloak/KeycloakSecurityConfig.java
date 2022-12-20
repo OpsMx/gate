@@ -18,6 +18,7 @@ package com.opsmx.spinnaker.gate.keycloak;
 
 import com.netflix.spinnaker.gate.config.AuthConfig;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,7 +33,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @SpinnakerAuthConfig
 public class KeycloakSecurityConfig {
 
-  private AuthConfig authConfig;
+  @Autowired private AuthConfig authConfig;
 
   @Bean
   protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
