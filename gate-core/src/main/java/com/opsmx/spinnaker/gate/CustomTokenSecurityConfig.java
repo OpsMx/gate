@@ -42,18 +42,23 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
             new CustomTokenAuthenticationFilter(
                 authenticationManager(),
                 new OrRequestMatcher(
-                    new AntPathRequestMatcher("/autopilot/api/v5/global/template", "GET", false),
                     new AntPathRequestMatcher(
                         "/autopilot/api/v2/permissions/getApplications", "GET", false),
                     new AntPathRequestMatcher(
                         "/autopilot/api/v1/applications/{source1}/tags", "GET", false),
                     new AntPathRequestMatcher(
                         "/autopilot/api/v2/applications/getApplicationHealth", "GET", false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/canaries/getServiceInformation", "GET", false),
                     new AntPathRequestMatcher("/autopilot/api/v1/defaultLogTemplate", "GET", false),
                     new AntPathRequestMatcher("/autopilot/cas/getCanaryOutputNew", "GET", false),
                     new AntPathRequestMatcher(
                         "/autopilot/api/v1/correlation/log/{source1}/{source2}", "GET", false),
                     new AntPathRequestMatcher("/autopilot/api/v1/correlation/metric", "GET", false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/api/v1/correlation/metric/{riskAnalysisId}/{serviceId}",
+                        "GET",
+                        false),
                     new AntPathRequestMatcher("/autopilot/logs/feedbackHistory", "GET", false),
                     new AntPathRequestMatcher("/autopilot/api/v5/global/template", "GET", false),
                     new AntPathRequestMatcher(
@@ -69,32 +74,29 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/dashboardservice/v2/users/{source1}/applications/latest-canary",
                         "GET",
                         false),
+                    new AntPathRequestMatcher("autopilot/canaries/debugLogsData", "GET", false),
                     new AntPathRequestMatcher("/autopilot/api/v1/getClusterTags", "GET", false),
                     new AntPathRequestMatcher(
                         "/autopilot/logs/getDataSourceResponseKeys", "GET", false),
                     new AntPathRequestMatcher(
                         "/autopilot/logs/updateFeedbackLogTemplate", "GET", false),
-                    new AntPathRequestMatcher(
-                        "/platformservice/v1/users/{username}/verifications/applications",
-                        "GET",
-                        false),
-                    new AntPathRequestMatcher(
-                        "/autopilot/api/v1/correlation/metric/{riskAnalysisId}/{serviceId}",
-                        "GET",
-                        false),
-                    new AntPathRequestMatcher(
-                        "/autopilot/api/v5/downloadUpdatedLogtemplate", "GET", false),
-                    new AntPathRequestMatcher(
-                        "/autopilot/logs/updateFeedbackLogTemplate", "POST", false),
-                    new AntPathRequestMatcher(
-                        "/autopilot/canaries/getServiceInformation", "GET", false),
                     new AntPathRequestMatcher("/autopilot/canaries/getServiceList", "GET", false),
                     new AntPathRequestMatcher("/autopilot/canaries/logsData", "GET", false),
                     new AntPathRequestMatcher("/autopilot/canaries/clustersByEvent", "GET", false),
                     new AntPathRequestMatcher(
                         "/autopilot/canaries/getApplicationsOrServices", "GET", false),
                     new AntPathRequestMatcher(
-                        "/autopilot/v5/canaries/generatecookbook", "GET", false))),
+                        "/autopilot/v5/canaries/generatecookbook", "GET", false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/canaries/cancelRunningCanary", "GET", false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/logs/updateFeedbackLogTemplate", "POST", false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/api/v5/downloadUpdatedLogtemplate", "GET", false),
+                    new AntPathRequestMatcher(
+                        "/platformservice/v1/users/{username}/verifications/applications",
+                        "GET",
+                        false))),
             AnonymousAuthenticationFilter.class);
   }
 

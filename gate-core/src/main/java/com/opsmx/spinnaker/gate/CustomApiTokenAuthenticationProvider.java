@@ -23,18 +23,27 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
     String apiToken = (String) authentication.getCredentials();
 
     if (ObjectUtils.isEmpty(apiToken)) {
-      throw new InsufficientAuthenticationException("No API token is request");
+      throw new InsufficientAuthenticationException("No API token present in the request header");
     } else {
       String[] values = apiToken.split(";");
+      Integer canaryId = Integer.valueOf(values[2]);
+
+      CustomApiTokenAuthentication token = (CustomApiTokenAuthentication) authentication;
+      Integer canaryIdFromRequestParam = token.getCanaryId();
+
+      if (canaryIdFromRequestParam != null) {
+        canaryId = canaryIdFromRequestParam;
+      }
+
       TokenModel tokenModel =
-          tokenValidationService
-              .validateTokenByCanaryRunId(Integer.valueOf(values[2]), values[3])
-              .getBody();
+          tokenValidationService.validateTokenByCanaryRunId(canaryId, values[3]).getBody();
+
       if (tokenModel != null && tokenModel.isValidToken()) {
         String username = tokenModel.getUserName();
         CustomApiTokenAuthentication customApiTokenAuthentication =
             new CustomApiTokenAuthentication(apiToken, true);
         customApiTokenAuthentication.setUsername(username);
+
         return customApiTokenAuthentication;
       }
       throw new BadCredentialsException("API token is invalid");
