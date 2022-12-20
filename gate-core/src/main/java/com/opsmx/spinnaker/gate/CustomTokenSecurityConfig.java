@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 
 /*
    - Configuration: Adds a new Spring configuration
@@ -114,7 +115,7 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity httpSecurity) throws Exception {
     authConfig.configure(httpSecurity);
     httpSecurity
-        .antMatcher("/platformservice/v7/argo/cdIntegrations")
+        /*.antMatcher("/platformservice/v7/argo/cdIntegrations")
         .antMatcher("/autopilot/api/v2/permissions/getApplications")
         .antMatcher("/autopilot/api/v1/applications/{source1}/tags")
         .antMatcher("/autopilot/api/v2/applications/getApplicationHealth")
@@ -134,13 +135,13 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatcher("/autopilot/logs/getDataSourceResponseKeys")
         .antMatcher("/autopilot/logs/updateFeedbackLogTemplate")
         .antMatcher("/platformservice/v1/users/{username}/verifications/applications")
-        .antMatcher("/autopilot/api/v1/correlation/metric/{riskAnalysisId}/{serviceId}")
+        .antMatcher("/autopilot/api/v1/correlation/metric/{riskAnalysisId}/{serviceId}")*/
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .requestCache()
         .disable()
-        //        .requestMatcher(new RequestHeaderRequestMatcher("x-opsmx-token"))
+        .requestMatcher(new RequestHeaderRequestMatcher("x-opsmx-token"))
         .addFilterBefore(
             new CustomTokenAuthenticationFilter(authenticationManager()),
             AnonymousAuthenticationFilter.class);
