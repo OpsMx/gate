@@ -85,7 +85,16 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
                     new AntPathRequestMatcher(
                         "/autopilot/api/v5/downloadUpdatedLogtemplate", "GET", false),
                     new AntPathRequestMatcher(
-                        "/autopilot/logs/updateFeedbackLogTemplate", "POST", false))),
+                        "/autopilot/logs/updateFeedbackLogTemplate", "POST", false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/canaries/getServiceInformation", "GET", false),
+                    new AntPathRequestMatcher("/autopilot/canaries/getServiceList", "GET", false),
+                    new AntPathRequestMatcher("/autopilot/canaries/logsData", "GET", false),
+                    new AntPathRequestMatcher("/autopilot/canaries/clustersByEvent", "GET", false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/canaries/getApplicationsOrServices", "GET", false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/v5/canaries/generatecookbook", "GET", false))),
             AnonymousAuthenticationFilter.class);
   }
 
