@@ -35,7 +35,6 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @Configuration
 @EnableWebSecurity
 @SpinnakerAuthConfig
-@Order(Ordered.HIGHEST_PRECEDENCE + 1000)
 public class KeycloakSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired private AuthConfig authConfig;
@@ -56,7 +55,8 @@ public class KeycloakSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     authConfig.configure(http);
-    http.authorizeRequests().antMatchers("/**").permitAll();
+//    http.authorizeRequests().antMatchers("/**").authenticated();
+    http.authorizeRequests().antMatchers("/login").permitAll();
     http.oauth2Login();
   }
 }
