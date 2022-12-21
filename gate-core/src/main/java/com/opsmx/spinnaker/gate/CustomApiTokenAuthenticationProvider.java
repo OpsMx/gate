@@ -3,6 +3,8 @@ package com.opsmx.spinnaker.gate;
 import com.netflix.spinnaker.gate.model.TokenModel;
 import com.netflix.spinnaker.gate.services.TokenValidationService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,17 +28,30 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
       throw new InsufficientAuthenticationException("No API token present in the request header");
     } else {
       String[] values = apiToken.split(";");
-      Integer canaryId = Integer.valueOf(values[2]);
 
-      CustomApiTokenAuthentication token = (CustomApiTokenAuthentication) authentication;
-      Integer canaryIdFromRequestParam = token.getCanaryId();
+      if (values.length != 4) {
+        throw new InsufficientAuthenticationException(
+            "API token is not in correct format. "
+                + "The correct format is app;number;number;token");
+      }
+
+      Integer canaryId = NumberUtils.toInt(values[2], -1);
+      String token = values[3];
+
+      CustomApiTokenAuthentication tokenObject = (CustomApiTokenAuthentication) authentication;
+      Integer canaryIdFromRequestParam = tokenObject.getCanaryId();
 
       if (canaryIdFromRequestParam != null) {
         canaryId = canaryIdFromRequestParam;
       }
 
+      if (canaryId == -1 || StringUtils.isBlank(token)) {
+        throw new BadCredentialsException(
+            "Either canary id or token is blank or has invalid value.");
+      }
+
       TokenModel tokenModel =
-          tokenValidationService.validateTokenByCanaryRunId(canaryId, values[3]).getBody();
+          tokenValidationService.validateTokenByCanaryRunId(canaryId, token).getBody();
 
       if (tokenModel != null && tokenModel.isValidToken()) {
         String username = tokenModel.getUserName();
