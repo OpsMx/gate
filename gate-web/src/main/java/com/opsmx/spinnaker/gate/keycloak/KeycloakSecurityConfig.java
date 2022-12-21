@@ -26,8 +26,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
@@ -36,7 +36,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @EnableWebSecurity
 @SpinnakerAuthConfig
 @Order(Ordered.HIGHEST_PRECEDENCE + 1000)
-public class KeycloakSecurityConfig {
+public class KeycloakSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired private AuthConfig authConfig;
 
@@ -45,11 +45,18 @@ public class KeycloakSecurityConfig {
     return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
   }
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  //  @Bean
+  //  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  //    authConfig.configure(http);
+  //    http.authorizeRequests().antMatchers("/**").permitAll();
+  //    http.oauth2Login();
+  //    return http.build();
+  //  }
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
     authConfig.configure(http);
     http.authorizeRequests().antMatchers("/**").permitAll();
     http.oauth2Login();
-    return http.build();
   }
 }
