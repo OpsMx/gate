@@ -31,9 +31,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
+@Primary
 @Configuration
 @EnableWebSecurity
 @SpinnakerAuthConfig
+@Order(Ordered.HIGHEST_PRECEDENCE + 1000)
 public class KeycloakSecurityConfig {
 
   @Autowired private AuthConfig authConfig;
@@ -44,8 +46,6 @@ public class KeycloakSecurityConfig {
   }
 
   @Bean
-  @Primary
-  @Order(Ordered.HIGHEST_PRECEDENCE + 1000)
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     authConfig.configure(http);
     http.authorizeRequests().antMatchers("/**").permitAll();
