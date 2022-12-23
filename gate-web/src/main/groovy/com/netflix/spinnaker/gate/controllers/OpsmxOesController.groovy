@@ -512,7 +512,7 @@ class OpsmxOesController {
                                       @RequestParam(value = "argoRolloutUrl", required = false) String argoRolloutUrl,
                                       @RequestParam(value ="rolloutsEnabled", required = false) Boolean rolloutsEnabled,
                                       @RequestParam(value = "isdUrl", required = false) String isdUrl) {
-    Response response = opsmxOesService.agentManifestDownloadFile(type, source, source1, description, isExists, namespace, argoCdUrl, argoRolloutUrl, isdUrl, rolloutsEnabled)
+    Response response = opsmxOesService.agentManifestDownloadFile(type, source, source1, description, isExists, namespace, argoCdUrl, argoRolloutUrl, rolloutsEnabled, isdUrl)
     InputStream inputStream = response.getBody().in()
     try {
       byte[] manifestFile = IOUtils.toByteArray(inputStream)
