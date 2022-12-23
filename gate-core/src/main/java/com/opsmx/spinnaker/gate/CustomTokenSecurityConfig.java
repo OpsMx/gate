@@ -54,7 +54,8 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
                     new AntPathRequestMatcher("/autopilot/cas/getCanaryOutputNew", "GET", false),
                     new AntPathRequestMatcher(
                         "/autopilot/api/v1/correlation/log/{source1}/{source2}", "GET", false),
-                    new AntPathRequestMatcher("/autopilot/api/v1/correlation/metric", "GET", false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/api/v1/correlation/metric", "POST", false),
                     new AntPathRequestMatcher(
                         "/autopilot/api/v1/correlation/metric/{riskAnalysisId}/{serviceId}",
                         "GET",
@@ -95,6 +96,21 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/autopilot/api/v5/downloadUpdatedLogtemplate", "GET", false),
                     new AntPathRequestMatcher(
                         "/platformservice/v1/users/{username}/verifications/applications",
+                        "GET",
+                        false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/api/v5/applications/{source1}/tags", "GET", false),
+                    new AntPathRequestMatcher(
+                        "/platformservice/v7/argo/downloadUpdatedLogTemplate/applications/{source1}",
+                        "GET",
+                        false),
+                    new AntPathRequestMatcher("/autopilot/api/v1/correlation/log", "POST", false),
+                    new AntPathRequestMatcher(
+                        "/autopilot/api/v1/correlation/log/{riskAnalysisId}/{serviceId}/{clusterId}",
+                        "GET",
+                        false),
+                    new AntPathRequestMatcher(
+                        "/platformservice/v7/argo/repoUrl/applications/{applicationId}",
                         "GET",
                         false))),
             AnonymousAuthenticationFilter.class);
