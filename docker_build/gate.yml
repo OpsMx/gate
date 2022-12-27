@@ -128,6 +128,16 @@ keycloak:
     providers:
       ldap:
         inputparameters:
+          - name: enabled
+            display: Enabled
+            inputType: toggle
+            required: true
+            helpText: Enabled
+            readonly: false
+            placeholder: NA
+            defaultValue: ON
+            loadValues: NA
+
           - name: editMode
             display: Edit Mode
             inputType: dropdown
@@ -198,7 +208,7 @@ keycloak:
 
           - name: connectionUrl
             display: Connection URL
-            inputType: text
+            inputType: url
             required: true
             helpText: Connection URL
             readonly: false
@@ -250,9 +260,19 @@ keycloak:
 
       saml:
         inputparameters:
+          - name: enabled
+            display: Enabled
+            inputType: toggle
+            required: true
+            helpText: Enabled
+            readonly: false
+            placeholder: NA
+            defaultValue: ON
+            loadValues: NA
+
           - name: redirectURI
             display: Redirect URI
-            inputType: text
+            inputType: url
             required: true
             helpText: Redirect URI
             readonly: true
@@ -262,7 +282,7 @@ keycloak:
 
           - name: serviceProviderEntityId
             display: Service Provider Entity ID
-            inputType: text
+            inputType: url
             required: true
             helpText: Service Provider Entity ID
             readonly: false
@@ -272,7 +292,7 @@ keycloak:
 
           - name: singleSignOnServiceUrl
             display: Single Sign-On Service URL
-            inputType: text
+            inputType: url
             required: true
             helpText: Single Sign-On Service URL
             readonly: false
@@ -280,10 +300,9 @@ keycloak:
             defaultValue: NA
             loadValues: NA
 
-        externalIdpConfig:
           - name: importFromURL
             display: Import from URL
-            inputType: text
+            inputType: url
             required: false
             helpText: Import from URL
             readonly: false

@@ -21,10 +21,11 @@ import lombok.Data;
 @Data
 public class KeycloakAuthProviderModel {
 
-  private KeycloakAuthProvider.Ldap ldap;
-  private KeycloakAuthProvider.Saml saml;
+  private KeycloakAuthProvider.AuthParam ldap;
+  private KeycloakAuthProvider.AuthParam saml;
 
-  public KeycloakAuthProviderModel(KeycloakAuthProvider.Ldap ldap, KeycloakAuthProvider.Saml saml) {
+  public KeycloakAuthProviderModel(
+      KeycloakAuthProvider.AuthParam ldap, KeycloakAuthProvider.AuthParam saml) {
     this.ldap = ldap;
     this.saml = saml;
   }

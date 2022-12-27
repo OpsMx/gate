@@ -26,11 +26,11 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "keycloak.auth.providers")
 public class KeycloakAuthProvider {
 
-  private Ldap ldap;
-  private Saml saml;
+  private AuthParam ldap;
+  private AuthParam saml;
 
   @Data
-  public static class Ldap {
+  public static class AuthParam {
     private List<InputParameter> inputparameters;
   }
 
@@ -45,11 +45,5 @@ public class KeycloakAuthProvider {
     private String placeholder;
     private String defaultValue;
     private List<String> loadValues;
-  }
-
-  @Data
-  public static class Saml {
-    private List<InputParameter> inputparameters;
-    private List<InputParameter> externalIdpConfig;
   }
 }
