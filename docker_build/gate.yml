@@ -121,3 +121,186 @@ management:
     health:
       show-details: always
       show-components: always
+
+
+keycloak:
+  auth:
+    providers:
+      ldap:
+        inputparameters:
+          - name: editMode
+            display: Edit Mode
+            inputType: dropdown
+            required: true
+            helpText: Edit Mode
+            readonly: false
+            placeholder: NA
+            defaultValue: NA
+            loadValues:
+              - READ_ONLY
+              - WRITABLE
+              - UNSYNCED
+
+          - name: vendor
+            display: Vendor
+            inputType: dropdown
+            required: true
+            helpText: Vendor
+            readonly: false
+            placeholder: NA
+            defaultValue: NA
+            loadValues:
+              - Active Directory
+              - Red Hat Directory Server
+              - Tivoli
+              - Novell eDirectory
+              - Other
+
+          - name: usernameLdapAttribute
+            display: Username LDAP attribute
+            inputType: text
+            required: true
+            helpText: Username LDAP attribute
+            readonly: false
+            placeholder: LDAP attribute name for username
+            defaultValue: NA
+            loadValues: NA
+
+          - name: rdnLdapAttribute
+            display: RDN LDAP attribute
+            inputType: text
+            required: true
+            helpText: RDN LDAP attribute
+            readonly: false
+            placeholder: LDAP attribute name for user RDN
+            defaultValue: NA
+            loadValues: NA
+
+          - name: uuidLdapAttribute
+            display: UUID LDAP attribute
+            inputType: text
+            required: true
+            helpText: UUID LDAP attribute
+            readonly: false
+            placeholder: LDAP attribute name for UUID
+            defaultValue: NA
+            loadValues: NA
+
+          - name: userObjectClasses
+            display: User Object Classes
+            inputType: text
+            required: true
+            helpText: User Object Classes
+            readonly: false
+            placeholder: LDAP User Object Classes (div. by comma)
+            defaultValue: NA
+            loadValues: NA
+
+          - name: connectionUrl
+            display: Connection URL
+            inputType: text
+            required: true
+            helpText: Connection URL
+            readonly: false
+            placeholder: LDAP connection URL
+            defaultValue: NA
+            loadValues: NA
+
+          - name: usersDN
+            display: Users DN
+            inputType: text
+            required: true
+            helpText: Users DN
+            readonly: false
+            placeholder: LDAP Users DN
+            defaultValue: NA
+            loadValues: NA
+
+          - name: bindType
+            display: Bind Type
+            inputType: dropdown
+            required: true
+            helpText: Bind Type
+            readonly: false
+            placeholder: NA
+            defaultValue: simple
+            loadValues:
+              - none
+              - simple
+
+          - name: bindDN
+            display: Bind DN
+            inputType: text
+            required: true
+            helpText: Bind DN
+            readonly: false
+            placeholder: LDAP Bind DN
+            defaultValue: NA
+            loadValues: NA
+
+          - name: bindCredential
+            display: Bind Credential
+            inputType: password
+            required: true
+            helpText: Bind Credential
+            readonly: false
+            placeholder: xxxxxxx
+            defaultValue: NA
+            loadValues: NA
+
+      saml:
+        inputparameters:
+          - name: redirectURI
+            display: Redirect URI
+            inputType: text
+            required: true
+            helpText: Redirect URI
+            readonly: true
+            placeholder: NA
+            defaultValue: http://localhost:8080/realms/isd-poc-realm/saml/endpoint
+            loadValues: NA
+
+          - name: serviceProviderEntityId
+            display: Service Provider Entity ID
+            inputType: text
+            required: true
+            helpText: Service Provider Entity ID
+            readonly: false
+            placeholder: NA
+            defaultValue: http://localhost:8080/realms/isd-poc-realm
+            loadValues: NA
+
+          - name: singleSignOnServiceUrl
+            display: Single Sign-On Service URL
+            inputType: text
+            required: true
+            helpText: Single Sign-On Service URL
+            readonly: false
+            placeholder: NA
+            defaultValue: NA
+            loadValues: NA
+
+        externalIdpConfig:
+          - name: importFromURL
+            display: Import from URL
+            inputType: text
+            required: false
+            helpText: Import from URL
+            readonly: false
+            placeholder: NA
+            defaultValue: NA
+            loadValues: NA
+
+          - name: importFromFile
+            display: Import from file
+            inputType: file
+            required: false
+            helpText: Import from file
+            readonly: false
+            placeholder: NA
+            defaultValue: NA
+            loadValues: NA
+
+
+
+
