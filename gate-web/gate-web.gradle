@@ -56,7 +56,16 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.4.RELEASE'
 
   // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '2.7.2'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '2.7.5'
+
+  // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.7.6'
+
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '4.2'
+//Thanks for using https://jar-download.com
+
+
+
 
 
 

@@ -114,10 +114,13 @@ class SpinnakerUserInfoTokenServices implements ResourceServerTokenServices {
     }
 
     def username = details[userInfoMapping.username] as String
+    log.info("username  in SpinnakerUserInfoTokenServices: {}", username)
     def roles = Optional.ofNullable(groupExtractor)
       .map({ extractor -> extractor.apply(accessToken, details) })
       .or({ Optional.ofNullable(getRoles(details)) })
       .orElse([])
+
+    log.info("roles in SpinnakerUserInfoTokenServices : {}", roles)
 
     // Service accounts are already logged in.
     if (!isServiceAccount) {

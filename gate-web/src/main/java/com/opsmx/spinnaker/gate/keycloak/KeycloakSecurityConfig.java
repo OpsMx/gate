@@ -16,47 +16,86 @@
 
 package com.opsmx.spinnaker.gate.keycloak;
 
-import com.netflix.spinnaker.gate.config.AuthConfig;
-import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+// @Primary
+// @Configuration
+// @EnableWebSecurity
+// @SpinnakerAuthConfig
+public class KeycloakSecurityConfig /*extends WebSecurityConfigurerAdapter*/ {
 
-@Primary
-@Configuration
-@EnableWebSecurity
-@SpinnakerAuthConfig
-public class KeycloakSecurityConfig extends WebSecurityConfigurerAdapter {
-
-  @Autowired private AuthConfig authConfig;
-
-  @Bean
-  protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-    return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
-  }
-
+  //  @Autowired private AuthConfig authConfig;
+  //
+  //  @Autowired private KeycloakOauthAuthenticationProvider authProvider;
+  //
   //  @Bean
-  //  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-  //    authConfig.configure(http);
-  //    http.authorizeRequests().antMatchers("/**").permitAll();
-  //    http.oauth2Login();
-  //    return http.build();
+  //  protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+  //    return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
   //  }
-
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    authConfig.configure(http);
-//    http.authorizeRequests().antMatchers("/**").authenticated();
-    http.authorizeRequests().antMatchers("/login").permitAll();
-    http.oauth2Login();
-  }
+  //
+  //  //  @Bean
+  //  //  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  //  //    authConfig.configure(http);
+  //  //    http.authorizeRequests().antMatchers("/**").permitAll();
+  //  //    http.oauth2Login();
+  //  //    return http.build();
+  //  //  }
+  //
+  //  @Override
+  //  protected void configure(HttpSecurity http) throws Exception {
+  //    authConfig.configure(http);
+  //    //    http.authorizeRequests().antMatchers("/**").authenticated();
+  //    http.authorizeRequests().antMatchers("/keycloak/oauth2/**").permitAll();
+  //
+  //    http.oauth2Login().defaultSuccessUrl("/application");
+  //  }
+  //
+  //  @Override
+  //  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+  //    super.configure(auth);
+  //    auth.authenticationProvider(authProvider);
+  //  }
+  //
+  //  @Slf4j
+  //  @Configuration
+  //  static class KeycloakOauthAuthenticationProvider implements AuthenticationProvider {
+  //
+  //    @Autowired private PermissionService permissionService;
+  //
+  //    @Autowired private OesAuthorizationService oesAuthorizationService;
+  //
+  //    @Override
+  //    public Authentication authenticate(Authentication authentication)
+  //        throws AuthenticationException {
+  //      OAuth2LoginAuthenticationToken authorizationCodeAuthentication =
+  //          (OAuth2LoginAuthenticationToken) authentication;
+  //      OAuth2AccessToken accessToken = authorizationCodeAuthentication.getAccessToken();
+  //
+  //      log.info("accessToken : {}", accessToken);
+  //
+  //      List<String> roles = new ArrayList<>();
+  //      roles.add("admin");
+  //
+  //      User user = new User();
+  //      user.setEmail("pranav.bhaskaran@opsmx.io");
+  //      user.setUsername("pranavuser");
+  //      user.setRoles(roles);
+  //
+  //      List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+  //
+  //      if (!roles.isEmpty() && permissionService != null) {
+  //        grantedAuthorities =
+  //            roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+  //        // Updating roles in fiat service
+  //        permissionService.loginWithRoles("pranavuser", roles);
+  //        // Updating roles in platform service
+  //        oesAuthorizationService.cacheUserGroups(roles, "pranavuser");
+  //      }
+  //
+  //      return new UsernamePasswordAuthenticationToken(user, "admin", grantedAuthorities);
+  //    }
+  //
+  //    @Override
+  //    public boolean supports(Class<?> authentication) {
+  //      return OAuth2LoginAuthenticationToken.class.isAssignableFrom(authentication);
+  //    }
+  //  }
 }
