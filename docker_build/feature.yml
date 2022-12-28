@@ -1,0 +1,4 @@
+feature:
+  auth-provider:
+    flag: false
+    jira: OP-18050
