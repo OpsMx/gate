@@ -18,12 +18,14 @@ package com.opsmx.spinnaker.gate.model;
 
 import java.util.List;
 import lombok.Data;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "keycloak.auth.providers")
+@ConditionalOnExpression("${feature.auth-provider.flag:false}")
 public class KeycloakAuthProvider {
 
   private AuthParam ldap;
@@ -31,6 +33,10 @@ public class KeycloakAuthProvider {
 
   @Data
   public static class AuthParam {
+    private String name;
+    private String display;
+    private String helpText;
+    private String type;
     private List<InputParameter> inputparameters;
   }
 

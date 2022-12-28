@@ -122,11 +122,19 @@ management:
       show-details: always
       show-components: always
 
+feature:
+  auth-provider:
+    flag: false
+    jira: OP-18050
 
 keycloak:
   auth:
     providers:
       ldap:
+        name: ldap
+        display: LDAP
+        type: label
+        helpText: LDAP
         inputparameters:
           - name: enabled
             display: Enabled
@@ -259,6 +267,10 @@ keycloak:
             loadValues: NA
 
       saml:
+        name: saml
+        display: SAML
+        type: label
+        helpText: SAML
         inputparameters:
           - name: enabled
             display: Enabled
