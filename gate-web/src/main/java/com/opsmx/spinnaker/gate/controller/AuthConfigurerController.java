@@ -38,11 +38,8 @@ public class AuthConfigurerController {
   @GetMapping(value = "/supported/providers", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<KeycloakAuthProviderModel> getSupportedAuthProviders() {
 
-    log.debug("ldap params : {}", keycloakAuthProvider.getLdap());
-    log.debug("saml params : {}", keycloakAuthProvider.getSaml());
+    log.debug("Auth providers : {}", keycloakAuthProvider.getProviders());
 
-    return ResponseEntity.ok(
-        new KeycloakAuthProviderModel(
-            keycloakAuthProvider.getLdap(), keycloakAuthProvider.getSaml()));
+    return ResponseEntity.ok(new KeycloakAuthProviderModel(keycloakAuthProvider.getProviders()));
   }
 }

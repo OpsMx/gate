@@ -24,12 +24,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "keycloak.auth.providers")
+@ConfigurationProperties(prefix = "keycloak.auth")
 @ConditionalOnExpression("${feature.auth-provider.flag:false}")
 public class KeycloakAuthProvider {
 
-  private AuthParam ldap;
-  private AuthParam saml;
+  private List<AuthParam> providers;
 
   @Data
   public static class AuthParam {

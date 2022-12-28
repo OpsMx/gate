@@ -16,17 +16,15 @@
 
 package com.opsmx.spinnaker.gate.model;
 
+import java.util.List;
 import lombok.Data;
 
 @Data
 public class KeycloakAuthProviderModel {
 
-  private KeycloakAuthProvider.AuthParam ldap;
-  private KeycloakAuthProvider.AuthParam saml;
+  private List<KeycloakAuthProvider.AuthParam> providers;
 
-  public KeycloakAuthProviderModel(
-      KeycloakAuthProvider.AuthParam ldap, KeycloakAuthProvider.AuthParam saml) {
-    this.ldap = ldap;
-    this.saml = saml;
+  public KeycloakAuthProviderModel(List<KeycloakAuthProvider.AuthParam> providers) {
+    this.providers = providers;
   }
 }
