@@ -27,9 +27,13 @@ import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.beans.factory.config.ConfigurableBeanFactory
 import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Scope
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
@@ -97,12 +101,19 @@ class AuthConfig {
   @Value('${security.contentSecurityPolicy:\'object-src \'none\'; script-src \'unsafe-eval\' \'unsafe-inline\' https: http:;\'}')
   String contentSecurityPolicy
 
-  void configure(HttpSecurity http) throws Exception {
+  @Value('${security.admin.login.enabled:false}')
+  boolean isAdminLoginEnabled
+
+
+  @Bean
+  @Primary
+  HttpSecurity configure(HttpSecurity http) throws Exception {
     // @formatter:off
     if(isAgentAPIUnauthenticatedAccessEnabled && isSpinnakerWebhooksUnauthenticatedAccessEnabled){
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
         .authorizeRequests()
+        .antMatchers("/nonadminuser").permitAll()
         .antMatchers("/error").permitAll()
         .antMatchers('/favicon.ico').permitAll()
         .antMatchers("/resources/**").permitAll()
@@ -166,6 +177,7 @@ class AuthConfig {
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
         .authorizeRequests()
+        .antMatchers("/nonadminuser").permitAll()
         .antMatchers("/error").permitAll()
         .antMatchers('/favicon.ico').permitAll()
         .antMatchers("/resources/**").permitAll()
@@ -228,6 +240,7 @@ class AuthConfig {
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
         .authorizeRequests()
+        .antMatchers("/nonadminuser").permitAll()
         .antMatchers("/error").permitAll()
         .antMatchers('/favicon.ico').permitAll()
         .antMatchers("/resources/**").permitAll()
@@ -281,6 +294,7 @@ class AuthConfig {
       http
         .requestMatcher(requestMatcherProvider.requestMatcher())
         .authorizeRequests()
+        .antMatchers("/nonadminuser").permitAll()
         .antMatchers("/error").permitAll()
         .antMatchers('/favicon.ico').permitAll()
         .antMatchers("/resources/**").permitAll()
@@ -341,7 +355,7 @@ class AuthConfig {
     }
 
 
-    if (ldapEnabled) {
+    if (ldapEnabled || isAdminLoginEnabled) {
       http.formLogin().loginPage("/login").permitAll()
     }
 
@@ -358,6 +372,7 @@ class AuthConfig {
         .and()
       .csrf()
         .disable()
+    return http
     // @formatter:on
   }
 
