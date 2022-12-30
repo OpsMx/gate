@@ -27,7 +27,7 @@ import java.util.stream.Collectors
 @Slf4j
 @Component(value = "spinnaker-oauth2-group-extractor")
 @ConditionalOnExpression('${feature.auth-provider.flag:false}')
-class GroupExtractor implements BiFunction<String, Map, List<String>> {
+class GroupExtractor implements BiFunction<String, Map<String, Object>, List<String>> {
 
   @Value('${security.oauth2.userInfoMapping.groupAtrributes.idp:idpGroups}')
   String idpGroupAttribute
@@ -37,7 +37,7 @@ class GroupExtractor implements BiFunction<String, Map, List<String>> {
 
 
   @Override
-  List<String> apply(String s, Map map) {
+  List<String> apply(String s, Map<String, Object> map) {
 
     List<String> groups = null
 
