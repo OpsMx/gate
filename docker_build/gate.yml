@@ -126,6 +126,13 @@ management:
       show-components: always
 
 keycloak:
+  realm: myrealm
+  ldapName: ldap
+  samlName: saml
+  clientId: admin-rest-client
+  serverUrl: http://localhost:8080/admin
+  username: myuser
+  password: password
   auth:
     providers:
       - name: ldap

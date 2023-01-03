@@ -54,6 +54,7 @@ dependencies {
 
 
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.4.RELEASE'
+  implementation group: 'org.keycloak', name: 'keycloak-admin-client', version: '20.0.2'
 
 
   runtimeOnly "io.spinnaker.kork:kork-runtime"
