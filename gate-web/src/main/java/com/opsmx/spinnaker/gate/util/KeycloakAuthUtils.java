@@ -25,6 +25,7 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ws.rs.core.MediaType;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
@@ -39,6 +40,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component
+@Slf4j
 public class KeycloakAuthUtils {
 
   private Keycloak keycloak;
@@ -98,6 +100,7 @@ public class KeycloakAuthUtils {
     ComponentRepresentation componentRepresentation =
         populateComponentRepresentation(config, realm.getId());
     realmResource.components().add(componentRepresentation);
+    log.info("Successfully added ldap: {} ", componentRepresentation);
   }
 
   private ComponentRepresentation populateComponentRepresentation(
@@ -119,12 +122,14 @@ public class KeycloakAuthUtils {
         .components()
         .component(componentRepresentation.getId())
         .update(componentRepresentation);
+    log.info("Successfully updated ldap: {} ", componentRepresentation);
   }
 
   public void deleteLdapComponent() {
     ComponentRepresentation componentRepresentation = getLdapComponent();
     RealmResource realmResource = getRealm();
     realmResource.components().component(componentRepresentation.getId()).remove();
+    log.info("Successfully deleted ldap: {} ", componentRepresentation);
   }
 
   public ComponentRepresentation getLdapComponent() {
@@ -141,7 +146,10 @@ public class KeycloakAuthUtils {
 
   public void addSamlIdentityProvider(MultipartFile data) {
     Map<String, String> config = getConfig(data);
-    getRealm().identityProviders().create(populateIdentityProviderRepresentation(config));
+    IdentityProviderRepresentation identityProvider =
+        populateIdentityProviderRepresentation(config);
+    getRealm().identityProviders().create(identityProvider);
+    log.info("Successfully added saml: {} ", identityProvider);
   }
 
   private Map<String, String> getConfig(MultipartFile data) {
@@ -178,6 +186,7 @@ public class KeycloakAuthUtils {
     IdentityProviderRepresentation idpRep = getSamlIdentityProvider();
     idpRep.setEnabled(false);
     getRealm().identityProviders().get(samlName).update(idpRep);
+    log.info("Successfully disabled saml: {} ", idpRep);
     return idpRep;
   }
 
@@ -199,5 +208,6 @@ public class KeycloakAuthUtils {
 
   public void deleteSamlIdentityProvider() {
     getRealm().identityProviders().get(samlName).remove();
+    log.info("Successfully deleted saml.");
   }
 }

@@ -59,6 +59,7 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
   @Override
   public AuthProviderModel update(AuthProviderModel authProviderModel) {
     if (authProviderModel.getFile() != null) {
+      // Delete the old saml and update the new config as it is not overriding the old one.
       keycloakAuthUtils.deleteSamlIdentityProvider();
       keycloakAuthUtils.addSamlIdentityProvider(authProviderModel.getFile());
     }
