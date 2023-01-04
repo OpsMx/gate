@@ -88,8 +88,7 @@ public class AuthConfigurerController {
       @PathVariable(name = "authProvider") String authProvider) {
     log.trace("getAuthProvider started");
     AuthProviderModel provider = keycloakAuthService.get(authProvider);
-    ResponseEntity<AuthProviderModel> response =
-        new ResponseEntity<>(provider, HttpStatus.ACCEPTED);
+    ResponseEntity<AuthProviderModel> response = new ResponseEntity<>(provider, HttpStatus.OK);
     log.trace("getAuthProvider ended");
     return response;
   }
@@ -103,13 +102,13 @@ public class AuthConfigurerController {
     return ResponseEntity.ok().build();
   }
 
-  @GetMapping(
+  @PutMapping(
       value = "/authProvider/{authProvider}/disable",
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<AuthProviderModel> disableAuthProvider(
       @PathVariable(name = "authProvider") String authProvider) {
     log.trace("disableAuthProvider started");
-    AuthProviderModel provider = keycloakAuthService.disble(authProvider);
+    AuthProviderModel provider = keycloakAuthService.disable(authProvider);
     ResponseEntity<AuthProviderModel> response =
         new ResponseEntity<>(provider, HttpStatus.ACCEPTED);
     log.trace("disableAuthProvider ended");

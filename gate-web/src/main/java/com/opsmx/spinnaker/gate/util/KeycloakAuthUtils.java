@@ -28,7 +28,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
-import org.keycloak.admin.client.resource.IdentityProviderResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.common.util.MultivaluedHashMap;
 import org.keycloak.representations.idm.ComponentRepresentation;
@@ -202,10 +201,11 @@ public class KeycloakAuthUtils {
 
   public IdentityProviderRepresentation getSamlIdentityProvider() {
     RealmResource realmResource = getRealm();
-    IdentityProviderResource identityProviderResource =
-        realmResource.identityProviders().get(samlName);
-
-    return identityProviderResource == null ? null : identityProviderResource.toRepresentation();
+    List<IdentityProviderRepresentation> idps = realmResource.identityProviders().findAll();
+    if (idps == null || idps.isEmpty()) {
+      return null;
+    }
+    return realmResource.identityProviders().get(samlName).toRepresentation();
   }
 
   public void deleteSamlIdentityProvider() {
