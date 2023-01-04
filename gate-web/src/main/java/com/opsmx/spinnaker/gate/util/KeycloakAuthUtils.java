@@ -16,12 +16,10 @@
 
 package com.opsmx.spinnaker.gate.util;
 
+import com.opsmx.spinnaker.gate.model.AuthProviderModel;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ws.rs.core.MediaType;
@@ -30,6 +28,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
+import org.keycloak.admin.client.resource.IdentityProviderResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.common.util.MultivaluedHashMap;
 import org.keycloak.representations.idm.ComponentRepresentation;
@@ -203,11 +202,23 @@ public class KeycloakAuthUtils {
 
   public IdentityProviderRepresentation getSamlIdentityProvider() {
     RealmResource realmResource = getRealm();
-    return realmResource.identityProviders().get(samlName).toRepresentation();
+    IdentityProviderResource identityProviderResource =
+        realmResource.identityProviders().get(samlName);
+
+    return identityProviderResource == null ? null : identityProviderResource.toRepresentation();
   }
 
   public void deleteSamlIdentityProvider() {
     getRealm().identityProviders().get(samlName).remove();
     log.info("Successfully deleted saml.");
+  }
+
+  public AuthProviderModel getDefaultModel(String name) {
+    AuthProviderModel model = new AuthProviderModel();
+    model.setName(name);
+    Map<String, String> config = new HashMap<>();
+    config.put("enabled", "false");
+    model.setConfig(config);
+    return model;
   }
 }

@@ -76,6 +76,9 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
   @Override
   public AuthProviderModel get() {
     ComponentRepresentation ldap = keycloakAuthUtils.getLdapComponent();
+    if (ldap == null) {
+      return keycloakAuthUtils.getDefaultModel(ldapName);
+    }
     Map<String, String> config = multivaluedHashMapToHashMap(ldap.getConfig());
     AuthProviderModel model = new AuthProviderModel();
     model.setName(ldap.getName());
