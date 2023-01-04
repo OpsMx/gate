@@ -20,6 +20,7 @@ import com.opsmx.spinnaker.gate.model.AuthProviderModel;
 import com.opsmx.spinnaker.gate.util.KeycloakAuthUtils;
 import java.util.HashMap;
 import java.util.Map;
+import javax.validation.ValidationException;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,15 +33,20 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
   private String samlName;
 
   @Autowired private KeycloakAuthUtils keycloakAuthUtils;
+
   /**
    * @param authProviderModel
    * @return
    */
   @Override
   public AuthProviderModel create(AuthProviderModel authProviderModel) {
-    keycloakAuthUtils.addSamlIdentityProvider(authProviderModel.getFile());
+    if (authProviderModel.getFile() != null) {
+      keycloakAuthUtils.addSamlIdentityProvider(authProviderModel.getFile());
+    } else {
+      throw new ValidationException("Cant create a saml without a file!");
+    }
     String enabled = authProviderModel.getConfig().get("enabled");
-    if (!Boolean.getBoolean(enabled)) {
+    if (!Boolean.parseBoolean(enabled)) {
       keycloakAuthUtils.disableSamlIdentityProvider();
     }
     return authProviderModel;
@@ -53,22 +59,21 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
   @Override
   public AuthProviderModel update(AuthProviderModel authProviderModel) {
     if (authProviderModel.getFile() != null) {
+      keycloakAuthUtils.deleteSamlIdentityProvider();
       keycloakAuthUtils.addSamlIdentityProvider(authProviderModel.getFile());
     }
     String enabled = authProviderModel.getConfig().get("enabled");
-    if (!Boolean.getBoolean(enabled)) {
+    if (!Boolean.parseBoolean(enabled)) {
       keycloakAuthUtils.disableSamlIdentityProvider();
     }
     return authProviderModel;
   }
 
-  /** @return */
   @Override
   public String getAuthType() {
     return samlName;
   }
 
-  /** @return */
   @Override
   public AuthProviderModel get() {
     IdentityProviderRepresentation samlIdentityProvider =
@@ -82,13 +87,11 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
     return model;
   }
 
-  /** */
   @Override
   public void delete() {
     keycloakAuthUtils.deleteSamlIdentityProvider();
   }
 
-  /** @return */
   @Override
   public AuthProviderModel disable() {
     return null;

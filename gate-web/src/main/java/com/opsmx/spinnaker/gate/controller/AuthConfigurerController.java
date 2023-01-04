@@ -16,6 +16,7 @@
 
 package com.opsmx.spinnaker.gate.controller;
 
+import com.google.gson.Gson;
 import com.opsmx.spinnaker.gate.model.AuthProviderModel;
 import com.opsmx.spinnaker.gate.model.KeycloakAuthProvider;
 import com.opsmx.spinnaker.gate.model.KeycloakAuthProviderModel;
@@ -27,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -37,6 +39,8 @@ public class AuthConfigurerController {
   @Autowired private KeycloakAuthProvider keycloakAuthProvider;
   @Autowired private KeycloakAutowireService keycloakAuthService;
 
+  private Gson gson = new Gson();
+
   @GetMapping(value = "/supported/providers", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<KeycloakAuthProviderModel> getSupportedAuthProviders() {
 
@@ -45,25 +49,35 @@ public class AuthConfigurerController {
     return ResponseEntity.ok(new KeycloakAuthProviderModel(keycloakAuthProvider.getProviders()));
   }
 
-  @PostMapping(
-      value = "/authProvider/{authProvider}/create",
-      consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "/authProvider/{authProvider}/create", method = RequestMethod.POST)
   public ResponseEntity<AuthProviderModel> createAuthProvider(
-      @RequestBody AuthProviderModel authProviderModel,
+      @RequestPart(value = "file", required = false) MultipartFile file,
+      @RequestPart(value = "authProviderModel") String authProviderStr,
       @PathVariable(name = "authProvider") String authProvider) {
+    log.trace("createAuthProvider started");
+    AuthProviderModel authProviderModel = gson.fromJson(authProviderStr, AuthProviderModel.class);
+    if (file != null) {
+      authProviderModel.setFile(file);
+    }
     AuthProviderModel created = keycloakAuthService.create(authProvider, authProviderModel);
     ResponseEntity<AuthProviderModel> response = new ResponseEntity<>(created, HttpStatus.CREATED);
+    log.trace("createAuthProvider ended");
     return response;
   }
 
-  @PutMapping(
-      value = "/authProvider/{authProvider}/update",
-      consumes = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "/authProvider/{authProvider}/update", method = RequestMethod.PUT)
   public ResponseEntity<AuthProviderModel> updateAuthProvider(
-      @RequestBody AuthProviderModel authProviderModel,
+      @RequestPart(value = "file", required = false) MultipartFile file,
+      @RequestPart(value = "authProviderModel") String authProviderStr,
       @PathVariable(name = "authProvider") String authProvider) {
+    log.trace("updateAuthProvider started");
+    AuthProviderModel authProviderModel = gson.fromJson(authProviderStr, AuthProviderModel.class);
+    if (file != null) {
+      authProviderModel.setFile(file);
+    }
     AuthProviderModel updated = keycloakAuthService.update(authProvider, authProviderModel);
     ResponseEntity<AuthProviderModel> response = new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
+    log.trace("updateAuthProvider ended");
     return response;
   }
 
@@ -72,27 +86,33 @@ public class AuthConfigurerController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<AuthProviderModel> getAuthProvider(
       @PathVariable(name = "authProvider") String authProvider) {
+    log.trace("getAuthProvider started");
     AuthProviderModel provider = keycloakAuthService.get(authProvider);
     ResponseEntity<AuthProviderModel> response =
         new ResponseEntity<>(provider, HttpStatus.ACCEPTED);
+    log.trace("getAuthProvider ended");
     return response;
   }
 
   @DeleteMapping(value = "/authProvider/{authProvider}/delete")
   public ResponseEntity deleteAuthProvider(
       @PathVariable(name = "authProvider") String authProvider) {
+    log.trace("deleteAuthProvider started");
     keycloakAuthService.delete(authProvider);
+    log.trace("deleteAuthProvider ended");
     return ResponseEntity.ok().build();
   }
 
   @GetMapping(
       value = "/authProvider/{authProvider}/disable",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AuthProviderModel> disbleAuthProvider(
+  public ResponseEntity<AuthProviderModel> disableAuthProvider(
       @PathVariable(name = "authProvider") String authProvider) {
+    log.trace("disableAuthProvider started");
     AuthProviderModel provider = keycloakAuthService.disble(authProvider);
     ResponseEntity<AuthProviderModel> response =
         new ResponseEntity<>(provider, HttpStatus.ACCEPTED);
+    log.trace("disableAuthProvider ended");
     return response;
   }
 }

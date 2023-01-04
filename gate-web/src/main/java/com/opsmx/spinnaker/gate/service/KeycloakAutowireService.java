@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/***
+ * An adapter service that invokes appropriate KeycloakAuthService based on AuthType
+ */
 @Service
 public class KeycloakAutowireService {
   private final Map<String, KeycloakAuthService> servicesByAuthType;

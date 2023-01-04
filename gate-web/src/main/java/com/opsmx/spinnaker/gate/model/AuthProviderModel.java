@@ -16,6 +16,7 @@
 
 package com.opsmx.spinnaker.gate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Map;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,5 +25,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class AuthProviderModel {
   private String name;
   private Map<String, String> config;
-  private MultipartFile file;
+  @JsonIgnore private MultipartFile file;
 }

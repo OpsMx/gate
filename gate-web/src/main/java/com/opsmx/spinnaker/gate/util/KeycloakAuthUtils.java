@@ -16,10 +16,16 @@
 
 package com.opsmx.spinnaker.gate.util;
 
-import java.util.*;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import org.jetbrains.annotations.NotNull;
+import javax.ws.rs.core.MediaType;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -63,8 +69,6 @@ public class KeycloakAuthUtils {
 
   public static final String USER_STORAGE_PROVIDER_TYPE =
       "org.keycloak.storage.UserStorageProvider";
-  public static final String LDAP_STORAGE_MAPPER_TYPE =
-      "org.keycloak.storage.ldap.mappers.LDAPStorageMapper";
 
   @PostConstruct
   public void initKeycloak() {
@@ -91,12 +95,11 @@ public class KeycloakAuthUtils {
   public void addLdapComponent(MultivaluedHashMap<String, String> config) {
     RealmResource realmResource = getRealm();
     RealmRepresentation realm = realmResource.toRepresentation();
-    String id = realm.getId();
-    ComponentRepresentation componentRepresentation = populateComponentRepresentation(config, id);
+    ComponentRepresentation componentRepresentation =
+        populateComponentRepresentation(config, realm.getId());
     realmResource.components().add(componentRepresentation);
   }
 
-  @NotNull
   private ComponentRepresentation populateComponentRepresentation(
       MultivaluedHashMap<String, String> config, String id) {
     ComponentRepresentation componentRepresentation = new ComponentRepresentation();
@@ -104,6 +107,7 @@ public class KeycloakAuthUtils {
     componentRepresentation.setConfig(config);
     componentRepresentation.setParentId(id);
     componentRepresentation.setProviderType(USER_STORAGE_PROVIDER_TYPE);
+    componentRepresentation.setProviderId("ldap");
     return componentRepresentation;
   }
 
@@ -111,24 +115,16 @@ public class KeycloakAuthUtils {
     ComponentRepresentation componentRepresentation = getLdapComponent();
     componentRepresentation.setConfig(config);
     RealmResource realmResource = getRealm();
-    realmResource.components().add(componentRepresentation);
+    realmResource
+        .components()
+        .component(componentRepresentation.getId())
+        .update(componentRepresentation);
   }
 
   public void deleteLdapComponent() {
     ComponentRepresentation componentRepresentation = getLdapComponent();
     RealmResource realmResource = getRealm();
     realmResource.components().component(componentRepresentation.getId()).remove();
-  }
-
-  public ComponentRepresentation disableLdapComponent() {
-    ComponentRepresentation componentRepresentation = getLdapComponent();
-    componentRepresentation.getConfig().put("enabled", Arrays.asList("false"));
-    RealmResource realmResource = getRealm();
-    realmResource
-        .components()
-        .component(componentRepresentation.getId())
-        .update(componentRepresentation);
-    return componentRepresentation;
   }
 
   public ComponentRepresentation getLdapComponent() {
@@ -140,18 +136,42 @@ public class KeycloakAuthUtils {
     return Optional.ofNullable(componentsResource).orElse(new ArrayList<>()).stream()
         .filter(cr -> cr.getName().equalsIgnoreCase(ldapName))
         .findFirst()
-        .map(ComponentRepresentation::getId)
-        .map(componentId -> realmResource.components().query(componentId, LDAP_STORAGE_MAPPER_TYPE))
-        .orElse(new ArrayList<>())
-        .stream()
-        .findFirst()
         .orElse(null);
   }
 
   public void addSamlIdentityProvider(MultipartFile data) {
-    Map<String, String> config = getRealm().identityProviders().importFrom(data);
-
+    Map<String, String> config = getConfig(data);
     getRealm().identityProviders().create(populateIdentityProviderRepresentation(config));
+  }
+
+  private Map<String, String> getConfig(MultipartFile data) {
+    MultipartFormDataOutput form = new MultipartFormDataOutput();
+    form.addFormData("providerId", "saml", MediaType.TEXT_PLAIN_TYPE);
+    String body;
+    try {
+      body = new String(data.getBytes(), Charset.forName("utf-8"));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    form.addFormData("file", body, MediaType.APPLICATION_XML_TYPE, "saml-idp-metadata.xml");
+    Map<String, String> config = getRealm().identityProviders().importFrom(form);
+    config.remove("addExtensionsElementWithKeyInfo");
+    config.remove("enabledFromMetadata");
+    config.remove("signingCertificate");
+    config.put("allowCreate", "true");
+    config.put("allowedClockSkew", "");
+    config.put("attributeConsumingServiceIndex", "");
+    config.put("attributeConsumingServiceName", "");
+    config.put("backchannelSupported", "false");
+    config.put("entityId", "");
+    config.put("forceAuthn", "false");
+    config.put("guiOrder", "");
+    config.put("principalType", "Subject NameID");
+    config.put("signSpMetadata", "false");
+    config.put("singleLogoutServiceUrl", "");
+    config.put("wantAssertionsEncrypted", "false");
+    config.put("wantAssertionsSigned", "false");
+    return config;
   }
 
   public IdentityProviderRepresentation disableSamlIdentityProvider() {
@@ -166,6 +186,8 @@ public class KeycloakAuthUtils {
     IdentityProviderRepresentation identityProviderRepresentation =
         new IdentityProviderRepresentation();
     identityProviderRepresentation.setAlias(samlName);
+    identityProviderRepresentation.setProviderId(samlName);
+    identityProviderRepresentation.setDisplayName(samlName);
     identityProviderRepresentation.setConfig(config);
     return identityProviderRepresentation;
   }

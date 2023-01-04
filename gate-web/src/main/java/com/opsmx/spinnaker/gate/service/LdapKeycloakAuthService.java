@@ -35,6 +35,7 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
   private String ldapName;
 
   @Autowired private KeycloakAuthUtils keycloakAuthUtils;
+
   /**
    * @param authProviderModel
    * @return
@@ -67,13 +68,11 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
     return authProviderModel;
   }
 
-  /** @return */
   @Override
   public String getAuthType() {
     return ldapName;
   }
 
-  /** @return */
   @Override
   public AuthProviderModel get() {
     ComponentRepresentation ldap = keycloakAuthUtils.getLdapComponent();
@@ -99,13 +98,11 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
     return map;
   }
 
-  /** */
   @Override
   public void delete() {
     keycloakAuthUtils.deleteLdapComponent();
   }
 
-  /** @return */
   @Override
   public AuthProviderModel disable() {
     return null;
