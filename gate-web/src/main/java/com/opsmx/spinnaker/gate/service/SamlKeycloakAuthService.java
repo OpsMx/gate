@@ -85,6 +85,10 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
     boolean isEnabled = samlIdentityProvider.isEnabled();
     Map<String, String> config = new HashMap<>();
     config.put("enabled", Boolean.toString(isEnabled));
+    Map<String, String> samlConfig = samlIdentityProvider.getConfig();
+    if (samlConfig.containsKey("singleSignOnServiceUrl")) {
+      config.put("singleSignOnServiceUrl", samlConfig.get("singleSignOnServiceUrl"));
+    }
     AuthProviderModel model = new AuthProviderModel();
     model.setName(samlIdentityProvider.getAlias());
     model.setConfig(config);

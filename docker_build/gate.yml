@@ -295,12 +295,12 @@ keycloak:
             defaultValue: http://localhost:8080/realms/isd-poc-realm/saml/endpoint
             loadValues: NA
 
-          - name: importFromFile
-            display: Import from file
-            inputType: file
+          - name: singleSignOnServiceUrl
+            display: Single Sign-On Service URL
+            inputType: url
             required: false
-            helpText: Import from file
-            readonly: false
+            helpText: Single Sign-On Service URL
+            readonly: true
             placeholder: NA
             defaultValue: NA
             loadValues: NA
