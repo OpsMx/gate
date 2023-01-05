@@ -22,9 +22,9 @@ import lombok.Data;
 @Data
 public class KeycloakAuthProviderModel {
 
-  private List<KeycloakAuthProvider.AuthParam> providers;
+  private List<KeycloakAuthProvider.Provider> providers;
 
-  public KeycloakAuthProviderModel(List<KeycloakAuthProvider.AuthParam> providers) {
+  public KeycloakAuthProviderModel(List<KeycloakAuthProvider.Provider> providers) {
     this.providers = providers;
   }
 }

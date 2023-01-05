@@ -28,14 +28,32 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnExpression("${feature.auth-provider.flag:false}")
 public class KeycloakAuthProvider {
 
-  private List<AuthParam> providers;
+  private List<Provider> providers;
 
   @Data
-  public static class AuthParam {
+  public static class BaseUIElement {
+
     private String name;
     private String display;
     private String helpText;
     private String type;
+  }
+
+  @Data
+  public static class Provider extends BaseUIElement {
+
+    private List<Section> sections;
+  }
+
+  @Data
+  public static class Section extends BaseUIElement {
+
+    private List<InputParameter> inputparameters;
+    private List<NestedSection> nestedSections;
+  }
+
+  @Data
+  public static class NestedSection extends BaseUIElement {
     private List<InputParameter> inputparameters;
   }
 
