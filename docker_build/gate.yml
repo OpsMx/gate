@@ -125,7 +125,15 @@ management:
       show-details: always
       show-components: always
 
+
 keycloak:
+  realm: myrealm
+  ldapName: ldap
+  samlName: saml
+  clientId: admin-rest-client
+  serverUrl: http://localhost:8080/admin
+  username: myuser
+  password: password
   auth:
     providers:
       - name: ldap
@@ -134,9 +142,9 @@ keycloak:
         helpText: LDAP
         sections:
           - name: toggleSettings
-            display: NA
-            type: NA
-            helpText: NA
+            display:
+            type:
+            helpText:
             inputparameters:
               - name: enabled
                 display: Enabled
@@ -144,9 +152,9 @@ keycloak:
                 required: true
                 helpText: Enabled
                 readonly: false
-                placeholder: NA
+                placeholder:
                 defaultValue: ON
-                loadValues: NA
+                loadValues: []
 
 
           - name: connectionSettings
@@ -160,8 +168,8 @@ keycloak:
                 required: true
                 helpText: Vendor
                 readonly: false
-                placeholder: NA
-                defaultValue: NA
+                placeholder:
+                defaultValue:
                 loadValues:
                   - Active Directory
                   - Red Hat Directory Server
@@ -176,8 +184,8 @@ keycloak:
                 helpText: Connection URL
                 readonly: false
                 placeholder: LDAP connection URL
-                defaultValue: NA
-                loadValues: NA
+                defaultValue:
+                loadValues: []
 
               - name: bindType
                 display: Bind Type
@@ -185,7 +193,7 @@ keycloak:
                 required: true
                 helpText: Bind Type
                 readonly: false
-                placeholder: NA
+                placeholder:
                 defaultValue: simple
                 loadValues:
                   - none
@@ -198,8 +206,8 @@ keycloak:
                 helpText: Bind DN
                 readonly: false
                 placeholder: LDAP Bind DN
-                defaultValue: NA
-                loadValues: NA
+                defaultValue:
+                loadValues: []
 
               - name: bindCredential
                 display: Bind Credential
@@ -208,8 +216,8 @@ keycloak:
                 helpText: Bind Credential
                 readonly: false
                 placeholder: xxxxxxx
-                defaultValue: NA
-                loadValues: NA
+                defaultValue:
+                loadValues: []
 
           - name: userSearchSettings
             display: User Search Settings
@@ -223,8 +231,8 @@ keycloak:
                 helpText: User Object Classes
                 readonly: false
                 placeholder: LDAP User Object Classes (div. by comma)
-                defaultValue: NA
-                loadValues: NA
+                defaultValue:
+                loadValues: []
 
               - name: usersDN
                 display: Users DN
@@ -233,8 +241,8 @@ keycloak:
                 helpText: Users DN
                 readonly: false
                 placeholder: LDAP Users DN
-                defaultValue: NA
-                loadValues: NA
+                defaultValue:
+                loadValues: []
             nestedSections:
               - name: advancedOptions
                 display: Advanced Options
@@ -247,8 +255,8 @@ keycloak:
                     required: true
                     helpText: Edit Mode
                     readonly: false
-                    placeholder: NA
-                    defaultValue: NA
+                    placeholder:
+                    defaultValue:
                     loadValues:
                       - READ_ONLY
                       - WRITABLE
@@ -261,8 +269,8 @@ keycloak:
                     helpText: Username LDAP attribute
                     readonly: false
                     placeholder: LDAP attribute name for username
-                    defaultValue: NA
-                    loadValues: NA
+                    defaultValue:
+                    loadValues: []
 
                   - name: rdnLdapAttribute
                     display: RDN LDAP attribute
@@ -271,8 +279,8 @@ keycloak:
                     helpText: RDN LDAP attribute
                     readonly: false
                     placeholder: LDAP attribute name for user RDN
-                    defaultValue: NA
-                    loadValues: NA
+                    defaultValue:
+                    loadValues: []
 
                   - name: uuidLdapAttribute
                     display: UUID LDAP attribute
@@ -281,8 +289,8 @@ keycloak:
                     helpText: UUID LDAP attribute
                     readonly: false
                     placeholder: LDAP attribute name for UUID
-                    defaultValue: NA
-                    loadValues: NA
+                    defaultValue:
+                    loadValues: []
 
           - name: groupSearchSettings
             display: Group Search Settings
@@ -295,9 +303,9 @@ keycloak:
                 required: true
                 helpText: Group DN
                 readonly: false
-                placeholder: NA
-                defaultValue: NA
-                loadValues: NA
+                placeholder:
+                defaultValue:
+                loadValues: []
 
               - name: groupSearchFilter
                 display: Group Search Filter
@@ -305,9 +313,9 @@ keycloak:
                 required: true
                 helpText: Group Search Filter
                 readonly: false
-                placeholder: NA
+                placeholder:
                 defaultValue: member
-                loadValues: NA
+                loadValues: []
 
               - name: groupRoleNameAttribute
                 display: Group Role Name Attribute
@@ -315,9 +323,9 @@ keycloak:
                 required: true
                 helpText: Group Role Name Attribute
                 readonly: false
-                placeholder: NA
+                placeholder:
                 defaultValue: cn
-                loadValues: NA
+                loadValues: []
             nestedSections:
               - name: advancedOptions
                 display: Advanced Options
@@ -330,9 +338,9 @@ keycloak:
                     required: false
                     helpText: Group Object Classes
                     readonly: false
-                    placeholder: NA
+                    placeholder:
                     defaultValue: groupOfNames
-                    loadValues: NA
+                    loadValues: []
 
                   - name: membershipUserLdapAttribute
                     display: Membership User LDAP Attribute
@@ -340,9 +348,9 @@ keycloak:
                     required: false
                     helpText: Membership User LDAP Attribute
                     readonly: false
-                    placeholder: NA
+                    placeholder:
                     defaultValue: uid
-                    loadValues: NA
+                    loadValues: []
 
                   - name: membershipAttributeType
                     display: Membership Attribute Type
@@ -350,7 +358,7 @@ keycloak:
                     required: false
                     helpText: Membership User LDAP Attribute
                     readonly: false
-                    placeholder: NA
+                    placeholder:
                     defaultValue: DN
                     loadValues:
                       - DN
@@ -362,7 +370,7 @@ keycloak:
                     required: false
                     helpText: Mode
                     readonly: false
-                    placeholder: NA
+                    placeholder:
                     defaultValue: READ_ONLY
                     loadValues:
                       - READ_ONLY
@@ -375,7 +383,7 @@ keycloak:
                     required: false
                     helpText: User Groups Retrieve Strategy
                     readonly: false
-                    placeholder: NA
+                    placeholder:
                     defaultValue: LOAD_GROUPS_BY_MEMBER_ATTRIBUTE
                     loadValues:
                       - LOAD_GROUPS_BY_MEMBER_ATTRIBUTE
@@ -387,9 +395,9 @@ keycloak:
                     required: false
                     helpText: Member-Of LDAP Attribute
                     readonly: false
-                    placeholder: NA
+                    placeholder:
                     defaultValue: memberOf
-                    loadValues: NA
+                    loadValues: []
 
       - name: saml
         display: SAML
@@ -397,9 +405,9 @@ keycloak:
         helpText: SAML
         sections:
           - name: toggleSettings
-            display: NA
-            type: NA
-            helpText: NA
+            display:
+            type:
+            helpText:
             inputparameters:
               - name: enabled
                 display: Enabled
@@ -407,14 +415,14 @@ keycloak:
                 required: true
                 helpText: Enabled
                 readonly: false
-                placeholder: NA
+                placeholder:
                 defaultValue: ON
-                loadValues: NA
+                loadValues: []
 
           - name: idpSettings
-            display: NA
-            type: NA
-            helpText: NA
+            display:
+            type:
+            helpText:
             inputparameters:
               - name: redirectURI
                 display: Redirect URI
@@ -422,9 +430,9 @@ keycloak:
                 required: true
                 helpText: Redirect URI
                 readonly: true
-                placeholder: NA
+                placeholder:
                 defaultValue: http://localhost:8080/realms/isd-poc-realm/saml/endpoint
-                loadValues: NA
+                loadValues: []
 
               - name: serviceProviderEntityId
                 display: Service Provider Entity ID
@@ -432,29 +440,19 @@ keycloak:
                 required: true
                 helpText: Service Provider Entity ID
                 readonly: false
-                placeholder: NA
+                placeholder:
                 defaultValue: http://localhost:8080/realms/isd-poc-realm
-                loadValues: NA
+                loadValues: []
 
               - name: singleSignOnServiceUrl
                 display: Single Sign-On Service URL
                 inputType: url
                 required: true
                 helpText: Single Sign-On Service URL
-                readonly: false
-                placeholder: NA
-                defaultValue: NA
-                loadValues: NA
-
-              - name: importFromURL
-                display: Import from URL
-                inputType: url
-                required: false
-                helpText: Import from URL
-                readonly: false
-                placeholder: NA
-                defaultValue: NA
-                loadValues: NA
+                readonly: true
+                placeholder:
+                defaultValue:
+                loadValues: []
 
               - name: importFromFile
                 display: Import from file
@@ -462,9 +460,9 @@ keycloak:
                 required: false
                 helpText: Import from file
                 readonly: false
-                placeholder: NA
-                defaultValue: NA
-                loadValues: NA
+                placeholder:
+                defaultValue:
+                loadValues: []
 
               - name: groupAttribute
                 display: Group Attribute
@@ -472,10 +470,6 @@ keycloak:
                 required: false
                 helpText: Group Attribute
                 readonly: false
-                placeholder: NA
+                placeholder:
                 defaultValue: memberOf
-                loadValues: NA
-
-
-
-
+                loadValues: []
