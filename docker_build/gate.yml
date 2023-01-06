@@ -134,6 +134,27 @@ keycloak:
   serverUrl: http://localhost:8080/admin
   username: myuser
   password: password
+  ldapConfigProps:
+    connectionTimeout: ""
+    customUserSearchFilter: ""
+    readTimeout: ""
+    batchSizeForSync: ""
+    startTls: "false"
+    useTruststoreSpi: "never"
+    connectionPooling: "false"
+    authType: "none"
+    searchScope: ""
+    pagination: "false"
+    importEnabled: "true"
+    syncRegistrations: "true"
+    allowKerberosAuthentication: "false"
+    useKerberosForPasswordAuthentication: "false"
+    cachePolicy: "DEFAULT"
+    usePasswordModifyExtendedOp: "false"
+    validatePasswordPolicy: "false"
+    trustEmail: "false"
+    changedSyncPeriod: "-1"
+    fullSyncPeriod: "-1"
   auth:
     providers:
       - name: ldap
