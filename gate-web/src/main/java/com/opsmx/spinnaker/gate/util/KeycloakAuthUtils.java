@@ -71,6 +71,9 @@ public class KeycloakAuthUtils {
   @Value("${keycloak.token:}")
   private String token;
 
+  @Value("${keycloak.clientsecret:}")
+  private String clientsecret;
+
   public static final String USER_STORAGE_PROVIDER_TYPE =
       "org.keycloak.storage.UserStorageProvider";
 
@@ -82,6 +85,10 @@ public class KeycloakAuthUtils {
       builder = builder.grantType(OAuth2Constants.CLIENT_CREDENTIALS).clientSecret(token);
     } else {
       builder = builder.grantType("password").username(username).password(password);
+    }
+
+    if (!clientsecret.isEmpty()) {
+      builder.clientSecret(clientsecret);
     }
 
     keycloak = builder.build();
