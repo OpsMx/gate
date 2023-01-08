@@ -25,14 +25,12 @@ import java.util.Optional;
 import org.keycloak.common.util.MultivaluedHashMap;
 import org.keycloak.representations.idm.ComponentRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LdapKeycloakAuthService implements KeycloakAuthService {
 
-  @Value("${keycloak.ldapName:ldap}")
-  private String ldapName;
+  private static final String LDAP = "ldap";
 
   @Autowired private KeycloakAuthUtils keycloakAuthUtils;
 
@@ -45,13 +43,18 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
     MultivaluedHashMap<String, String> config =
         hashMapToMultivaluedHashMap(authProviderModel.getConfig());
     keycloakAuthUtils.addLdapComponent(config);
+    keycloakAuthUtils.addLdapGroupMapper(authProviderModel);
+    keycloakAuthUtils.addLdapGroupProtocolMapper();
+
     return authProviderModel;
   }
 
   private MultivaluedHashMap<String, String> hashMapToMultivaluedHashMap(
       Map<String, String> config) {
     MultivaluedHashMap<String, String> map = new MultivaluedHashMap<>();
-    Optional.ofNullable(config).orElse(new HashMap<>()).entrySet().stream()
+    Optional.ofNullable(config)
+        .orElse(new HashMap<>())
+        .entrySet()
         .forEach(entry -> map.add(entry.getKey(), entry.getValue()));
     return map;
   }
@@ -70,14 +73,14 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
 
   @Override
   public String getAuthType() {
-    return ldapName;
+    return LDAP;
   }
 
   @Override
   public AuthProviderModel get() {
     ComponentRepresentation ldap = keycloakAuthUtils.getLdapComponent();
     if (ldap == null) {
-      return keycloakAuthUtils.getDefaultModel(ldapName);
+      return keycloakAuthUtils.getDefaultModel(LdapKeycloakAuthService.LDAP);
     }
     Map<String, String> config = multivaluedHashMapToHashMap(ldap.getConfig());
     AuthProviderModel model = new AuthProviderModel();

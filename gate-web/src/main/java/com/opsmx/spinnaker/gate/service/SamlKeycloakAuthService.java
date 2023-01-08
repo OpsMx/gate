@@ -23,14 +23,12 @@ import java.util.Map;
 import javax.validation.ValidationException;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SamlKeycloakAuthService implements KeycloakAuthService {
 
-  @Value("${keycloak.samlName:saml}")
-  private String samlName;
+  private static final String SAML = "saml";
 
   @Autowired private KeycloakAuthUtils keycloakAuthUtils;
 
@@ -49,6 +47,8 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
     if (!Boolean.parseBoolean(enabled)) {
       keycloakAuthUtils.disableSamlIdentityProvider();
     }
+    keycloakAuthUtils.addIdpGroupMapper(authProviderModel);
+    keycloakAuthUtils.addIdpProtocolMapper(authProviderModel);
     return authProviderModel;
   }
 
@@ -72,7 +72,7 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
 
   @Override
   public String getAuthType() {
-    return samlName;
+    return SAML;
   }
 
   @Override
@@ -80,7 +80,7 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
     IdentityProviderRepresentation samlIdentityProvider =
         keycloakAuthUtils.getSamlIdentityProvider();
     if (samlIdentityProvider == null) {
-      return keycloakAuthUtils.getDefaultModel(samlName);
+      return keycloakAuthUtils.getDefaultModel(SAML);
     }
     boolean isEnabled = samlIdentityProvider.isEnabled();
     Map<String, String> config = new HashMap<>();
