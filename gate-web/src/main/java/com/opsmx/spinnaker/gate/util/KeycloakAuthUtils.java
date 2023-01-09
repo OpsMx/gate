@@ -28,15 +28,13 @@ import javax.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.jetbrains.annotations.NotNull;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.common.util.MultivaluedHashMap;
-import org.keycloak.representations.idm.ComponentRepresentation;
-import org.keycloak.representations.idm.IdentityProviderRepresentation;
-import org.keycloak.representations.idm.RealmRepresentation;
-import org.keycloak.representations.idm.TestLdapConnectionRepresentation;
+import org.keycloak.representations.idm.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,8 +69,23 @@ public class KeycloakAuthUtils {
   @Value("${keycloak.token:}")
   private String token;
 
+  @Value("${security.oauth2.client.clientSecret:}")
+  private String clientSecret;
+
   public static final String USER_STORAGE_PROVIDER_TYPE =
       "org.keycloak.storage.UserStorageProvider";
+
+  private final String GROUPS = "groups";
+  private final String GROUP_MEMBERSHIP_PROTOCOL_MAPPER = "oidc-group-membership-mapper";
+  private final String LDAP_GROUP_PROTOCOL = "ldap-group-protocol";
+  private final String OPENID_CONNECT = "openid-connect";
+  private final String LDAP_GROUP_MAPPER = "ldap-group-mapper";
+  private final String LDAP_STORAGE_MAPPER = "org.keycloak.storage.ldap.mappers.LDAPStorageMapper";
+  private final String GROUP_LDAP_MAPPER_PROVIDER = "group-ldap-mapper";
+  private final String GROUP_ATTRIBUTE = "groupAttribute";
+  private final String IDP_USER_ATTRIBUTE_MAPPER = "saml-user-attribute-idp-mapper";
+  private final String USER_ATTRIBUTE_PROTOCOL_MAPPER = "oidc-usermodel-attribute-mapper";
+  private final String IDP_GROUP_PROTOCOL = "idp-group-protocol";
 
   @PostConstruct
   public void initKeycloak() {
@@ -81,7 +94,12 @@ public class KeycloakAuthUtils {
     if (token != null && !token.isEmpty()) {
       builder = builder.grantType(OAuth2Constants.CLIENT_CREDENTIALS).clientSecret(token);
     } else {
-      builder = builder.grantType("password").username(username).password(password);
+      builder =
+          builder
+              .grantType(OAuth2Constants.PASSWORD)
+              .username(username)
+              .password(password)
+              .clientSecret(clientSecret);
     }
 
     keycloak = builder.build();
@@ -103,6 +121,12 @@ public class KeycloakAuthUtils {
         populateComponentRepresentation(config, realm.getId());
     realmResource.components().add(componentRepresentation);
     log.info("Successfully added ldap: {} ", componentRepresentation);
+  }
+
+  private void addLdapComponent(ComponentRepresentation componentRepresentation) {
+    RealmResource realmResource = getRealm();
+    realmResource.components().add(componentRepresentation);
+    log.debug("Successfully added a ldap component: {} ", componentRepresentation.getConfig());
   }
 
   private ComponentRepresentation populateComponentRepresentation(
@@ -226,6 +250,195 @@ public class KeycloakAuthUtils {
     return model;
   }
 
+  public void addLdapGroupMapper(AuthProviderModel authProviderModel) {
+    ComponentRepresentation ldapComponentRepresentation = getLdapComponent();
+    MultivaluedHashMap<String, String> ldapCompConfig = populateLdapCompConfig(authProviderModel);
+    log.debug("Populated ldapCompConfig : {}", ldapCompConfig);
+
+    ComponentRepresentation componentRepresentation =
+        populateLdapGroupMapperComponentRepresentation(ldapComponentRepresentation, ldapCompConfig);
+    addLdapComponent(componentRepresentation);
+    log.debug("Successfully added LDAP group mapper");
+  }
+
+  public void addIdpGroupMapper(AuthProviderModel authProviderModel) {
+    RealmResource realmResource = getRealm();
+    IdentityProviderRepresentation idpComponentRepresentation = getSamlIdentityProvider();
+    Map<String, String> idpMapperConfig = populateIdpMapperConfig(authProviderModel);
+    log.debug("Populated idpGroupMapperConfig : {}", idpMapperConfig);
+
+    IdentityProviderMapperRepresentation identityProviderMapperRepresentation =
+        populateIdentityProviderMapperRepresentation(
+            authProviderModel, idpComponentRepresentation, idpMapperConfig);
+    realmResource.identityProviders().get(samlName).addMapper(identityProviderMapperRepresentation);
+    log.debug("Successfully added Idp group mapper");
+  }
+
+  public void addUserAttributeProtocolMapper(AuthProviderModel authProviderModel) {
+    RealmResource realmResource = getRealm();
+    Map<String, String> protocolMapperConfig =
+        populateProtocolMapperConfig(authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
+    protocolMapperConfig.put("user.attribute", authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
+    protocolMapperConfig.put("jsonType.label", "");
+    protocolMapperConfig.put("multivalued", Boolean.TRUE.toString());
+    protocolMapperConfig.put("aggregate.attrs", Boolean.FALSE.toString());
+    log.debug("Populated user attribute protocol mapper config : {}", protocolMapperConfig);
+
+    ProtocolMapperRepresentation protocolMapperRepresentation =
+        populateProtocolMapperRepresentation(
+            protocolMapperConfig, USER_ATTRIBUTE_PROTOCOL_MAPPER, IDP_GROUP_PROTOCOL);
+
+    createProtocolMapper(protocolMapperRepresentation, realmResource);
+    log.debug("Successfully added Idp protocol mapper");
+  }
+
+  @NotNull
+  private IdentityProviderMapperRepresentation populateIdentityProviderMapperRepresentation(
+      AuthProviderModel authProviderModel,
+      IdentityProviderRepresentation idpComponentRepresentation,
+      Map<String, String> idpMapperConfig) {
+    IdentityProviderMapperRepresentation identityProviderMapperRepresentation =
+        new IdentityProviderMapperRepresentation();
+    identityProviderMapperRepresentation.setIdentityProviderMapper(IDP_USER_ATTRIBUTE_MAPPER);
+    identityProviderMapperRepresentation.setIdentityProviderAlias(
+        idpComponentRepresentation.getAlias());
+    identityProviderMapperRepresentation.setName(
+        authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
+    identityProviderMapperRepresentation.setConfig(idpMapperConfig);
+    return identityProviderMapperRepresentation;
+  }
+
+  @NotNull
+  private Map<String, String> populateIdpMapperConfig(AuthProviderModel authProviderModel) {
+    Map<String, String> idpMapperConfig = new HashMap<>();
+    idpMapperConfig.put("attributes", "[{\"key\":\"\",\"value\":\"\"}]");
+    idpMapperConfig.put("are.attribute.values.regex", Boolean.FALSE.toString());
+    idpMapperConfig.put("role", "");
+    idpMapperConfig.put("syncMode", "INHERIT");
+    idpMapperConfig.put("attribute.name", authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
+    idpMapperConfig.put(
+        "attribute.friendly.name", authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
+    idpMapperConfig.put("user.attribute", authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
+    idpMapperConfig.put("attribute.name.format", "ATTRIBUTE_FORMAT_BASIC");
+    idpMapperConfig.put("claims", "");
+    return idpMapperConfig;
+  }
+
+  public void addGroupMembershipProtocolMapper() {
+    Map<String, String> protocolMapperConfig = populateProtocolMapperConfig(GROUPS);
+    protocolMapperConfig.put("full.path", Boolean.TRUE.toString());
+    log.debug("Populated Group membership protocol mapper config : {}", protocolMapperConfig);
+    RealmResource realmResource = getRealm();
+    ProtocolMapperRepresentation protocolMapperRepresentation =
+        populateProtocolMapperRepresentation(
+            protocolMapperConfig, GROUP_MEMBERSHIP_PROTOCOL_MAPPER, LDAP_GROUP_PROTOCOL);
+    createProtocolMapper(protocolMapperRepresentation, realmResource);
+    log.debug("Successfully added LDAP group protocol mapper");
+  }
+
+  private void createProtocolMapper(
+      ProtocolMapperRepresentation protocolMapperRepresentation, RealmResource realmResource) {
+    realmResource.clientScopes().findAll().stream()
+        .filter(
+            clientScopeRepresentation ->
+                clientScopeRepresentation.getName().trim().equalsIgnoreCase("roles"))
+        .findFirst()
+        .ifPresent(
+            clientScopeRep ->
+                realmResource
+                    .clientScopes()
+                    .get(clientScopeRep.getId())
+                    .getProtocolMappers()
+                    .createMapper(protocolMapperRepresentation));
+  }
+
+  @NotNull
+  private ProtocolMapperRepresentation populateProtocolMapperRepresentation(
+      Map<String, String> protocolMapperConfig, String protocolMapper, String name) {
+    ProtocolMapperRepresentation protocolMapperRepresentation = new ProtocolMapperRepresentation();
+    protocolMapperRepresentation.setName(name);
+    protocolMapperRepresentation.setProtocol(OPENID_CONNECT);
+    protocolMapperRepresentation.setProtocolMapper(protocolMapper);
+    protocolMapperRepresentation.setConfig(protocolMapperConfig);
+    return protocolMapperRepresentation;
+  }
+
+  @NotNull
+  private Map<String, String> populateProtocolMapperConfig(String claimName) {
+    Map<String, String> protocolMapperConfig = new HashMap<>();
+    protocolMapperConfig.put("claim.name", claimName);
+    protocolMapperConfig.put("id.token.claim", Boolean.TRUE.toString());
+    protocolMapperConfig.put("access.token.claim", Boolean.TRUE.toString());
+    protocolMapperConfig.put("userinfo.token.claim", Boolean.TRUE.toString());
+    return protocolMapperConfig;
+  }
+
+  @NotNull
+  private ComponentRepresentation populateLdapGroupMapperComponentRepresentation(
+      ComponentRepresentation ldapComponentRepresentation,
+      MultivaluedHashMap<String, String> ldapCompConfig) {
+    ComponentRepresentation componentRepresentation = new ComponentRepresentation();
+    componentRepresentation.setName(LDAP_GROUP_MAPPER);
+    componentRepresentation.setConfig(ldapCompConfig);
+    componentRepresentation.setParentId(ldapComponentRepresentation.getId());
+    componentRepresentation.setProviderType(LDAP_STORAGE_MAPPER);
+    componentRepresentation.setProviderId(GROUP_LDAP_MAPPER_PROVIDER);
+    return componentRepresentation;
+  }
+
+  @NotNull
+  private MultivaluedHashMap<String, String> populateLdapCompConfig(
+      AuthProviderModel authProviderModel) {
+    Map<String, String> ldapAuthConfig = authProviderModel.getConfig();
+    MultivaluedHashMap<String, String> ldapCompConfig = new MultivaluedHashMap<>();
+    if (ldapAuthConfig.containsKey("groupDN")) {
+      ldapCompConfig.add("groups.dn", ldapAuthConfig.get("groupDN"));
+    }
+
+    if (ldapAuthConfig.containsKey("groupSearchFilter")) {
+      ldapCompConfig.add("membership.ldap.attribute", ldapAuthConfig.get("groupSearchFilter"));
+    }
+
+    if (ldapAuthConfig.containsKey("groupRoleNameAttribute")) {
+      ldapCompConfig.add("group.name.ldap.attribute", ldapAuthConfig.get("groupRoleNameAttribute"));
+    }
+
+    if (ldapAuthConfig.containsKey("groupObjectClasses")) {
+      ldapCompConfig.add("group.object.classes", ldapAuthConfig.get("groupObjectClasses"));
+    }
+
+    if (ldapAuthConfig.containsKey("membershipUserLdapAttribute")) {
+      ldapCompConfig.add(
+          "membership.user.ldap.attribute", ldapAuthConfig.get("membershipUserLdapAttribute"));
+    }
+
+    if (ldapAuthConfig.containsKey("membershipAttributeType")) {
+      ldapCompConfig.add(
+          "membership.attribute.type", ldapAuthConfig.get("membershipAttributeType"));
+    }
+
+    if (ldapAuthConfig.containsKey("mode")) {
+      ldapCompConfig.add("mode", ldapAuthConfig.get("mode"));
+    }
+
+    if (ldapAuthConfig.containsKey("userGroupsRetrieveStrategy")) {
+      ldapCompConfig.add(
+          "user.roles.retrieve.strategy", ldapAuthConfig.get("userGroupsRetrieveStrategy"));
+    }
+
+    if (ldapAuthConfig.containsKey("memberOfLdapAttribute")) {
+      ldapCompConfig.add("memberof.ldap.attribute", ldapAuthConfig.get("memberOfLdapAttribute"));
+    }
+
+    ldapCompConfig.add("preserve.group.inheritance", Boolean.TRUE.toString());
+    ldapCompConfig.add("ignore.missing.groups", Boolean.FALSE.toString());
+    ldapCompConfig.add("groups.ldap.filter", "");
+    ldapCompConfig.add("mapped.group.attributes", "");
+    ldapCompConfig.add("drop.non.existing.groups.during.sync", Boolean.FALSE.toString());
+    ldapCompConfig.add("groups.path", "/");
+    return ldapCompConfig;
+  }
+
   public String validate(TestLdapConnectionRepresentation testLdapConnectionRepresentation) {
     Response response = getRealm().testLDAPConnection(testLdapConnectionRepresentation);
     if (response.getStatus() == HttpStatus.SC_NO_CONTENT) {
@@ -234,5 +447,92 @@ public class KeycloakAuthUtils {
       throw new OesRequestException(
           "Error when trying to connect to LDAP. Please check the url/credentials");
     }
+  }
+
+  public void updateLdapGroupMapper(AuthProviderModel authProviderModel) {
+
+    MultivaluedHashMap<String, String> ldapCompConfig = populateLdapCompConfig(authProviderModel);
+    ComponentRepresentation ldapComponentRepresentation = getLdapComponent();
+    getRealm()
+        .components()
+        .query(ldapComponentRepresentation.getId(), LDAP_STORAGE_MAPPER, LDAP_GROUP_MAPPER)
+        .stream()
+        .filter(
+            componentRepresentation ->
+                componentRepresentation.getName().equalsIgnoreCase(LDAP_GROUP_MAPPER)
+                    && componentRepresentation
+                        .getProviderType()
+                        .equalsIgnoreCase(LDAP_STORAGE_MAPPER))
+        .findFirst()
+        .ifPresent(
+            componentRepresentation -> {
+              componentRepresentation.setConfig(ldapCompConfig);
+              getRealm()
+                  .components()
+                  .component(componentRepresentation.getId())
+                  .update(componentRepresentation);
+            });
+  }
+
+  public void updateIdpGroupMapper(AuthProviderModel authProviderModel) {
+
+    Map<String, String> idpMapperConfig = populateIdpMapperConfig(authProviderModel);
+    RealmResource realmResource = getRealm();
+    IdentityProviderRepresentation idpComponentRepresentation = getSamlIdentityProvider();
+    realmResource.toRepresentation().getIdentityProviderMappers().stream()
+        .filter(
+            identityProviderMapperRepresentation ->
+                identityProviderMapperRepresentation
+                        .getIdentityProviderAlias()
+                        .equalsIgnoreCase(idpComponentRepresentation.getAlias())
+                    && identityProviderMapperRepresentation
+                        .getIdentityProviderMapper()
+                        .equalsIgnoreCase(IDP_USER_ATTRIBUTE_MAPPER))
+        .findFirst()
+        .ifPresent(
+            identityProviderMapperRepresentation -> {
+              identityProviderMapperRepresentation.setConfig(idpMapperConfig);
+              realmResource
+                  .identityProviders()
+                  .get(samlName)
+                  .update(
+                      identityProviderMapperRepresentation.getId(),
+                      identityProviderMapperRepresentation);
+            });
+  }
+
+  public void updateUserAttributeProtocolMapper(AuthProviderModel authProviderModel) {
+    RealmResource realmResource = getRealm();
+    realmResource.toRepresentation().getProtocolMappers().stream()
+        .filter(
+            protocolMapperRepresentation ->
+                protocolMapperRepresentation.getName().equalsIgnoreCase(IDP_GROUP_PROTOCOL)
+                    && protocolMapperRepresentation
+                        .getProtocolMapper()
+                        .equalsIgnoreCase(USER_ATTRIBUTE_PROTOCOL_MAPPER))
+        .findFirst()
+        .ifPresent(
+            protocolMapperRepresentation -> {
+              Map<String, String> config = protocolMapperRepresentation.getConfig();
+              config.put("user.attribute", authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
+              protocolMapperRepresentation.setConfig(config);
+              updateProtocolMapper(protocolMapperRepresentation, realmResource);
+            });
+  }
+
+  private void updateProtocolMapper(
+      ProtocolMapperRepresentation protocolMapperRepresentation, RealmResource realmResource) {
+    realmResource.clientScopes().findAll().stream()
+        .filter(
+            clientScopeRepresentation ->
+                clientScopeRepresentation.getName().trim().equalsIgnoreCase("roles"))
+        .findFirst()
+        .ifPresent(
+            clientScopeRep ->
+                realmResource
+                    .clientScopes()
+                    .get(clientScopeRep.getId())
+                    .getProtocolMappers()
+                    .update(protocolMapperRepresentation.getId(), protocolMapperRepresentation));
   }
 }
