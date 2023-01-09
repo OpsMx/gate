@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "keycloak.ldapConfig")
+@ConfigurationProperties(prefix = "keycloak.ldap")
 public class KeycloakProperties {
   private Map<String, String> props;
 }

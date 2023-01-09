@@ -73,6 +73,7 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
     MultivaluedHashMap<String, String> config =
         hashMapToMultivaluedHashMap(authProviderModel.getConfig());
     keycloakAuthUtils.updateLdapComponent(config);
+    keycloakAuthUtils.updateLdapGroupMapper(authProviderModel);
     return authProviderModel;
   }
 

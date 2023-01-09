@@ -134,7 +134,7 @@ keycloak:
   serverUrl: http://localhost:8080/admin
   username: myuser
   password: password
-  ldapConfig:
+  ldap:
     props:
       connectionTimeout: ""
       customUserSearchFilter: ""

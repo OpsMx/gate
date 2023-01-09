@@ -67,6 +67,8 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
     if (!Boolean.parseBoolean(enabled)) {
       keycloakAuthUtils.disableSamlIdentityProvider();
     }
+    keycloakAuthUtils.updateIdpGroupMapper(authProviderModel);
+    keycloakAuthUtils.updateUserAttributeProtocolMapper(authProviderModel);
     return authProviderModel;
   }
 
