@@ -317,7 +317,7 @@ keycloak:
             type: label
             helpText: Group Search Settings
             inputparameters:
-              - name: groups.dn
+              - name: groupsDn
                 display: Group DN
                 inputType: text
                 required: true
@@ -327,7 +327,7 @@ keycloak:
                 defaultValue:
                 loadValues: []
 
-              - name: membership.ldap.attribute
+              - name: membershipLdapAttribute
                 display: Group Search Filter
                 inputType: text
                 required: true
@@ -337,7 +337,7 @@ keycloak:
                 defaultValue: member
                 loadValues: []
 
-              - name: group.name.ldap.attribute
+              - name: groupNameLdapAttribute
                 display: Group Role Name Attribute
                 inputType: text
                 required: true
@@ -352,7 +352,7 @@ keycloak:
                 type: accordian
                 helpText: Advanced Options
                 inputparameters:
-                  - name: group.object.classes
+                  - name: groupObjectClasses
                     display: Group Object Classes
                     inputType: text
                     required: false
@@ -362,7 +362,7 @@ keycloak:
                     defaultValue: groupOfNames
                     loadValues: []
 
-                  - name: membership.user.ldap.attribute
+                  - name: membershipUserLdapAttribute
                     display: Membership User LDAP Attribute
                     inputType: text
                     required: false
@@ -372,7 +372,7 @@ keycloak:
                     defaultValue: uid
                     loadValues: []
 
-                  - name: membership.attribute.type
+                  - name: membershipAttributeType
                     display: Membership Attribute Type
                     inputType: dropdown
                     required: false
@@ -397,7 +397,7 @@ keycloak:
                       - LDAP_ONLY
                       - IMPORT
 
-                  - name: user.roles.retrieve.strategy
+                  - name: userRolesRetrieveStrategy
                     display: User Groups Retrieve Strategy
                     inputType: dropdown
                     required: false
@@ -409,7 +409,7 @@ keycloak:
                       - LOAD_GROUPS_BY_MEMBER_ATTRIBUTE
                       - GET_GROUPS_FROM_USER_MEMBEROF_ATTRIBUTE
 
-                  - name: memberof.ldap.attribute
+                  - name: memberofLdapAttribute
                     display: Member-Of LDAP Attribute
                     inputType: text
                     required: false

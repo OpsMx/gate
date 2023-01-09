@@ -386,50 +386,99 @@ public class KeycloakAuthUtils {
     return componentRepresentation;
   }
 
+  public Map<String, String> mapLdapGroupFields(Map<String, String> ldapAuthConfig) {
+
+    if (ldapAuthConfig.containsKey("groups.dn")) {
+
+      ldapAuthConfig.put("groupsDn", ldapAuthConfig.get("groups.dn"));
+      ldapAuthConfig.remove("groups.dn");
+    }
+
+    if (ldapAuthConfig.containsKey("membership.ldap.attribute")) {
+      ldapAuthConfig.put(
+          "membershipLdapAttribute", ldapAuthConfig.get("membership.ldap.attribute"));
+
+      ldapAuthConfig.remove("membership.ldap.attribute");
+    }
+
+    if (ldapAuthConfig.containsKey("group.name.ldap.attribute")) {
+      ldapAuthConfig.put("groupNameLdapAttribute", ldapAuthConfig.get("group.name.ldap.attribute"));
+      ldapAuthConfig.remove("group.name.ldap.attribute");
+    }
+
+    if (ldapAuthConfig.containsKey("group.object.classes")) {
+      ldapAuthConfig.put("groupObjectClasses", ldapAuthConfig.get("group.object.classes"));
+      ldapAuthConfig.remove("group.object.classes");
+    }
+
+    if (ldapAuthConfig.containsKey("membership.user.ldap.attribute")) {
+      ldapAuthConfig.put(
+          "membershipUserLdapAttribute", ldapAuthConfig.get("membership.user.ldap.attribute"));
+      ldapAuthConfig.remove("membership.user.ldap.attribute");
+    }
+
+    if (ldapAuthConfig.containsKey("membership.attribute.type")) {
+      ldapAuthConfig.put(
+          "membershipAttributeType", ldapAuthConfig.get("membership.attribute.type"));
+      ldapAuthConfig.remove("membership.attribute.type");
+    }
+
+    if (ldapAuthConfig.containsKey("user.roles.retrieve.strategy")) {
+      ldapAuthConfig.put(
+          "userRolesRetrieveStrategy", ldapAuthConfig.get("user.roles.retrieve.strategy"));
+      ldapAuthConfig.remove("user.roles.retrieve.strategy");
+    }
+
+    if (ldapAuthConfig.containsKey("memberof.ldap.attribute")) {
+      ldapAuthConfig.put("memberofLdapAttribute", ldapAuthConfig.get("memberof.ldap.attribute"));
+      ldapAuthConfig.remove("memberof.ldap.attribute");
+    }
+    return ldapAuthConfig;
+  }
+
   @NotNull
   private MultivaluedHashMap<String, String> populateLdapCompConfig(
       AuthProviderModel authProviderModel) {
     Map<String, String> ldapAuthConfig = authProviderModel.getConfig();
     MultivaluedHashMap<String, String> ldapCompConfig = new MultivaluedHashMap<>();
-    if (ldapAuthConfig.containsKey("groups.dn")) {
-      ldapCompConfig.add("groups.dn", ldapAuthConfig.get("groups.dn"));
+    if (ldapAuthConfig.containsKey("groupsDn")) {
+      ldapCompConfig.add("groups.dn", ldapAuthConfig.get("groupsDn"));
     }
 
-    if (ldapAuthConfig.containsKey("membership.ldap.attribute")) {
+    if (ldapAuthConfig.containsKey("membershipLdapAttribute")) {
       ldapCompConfig.add(
-          "membership.ldap.attribute", ldapAuthConfig.get("membership.ldap.attribute"));
+          "membership.ldap.attribute", ldapAuthConfig.get("membershipLdapAttribute"));
     }
 
-    if (ldapAuthConfig.containsKey("group.name.ldap.attribute")) {
+    if (ldapAuthConfig.containsKey("groupNameLdapAttribute")) {
+      ldapCompConfig.add("group.name.ldap.attribute", ldapAuthConfig.get("groupNameLdapAttribute"));
+    }
+
+    if (ldapAuthConfig.containsKey("groupObjectClasses")) {
+      ldapCompConfig.add("group.object.classes", ldapAuthConfig.get("groupObjectClasses"));
+    }
+
+    if (ldapAuthConfig.containsKey("membershipUserLdapAttribute")) {
       ldapCompConfig.add(
-          "group.name.ldap.attribute", ldapAuthConfig.get("group.name.ldap.attribute"));
+          "membership.user.ldap.attribute", ldapAuthConfig.get("membershipUserLdapAttribute"));
     }
 
-    if (ldapAuthConfig.containsKey("group.object.classes")) {
-      ldapCompConfig.add("group.object.classes", ldapAuthConfig.get("group.object.classes"));
-    }
-
-    if (ldapAuthConfig.containsKey("membership.user.ldap.attribute")) {
+    if (ldapAuthConfig.containsKey("membershipAttributeType")) {
       ldapCompConfig.add(
-          "membership.user.ldap.attribute", ldapAuthConfig.get("membership.user.ldap.attribute"));
-    }
-
-    if (ldapAuthConfig.containsKey("membership.attribute.type")) {
-      ldapCompConfig.add(
-          "membership.attribute.type", ldapAuthConfig.get("membership.attribute.type"));
+          "membership.attribute.type", ldapAuthConfig.get("membershipAttributeType"));
     }
 
     if (ldapAuthConfig.containsKey("mode")) {
       ldapCompConfig.add("mode", ldapAuthConfig.get("mode"));
     }
 
-    if (ldapAuthConfig.containsKey("user.roles.retrieve.strategy")) {
+    if (ldapAuthConfig.containsKey("userRolesRetrieveStrategy")) {
       ldapCompConfig.add(
-          "user.roles.retrieve.strategy", ldapAuthConfig.get("user.roles.retrieve.strategy"));
+          "user.roles.retrieve.strategy", ldapAuthConfig.get("userRolesRetrieveStrategy"));
     }
 
-    if (ldapAuthConfig.containsKey("memberof.ldap.attribute")) {
-      ldapCompConfig.add("memberof.ldap.attribute", ldapAuthConfig.get("memberof.ldap.attribute"));
+    if (ldapAuthConfig.containsKey("memberofLdapAttribute")) {
+      ldapCompConfig.add("memberof.ldap.attribute", ldapAuthConfig.get("memberofLdapAttribute"));
     }
 
     ldapCompConfig.add("preserve.group.inheritance", Boolean.TRUE.toString());

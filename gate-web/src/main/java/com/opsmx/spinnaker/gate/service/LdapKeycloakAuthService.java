@@ -94,7 +94,7 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
     ComponentRepresentation ldapGroupMapper = keycloakAuthUtils.getLdapGroupMapper(ldap);
     if (ldapGroupMapper != null) {
       Map<String, String> groupConfig = multivaluedHashMapToHashMap(ldapGroupMapper.getConfig());
-      config.putAll(groupConfig);
+      config.putAll(keycloakAuthUtils.mapLdapGroupFields(groupConfig));
     }
     AuthProviderModel model = new AuthProviderModel();
     model.setName(ldap.getName());
