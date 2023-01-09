@@ -120,7 +120,7 @@ public class KeycloakAuthUtils {
     ComponentRepresentation componentRepresentation =
         populateComponentRepresentation(config, realm.getId());
     realmResource.components().add(componentRepresentation);
-    log.info("Successfully added ldap: {} ", componentRepresentation);
+    log.info("Successfully added ldap");
   }
 
   private void addLdapComponent(ComponentRepresentation componentRepresentation) {
@@ -391,43 +391,45 @@ public class KeycloakAuthUtils {
       AuthProviderModel authProviderModel) {
     Map<String, String> ldapAuthConfig = authProviderModel.getConfig();
     MultivaluedHashMap<String, String> ldapCompConfig = new MultivaluedHashMap<>();
-    if (ldapAuthConfig.containsKey("groupDN")) {
-      ldapCompConfig.add("groups.dn", ldapAuthConfig.get("groupDN"));
+    if (ldapAuthConfig.containsKey("groups.dn")) {
+      ldapCompConfig.add("groups.dn", ldapAuthConfig.get("groups.dn"));
     }
 
-    if (ldapAuthConfig.containsKey("groupSearchFilter")) {
-      ldapCompConfig.add("membership.ldap.attribute", ldapAuthConfig.get("groupSearchFilter"));
-    }
-
-    if (ldapAuthConfig.containsKey("groupRoleNameAttribute")) {
-      ldapCompConfig.add("group.name.ldap.attribute", ldapAuthConfig.get("groupRoleNameAttribute"));
-    }
-
-    if (ldapAuthConfig.containsKey("groupObjectClasses")) {
-      ldapCompConfig.add("group.object.classes", ldapAuthConfig.get("groupObjectClasses"));
-    }
-
-    if (ldapAuthConfig.containsKey("membershipUserLdapAttribute")) {
+    if (ldapAuthConfig.containsKey("membership.ldap.attribute")) {
       ldapCompConfig.add(
-          "membership.user.ldap.attribute", ldapAuthConfig.get("membershipUserLdapAttribute"));
+          "membership.ldap.attribute", ldapAuthConfig.get("membership.ldap.attribute"));
     }
 
-    if (ldapAuthConfig.containsKey("membershipAttributeType")) {
+    if (ldapAuthConfig.containsKey("group.name.ldap.attribute")) {
       ldapCompConfig.add(
-          "membership.attribute.type", ldapAuthConfig.get("membershipAttributeType"));
+          "group.name.ldap.attribute", ldapAuthConfig.get("group.name.ldap.attribute"));
+    }
+
+    if (ldapAuthConfig.containsKey("group.object.classes")) {
+      ldapCompConfig.add("group.object.classes", ldapAuthConfig.get("group.object.classes"));
+    }
+
+    if (ldapAuthConfig.containsKey("membership.user.ldap.attribute")) {
+      ldapCompConfig.add(
+          "membership.user.ldap.attribute", ldapAuthConfig.get("membership.user.ldap.attribute"));
+    }
+
+    if (ldapAuthConfig.containsKey("membership.attribute.type")) {
+      ldapCompConfig.add(
+          "membership.attribute.type", ldapAuthConfig.get("membership.attribute.type"));
     }
 
     if (ldapAuthConfig.containsKey("mode")) {
       ldapCompConfig.add("mode", ldapAuthConfig.get("mode"));
     }
 
-    if (ldapAuthConfig.containsKey("userGroupsRetrieveStrategy")) {
+    if (ldapAuthConfig.containsKey("user.roles.retrieve.strategy")) {
       ldapCompConfig.add(
-          "user.roles.retrieve.strategy", ldapAuthConfig.get("userGroupsRetrieveStrategy"));
+          "user.roles.retrieve.strategy", ldapAuthConfig.get("user.roles.retrieve.strategy"));
     }
 
-    if (ldapAuthConfig.containsKey("memberOfLdapAttribute")) {
-      ldapCompConfig.add("memberof.ldap.attribute", ldapAuthConfig.get("memberOfLdapAttribute"));
+    if (ldapAuthConfig.containsKey("memberof.ldap.attribute")) {
+      ldapCompConfig.add("memberof.ldap.attribute", ldapAuthConfig.get("memberof.ldap.attribute"));
     }
 
     ldapCompConfig.add("preserve.group.inheritance", Boolean.TRUE.toString());
@@ -534,5 +536,69 @@ public class KeycloakAuthUtils {
                     .get(clientScopeRep.getId())
                     .getProtocolMappers()
                     .update(protocolMapperRepresentation.getId(), protocolMapperRepresentation));
+  }
+
+  public static String getVendor(String vendorType) {
+
+    String vendor = null;
+
+    switch (vendorType) {
+      case "Active Directory":
+        vendor = "ad";
+        break;
+
+      case "Red Hat Directory Server":
+        vendor = "rhds";
+        break;
+
+      case "Tivoli":
+        vendor = "tivoli";
+        break;
+
+      case "Novell eDirectory":
+        vendor = "edirectory";
+        break;
+
+      case "Other":
+        vendor = "other";
+        break;
+
+      default:
+        vendor = "";
+        break;
+    }
+    return vendor;
+  }
+
+  public static String getVendorDisplayName(String vendor) {
+
+    String vendorId = null;
+
+    switch (vendor) {
+      case "ad":
+        vendorId = "Active Directory";
+        break;
+
+      case "rhds":
+        vendorId = "Red Hat Directory Server";
+        break;
+
+      case "tivoli":
+        vendorId = "Tivoli";
+        break;
+
+      case "edirectory":
+        vendorId = "Novell eDirectory";
+        break;
+
+      case "other":
+        vendorId = "Other";
+        break;
+
+      default:
+        vendorId = "";
+        break;
+    }
+    return vendorId;
   }
 }
