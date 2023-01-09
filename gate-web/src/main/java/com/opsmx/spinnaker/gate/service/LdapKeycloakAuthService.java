@@ -86,10 +86,16 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
   @Override
   public AuthProviderModel get() {
     ComponentRepresentation ldap = keycloakAuthUtils.getLdapComponent();
+
     if (ldap == null) {
       return keycloakAuthUtils.getDefaultModel(LdapKeycloakAuthService.LDAP);
     }
     Map<String, String> config = multivaluedHashMapToHashMap(ldap.getConfig());
+    ComponentRepresentation ldapGroupMapper = keycloakAuthUtils.getLdapGroupMapper(ldap);
+    if (ldapGroupMapper != null) {
+      Map<String, String> groupConfig = multivaluedHashMapToHashMap(ldapGroupMapper.getConfig());
+      config.putAll(groupConfig);
+    }
     AuthProviderModel model = new AuthProviderModel();
     model.setName(ldap.getName());
     model.setConfig(config);

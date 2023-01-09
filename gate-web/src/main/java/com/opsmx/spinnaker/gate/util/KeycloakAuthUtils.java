@@ -476,6 +476,23 @@ public class KeycloakAuthUtils {
             });
   }
 
+  public ComponentRepresentation getLdapGroupMapper(
+      ComponentRepresentation ldapComponentRepresentation) {
+
+    return getRealm()
+        .components()
+        .query(ldapComponentRepresentation.getId(), LDAP_STORAGE_MAPPER, LDAP_GROUP_MAPPER)
+        .stream()
+        .filter(
+            componentRepresentation ->
+                componentRepresentation.getName().equalsIgnoreCase(LDAP_GROUP_MAPPER)
+                    && componentRepresentation
+                        .getProviderType()
+                        .equalsIgnoreCase(LDAP_STORAGE_MAPPER))
+        .findFirst()
+        .orElse(null);
+  }
+
   public void updateIdpGroupMapper(AuthProviderModel authProviderModel) {
 
     Map<String, String> idpMapperConfig = populateIdpMapperConfig(authProviderModel);
@@ -501,6 +518,22 @@ public class KeycloakAuthUtils {
                       identityProviderMapperRepresentation.getId(),
                       identityProviderMapperRepresentation);
             });
+  }
+
+  public IdentityProviderMapperRepresentation getIdpMapper(
+      IdentityProviderRepresentation idpComponentRepresentation) {
+
+    return getRealm().toRepresentation().getIdentityProviderMappers().stream()
+        .filter(
+            identityProviderMapperRepresentation ->
+                identityProviderMapperRepresentation
+                        .getIdentityProviderAlias()
+                        .equalsIgnoreCase(idpComponentRepresentation.getAlias())
+                    && identityProviderMapperRepresentation
+                        .getIdentityProviderMapper()
+                        .equalsIgnoreCase(IDP_USER_ATTRIBUTE_MAPPER))
+        .findFirst()
+        .orElse(null);
   }
 
   public void updateUserAttributeProtocolMapper(AuthProviderModel authProviderModel) {
