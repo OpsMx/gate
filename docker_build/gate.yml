@@ -188,7 +188,7 @@ keycloak:
                 display: Vendor
                 inputType: dropdown
                 required: true
-                helpText: Vendor
+                helpText: LDAP vendor (provider)
                 readonly: false
                 placeholder:
                 defaultValue:
@@ -203,17 +203,17 @@ keycloak:
                 display: Connection URL
                 inputType: url
                 required: true
-                helpText: Connection URL
+                helpText: Connection URL to your LDAP server
                 readonly: false
                 placeholder: LDAP connection URL
                 defaultValue:
                 loadValues: []
 
-              - name: bindType
+              - name: authType
                 display: Bind Type
                 inputType: dropdown
                 required: true
-                helpText: Bind Type
+                helpText: Type of the Authentication Method used during LDAP Bind operation.It is used in most of the requests sent to the LDAP server.Currently 'none' (Anonymous LDAP Authentication) or 'simple' (Bind credential + Bind password authentication) mechanisms are avilable.
                 readonly: false
                 placeholder:
                 defaultValue: simple
@@ -221,11 +221,11 @@ keycloak:
                   - none
                   - simple
 
-              - name: bindDN
+              - name: bindDn
                 display: Bind DN
                 inputType: text
                 required: true
-                helpText: Bind DN
+                helpText: DN of lDAP admin which will be used by keycloak to access LDAP server
                 readonly: false
                 placeholder: LDAP Bind DN
                 defaultValue:
@@ -235,7 +235,7 @@ keycloak:
                 display: Bind Credential
                 inputType: password
                 required: true
-                helpText: Bind Credential
+                helpText: Password of LDAP admin. This field is able to obtains its value from vault, use ${vault.ID} format
                 readonly: false
                 placeholder: xxxxxxx
                 defaultValue:
@@ -256,7 +256,7 @@ keycloak:
                 defaultValue:
                 loadValues: []
 
-              - name: usersDN
+              - name: usersDn
                 display: Users DN
                 inputType: text
                 required: true
@@ -278,13 +278,11 @@ keycloak:
                     helpText: Edit Mode
                     readonly: false
                     placeholder:
-                    defaultValue:
+                    defaultValue: READ_ONLY
                     loadValues:
                       - READ_ONLY
-                      - WRITABLE
-                      - UNSYNCED
 
-                  - name: usernameLdapAttribute
+                  - name: usernameLDAPAttribute
                     display: Username LDAP attribute
                     inputType: text
                     required: true
@@ -294,7 +292,7 @@ keycloak:
                     defaultValue:
                     loadValues: []
 
-                  - name: rdnLdapAttribute
+                  - name: rdnLDAPAttribute
                     display: RDN LDAP attribute
                     inputType: text
                     required: true
@@ -304,7 +302,7 @@ keycloak:
                     defaultValue:
                     loadValues: []
 
-                  - name: uuidLdapAttribute
+                  - name: uuidLDAPAttribute
                     display: UUID LDAP attribute
                     inputType: text
                     required: true
@@ -450,7 +448,7 @@ keycloak:
                 display: Redirect URI
                 inputType: url
                 required: true
-                helpText: Redirect URI
+                helpText: The redirect ui to use when confuiguring the identity provider
                 readonly: true
                 placeholder:
                 defaultValue: http://localhost:8080/realms/isd-poc-realm/saml/endpoint
@@ -470,7 +468,7 @@ keycloak:
                 display: Single Sign-On Service URL
                 inputType: url
                 required: true
-                helpText: Single Sign-On Service URL
+                helpText: The url that must be used to send authentication requests (SAML AuthnRequest).
                 readonly: true
                 placeholder:
                 defaultValue:
