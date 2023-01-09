@@ -21,7 +21,9 @@ import com.opsmx.spinnaker.gate.model.AuthProviderModel;
 import com.opsmx.spinnaker.gate.model.KeycloakAuthProvider;
 import com.opsmx.spinnaker.gate.model.KeycloakAuthProviderModel;
 import com.opsmx.spinnaker.gate.service.KeycloakAutowireService;
+import com.opsmx.spinnaker.gate.util.KeycloakAuthUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.representations.idm.TestLdapConnectionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.http.HttpStatus;
@@ -40,6 +42,8 @@ public class AuthConfigurerController {
   @Autowired private KeycloakAutowireService keycloakAuthService;
 
   private Gson gson = new Gson();
+
+  @Autowired private KeycloakAuthUtils keycloakAuthUtils;
 
   @GetMapping(value = "/supported/providers", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<KeycloakAuthProviderModel> getSupportedAuthProviders() {
@@ -113,5 +117,16 @@ public class AuthConfigurerController {
         new ResponseEntity<>(provider, HttpStatus.ACCEPTED);
     log.trace("disableAuthProvider ended");
     return response;
+  }
+
+  @PostMapping(
+      value = "/authProvider/ldap/testLDAPConnection",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> validateLdapAuthConnection(
+      @RequestBody TestLdapConnectionRepresentation testLdapConnectionRepresentation) {
+    log.trace("validateLdapAuthConnection started");
+    String status = keycloakAuthUtils.validate(testLdapConnectionRepresentation);
+    log.trace("validateLdapAuthConnection ended");
+    return new ResponseEntity<>(status, HttpStatus.OK);
   }
 }

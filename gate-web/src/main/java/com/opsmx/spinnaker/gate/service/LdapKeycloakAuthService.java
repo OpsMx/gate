@@ -17,6 +17,7 @@
 package com.opsmx.spinnaker.gate.service;
 
 import com.opsmx.spinnaker.gate.model.AuthProviderModel;
+import com.opsmx.spinnaker.gate.model.KeycloakProperties;
 import com.opsmx.spinnaker.gate.util.KeycloakAuthUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,8 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
 
   private static final String LDAP = "ldap";
 
+  @Autowired private KeycloakProperties ldapConfigProps;
+
   @Autowired private KeycloakAuthUtils keycloakAuthUtils;
 
   /**
@@ -40,6 +43,7 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
    */
   @Override
   public AuthProviderModel create(AuthProviderModel authProviderModel) {
+    authProviderModel.getConfig().putAll(ldapConfigProps.getProps());
     MultivaluedHashMap<String, String> config =
         hashMapToMultivaluedHashMap(authProviderModel.getConfig());
     keycloakAuthUtils.addLdapComponent(config);
@@ -65,6 +69,7 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
    */
   @Override
   public AuthProviderModel update(AuthProviderModel authProviderModel) {
+    authProviderModel.getConfig().putAll(ldapConfigProps.getProps());
     MultivaluedHashMap<String, String> config =
         hashMapToMultivaluedHashMap(authProviderModel.getConfig());
     keycloakAuthUtils.updateLdapComponent(config);

@@ -16,6 +16,7 @@
 
 package com.opsmx.spinnaker.gate.util;
 
+import com.netflix.spinnaker.gate.exceptions.OesRequestException;
 import com.opsmx.spinnaker.gate.model.AuthProviderModel;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -23,7 +24,9 @@ import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jetbrains.annotations.NotNull;
 import org.keycloak.OAuth2Constants;
@@ -436,5 +439,15 @@ public class KeycloakAuthUtils {
     ldapCompConfig.add("drop.non.existing.groups.during.sync", Boolean.FALSE.toString());
     ldapCompConfig.add("groups.path", "/");
     return ldapCompConfig;
+  }
+
+  public String validate(TestLdapConnectionRepresentation testLdapConnectionRepresentation) {
+    Response response = getRealm().testLDAPConnection(testLdapConnectionRepresentation);
+    if (response.getStatus() == HttpStatus.SC_NO_CONTENT) {
+      return "Successfully connected to LDAP";
+    } else {
+      throw new OesRequestException(
+          "Error when trying to connect to LDAP. Please check the url/credentials");
+    }
   }
 }
