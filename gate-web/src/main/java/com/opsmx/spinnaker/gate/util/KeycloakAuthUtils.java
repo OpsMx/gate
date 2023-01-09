@@ -120,7 +120,7 @@ public class KeycloakAuthUtils {
     ComponentRepresentation componentRepresentation =
         populateComponentRepresentation(config, realm.getId());
     realmResource.components().add(componentRepresentation);
-    log.info("Successfully added ldap: {} ", componentRepresentation);
+    log.info("Successfully added ldap");
   }
 
   private void addLdapComponent(ComponentRepresentation componentRepresentation) {
