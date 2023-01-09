@@ -44,7 +44,7 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
         hashMapToMultivaluedHashMap(authProviderModel.getConfig());
     keycloakAuthUtils.addLdapComponent(config);
     keycloakAuthUtils.addLdapGroupMapper(authProviderModel);
-    keycloakAuthUtils.addLdapGroupProtocolMapper();
+    keycloakAuthUtils.addGroupMembershipProtocolMapper();
 
     return authProviderModel;
   }

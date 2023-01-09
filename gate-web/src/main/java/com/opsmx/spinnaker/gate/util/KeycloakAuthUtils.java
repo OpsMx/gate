@@ -252,6 +252,8 @@ public class KeycloakAuthUtils {
   public void addLdapGroupMapper(AuthProviderModel authProviderModel) {
     ComponentRepresentation ldapComponentRepresentation = getLdapComponent();
     MultivaluedHashMap<String, String> ldapCompConfig = populateLdapCompConfig(authProviderModel);
+    log.debug("Populated ldapCompConfig : {}", ldapCompConfig);
+
     ComponentRepresentation componentRepresentation =
         populateLdapGroupMapperComponentRepresentation(ldapComponentRepresentation, ldapCompConfig);
     addLdapComponent(componentRepresentation);
@@ -262,6 +264,8 @@ public class KeycloakAuthUtils {
     RealmResource realmResource = getRealm();
     IdentityProviderRepresentation idpComponentRepresentation = getSamlIdentityProvider();
     Map<String, String> idpMapperConfig = populateIdpMapperConfig(authProviderModel);
+    log.debug("Populated idpGroupMapperConfig : {}", idpMapperConfig);
+
     IdentityProviderMapperRepresentation identityProviderMapperRepresentation =
         populateIdentityProviderMapperRepresentation(
             authProviderModel, idpComponentRepresentation, idpMapperConfig);
@@ -269,7 +273,7 @@ public class KeycloakAuthUtils {
     log.debug("Successfully added Idp group mapper");
   }
 
-  public void addIdpProtocolMapper(AuthProviderModel authProviderModel) {
+  public void addUserAttributeProtocolMapper(AuthProviderModel authProviderModel) {
     RealmResource realmResource = getRealm();
     Map<String, String> protocolMapperConfig =
         populateProtocolMapperConfig(authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
@@ -277,10 +281,12 @@ public class KeycloakAuthUtils {
     protocolMapperConfig.put("jsonType.label", "");
     protocolMapperConfig.put("multivalued", Boolean.TRUE.toString());
     protocolMapperConfig.put("aggregate.attrs", Boolean.FALSE.toString());
+    log.debug("Populated user attribute protocol mapper config : {}", protocolMapperConfig);
 
     ProtocolMapperRepresentation protocolMapperRepresentation =
         populateProtocolMapperRepresentation(
             protocolMapperConfig, USER_ATTRIBUTE_PROTOCOL_MAPPER, IDP_GROUP_PROTOCOL);
+
     createProtocolMapper(protocolMapperRepresentation, realmResource);
     log.debug("Successfully added Idp protocol mapper");
   }
@@ -317,9 +323,10 @@ public class KeycloakAuthUtils {
     return idpMapperConfig;
   }
 
-  public void addLdapGroupProtocolMapper() {
+  public void addGroupMembershipProtocolMapper() {
     Map<String, String> protocolMapperConfig = populateProtocolMapperConfig(GROUPS);
     protocolMapperConfig.put("full.path", Boolean.TRUE.toString());
+    log.debug("Populated Group membership protocol mapper config : {}", protocolMapperConfig);
     RealmResource realmResource = getRealm();
     ProtocolMapperRepresentation protocolMapperRepresentation =
         populateProtocolMapperRepresentation(

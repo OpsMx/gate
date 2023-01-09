@@ -48,7 +48,7 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
       keycloakAuthUtils.disableSamlIdentityProvider();
     }
     keycloakAuthUtils.addIdpGroupMapper(authProviderModel);
-    keycloakAuthUtils.addIdpProtocolMapper(authProviderModel);
+    keycloakAuthUtils.addUserAttributeProtocolMapper(authProviderModel);
     return authProviderModel;
   }
 
