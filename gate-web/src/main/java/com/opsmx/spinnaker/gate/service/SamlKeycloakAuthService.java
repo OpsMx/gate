@@ -21,6 +21,7 @@ import com.opsmx.spinnaker.gate.util.KeycloakAuthUtils;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.ValidationException;
+import org.keycloak.representations.idm.IdentityProviderMapperRepresentation;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,6 +91,12 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
     Map<String, String> samlConfig = samlIdentityProvider.getConfig();
     if (samlConfig.containsKey("singleSignOnServiceUrl")) {
       config.put("singleSignOnServiceUrl", samlConfig.get("singleSignOnServiceUrl"));
+    }
+    IdentityProviderMapperRepresentation identityProviderMapperRepresentation =
+        keycloakAuthUtils.getIdpMapper(samlIdentityProvider);
+    if (identityProviderMapperRepresentation != null) {
+      config.put(
+          "groupAttribute", identityProviderMapperRepresentation.getConfig().get("user.attribute"));
     }
     AuthProviderModel model = new AuthProviderModel();
     model.setName(samlIdentityProvider.getAlias());

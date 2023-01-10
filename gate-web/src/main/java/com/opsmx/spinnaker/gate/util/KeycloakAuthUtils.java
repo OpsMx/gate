@@ -120,7 +120,7 @@ public class KeycloakAuthUtils {
     ComponentRepresentation componentRepresentation =
         populateComponentRepresentation(config, realm.getId());
     realmResource.components().add(componentRepresentation);
-    log.info("Successfully added ldap: {} ", componentRepresentation);
+    log.info("Successfully added ldap");
   }
 
   private void addLdapComponent(ComponentRepresentation componentRepresentation) {
@@ -386,21 +386,72 @@ public class KeycloakAuthUtils {
     return componentRepresentation;
   }
 
+  public Map<String, String> mapLdapGroupFields(Map<String, String> ldapAuthConfig) {
+
+    if (ldapAuthConfig.containsKey("groups.dn")) {
+
+      ldapAuthConfig.put("groupsDn", ldapAuthConfig.get("groups.dn"));
+      ldapAuthConfig.remove("groups.dn");
+    }
+
+    if (ldapAuthConfig.containsKey("membership.ldap.attribute")) {
+      ldapAuthConfig.put(
+          "membershipLdapAttribute", ldapAuthConfig.get("membership.ldap.attribute"));
+
+      ldapAuthConfig.remove("membership.ldap.attribute");
+    }
+
+    if (ldapAuthConfig.containsKey("group.name.ldap.attribute")) {
+      ldapAuthConfig.put("groupNameLdapAttribute", ldapAuthConfig.get("group.name.ldap.attribute"));
+      ldapAuthConfig.remove("group.name.ldap.attribute");
+    }
+
+    if (ldapAuthConfig.containsKey("group.object.classes")) {
+      ldapAuthConfig.put("groupObjectClasses", ldapAuthConfig.get("group.object.classes"));
+      ldapAuthConfig.remove("group.object.classes");
+    }
+
+    if (ldapAuthConfig.containsKey("membership.user.ldap.attribute")) {
+      ldapAuthConfig.put(
+          "membershipUserLdapAttribute", ldapAuthConfig.get("membership.user.ldap.attribute"));
+      ldapAuthConfig.remove("membership.user.ldap.attribute");
+    }
+
+    if (ldapAuthConfig.containsKey("membership.attribute.type")) {
+      ldapAuthConfig.put(
+          "membershipAttributeType", ldapAuthConfig.get("membership.attribute.type"));
+      ldapAuthConfig.remove("membership.attribute.type");
+    }
+
+    if (ldapAuthConfig.containsKey("user.roles.retrieve.strategy")) {
+      ldapAuthConfig.put(
+          "userRolesRetrieveStrategy", ldapAuthConfig.get("user.roles.retrieve.strategy"));
+      ldapAuthConfig.remove("user.roles.retrieve.strategy");
+    }
+
+    if (ldapAuthConfig.containsKey("memberof.ldap.attribute")) {
+      ldapAuthConfig.put("memberofLdapAttribute", ldapAuthConfig.get("memberof.ldap.attribute"));
+      ldapAuthConfig.remove("memberof.ldap.attribute");
+    }
+    return ldapAuthConfig;
+  }
+
   @NotNull
   private MultivaluedHashMap<String, String> populateLdapCompConfig(
       AuthProviderModel authProviderModel) {
     Map<String, String> ldapAuthConfig = authProviderModel.getConfig();
     MultivaluedHashMap<String, String> ldapCompConfig = new MultivaluedHashMap<>();
-    if (ldapAuthConfig.containsKey("groupDN")) {
-      ldapCompConfig.add("groups.dn", ldapAuthConfig.get("groupDN"));
+    if (ldapAuthConfig.containsKey("groupsDn")) {
+      ldapCompConfig.add("groups.dn", ldapAuthConfig.get("groupsDn"));
     }
 
-    if (ldapAuthConfig.containsKey("groupSearchFilter")) {
-      ldapCompConfig.add("membership.ldap.attribute", ldapAuthConfig.get("groupSearchFilter"));
+    if (ldapAuthConfig.containsKey("membershipLdapAttribute")) {
+      ldapCompConfig.add(
+          "membership.ldap.attribute", ldapAuthConfig.get("membershipLdapAttribute"));
     }
 
-    if (ldapAuthConfig.containsKey("groupRoleNameAttribute")) {
-      ldapCompConfig.add("group.name.ldap.attribute", ldapAuthConfig.get("groupRoleNameAttribute"));
+    if (ldapAuthConfig.containsKey("groupNameLdapAttribute")) {
+      ldapCompConfig.add("group.name.ldap.attribute", ldapAuthConfig.get("groupNameLdapAttribute"));
     }
 
     if (ldapAuthConfig.containsKey("groupObjectClasses")) {
@@ -421,13 +472,13 @@ public class KeycloakAuthUtils {
       ldapCompConfig.add("mode", ldapAuthConfig.get("mode"));
     }
 
-    if (ldapAuthConfig.containsKey("userGroupsRetrieveStrategy")) {
+    if (ldapAuthConfig.containsKey("userRolesRetrieveStrategy")) {
       ldapCompConfig.add(
-          "user.roles.retrieve.strategy", ldapAuthConfig.get("userGroupsRetrieveStrategy"));
+          "user.roles.retrieve.strategy", ldapAuthConfig.get("userRolesRetrieveStrategy"));
     }
 
-    if (ldapAuthConfig.containsKey("memberOfLdapAttribute")) {
-      ldapCompConfig.add("memberof.ldap.attribute", ldapAuthConfig.get("memberOfLdapAttribute"));
+    if (ldapAuthConfig.containsKey("memberofLdapAttribute")) {
+      ldapCompConfig.add("memberof.ldap.attribute", ldapAuthConfig.get("memberofLdapAttribute"));
     }
 
     ldapCompConfig.add("preserve.group.inheritance", Boolean.TRUE.toString());
@@ -474,6 +525,23 @@ public class KeycloakAuthUtils {
             });
   }
 
+  public ComponentRepresentation getLdapGroupMapper(
+      ComponentRepresentation ldapComponentRepresentation) {
+
+    return getRealm()
+        .components()
+        .query(ldapComponentRepresentation.getId(), LDAP_STORAGE_MAPPER, LDAP_GROUP_MAPPER)
+        .stream()
+        .filter(
+            componentRepresentation ->
+                componentRepresentation.getName().equalsIgnoreCase(LDAP_GROUP_MAPPER)
+                    && componentRepresentation
+                        .getProviderType()
+                        .equalsIgnoreCase(LDAP_STORAGE_MAPPER))
+        .findFirst()
+        .orElse(null);
+  }
+
   public void updateIdpGroupMapper(AuthProviderModel authProviderModel) {
 
     Map<String, String> idpMapperConfig = populateIdpMapperConfig(authProviderModel);
@@ -499,6 +567,22 @@ public class KeycloakAuthUtils {
                       identityProviderMapperRepresentation.getId(),
                       identityProviderMapperRepresentation);
             });
+  }
+
+  public IdentityProviderMapperRepresentation getIdpMapper(
+      IdentityProviderRepresentation idpComponentRepresentation) {
+
+    return getRealm().toRepresentation().getIdentityProviderMappers().stream()
+        .filter(
+            identityProviderMapperRepresentation ->
+                identityProviderMapperRepresentation
+                        .getIdentityProviderAlias()
+                        .equalsIgnoreCase(idpComponentRepresentation.getAlias())
+                    && identityProviderMapperRepresentation
+                        .getIdentityProviderMapper()
+                        .equalsIgnoreCase(IDP_USER_ATTRIBUTE_MAPPER))
+        .findFirst()
+        .orElse(null);
   }
 
   public void updateUserAttributeProtocolMapper(AuthProviderModel authProviderModel) {
@@ -534,5 +618,69 @@ public class KeycloakAuthUtils {
                     .get(clientScopeRep.getId())
                     .getProtocolMappers()
                     .update(protocolMapperRepresentation.getId(), protocolMapperRepresentation));
+  }
+
+  public static String getVendor(String vendorType) {
+
+    String vendor = null;
+
+    switch (vendorType) {
+      case "Active Directory":
+        vendor = "ad";
+        break;
+
+      case "Red Hat Directory Server":
+        vendor = "rhds";
+        break;
+
+      case "Tivoli":
+        vendor = "tivoli";
+        break;
+
+      case "Novell eDirectory":
+        vendor = "edirectory";
+        break;
+
+      case "Other":
+        vendor = "other";
+        break;
+
+      default:
+        vendor = "";
+        break;
+    }
+    return vendor;
+  }
+
+  public static String getVendorDisplayName(String vendor) {
+
+    String vendorId = null;
+
+    switch (vendor) {
+      case "ad":
+        vendorId = "Active Directory";
+        break;
+
+      case "rhds":
+        vendorId = "Red Hat Directory Server";
+        break;
+
+      case "tivoli":
+        vendorId = "Tivoli";
+        break;
+
+      case "edirectory":
+        vendorId = "Novell eDirectory";
+        break;
+
+      case "other":
+        vendorId = "Other";
+        break;
+
+      default:
+        vendorId = "";
+        break;
+    }
+    return vendorId;
   }
 }

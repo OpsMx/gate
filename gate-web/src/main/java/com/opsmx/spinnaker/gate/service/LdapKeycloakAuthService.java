@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 public class LdapKeycloakAuthService implements KeycloakAuthService {
 
   private static final String LDAP = "ldap";
+  private static final String VENDOR = "vendor";
 
   @Autowired private KeycloakProperties ldapConfigProps;
 
@@ -55,11 +56,11 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
 
   private MultivaluedHashMap<String, String> hashMapToMultivaluedHashMap(
       Map<String, String> config) {
+    if (config.containsKey(VENDOR)) {
+      config.put(VENDOR, KeycloakAuthUtils.getVendor(config.get(VENDOR)));
+    }
     MultivaluedHashMap<String, String> map = new MultivaluedHashMap<>();
-    Optional.ofNullable(config)
-        .orElse(new HashMap<>())
-        .entrySet()
-        .forEach(entry -> map.add(entry.getKey(), entry.getValue()));
+    Optional.of(config).orElse(new HashMap<>()).forEach(map::add);
     return map;
   }
 
@@ -85,10 +86,16 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
   @Override
   public AuthProviderModel get() {
     ComponentRepresentation ldap = keycloakAuthUtils.getLdapComponent();
+
     if (ldap == null) {
       return keycloakAuthUtils.getDefaultModel(LdapKeycloakAuthService.LDAP);
     }
     Map<String, String> config = multivaluedHashMapToHashMap(ldap.getConfig());
+    ComponentRepresentation ldapGroupMapper = keycloakAuthUtils.getLdapGroupMapper(ldap);
+    if (ldapGroupMapper != null) {
+      Map<String, String> groupConfig = multivaluedHashMapToHashMap(ldapGroupMapper.getConfig());
+      config.putAll(keycloakAuthUtils.mapLdapGroupFields(groupConfig));
+    }
     AuthProviderModel model = new AuthProviderModel();
     model.setName(ldap.getName());
     model.setConfig(config);
@@ -98,15 +105,19 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
   private Map<String, String> multivaluedHashMapToHashMap(
       MultivaluedHashMap<String, String> config) {
     Map<String, String> map = new HashMap<>();
-    Optional.ofNullable(config).orElse(new MultivaluedHashMap<>()).entrySet().stream()
+    Optional.ofNullable(config)
+        .orElse(new MultivaluedHashMap<>())
         .forEach(
-            entry -> {
+            (key, value1) -> {
               String value =
-                  Optional.ofNullable(entry.getValue()).orElse(new ArrayList<>()).stream()
+                  Optional.ofNullable(value1).orElse(new ArrayList<>()).stream()
                       .findFirst()
                       .orElse("");
-              map.put(entry.getKey(), value);
+              map.put(key, value);
             });
+    if (map.containsKey(VENDOR)) {
+      map.put(VENDOR, KeycloakAuthUtils.getVendorDisplayName(map.get(VENDOR)));
+    }
     return map;
   }
 
