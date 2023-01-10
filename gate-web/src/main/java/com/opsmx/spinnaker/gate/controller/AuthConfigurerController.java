@@ -25,6 +25,7 @@ import com.opsmx.spinnaker.gate.util.KeycloakAuthUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.TestLdapConnectionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RestController
 @RequestMapping(value = "/auth/config")
-// @ConditionalOnExpression("${feature.auth-provider.flag:false}")
+@ConditionalOnExpression("${feature.auth-provider.flag:false}")
 public class AuthConfigurerController {
 
   @Autowired private KeycloakAuthProvider keycloakAuthProvider;
