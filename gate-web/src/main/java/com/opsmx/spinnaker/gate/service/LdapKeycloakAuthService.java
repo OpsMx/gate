@@ -33,6 +33,7 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
 
   private static final String LDAP = "ldap";
   private static final String VENDOR = "vendor";
+  private static final String COMPONENT_ID = "componentId";
 
   @Autowired private KeycloakProperties ldapConfigProps;
 
@@ -91,6 +92,8 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
       return keycloakAuthUtils.getDefaultModel(LdapKeycloakAuthService.LDAP);
     }
     Map<String, String> config = multivaluedHashMapToHashMap(ldap.getConfig());
+    // We need this id to validate the authentication.
+    config.put(COMPONENT_ID, ldap.getId());
     ComponentRepresentation ldapGroupMapper = keycloakAuthUtils.getLdapGroupMapper(ldap);
     if (ldapGroupMapper != null) {
       Map<String, String> groupConfig = multivaluedHashMapToHashMap(ldapGroupMapper.getConfig());
