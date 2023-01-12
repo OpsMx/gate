@@ -35,7 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RestController
 @RequestMapping(value = "/auth/config")
-@ConditionalOnExpression("${feature.auth-provider.flag:false}")
+// @ConditionalOnExpression("${feature.auth-provider.flag:false}")
 public class AuthConfigurerController {
 
   @Autowired private KeycloakAuthProvider keycloakAuthProvider;
