@@ -72,6 +72,7 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
   @Override
   public AuthProviderModel update(AuthProviderModel authProviderModel) {
     authProviderModel.getConfig().putAll(ldapConfigProps.getProps());
+    authProviderModel.getConfig().remove(COMPONENT_ID);
     MultivaluedHashMap<String, String> config =
         hashMapToMultivaluedHashMap(authProviderModel.getConfig());
     keycloakAuthUtils.updateLdapComponent(config);
