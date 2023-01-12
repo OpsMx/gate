@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "keycloak.auth")
-// @ConditionalOnExpression("${feature.auth-provider.flag:false}")
+@ConditionalOnExpression("${feature.auth-provider.flag:false}")
 public class KeycloakAuthProvider {
 
   private List<Provider> providers;
