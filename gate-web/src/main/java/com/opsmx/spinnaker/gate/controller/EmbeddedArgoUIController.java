@@ -16,6 +16,7 @@
 
 package com.opsmx.spinnaker.gate.controller;
 
+import com.netflix.spinnaker.security.AuthenticatedRequest;
 import com.opsmx.spinnaker.gate.service.EmbeddedArgoUIService;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +34,8 @@ public class EmbeddedArgoUIController {
   public void load(
       @RequestParam(value = "argoid") String argoid,
       @RequestParam(value = "path") String path,
-      @RequestHeader(value = "x-spinnaker-user") String username,
       HttpServletResponse response) {
-
+    String username = AuthenticatedRequest.getSpinnakerUser().orElse(null);
     String location = embeddedArgoUIService.getBounceEndpoint(username, argoid, path);
     response.setStatus(302);
     response.setHeader("Location", location);
