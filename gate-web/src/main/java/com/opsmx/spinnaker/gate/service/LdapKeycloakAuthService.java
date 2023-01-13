@@ -23,11 +23,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.common.util.MultivaluedHashMap;
 import org.keycloak.representations.idm.ComponentRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class LdapKeycloakAuthService implements KeycloakAuthService {
 
@@ -74,10 +77,28 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
     authProviderModel.getConfig().putAll(ldapConfigProps.getProps());
     authProviderModel.getConfig().remove(COMPONENT_ID);
     MultivaluedHashMap<String, String> config =
-        hashMapToMultivaluedHashMap(authProviderModel.getConfig());
+        hashMapToMultivaluedHashMap(
+            filterUserSearchAndConnectionSettings(authProviderModel.getConfig()));
+    log.debug("updating LDAP component : {}", config);
     keycloakAuthUtils.updateLdapComponent(config);
     keycloakAuthUtils.updateLdapGroupMapper(authProviderModel);
     return authProviderModel;
+  }
+
+  private Map<String, String> filterUserSearchAndConnectionSettings(Map<String, String> config) {
+    return config.entrySet().stream()
+        .filter(
+            map ->
+                !map.getKey().equalsIgnoreCase("groupsDn")
+                    && !map.getKey().equalsIgnoreCase("membershipLdapAttribute")
+                    && !map.getKey().equalsIgnoreCase("groupNameLdapAttribute")
+                    && !map.getKey().equalsIgnoreCase("groupObjectClasses")
+                    && !map.getKey().equalsIgnoreCase("membershipUserLdapAttribute")
+                    && !map.getKey().equalsIgnoreCase("membershipAttributeType")
+                    && !map.getKey().equalsIgnoreCase("userRolesRetrieveStrategy")
+                    && !map.getKey().equalsIgnoreCase("memberofLdapAttribute")
+                    && !map.getKey().equalsIgnoreCase("mode"))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @Override
