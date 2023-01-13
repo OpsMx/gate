@@ -36,7 +36,6 @@ interface OpsmxOesService {
                                      @Query("isExists") boolean isExists,
                                      @Query("namespace") String namespace,
                                      @Query("argoCdUrl") String argoCdUrl,
-                                     @Query("argoRolloutUrl") String argoRolloutUrl,
                                      @Query("rolloutsEnabled") boolean rolloutsEnabled,
                                      @Query("isdUrl") String isdUrl)
 
