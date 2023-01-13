@@ -72,6 +72,12 @@ public class KeycloakAuthUtils {
   @Value("${security.oauth2.client.clientSecret:}")
   private String clientSecret;
 
+  @Value("${security.oauth2.userInfoMapping.groupAtrributes.idp:idpGroups}")
+  String idpGroupAttribute;
+
+  @Value("${security.oauth2.userInfoMapping.groupAtrributes.non-idp:groups}")
+  String groupAttribute;
+
   public static final String USER_STORAGE_PROVIDER_TYPE =
       "org.keycloak.storage.UserStorageProvider";
 
@@ -276,8 +282,7 @@ public class KeycloakAuthUtils {
 
   public void addUserAttributeProtocolMapper(AuthProviderModel authProviderModel) {
     RealmResource realmResource = getRealm();
-    Map<String, String> protocolMapperConfig =
-        populateProtocolMapperConfig(authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
+    Map<String, String> protocolMapperConfig = populateProtocolMapperConfig(idpGroupAttribute);
     protocolMapperConfig.put("user.attribute", authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
     protocolMapperConfig.put("jsonType.label", "");
     protocolMapperConfig.put("multivalued", Boolean.TRUE.toString());
@@ -325,7 +330,7 @@ public class KeycloakAuthUtils {
   }
 
   public void addGroupMembershipProtocolMapper() {
-    Map<String, String> protocolMapperConfig = populateProtocolMapperConfig(GROUPS);
+    Map<String, String> protocolMapperConfig = populateProtocolMapperConfig(groupAttribute);
     protocolMapperConfig.put("full.path", Boolean.TRUE.toString());
     log.debug("Populated Group membership protocol mapper config : {}", protocolMapperConfig);
     RealmResource realmResource = getRealm();
@@ -587,37 +592,44 @@ public class KeycloakAuthUtils {
 
   public void updateUserAttributeProtocolMapper(AuthProviderModel authProviderModel) {
     RealmResource realmResource = getRealm();
-    realmResource.toRepresentation().getProtocolMappers().stream()
-        .filter(
-            protocolMapperRepresentation ->
-                protocolMapperRepresentation.getName().equalsIgnoreCase(IDP_GROUP_PROTOCOL)
-                    && protocolMapperRepresentation
-                        .getProtocolMapper()
-                        .equalsIgnoreCase(USER_ATTRIBUTE_PROTOCOL_MAPPER))
-        .findFirst()
-        .ifPresent(
-            protocolMapperRepresentation -> {
-              Map<String, String> config = protocolMapperRepresentation.getConfig();
-              config.put("user.attribute", authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
-              protocolMapperRepresentation.setConfig(config);
-              updateProtocolMapper(protocolMapperRepresentation, realmResource);
-            });
-  }
 
-  private void updateProtocolMapper(
-      ProtocolMapperRepresentation protocolMapperRepresentation, RealmResource realmResource) {
     realmResource.clientScopes().findAll().stream()
         .filter(
             clientScopeRepresentation ->
                 clientScopeRepresentation.getName().trim().equalsIgnoreCase("roles"))
         .findFirst()
         .ifPresent(
-            clientScopeRep ->
-                realmResource
-                    .clientScopes()
-                    .get(clientScopeRep.getId())
-                    .getProtocolMappers()
-                    .update(protocolMapperRepresentation.getId(), protocolMapperRepresentation));
+            clientScopeRepresentation ->
+                clientScopeRepresentation.getProtocolMappers().stream()
+                    .filter(
+                        protocolMapperRepresentation ->
+                            protocolMapperRepresentation
+                                .getName()
+                                .equalsIgnoreCase(IDP_GROUP_PROTOCOL))
+                    .findFirst()
+                    .ifPresent(
+                        protocolMapperRepresentation -> {
+                          log.debug(
+                              "protocol mapper name : {} ", protocolMapperRepresentation.getName());
+                          Map<String, String> protocolMapperConfig =
+                              populateProtocolMapperConfig(idpGroupAttribute);
+                          protocolMapperConfig.put(
+                              "user.attribute", authProviderModel.getConfig().get(GROUP_ATTRIBUTE));
+                          protocolMapperConfig.put("jsonType.label", "");
+                          protocolMapperConfig.put("multivalued", Boolean.TRUE.toString());
+                          protocolMapperConfig.put("aggregate.attrs", Boolean.FALSE.toString());
+                          protocolMapperRepresentation.setConfig(protocolMapperConfig);
+
+                          log.debug("update protocol mapper config : {}", protocolMapperConfig);
+                          realmResource
+                              .clientScopes()
+                              .get(clientScopeRepresentation.getId())
+                              .getProtocolMappers()
+                              .update(
+                                  protocolMapperRepresentation.getId(),
+                                  protocolMapperRepresentation);
+                          log.debug("Successfully updated User Attribute protocol mapper config");
+                        }));
   }
 
   public static String getVendor(String vendorType) {

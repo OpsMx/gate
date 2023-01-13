@@ -63,12 +63,14 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
       // Delete the old saml and update the new config as it is not overriding the old one.
       keycloakAuthUtils.deleteSamlIdentityProvider();
       keycloakAuthUtils.addSamlIdentityProvider(authProviderModel.getFile());
+      keycloakAuthUtils.addIdpGroupMapper(authProviderModel);
+    } else {
+      keycloakAuthUtils.updateIdpGroupMapper(authProviderModel);
     }
     String enabled = authProviderModel.getConfig().get("enabled");
     if (!Boolean.parseBoolean(enabled)) {
       keycloakAuthUtils.disableSamlIdentityProvider();
     }
-    keycloakAuthUtils.updateIdpGroupMapper(authProviderModel);
     keycloakAuthUtils.updateUserAttributeProtocolMapper(authProviderModel);
     return authProviderModel;
   }
