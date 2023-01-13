@@ -34,9 +34,6 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
   @Value("${jwt.secret}")
   private String secret;
 
-  @Value("${jwt.key}")
-  private String key;
-
   @Value("${jwt.token.durationInSeconds:36000}")
   private Integer durationInSeconds;
 
@@ -50,15 +47,15 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
     Date currentDate = new Date(System.currentTimeMillis());
     String token =
         Jwts.builder()
+            .setHeaderParam("typ", "JWT")
             .claim("groups", groups)
             .claim("argoId", argoId)
             .claim("path", path)
             .setSubject(username)
-            .setIssuer("isd")
-            .setIssuedAt(currentDate)
-            .setHeaderParam("key", key)
             .setExpiration(new Date(System.currentTimeMillis() + 1000L * durationInSeconds))
             .setNotBefore(currentDate)
+            .setIssuedAt(currentDate)
+            .setIssuer("isd")
             .signWith(SignatureAlgorithm.HS256, secret)
             .compact();
     return bounceUrl + "?token=" + token;
