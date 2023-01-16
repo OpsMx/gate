@@ -89,7 +89,7 @@ class SpinnakerUserInfoTokenServices implements ResourceServerTokenServices {
 
   @Autowired(required = false)
   @Qualifier("spinnaker-oauth2-group-extractor")
-  BiFunction<String, Map, List<String>> groupExtractor
+  BiFunction<String, Map<String, Object>, List<String>> groupExtractor
 
   RetrySupport retrySupport = new RetrySupport()
 

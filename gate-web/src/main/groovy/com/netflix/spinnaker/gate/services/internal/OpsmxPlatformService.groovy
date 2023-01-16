@@ -57,8 +57,7 @@ interface OpsmxPlatformService {
                               @Query("agentName") String agentName,
                               @Query("cdName") String cdName,
                               @Query("datasourceType") String datasourceType,
-                              @Query("permissionId") String permissionId,
-                              @Header('x-spinnaker-user') String xSpinnakerUser)
+                              @Query("permissionId") String permissionId)
 
   @GET("/platformservice/{version}/{type}/{source}/{source1}/{source2}")
   Object getPlatformResponse5(@Path('version') String version,
@@ -69,8 +68,7 @@ interface OpsmxPlatformService {
                               @Query("permissionId") String permissionId,
                               @Query("resourceType") String resourceType,
                               @Query("featureType") String featureType,
-                              @Query("sourceName") String sourceName,
-                              @Header('x-spinnaker-user') String xSpinnakerUser)
+                              @Query("sourceName") String sourceName)
 
   @GET("/platformservice/{version}/{type}/{source}/{source1}/{source2}/{source3}")
   Object getPlatformResponse6(@Path('version') String version,

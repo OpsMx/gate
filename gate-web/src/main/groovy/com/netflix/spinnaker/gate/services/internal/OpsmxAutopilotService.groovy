@@ -94,8 +94,7 @@ interface OpsmxAutopilotService {
                          @Query("referer") String referer,
                          @Query("testCaseId") Integer testCaseId,
                          @Query("verificationType") String verificationType,
-                         @Query("patternId") String patternId,
-                         @Header('x-spinnaker-user') String xSpinnakerUser)
+                         @Query("patternId") String patternId)
 
   @GET("/autopilot/{type}")
   Object getAutoResponse1(@Path('type') String type)
@@ -126,8 +125,7 @@ interface OpsmxAutopilotService {
                           @Query("templateVersion") String templateVersion,
                           @Query("serviceList") List<String> serviceList,
                           @Query("id") Integer id,
-                          @Query("referer") String referer,
-                          @Header('x-spinnaker-user') String xSpinnakerUser)
+                          @Query("referer") String referer)
 
   @GET("/autopilot/{type}/{source}/{source1}/{source2}")
   Object getAutoResponse5(@Path('type') String type,
@@ -139,8 +137,7 @@ interface OpsmxAutopilotService {
                           @Query("permissionId") String permissionId,
                           @Query("templateName") String templateName,
                           @Query("templateType") String templateType,
-                          @Query("sha1") String sha1,
-                          @Header('x-spinnaker-user') String xSpinnakerUser)
+                          @Query("sha1") String sha1)
 
   @GET("/autopilot/{type}/{source}/{source1}/{source2}/{source3}")
   Object getAutoResponse6(@Path('type') String type,
@@ -153,8 +150,7 @@ interface OpsmxAutopilotService {
                           @Query("noOfDays") Integer noOfDays,
                           @Query("search") String search,
                           @Query("verificationType") String verificationType,
-                          @Query("status") String status,
-                          @Header('x-spinnaker-user') String xSpinnakerUser)
+                          @Query("status") String status)
 
   @GET("/autopilot/{type}/{source}/{source1}/{source2}/{source3}/{source4}")
   Object getAutoResponse7(@Path('type') String type,
@@ -163,8 +159,7 @@ interface OpsmxAutopilotService {
                           @Path('source2') String source2,
                           @Path('source3') String source3,
                           @Path('source4') String source4,
-                          @Query("time") String time,
-                          @Header('x-spinnaker-user') String xSpinnakerUser)
+                          @Query("time") String time)
 
   @GET("/autopilot/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}")
   Object getAutoResponse8(@Path('type') String type,
@@ -209,8 +204,7 @@ interface OpsmxAutopilotService {
   @GET("/autopilot/api/v5/global/template")
   Object getAutoResponse11(@Query("templateType") String templateType,
                            @Query("templateName") String templateName,
-                           @Query("versionNo") String versionNo,
-                           @Header('x-spinnaker-user') String xSpinnakerUser)
+                           @Query("versionNo") String versionNo)
 
 
   @GET("/autopilot/api/v5/global/templates")
@@ -227,8 +221,7 @@ interface OpsmxAutopilotService {
   Object getAutoResponse13(@Path('type') String type,
                            @Path('source') String source,
                            @Path('source1') String source1,
-                           @Path('source2') Integer source2,
-                           @Header('x-spinnaker-user') String xSpinnakerUser)
+                           @Path('source2') Integer source2)
 
   @DELETE("/autopilot/{type}")
   Object deleteAutoResponse1(@Path('type') String type)
@@ -368,5 +361,13 @@ interface OpsmxAutopilotService {
                                   @Path('source4') String source4,
                                   @Path('source5') String source5,
                                   @Body Object data)
+                                  
+  @GET("/autopilot/{type}/{source}/downloadUpdatedLogtemplate")
+  Response downloadUpdatedLogtemplate(@Path('type') String type,
+  				@Path('source') String source,
+  				@Query("version") String version,
+                               @Query("templateType") String templateType,
+                               @Query("templateName") String templateName)
+
 
 }

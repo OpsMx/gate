@@ -480,6 +480,7 @@ class OpsmxOesController {
 	  }
 	}
   }
+
   @ApiOperation(value = "download the manifest file")
   @GetMapping(value = "accountsConfig/agents/{agentName}/manifest", produces = "application/octet-stream")
   @ResponseBody Object getDownloadAgentManifestFile(@PathVariable("agentName") String agentName){
@@ -493,6 +494,32 @@ class OpsmxOesController {
       return ResponseEntity.ok().headers(headers).body(manifestFile)
     } finally{
       if (inputStream!=null){
+        inputStream.close()
+      }
+    }
+  }
+
+  @ApiOperation(value = "download the argo manifest file")
+  @GetMapping(value = "/{type}/{source}/{source1}/manifest", produces = "application/octet-stream")
+  @ResponseBody
+  Object getDownloadAgentManifestFile(@PathVariable("type") String type,
+                                      @PathVariable("source") String source,
+                                      @PathVariable("source1") String source1,
+                                      @RequestParam(value = "description", required = false) String description,
+                                      @RequestParam(value = "isExists", required = false) Boolean isExists,
+                                      @RequestParam(value = "namespace", required = false) String namespace,
+                                      @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
+                                      @RequestParam(value ="rolloutsEnabled", required = false) Boolean rolloutsEnabled,
+                                      @RequestParam(value = "isdUrl", required = false) String isdUrl) {
+    Response response = opsmxOesService.agentManifestDownloadFile(type, source, source1, description, isExists, namespace, argoCdUrl, rolloutsEnabled, isdUrl)
+    InputStream inputStream = response.getBody().in()
+    try {
+      byte[] manifestFile = IOUtils.toByteArray(inputStream)
+      HttpHeaders headers = new HttpHeaders()
+      headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+      return ResponseEntity.ok().headers(headers).body(manifestFile)
+    } finally {
+      if (inputStream != null) {
         inputStream.close()
       }
     }
