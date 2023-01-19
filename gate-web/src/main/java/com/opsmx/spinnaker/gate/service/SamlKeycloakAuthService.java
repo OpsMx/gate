@@ -24,9 +24,11 @@ import javax.validation.ValidationException;
 import org.keycloak.representations.idm.IdentityProviderMapperRepresentation;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
 
 @Service
+@ConditionalOnExpression("${feature.auth-provider.flag:false}")
 public class SamlKeycloakAuthService implements KeycloakAuthService {
 
   private static final String SAML = "saml";

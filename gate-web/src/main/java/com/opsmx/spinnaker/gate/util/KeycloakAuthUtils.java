@@ -36,11 +36,13 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.common.util.MultivaluedHashMap;
 import org.keycloak.representations.idm.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-@Component
 @Slf4j
+@Component
+@ConditionalOnExpression("${feature.auth-provider.flag:false}")
 public class KeycloakAuthUtils {
 
   private Keycloak keycloak;
