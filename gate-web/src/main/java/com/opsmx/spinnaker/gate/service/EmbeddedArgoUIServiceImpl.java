@@ -45,9 +45,13 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
     List<String> groups =
         oesAuthorizationService.getUserGroupsByUsername(username, username).getBody();
     Date currentDate = new Date(System.currentTimeMillis());
+    Map<String, Object> header = new LinkedHashMap<>();
+    header.put("alg", SignatureAlgorithm.HS256.name());
+    header.put("typ", "JWT");
     String token =
         Jwts.builder()
-            .setHeaderParam("typ", "JWT")
+            .signWith(SignatureAlgorithm.HS256, "secret")
+            .setHeader(header)
             .claim("groups", groups)
             .claim("argoId", argoId)
             .claim("path", path)
@@ -56,7 +60,6 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
             .setNotBefore(currentDate)
             .setIssuedAt(currentDate)
             .setIssuer("isd")
-            .signWith(SignatureAlgorithm.HS256, secret)
             .compact();
     return bounceUrl + "?token=" + token;
   }
