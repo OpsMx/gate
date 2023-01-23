@@ -50,7 +50,7 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
     header.put("typ", "JWT");
     String token =
         Jwts.builder()
-            .signWith(SignatureAlgorithm.HS256, "secret")
+            .signWith(SignatureAlgorithm.HS256, secret)
             .setHeader(header)
             .claim("groups", groups)
             .claim("argoId", argoId)
