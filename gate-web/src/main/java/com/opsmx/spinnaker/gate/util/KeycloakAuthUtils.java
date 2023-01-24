@@ -500,11 +500,27 @@ public class KeycloakAuthUtils {
   public String validate(TestLdapConnectionRepresentation testLdapConnectionRepresentation) {
     Response response = getRealm().testLDAPConnection(testLdapConnectionRepresentation);
     if (response.getStatus() == HttpStatus.SC_NO_CONTENT) {
-      return "Successfully connected to LDAP";
+      if (testLdapConnectionRepresentation.getAction().trim().equalsIgnoreCase("testConnection")) {
+        return "Successfully connected to LDAP";
+      } else if (testLdapConnectionRepresentation
+          .getAction()
+          .trim()
+          .equalsIgnoreCase("testAuthentication")) {
+        return "Successfully authenticated with the LDAP";
+      }
     } else {
-      throw new OesRequestException(
-          "Error when trying to connect to LDAP. Please check the url/credentials");
+      if (testLdapConnectionRepresentation.getAction().trim().equalsIgnoreCase("testConnection")) {
+        throw new OesRequestException(
+            "Unable to connect to LDAP : " + response.readEntity(String.class));
+      } else if (testLdapConnectionRepresentation
+          .getAction()
+          .trim()
+          .equalsIgnoreCase("testAuthentication")) {
+        throw new OesRequestException(
+            "Authentication with the LDAP failed : " + response.readEntity(String.class));
+      }
     }
+    return "";
   }
 
   public void updateLdapGroupMapper(AuthProviderModel authProviderModel) {
