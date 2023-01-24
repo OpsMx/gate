@@ -440,6 +440,11 @@ public class KeycloakAuthUtils {
       ldapAuthConfig.put("memberofLdapAttribute", ldapAuthConfig.get("memberof.ldap.attribute"));
       ldapAuthConfig.remove("memberof.ldap.attribute");
     }
+
+    if (ldapAuthConfig.containsKey("groups.ldap.filter")) {
+      ldapAuthConfig.put("groupsLdapFilter", ldapAuthConfig.get("groups.ldap.filter"));
+      ldapAuthConfig.remove("groups.ldap.filter");
+    }
     return ldapAuthConfig;
   }
 
@@ -488,9 +493,10 @@ public class KeycloakAuthUtils {
       ldapCompConfig.add("memberof.ldap.attribute", ldapAuthConfig.get("memberofLdapAttribute"));
     }
 
+    ldapCompConfig.add("groups.ldap.filter", ldapAuthConfig.getOrDefault("groupsLdapFilter", ""));
+
     ldapCompConfig.add("preserve.group.inheritance", Boolean.TRUE.toString());
     ldapCompConfig.add("ignore.missing.groups", Boolean.FALSE.toString());
-    ldapCompConfig.add("groups.ldap.filter", "");
     ldapCompConfig.add("mapped.group.attributes", "");
     ldapCompConfig.add("drop.non.existing.groups.during.sync", Boolean.FALSE.toString());
     ldapCompConfig.add("groups.path", "/");
