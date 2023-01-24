@@ -7,6 +7,8 @@ RUN adduser opsmx \
     && mkdir -p /opsmx/workdir/logs \
     && mkdir -p /opt/spinnaker/config \
     && mkdir -p /opt/spinnaker/plugins 
+    
+RUN yum -y update && yum install wget
 
 #######Gate Dependencies#########
 ENV WORK_DIR=/opsmx/workdir
