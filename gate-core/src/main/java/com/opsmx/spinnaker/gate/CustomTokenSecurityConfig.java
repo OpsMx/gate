@@ -116,7 +116,7 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
                     new AntPathRequestMatcher("/platformservice/v6/datasource", "POST", false),
                     new AntPathRequestMatcher("/platformservice/v6/datasource", "DELETE", false),
                     new AntPathRequestMatcher(
-                        "/platformservice/v6/datasource/{id:[0-9]+}", "GET", false),
+                        "/platformservice/v6/datasource/{id:[0-9]+}", "PUT", false),
                     new AntPathRequestMatcher("/platformservice/v7/datasource", "GET", false))),
             AnonymousAuthenticationFilter.class);
   }
