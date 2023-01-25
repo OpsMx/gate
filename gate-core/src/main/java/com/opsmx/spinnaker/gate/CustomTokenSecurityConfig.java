@@ -112,7 +112,8 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
                     new AntPathRequestMatcher(
                         "/platformservice/v7/argo/repoUrl/applications/{applicationId}",
                         "GET",
-                        false))),
+                        false),
+                    new AntPathRequestMatcher("/platformservice/v7/datasource", "GET", false))),
             AnonymousAuthenticationFilter.class);
   }
 
