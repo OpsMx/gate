@@ -99,7 +99,8 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
                     && !map.getKey().equalsIgnoreCase("membershipAttributeType")
                     && !map.getKey().equalsIgnoreCase("userRolesRetrieveStrategy")
                     && !map.getKey().equalsIgnoreCase("memberofLdapAttribute")
-                    && !map.getKey().equalsIgnoreCase("mode"))
+                    && !map.getKey().equalsIgnoreCase("mode")
+                    && !map.getKey().equalsIgnoreCase("groupsLdapFilter"))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
