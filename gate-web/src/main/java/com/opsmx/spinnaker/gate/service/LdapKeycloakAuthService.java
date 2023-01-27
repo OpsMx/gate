@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.keycloak.common.util.MultivaluedHashMap;
 import org.keycloak.representations.idm.ComponentRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,9 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
   @Autowired private KeycloakProperties ldapConfigProps;
 
   @Autowired private KeycloakAuthUtils keycloakAuthUtils;
+
+  @Value("${keycloak.ldapName:ldap}")
+  private String ldapName;
 
   /**
    * @param authProviderModel
@@ -155,7 +159,12 @@ public class LdapKeycloakAuthService implements KeycloakAuthService {
   }
 
   @Override
-  public AuthProviderModel disable() {
-    return null;
+  public AuthProviderModel toggle(String action) {
+    MultivaluedHashMap<String, String> ldapConfig = keycloakAuthUtils.toggleLdap(action);
+    AuthProviderModel authProviderModel = new AuthProviderModel();
+    authProviderModel.setName(ldapName);
+    authProviderModel.setConfig(multivaluedHashMapToHashMap(ldapConfig));
+    log.debug("Successfully toggled LDAP with the action : {}", action);
+    return authProviderModel;
   }
 }

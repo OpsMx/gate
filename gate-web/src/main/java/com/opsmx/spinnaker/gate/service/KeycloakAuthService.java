@@ -29,5 +29,5 @@ public interface KeycloakAuthService {
 
   void delete();
 
-  AuthProviderModel disable();
+  AuthProviderModel toggle(String action);
 }

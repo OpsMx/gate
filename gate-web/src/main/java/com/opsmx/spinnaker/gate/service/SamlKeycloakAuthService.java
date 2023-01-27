@@ -21,12 +21,14 @@ import com.opsmx.spinnaker.gate.util.KeycloakAuthUtils;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.ValidationException;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.IdentityProviderMapperRepresentation;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @ConditionalOnExpression("${feature.auth-provider.flag:false}")
 public class SamlKeycloakAuthService implements KeycloakAuthService {
@@ -114,7 +116,15 @@ public class SamlKeycloakAuthService implements KeycloakAuthService {
   }
 
   @Override
-  public AuthProviderModel disable() {
-    return null;
+  public AuthProviderModel toggle(String action) {
+    IdentityProviderRepresentation identityProviderRepresentation =
+        keycloakAuthUtils.toggleIdp(action);
+    AuthProviderModel authProviderModel = new AuthProviderModel();
+    Map<String, String> idpConfig = identityProviderRepresentation.getConfig();
+    idpConfig.put("enabled", Boolean.toString(identityProviderRepresentation.isEnabled()));
+    authProviderModel.setConfig(idpConfig);
+    authProviderModel.setName(identityProviderRepresentation.getDisplayName());
+    log.debug("Successfully toggled SAML provider with the action : {}", action);
+    return authProviderModel;
   }
 }
