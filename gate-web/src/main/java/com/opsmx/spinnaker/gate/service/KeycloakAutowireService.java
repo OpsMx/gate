@@ -54,7 +54,7 @@ public class KeycloakAutowireService {
     return servicesByAuthType.get(authProvider).create(authProviderModel);
   }
 
-  public AuthProviderModel disable(String authProvider) {
-    return servicesByAuthType.get(authProvider).disable();
+  public AuthProviderModel toggle(String authProvider, String action) {
+    return servicesByAuthType.get(authProvider).toggle(action);
   }
 }

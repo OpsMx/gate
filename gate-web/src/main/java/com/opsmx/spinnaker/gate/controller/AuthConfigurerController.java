@@ -107,16 +107,14 @@ public class AuthConfigurerController {
   }
 
   @PutMapping(
-      value = "/authProvider/{authProvider}/disable",
+      value = "/authProvider/{authProvider}/toggle/{actions}",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AuthProviderModel> disableAuthProvider(
-      @PathVariable(name = "authProvider") String authProvider) {
-    log.trace("disableAuthProvider started");
-    AuthProviderModel provider = keycloakAuthService.disable(authProvider);
-    ResponseEntity<AuthProviderModel> response =
-        new ResponseEntity<>(provider, HttpStatus.ACCEPTED);
-    log.trace("disableAuthProvider ended");
-    return response;
+  public ResponseEntity<AuthProviderModel> toggle(
+      @PathVariable(name = "authProvider") String authProvider,
+      @PathVariable(name = "actions") String action) {
+    log.trace("performing the toggle action");
+    AuthProviderModel provider = keycloakAuthService.toggle(authProvider, action);
+    return ResponseEntity.accepted().body(provider);
   }
 
   @PostMapping(
