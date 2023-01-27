@@ -40,7 +40,13 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
       header.put("alg", SignatureAlgorithm.HS256.name());
       header.put("typ", "JWT");
       String[] array = apiToken.split(";");
+      if (!(array.length == 2)) {
+        throw new InsufficientAuthenticationException("Invalid API token");
+      }
       String[] values = array[1].split("[.]");
+      if (!(values.length == 3)) {
+        throw new InsufficientAuthenticationException("Invalid API token");
+      }
       String token = array[1].trim();
       byte[] decodedBytes = Base64.getDecoder().decode(values[1]);
       String decodedString = new String(decodedBytes);
