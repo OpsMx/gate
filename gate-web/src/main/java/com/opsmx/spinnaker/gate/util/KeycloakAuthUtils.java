@@ -224,6 +224,14 @@ public class KeycloakAuthUtils {
     return idpRep;
   }
 
+  public IdentityProviderRepresentation toggleIdp(String action) {
+    IdentityProviderRepresentation idpRep = getSamlIdentityProvider();
+    idpRep.setEnabled(Boolean.parseBoolean(action));
+    getRealm().identityProviders().get(samlName).update(idpRep);
+    log.debug("Successfully set the action on IDP : {} ", idpRep);
+    return idpRep;
+  }
+
   private IdentityProviderRepresentation populateIdentityProviderRepresentation(
       Map<String, String> config) {
     IdentityProviderRepresentation identityProviderRepresentation =
@@ -654,6 +662,16 @@ public class KeycloakAuthUtils {
                                   protocolMapperRepresentation);
                           log.debug("Successfully updated User Attribute protocol mapper config");
                         }));
+  }
+
+  public MultivaluedHashMap<String, String> toggleLdap(String action) {
+    ComponentRepresentation ldapComp = getLdapComponent();
+    MultivaluedHashMap<String, String> ldapConfig = ldapComp.getConfig();
+    if (ldapConfig.containsKey("enabled")) {
+      ldapConfig.put("enabled", Collections.singletonList(action));
+    }
+    updateLdapComponent(ldapConfig);
+    return ldapConfig;
   }
 
   public static String getVendor(String vendorType) {
