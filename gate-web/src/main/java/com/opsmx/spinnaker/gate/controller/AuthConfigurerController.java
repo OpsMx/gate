@@ -109,7 +109,7 @@ public class AuthConfigurerController {
   @PutMapping(
       value = "/authProvider/{authProvider}/toggle/{actions}",
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AuthProviderModel> disableAuthProvider(
+  public ResponseEntity<AuthProviderModel> toggle(
       @PathVariable(name = "authProvider") String authProvider,
       @PathVariable(name = "actions") String action) {
     log.trace("performing the toggle action");
