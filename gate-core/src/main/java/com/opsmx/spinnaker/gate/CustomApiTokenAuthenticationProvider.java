@@ -54,14 +54,19 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
       byte[] decodedBytes = Base64.getDecoder().decode(values[1]);
       String decodedString = new String(decodedBytes);
       //
-      Claims claims = Jwts.parser().parseClaimsJws(token).getBody();
-      String subjectFromClaim = claims.getSubject();
-      Date iatfromClaim = claims.getIssuedAt();
-
-      System.out.println("subject from claims is:" + subjectFromClaim);
-      System.out.println("iat from claims is:" + iatfromClaim);
+      /*
+       * Claims claims = Jwts.parser().parseClaimsJws(token).getBody(); String
+       * subjectFromClaim = claims.getSubject(); Date iatfromClaim =
+       * claims.getIssuedAt();
+       *
+       * System.out.println("subject from claims is:" + subjectFromClaim);
+       * System.out.println("iat from claims is:" + iatfromClaim);
+       */
 
       Jwt s = Jwts.parser().parse(token);
+      Claims c = (Claims) s.getBody();
+      System.out.println("subject1 from claims is:" + c.getSubject());
+      System.out.println("iat1 from claims is:" + c.getIssuedAt().toString());
       int signatureIndex = token.lastIndexOf('.');
       if (signatureIndex <= 0) {
         throw new InsufficientAuthenticationException("Invalid API token");
