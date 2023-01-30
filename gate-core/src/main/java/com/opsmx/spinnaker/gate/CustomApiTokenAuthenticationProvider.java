@@ -1,6 +1,5 @@
 package com.opsmx.spinnaker.gate;
 
-import com.google.gson.Gson;
 import com.netflix.spinnaker.gate.model.TokenModel;
 import com.netflix.spinnaker.gate.services.TokenValidationService;
 import io.jsonwebtoken.Claims;
@@ -29,7 +28,6 @@ import org.springframework.util.ObjectUtils;
 public class CustomApiTokenAuthenticationProvider implements AuthenticationProvider {
 
   @Autowired private TokenValidationService tokenValidationService;
-  private Gson gson = new Gson();
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -50,8 +48,6 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
         throw new InsufficientAuthenticationException("Invalid API token");
       }
       String token = array[1].trim();
-      // byte[] decodedBytes = Base64.getDecoder().decode(values[1]);
-      //  String decodedString = new String(decodedBytes);
       int signatureIndex = token.lastIndexOf('.');
       if (signatureIndex <= 0) {
         throw new InsufficientAuthenticationException("Invalid API token");
@@ -60,19 +56,13 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
       System.out.println("non signd token: " + nonSignedToken);
       Jwt<Header, Claims> jwt = Jwts.parser().parseClaimsJwt(nonSignedToken);
       Claims body = jwt.getBody();
-      String subject2 = body.getSubject();
+      String subject = body.getSubject();
       long iat = body.getIssuedAt().getTime();
-      System.out.println("subject2 from claims is:" + subject2);
+      System.out.println("subject2 from claims is:" + subject);
       System.out.println("iat2 from claims is:" + iat);
+      String sub = subject.split(":")[0];
 
-      //
-
-      // Map<String, Object> map = gson.fromJson(decodedString, Map.class);
-      String sub = subject2.split(":")[0];
-      //  String iatValue = map.get("iat").toString();
-      // BigDecimal bd = new BigDecimal(iat2);
-      // long iat = bd.longValue();
-      Date date = new Date(iat * 1000);
+      Date date = new Date(iat);
       System.out.println("date   :" + date);
       String key =
           String.format(
@@ -83,7 +73,7 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
       String jwtToken =
           Jwts.builder()
               .claim("iss", "controller")
-              .setSubject(subject2)
+              .setSubject(subject)
               .setIssuedAt(date)
               .signWith(SignatureAlgorithm.HS256, encodekey)
               .setHeader(header)
