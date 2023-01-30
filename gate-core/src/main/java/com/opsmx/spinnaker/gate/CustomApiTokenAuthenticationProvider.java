@@ -1,13 +1,13 @@
 package com.opsmx.spinnaker.gate;
 
-import com.google.gson.Gson;
 import com.netflix.spinnaker.gate.model.TokenModel;
 import com.netflix.spinnaker.gate.services.TokenValidationService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.math.BigDecimal;
 import java.util.Base64;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,6 @@ import org.springframework.util.ObjectUtils;
 public class CustomApiTokenAuthenticationProvider implements AuthenticationProvider {
 
   @Autowired private TokenValidationService tokenValidationService;
-  private Gson gson = new Gson();
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -48,25 +47,27 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
         throw new InsufficientAuthenticationException("Invalid API token");
       }
       String token = array[1].trim();
-      byte[] decodedBytes = Base64.getDecoder().decode(values[1]);
-      String decodedString = new String(decodedBytes);
-      Map<String, Object> map = gson.fromJson(decodedString, Map.class);
-      String sub = map.get("sub").toString().split(":")[0];
-      String iatValue = map.get("iat").toString();
-      BigDecimal bd = new BigDecimal(iatValue);
-      long iat = bd.longValue();
-      Date date = new Date(iat * 1000);
+      int signatureIndex = token.lastIndexOf('.');
+      if (signatureIndex <= 0) {
+        throw new InsufficientAuthenticationException("Invalid API token");
+      }
+      String nonSignedToken = token.substring(0, signatureIndex + 1);
+      Jwt<Header, Claims> jwt = Jwts.parser().parseClaimsJwt(nonSignedToken);
+      Claims body = jwt.getBody();
+      String subject = body.getSubject();
+      long iat = body.getIssuedAt().getTime();
+      String sub = subject.split(":")[0];
       String key =
           String.format(
               "%s/%s/GOl@ngCOntrollerH@ndshake-@OPSMX-JavABACKeND|udfPLQZS",
-              String.valueOf(iat), sub);
+              String.valueOf(iat / 1000), sub);
       String encodekey = Base64.getEncoder().encodeToString(key.getBytes());
 
       String jwtToken =
           Jwts.builder()
               .claim("iss", "controller")
-              .setSubject(map.get("sub").toString())
-              .setIssuedAt(date)
+              .setSubject(subject)
+              .setIssuedAt(body.getIssuedAt())
               .signWith(SignatureAlgorithm.HS256, encodekey)
               .setHeader(header)
               .compact();
@@ -79,7 +80,6 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
         customApiTokenAuthentication.setUsername(sub);
         return customApiTokenAuthentication;
       }
-
     } else {
       String[] values = apiToken.split(";");
 
