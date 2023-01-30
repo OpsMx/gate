@@ -8,7 +8,6 @@ import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -51,23 +50,8 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
         throw new InsufficientAuthenticationException("Invalid API token");
       }
       String token = array[1].trim();
-      byte[] decodedBytes = Base64.getDecoder().decode(values[1]);
-      String decodedString = new String(decodedBytes);
-      //
-      /*
-       * Claims claims = Jwts.parser().parseClaimsJws(token).getBody(); String
-       * subjectFromClaim = claims.getSubject(); Date iatfromClaim =
-       * claims.getIssuedAt();
-       *
-       * System.out.println("subject from claims is:" + subjectFromClaim);
-       * System.out.println("iat from claims is:" + iatfromClaim);
-       */
-
-      /*
-       * Jwt s = Jwts.parser().parse(token); Claims c = (Claims) s.getBody();
-       * System.out.println("subject1 from claims is:" + c.getSubject());
-       * System.out.println("iat1 from claims is:" + c.getIssuedAt().toString());
-       */
+      // byte[] decodedBytes = Base64.getDecoder().decode(values[1]);
+      //  String decodedString = new String(decodedBytes);
       int signatureIndex = token.lastIndexOf('.');
       if (signatureIndex <= 0) {
         throw new InsufficientAuthenticationException("Invalid API token");
@@ -75,21 +59,21 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
       String nonSignedToken = token.substring(0, signatureIndex + 1);
       System.out.println("non signd token: " + nonSignedToken);
       Jwt<Header, Claims> jwt = Jwts.parser().parseClaimsJwt(nonSignedToken);
-
       Claims body = jwt.getBody();
-
       String subject2 = body.getSubject();
-      String iat2 = body.getIssuedAt().toString();
+      long iat = body.getIssuedAt().getTime();
       System.out.println("subject2 from claims is:" + subject2);
-      System.out.println("iat2 from claims is:" + iat2);
+      System.out.println("iat2 from claims is:" + iat);
+
       //
 
-      Map<String, Object> map = gson.fromJson(decodedString, Map.class);
-      String sub = map.get("sub").toString().split(":")[0];
-      String iatValue = map.get("iat").toString();
-      BigDecimal bd = new BigDecimal(iatValue);
-      long iat = bd.longValue();
+      // Map<String, Object> map = gson.fromJson(decodedString, Map.class);
+      String sub = subject2.split(":")[0];
+      //  String iatValue = map.get("iat").toString();
+      // BigDecimal bd = new BigDecimal(iat2);
+      // long iat = bd.longValue();
       Date date = new Date(iat * 1000);
+      System.out.println("date   :" + date);
       String key =
           String.format(
               "%s/%s/GOl@ngCOntrollerH@ndshake-@OPSMX-JavABACKeND|udfPLQZS",
@@ -99,7 +83,7 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
       String jwtToken =
           Jwts.builder()
               .claim("iss", "controller")
-              .setSubject(map.get("sub").toString())
+              .setSubject(subject2)
               .setIssuedAt(date)
               .signWith(SignatureAlgorithm.HS256, encodekey)
               .setHeader(header)
