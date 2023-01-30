@@ -63,10 +63,11 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
        * System.out.println("iat from claims is:" + iatfromClaim);
        */
 
-      Jwt s = Jwts.parser().parse(token);
-      Claims c = (Claims) s.getBody();
-      System.out.println("subject1 from claims is:" + c.getSubject());
-      System.out.println("iat1 from claims is:" + c.getIssuedAt().toString());
+      /*
+       * Jwt s = Jwts.parser().parse(token); Claims c = (Claims) s.getBody();
+       * System.out.println("subject1 from claims is:" + c.getSubject());
+       * System.out.println("iat1 from claims is:" + c.getIssuedAt().toString());
+       */
       int signatureIndex = token.lastIndexOf('.');
       if (signatureIndex <= 0) {
         throw new InsufficientAuthenticationException("Invalid API token");
