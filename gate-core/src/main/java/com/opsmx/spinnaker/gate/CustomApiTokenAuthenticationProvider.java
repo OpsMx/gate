@@ -3,6 +3,9 @@ package com.opsmx.spinnaker.gate;
 import com.google.gson.Gson;
 import com.netflix.spinnaker.gate.model.TokenModel;
 import com.netflix.spinnaker.gate.services.TokenValidationService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.math.BigDecimal;
@@ -50,6 +53,31 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
       String token = array[1].trim();
       byte[] decodedBytes = Base64.getDecoder().decode(values[1]);
       String decodedString = new String(decodedBytes);
+      //
+      Claims claims = Jwts.parser().parseClaimsJws(token).getBody();
+      String subjectFromClaim = claims.getSubject();
+      Date iatfromClaim = claims.getIssuedAt();
+
+      System.out.println("subject from claims is:" + subjectFromClaim);
+      System.out.println("iat from claims is:" + iatfromClaim);
+
+      Jwt s = Jwts.parser().parse(token);
+      int signatureIndex = token.lastIndexOf('.');
+      if (signatureIndex <= 0) {
+        throw new InsufficientAuthenticationException("Invalid API token");
+      }
+      String nonSignedToken = token.substring(0, signatureIndex + 1);
+      System.out.println("non signd token: " + nonSignedToken);
+      Jwt<Header, Claims> jwt = Jwts.parser().parseClaimsJwt(nonSignedToken);
+
+      Claims body = jwt.getBody();
+
+      String subject2 = body.getSubject();
+      String iat2 = body.getIssuedAt().toString();
+      System.out.println("subject2 from claims is:" + subject2);
+      System.out.println("iat2 from claims is:" + iat2);
+      //
+
       Map<String, Object> map = gson.fromJson(decodedString, Map.class);
       String sub = map.get("sub").toString().split(":")[0];
       String iatValue = map.get("iat").toString();
