@@ -67,14 +67,14 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
       String key =
           String.format(
               "%s/%s/GOl@ngCOntrollerH@ndshake-@OPSMX-JavABACKeND|udfPLQZS",
-              String.valueOf(iat), sub);
+              String.valueOf(iat / 1000), sub);
       String encodekey = Base64.getEncoder().encodeToString(key.getBytes());
 
       String jwtToken =
           Jwts.builder()
               .claim("iss", "controller")
               .setSubject(subject)
-              .setIssuedAt(date)
+              .setIssuedAt(body.getIssuedAt())
               .signWith(SignatureAlgorithm.HS256, encodekey)
               .setHeader(header)
               .compact();
