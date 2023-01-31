@@ -57,7 +57,9 @@ interface OpsmxPlatformService {
                               @Query("agentName") String agentName,
                               @Query("cdName") String cdName,
                               @Query("datasourceType") String datasourceType,
-                              @Query("permissionId") String permissionId)
+                              @Query("permissionId") String permissionId,
+                              @Query("applicationId") Integer applicationId,
+                              @Query("canaryId") Integer canaryId)
 
   @GET("/platformservice/{version}/{type}/{source}/{source1}/{source2}")
   Object getPlatformResponse5(@Path('version') String version,
