@@ -117,7 +117,7 @@ class OpsmxPlatformController {
     }
   }
 
-  private Object handleCaching(String path, HttpServletRequest httpServletRequepermissionIdst, String version, String type, String source, String source1, String agentName, String cdName, String datasourceType, String permissionId) {
+  private Object handleCaching(String path, HttpServletRequest httpServletRequest, String version, String type, String source, String source1, String agentName, String cdName, String datasourceType, String permissionId) {
     Object response
     PlatformCachingService platformCachingService = platformCachingServiceBeanFactory.getBean(path)
 
