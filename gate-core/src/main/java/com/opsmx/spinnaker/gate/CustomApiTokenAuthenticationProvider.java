@@ -1,7 +1,17 @@
 package com.opsmx.spinnaker.gate;
 
+/** Represents an token authentication provider. validates different api tokens */
 import com.netflix.spinnaker.gate.model.TokenModel;
 import com.netflix.spinnaker.gate.services.TokenValidationService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -26,6 +36,38 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
 
     if (ObjectUtils.isEmpty(apiToken)) {
       throw new InsufficientAuthenticationException("No API token present in the request header");
+    } else if (apiToken.startsWith("jwt")) {
+      /*
+       * validates jwt token we are expecting token format as jwt:{token} ex:
+       * jwt;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+       * eyJpc3MiOiJjb250cm9sbGVyIiwic3ViIjoiSnVuYWlkOmxvZ2luIiwiaWF0IjoxNjczODQ2MjY1fQ
+       * .loDWjJdLu0RLoRzDhCFc2ktwERzUss6g2CIIXuQ4kps
+       *
+       */
+
+      String[] array = apiToken.split(";");
+      if (!(array.length == 2)) {
+        throw new InsufficientAuthenticationException("Invalid API token");
+      }
+      String[] values = array[1].split("[.]");
+      if (!(values.length == 3)) {
+        throw new InsufficientAuthenticationException("Invalid API token");
+      }
+      String token = array[1].trim();
+      int signatureIndex = token.lastIndexOf('.');
+      if (signatureIndex <= 0) {
+        throw new InsufficientAuthenticationException("Invalid API token");
+      }
+      Map<String, String> map = generateJwtToken(token, signatureIndex);
+      String jwtToken = map.get("token");
+      if (!jwtToken.equals(token)) {
+        throw new BadCredentialsException("API token is invalid");
+      } else {
+        CustomApiTokenAuthentication customApiTokenAuthentication =
+            new CustomApiTokenAuthentication(apiToken, true);
+        customApiTokenAuthentication.setUsername(map.get("sub"));
+        return customApiTokenAuthentication;
+      }
     } else {
       String[] values = apiToken.split(";");
 
@@ -68,5 +110,35 @@ public class CustomApiTokenAuthenticationProvider implements AuthenticationProvi
   @Override
   public boolean supports(Class<?> authentication) {
     return CustomApiTokenAuthentication.class.isAssignableFrom(authentication);
+  }
+  // generated jwt token using iat and subject from tha input token
+  public Map<String, String> generateJwtToken(String token, int signatureIndex) {
+    Map<String, String> map = new HashMap<>();
+    Map<String, Object> header = new LinkedHashMap<>();
+    header.put("alg", SignatureAlgorithm.HS256.name());
+    header.put("typ", "JWT");
+    String nonSignedToken = token.substring(0, signatureIndex + 1);
+    Jwt<Header, Claims> jwt = Jwts.parser().parseClaimsJwt(nonSignedToken);
+    Claims body = jwt.getBody();
+    String subject = body.getSubject();
+    long iat = body.getIssuedAt().getTime();
+    String sub = subject.split(":")[0];
+    String key =
+        String.format(
+            "%s/%s/GOl@ngCOntrollerH@ndshake-@OPSMX-JavABACKeND|udfPLQZS",
+            String.valueOf(iat / 1000), sub);
+    String encodekey = Base64.getEncoder().encodeToString(key.getBytes());
+
+    String jwtToken =
+        Jwts.builder()
+            .claim("iss", "controller")
+            .setSubject(subject)
+            .setIssuedAt(body.getIssuedAt())
+            .signWith(SignatureAlgorithm.HS256, encodekey)
+            .setHeader(header)
+            .compact();
+    map.put("token", jwtToken);
+    map.put("sub", sub);
+    return map;
   }
 }
