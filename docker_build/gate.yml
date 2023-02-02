@@ -195,7 +195,7 @@ keycloak:
             helpText: Connection Settings
             inputparameters:
               - name: vendor
-                display: Vendor
+                display: LDAP Provider
                 inputType: dropdown
                 required: true
                 helpText: Choose your LDAP Vendor (Provider)
@@ -210,7 +210,7 @@ keycloak:
                   - Other
 
               - name: connectionUrl
-                display: Connection URL
+                display: LDAP Provider URL
                 inputType: url
                 required: true
                 helpText: Connection URL to your LDAP Server
