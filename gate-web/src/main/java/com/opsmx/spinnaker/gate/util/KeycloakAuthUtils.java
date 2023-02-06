@@ -512,29 +512,34 @@ public class KeycloakAuthUtils {
   }
 
   public String validate(TestLdapConnectionRepresentation testLdapConnectionRepresentation) {
-    Response response = getRealm().testLDAPConnection(testLdapConnectionRepresentation);
-    if (response.getStatus() == HttpStatus.SC_NO_CONTENT) {
-      if (testLdapConnectionRepresentation.getAction().trim().equalsIgnoreCase("testConnection")) {
-        return "Successfully connected to LDAP";
-      } else if (testLdapConnectionRepresentation
-          .getAction()
-          .trim()
-          .equalsIgnoreCase("testAuthentication")) {
-        return "Successfully authenticated with the LDAP";
-      }
+    Boolean isConnectionCheck =
+        testLdapConnectionRepresentation.getAction().trim().equalsIgnoreCase("testConnection");
+    if (isConnectionCheck) {
+      validate(testLdapConnectionRepresentation, "Unable to connect to LDAP.");
+      return "Successfully connected to LDAP";
     } else {
-      if (testLdapConnectionRepresentation.getAction().trim().equalsIgnoreCase("testConnection")) {
-        throw new OesRequestException(
-            "Unable to connect to LDAP : " + response.readEntity(String.class));
-      } else if (testLdapConnectionRepresentation
-          .getAction()
-          .trim()
-          .equalsIgnoreCase("testAuthentication")) {
-        throw new OesRequestException(
-            "Authentication with the LDAP failed : " + response.readEntity(String.class));
-      }
+      testLdapConnectionRepresentation.setAction("testConnection");
+      validate(testLdapConnectionRepresentation, "Unable to connect to LDAP.");
+      testLdapConnectionRepresentation.setAction("testAuthentication");
+      validate(
+          testLdapConnectionRepresentation,
+          "Authentication with the LDAP failed. Wrong credentials.");
+      return "Successfully authenticated with the LDAP";
     }
-    return "";
+  }
+
+  private void validate(
+      TestLdapConnectionRepresentation testLdapConnectionRepresentation, String errorMessage) {
+    Response response;
+    try {
+      response = getRealm().testLDAPConnection(testLdapConnectionRepresentation);
+    } catch (Exception e) {
+      throw new OesRequestException(errorMessage);
+    }
+
+    if (response.getStatus() != HttpStatus.SC_NO_CONTENT) {
+      throw new OesRequestException(errorMessage);
+    }
   }
 
   public void updateLdapGroupMapper(AuthProviderModel authProviderModel) {
