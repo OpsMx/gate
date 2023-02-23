@@ -48,8 +48,10 @@ interface OpsmxPlatformService {
                              @Query("source1") String source1,
                              @Query("chartId") Integer chartId,
                              @Query("noOfDays") Integer noOfDays,
-                             @Query("argoNames") List<String> argoName,
-                             @Query("agentNames") List<String> agentNames)
+                             @Query("argoNames") List<String> argoNames,
+                             @Query("agentNames") List<String> agentNames,
+                             @Query("argoName") String argoName,
+                             @Query("agentName") String agentName)
 
   @GET("/platformservice/{version}/{type}/{source}/{source1}")
   Object getPlatformResponse4(@Path('version') String version,
