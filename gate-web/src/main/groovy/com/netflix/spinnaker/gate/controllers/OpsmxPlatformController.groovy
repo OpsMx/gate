@@ -96,8 +96,9 @@ class OpsmxPlatformController {
                              @RequestParam(value = "noOfDays", required = false) Integer noOfDays,
                              @RequestParam(value = "argoNames", required = false) List<String> argoNames,
                              @RequestParam(value = "agentNames", required = false) List<String> agentNames,
-                             @RequestParam(value = "argoName", required = false) String argoName) {
-    return opsmxPlatformService.getPlatformResponse(version, type, source, source1, chartId, noOfDays, argoNames, agentNames, argoName)
+                             @RequestParam(value = "argoName", required = false) String argoName,
+                             @RequestParam(value = "agentName", required = false) String agentName) {
+    return opsmxPlatformService.getPlatformResponse(version, type, source, source1, chartId, noOfDays, argoNames, agentNames, argoName, agentName)
   }
   @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
