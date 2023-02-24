@@ -503,7 +503,12 @@ public class KeycloakAuthUtils {
 
     ldapCompConfig.add("groups.ldap.filter", ldapAuthConfig.getOrDefault("groupsLdapFilter", ""));
 
-    ldapCompConfig.add("preserve.group.inheritance", Boolean.TRUE.toString());
+    if (ldapAuthConfig.containsKey("membershipAttributeType")
+        && ldapAuthConfig.get("membershipAttributeType").equalsIgnoreCase("UID")) {
+      ldapCompConfig.add("preserve.group.inheritance", Boolean.FALSE.toString());
+    } else {
+      ldapCompConfig.add("preserve.group.inheritance", Boolean.TRUE.toString());
+    }
     ldapCompConfig.add("ignore.missing.groups", Boolean.FALSE.toString());
     ldapCompConfig.add("mapped.group.attributes", "");
     ldapCompConfig.add("drop.non.existing.groups.during.sync", Boolean.FALSE.toString());
