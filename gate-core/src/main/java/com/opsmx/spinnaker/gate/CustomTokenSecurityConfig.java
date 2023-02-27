@@ -33,6 +33,8 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
     authConfig.configure(httpSecurity);
     httpSecurity
         .sessionManagement()
+        .sessionFixation()
+        .none()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .requestCache()
