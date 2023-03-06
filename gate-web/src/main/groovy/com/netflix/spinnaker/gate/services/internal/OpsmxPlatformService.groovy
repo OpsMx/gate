@@ -125,7 +125,8 @@ interface OpsmxPlatformService {
                                  @Path('type') String type,
                                  @Path('source') String source,
                                  @Query("argoName") String argoName,
-                                 @Query("agentName") String agentName)
+                                 @Query("agentName") String agentName,
+                                 @Query("checkOnlyDeletedArgo") boolean checkOnlyDeletedArgo)
 
   @DELETE("/platformservice/{version}/{type}/{source}/{source1}")
   Object deletePlatformResponse4(@Path('version') String version,
