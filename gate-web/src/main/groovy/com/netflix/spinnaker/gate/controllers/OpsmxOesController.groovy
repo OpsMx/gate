@@ -517,6 +517,8 @@ class OpsmxOesController {
       byte[] manifestFile = IOUtils.toByteArray(inputStream)
       HttpHeaders headers = new HttpHeaders()
       headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+      headers.add("Id", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("id") }).collect(Collectors.toList()).get(0).value)
+      headers.add("Access-Control-Expose-Headers", "Id")
       return ResponseEntity.ok().headers(headers).body(manifestFile)
     } finally {
       if (inputStream != null) {
