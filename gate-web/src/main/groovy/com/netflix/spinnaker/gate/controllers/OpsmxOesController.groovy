@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
-import org.springframework.security.config.web.servlet.HeadersDsl
+import org.springframework.util.StringUtils
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import retrofit.client.Header
@@ -518,11 +518,21 @@ class OpsmxOesController {
     InputStream inputStream = response.getBody().in()
     try {
       byte[] manifestFile = IOUtils.toByteArray(inputStream)
+      String contentDisposition = null
+      String agentId = null
       HttpHeaders headers = new HttpHeaders()
       for (Header header : response.getHeaders()) {
-        headers.add("Content-Disposition", header.getName().trim().equalsIgnoreCase("Content-Disposition").collect(Collectors.toList()).get(0).value)
-        headers.add("Id", header.getName().trim().equalsIgnoreCase("id").collect(Collectors.toList()).get(0).value)
+        if (header.getName().trim().equalsIgnoreCase("Content-Disposition")) {
+          contentDisposition = header.getValue()
+        }
+        if (header.getName().trim().equalsIgnoreCase("Id")) {
+          agentId = header.getValue()
+        }
       }
+      if (!StringUtils.isEmpty(contentDisposition))
+        headers.add("Content-Disposition", contentDisposition)
+      if (!StringUtils.isEmpty(agentId))
+        headers.add("Id", agentId)
       headers.add("Access-Control-Expose-Headers", "Id")
       return ResponseEntity.ok().headers(headers).body(manifestFile)
     } finally {
