@@ -21,8 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.util.StringUtils
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import retrofit.client.Header
+
 import java.util.stream.Collectors
 
 import com.netflix.spinnaker.gate.config.ServiceConfiguration
@@ -515,8 +518,22 @@ class OpsmxOesController {
     InputStream inputStream = response.getBody().in()
     try {
       byte[] manifestFile = IOUtils.toByteArray(inputStream)
+      String contentDisposition = null
+      String agentId = null
       HttpHeaders headers = new HttpHeaders()
-      headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+      for (Header header : response.getHeaders()) {
+        if (header.getName().trim().equalsIgnoreCase("Content-Disposition")) {
+          contentDisposition = header.getValue()
+        }
+        if (header.getName().trim().equalsIgnoreCase("Id")) {
+          agentId = header.getValue()
+        }
+      }
+      if (!StringUtils.isEmpty(contentDisposition))
+        headers.add("Content-Disposition", contentDisposition)
+      if (!StringUtils.isEmpty(agentId))
+        headers.add("Id", agentId)
+      headers.add("Access-Control-Expose-Headers", "Id")
       return ResponseEntity.ok().headers(headers).body(manifestFile)
     } finally {
       if (inputStream != null) {
