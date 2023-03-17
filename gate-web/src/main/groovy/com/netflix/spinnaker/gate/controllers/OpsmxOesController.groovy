@@ -21,8 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.security.config.web.servlet.HeadersDsl
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import retrofit.client.Header
+
 import java.util.stream.Collectors
 
 import com.netflix.spinnaker.gate.config.ServiceConfiguration
@@ -516,8 +519,10 @@ class OpsmxOesController {
     try {
       byte[] manifestFile = IOUtils.toByteArray(inputStream)
       HttpHeaders headers = new HttpHeaders()
-      headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
-      headers.add("Id", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("id") }).collect(Collectors.toList()).get(0).value)
+      for (Header header : response.getHeaders()) {
+        headers.add("Content-Disposition", header.getName().trim().equalsIgnoreCase("Content-Disposition").collect(Collectors.toList()).get(0).value)
+        headers.add("Id", header.getName().trim().equalsIgnoreCase("id").collect(Collectors.toList()).get(0).value)
+      }
       headers.add("Access-Control-Expose-Headers", "Id")
       return ResponseEntity.ok().headers(headers).body(manifestFile)
     } finally {
