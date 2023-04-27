@@ -24,6 +24,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("task-service")
 @Data
 public class TaskServiceProperties {
-  private int maxNumberOfPolls = 32;
+  private int maxNumberOfPolls = 1200;
   private int defaultIntervalBetweenPolls = 1000;
 }
