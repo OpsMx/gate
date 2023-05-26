@@ -13,6 +13,9 @@ allprojects {
   if ([korkVersion, fiatVersion].find { it.endsWith('-SNAPSHOT') }) {
     repositories {
       mavenLocal()
+       maven{
+        url "https://nexus.opsmx.net/repository/maven-snapshots/"
+      }
     }
   }
 
