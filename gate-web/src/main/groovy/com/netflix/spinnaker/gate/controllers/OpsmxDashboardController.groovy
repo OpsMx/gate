@@ -332,10 +332,13 @@ class OpsmxDashboardController {
                            @RequestBody(required = false) Object data,
                             HttpServletRequest request) {
     String cookie = "no-cookie"
-    if(gateInstallationMode.equals(GateInstallationModes.common)){
+    if(gateInstallationMode.equals(GateInstallationModes.common)
+      && (request.getHeader("Origin") ==null
+      || !request.getHeader("Origin").equalsIgnoreCase("OpsMxApprovalStagePlugin"))){
       cookie = request.getHeader("Cookie")
     }
-    return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, cookie, data)
+    String user = request.getHeader("x-spinnaker-user")
+    return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, cookie, user, data)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
