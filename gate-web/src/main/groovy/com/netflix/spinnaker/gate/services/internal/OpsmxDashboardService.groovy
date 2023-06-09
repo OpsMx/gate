@@ -183,6 +183,7 @@ interface OpsmxDashboardService {
                           @Path('source') String source,
                           @Path('source1') String source1,
                                 @Header('x-user-cookie') String cookie,
+                          @Header('x-spinnaker-user') String user,
                           @Body Object data)
 
   @POST("/dashboardservice/{version}/{type}/{source}/{source1}/{source2}")

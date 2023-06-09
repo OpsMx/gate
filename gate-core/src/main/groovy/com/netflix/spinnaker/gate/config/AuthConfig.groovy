@@ -157,6 +157,8 @@ class AuthConfig {
         .antMatchers(HttpMethod.GET, '/dashboardservice/v5/agents/{agentName}/accounts/{accountName}/accountType/{accountType}/apple/automation').permitAll()
         .antMatchers(HttpMethod.POST, '/dashboardservice/v4/datasource/apple/automation').permitAll()
         .antMatchers(HttpMethod.GET, '/platformservice/v6/applications/{applicationname}/pipeline/{pipelineName}/reference/{ref}/gates/{gatesName}').permitAll()
+        .antMatchers(HttpMethod.GET, '/platformservice/v1/applications/{applicationName}/pipelines/{pipelineName}').permitAll()
+        .antMatchers(HttpMethod.POST, '/dashboardservice/v4/pipelines/{pipelineId}/gates').permitAll()
         .antMatchers('/health').permitAll()
         .antMatchers('/prometheus').permitAll()
         .antMatchers('/info').permitAll()

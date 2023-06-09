@@ -16,7 +16,6 @@
 
 package com.netflix.spinnaker.gate.controllers
 
-import com.netflix.spinnaker.gate.config.ServiceConfiguration
 import com.netflix.spinnaker.gate.services.internal.OpsmxPlatformService
 import com.opsmx.spinnaker.gate.factory.platform.PlatformCachingServiceBeanFactory
 import com.opsmx.spinnaker.gate.service.PlatformCachingService
@@ -147,9 +146,13 @@ class OpsmxPlatformController {
                               @RequestParam(value = "permissionId", required = false) String permissionId,
                               @RequestParam(value = "resourceType", required = false) String resourceType,
                               @RequestParam(value = "featureType", required = false) String featureType,
-                              @RequestParam(value = "sourceName", required = false) String sourceName) {
+                              @RequestParam(value = "sourceName", required = false) String sourceName,
+                              @RequestParam(value = "gateSearch", required = false) Boolean gateSearch,
+                              @RequestParam(value = "gateName", required = false) String gateName,
+                              @RequestParam(value = "refId", required = false) Integer refId,
+                              @RequestParam(value = "gateType", required = false) String gateType) {
 
-    return opsmxPlatformService.getPlatformResponse5(version, type, source, source1, source2, permissionId, resourceType,featureType,sourceName)
+    return opsmxPlatformService.getPlatformResponse5(version, type, source, source1, source2, permissionId, resourceType,featureType, sourceName, gateSearch, gateName, refId, gateType)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
