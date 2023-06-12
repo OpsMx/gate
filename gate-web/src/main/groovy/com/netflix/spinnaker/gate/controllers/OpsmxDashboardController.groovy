@@ -334,7 +334,9 @@ class OpsmxDashboardController {
     String cookie = "no-cookie"
     if(gateInstallationMode.equals(GateInstallationModes.common)
       && (request.getHeader("Origin") ==null
-      || !request.getHeader("Origin").equalsIgnoreCase("OpsMxApprovalStagePlugin"))){
+      || !request.getHeader("Origin").equalsIgnoreCase("OpsMxApprovalStagePlugin")
+      || !request.getHeader("Origin").equalsIgnoreCase("OpsMxVerificationStagePlugin")
+      || !request.getHeader("Origin").equalsIgnoreCase("OpsMxPolicyStagePlugin"))){
       cookie = request.getHeader("Cookie")
     }
     String user = request.getHeader("x-spinnaker-user")
@@ -435,11 +437,16 @@ class OpsmxDashboardController {
                                  @RequestBody(required = false) Object data,
                                   HttpServletRequest request) {
     String cookie = "no-cookie"
-    if(gateInstallationMode != null && gateInstallationMode.equals(GateInstallationModes.common)){
+    if(gateInstallationMode.equals(GateInstallationModes.common)
+      && (request.getHeader("Origin") ==null
+      || !request.getHeader("Origin").equalsIgnoreCase("OpsMxApprovalStagePlugin")
+      || !request.getHeader("Origin").equalsIgnoreCase("OpsMxVerificationStagePlugin")
+      || !request.getHeader("Origin").equalsIgnoreCase("OpsMxPolicyStagePlugin"))){
       cookie = request.getHeader("Cookie")
     }
+    String user = request.getHeader("x-spinnaker-user")
 
-    return opsmxDashboardService.updateDashboardResponse3(version, type, source, source1, source2, data, cookie)
+    return opsmxDashboardService.updateDashboardResponse3(version, type, source, source1, source2, data, cookie, user)
   }
 
   @ApiOperation(value = "Endpoint for dashboard rest services")
