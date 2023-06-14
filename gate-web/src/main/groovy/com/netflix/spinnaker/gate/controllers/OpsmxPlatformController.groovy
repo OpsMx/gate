@@ -387,9 +387,11 @@ class OpsmxPlatformController {
                                  @PathVariable("source3") String source3,
                                  @PathVariable("source4") String source4,
                                  @RequestParam(value = "featureType", required = false) String featureType,
-                                 @RequestBody(required = false) Object data) {
+                                 @RequestBody(required = false) Object data, HttpServletRequest request) {
 
-    return opsmxPlatformService.updatePlatformResponse4(version, type, source, source1, source2, source3, source4, featureType,data)
+    String user = request.getHeader("x-spinnaker-user")
+
+    return opsmxPlatformService.updatePlatformResponse4(version, type, source, source1, source2, source3, source4, featureType,user, data)
   }
 
   @ApiOperation(value = "download metric analysis sample template")
