@@ -76,7 +76,11 @@ interface OpsmxPlatformService {
                               @Query("permissionId") String permissionId,
                               @Query("resourceType") String resourceType,
                               @Query("featureType") String featureType,
-                              @Query("sourceName") String sourceName)
+                              @Query("sourceName") String sourceName,
+                              @Query("gateSearch") Boolean gateSearch,
+                              @Query("gateName") String gateName,
+                              @Query("refId") Integer refId,
+                              @Query("gateType") String gateType)
 
   @GET("/platformservice/{version}/{type}/{source}/{source1}/{source2}/{source3}")
   Object getPlatformResponse6(@Path('version') String version,
