@@ -325,9 +325,10 @@ class OpsmxAutopilotController {
                           @RequestParam(value = "search", required = false) String search,
                           @RequestParam(value = "verificationType", required = false) String verificationType,
                           @RequestParam(value = "status", required = false) String status,
-                          @RequestParam(value = "cdtool", required = false) String cdtool) {
+                          @RequestParam(value = "cdtool", required = false) String cdtool,
+                          @RequestParam(value = "sortOrder", required = false) String sortOrder) {
 
-    return opsmxAutopilotService.getAutoResponse6(type, source, source1, source2, source3,pageNo,pageLimit,noOfDays,search,verificationType,status,cdtool)
+    return opsmxAutopilotService.getAutoResponse6(type, source, source1, source2, source3,pageNo,pageLimit,noOfDays,search,verificationType,status,cdtool,sortOrder)
   }
 
   @ApiOperation(value = "Endpoint for autopilot rest services")
@@ -643,11 +644,11 @@ class OpsmxAutopilotController {
 
     return opsmxAutopilotService.updateAutopilotResponse6(type, source, source1, source2, source3, source4, source5, data)
   }
-  
+
   @ApiOperation(value = "Endpoint for autopilot rest services")
   @GetMapping(value = "/{type}/{source}/downloadUpdatedLogtemplate", produces = "application/octet-stream")
   @ResponseBody Object downloadUpdatedLogtemplate(@PathVariable("type") String type,
-                                      @PathVariable("source") String source, 
+                                      @PathVariable("source") String source,
                                       @RequestParam(value = "version", required = false) String version,
                                       @RequestParam(value = "templateType", required = false) String templateType,
                                       @RequestParam(value = "templateName", required = false) String templateName){
@@ -660,7 +661,7 @@ class OpsmxAutopilotController {
       headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> 		    header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
       return ResponseEntity.ok().headers(headers).body(yamlFile)
 
-    } finally{   
+    } finally{
       if (inputStream!=null){
         inputStream.close()
       }
