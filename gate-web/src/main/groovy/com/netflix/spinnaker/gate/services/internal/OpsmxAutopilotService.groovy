@@ -151,7 +151,8 @@ interface OpsmxAutopilotService {
                           @Query("search") String search,
                           @Query("verificationType") String verificationType,
                           @Query("status") String status,
-                          @Query("cdtool") String cdtool)
+                          @Query("cdtool") String cdtool,
+                          @Query("sortOrder") String sortOrder)
 
   @GET("/autopilot/{type}/{source}/{source1}/{source2}/{source3}/{source4}")
   Object getAutoResponse7(@Path('type') String type,
@@ -364,7 +365,7 @@ interface OpsmxAutopilotService {
                                   @Path('source4') String source4,
                                   @Path('source5') String source5,
                                   @Body Object data)
-                                  
+
   @GET("/autopilot/{type}/{source}/downloadUpdatedLogtemplate")
   Response downloadUpdatedLogtemplate(@Path('type') String type,
   				@Path('source') String source,
