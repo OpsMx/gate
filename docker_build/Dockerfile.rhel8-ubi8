@@ -18,7 +18,7 @@ RUN adduser opsmx \
 # Install procps(ps)
 RUN yum install -y procps nginx net-tools wget
 # Install java 11 
-RUN yum -y install java-11-openjdk-headless.x86_64
+RUN yum -y install tzdata-java java-11-openjdk-headless.x86_64
 # Install ping
 RUN yum install -y iputils
 
