@@ -30,5 +30,10 @@ the debugger to be attached before starting Gate; the relevant JVM arguments can
 modified as needed in `build.gradle`.
 
 
+$${\color{lightblue} Recent \space commits:}$$ 
+
+              CommitID                   |   Author      | Commit Message          | Commit Date
+----------------------------------------------------------------------------------------------------
+
 
 b3aa4c46c18e7087a97e83bc4639ef9062afcba0 | Yugandharkumar | Create commits-preserve.yml | 2023-08-09 
