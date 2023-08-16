@@ -232,4 +232,31 @@ class OpsmxSsdController {
     }
     return ResponseEntity.status(response.getStatus()).build()
   }
+
+  @ApiOperation(value = "Endpoint to download json file")
+  @RequestMapping(value = "/{version}/{type}/{source}/downloadjson", produces = "application/json", method = RequestMethod.GET)
+  Object downloadJsonFileSsdService(@PathVariable("version") String version,
+                                    @PathVariable("type") String type,
+                                    @PathVariable("source") String source,
+                                    @RequestParam(value = "appId", required = false) Integer appId,
+                                    @RequestParam(value = "image", required = false) String image,
+                                    @RequestParam(value = "appName", required = false) String appName) {
+    Response response = opsMxSsdService.downloadJsonFile(version, type, source, appId, image, appName)
+    log.info("response for the download json endpoint:" + response.getHeaders())
+    if (response.getBody() != null) {
+      InputStream inputStream = response.getBody().in()
+      try {
+        byte[] jsonFile = IOUtils.toByteArray(inputStream)
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.parseMediaType("application/json"));
+        headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+        return ResponseEntity.ok().headers(headers).body(jsonFile)
+      } finally {
+        if (inputStream != null) {
+          inputStream.close()
+        }
+      }
+    }
+    return ResponseEntity.status(response.getStatus()).build()
+  }
 }
