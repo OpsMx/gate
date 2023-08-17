@@ -242,14 +242,14 @@ class OpsmxSsdController {
                                     @RequestParam(value = "image", required = false) String image,
                                     @RequestParam(value = "appName", required = false) String appName) {
     Response response = opsMxSsdService.downloadJsonFile(version, type, source, appId, image, appName)
-    response.setHeader("Access-Control-Allow-Headers", "x-requested-with, content-type, Content-Disposition")
+    HttpHeaders headers = new HttpHeaders()
+    headers.add("Access-Control-Allow-Headers", "x-requested-with, content-type, Content-Disposition")
     log.info("response for the download json endpoint:" + response.getHeaders())
     if (response.getBody() != null) {
       InputStream inputStream = response.getBody().in()
       try {
         byte[] jsonFile = IOUtils.toByteArray(inputStream)
-        HttpHeaders headers = new HttpHeaders()
-       // headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
         return ResponseEntity.ok().headers(headers).body(jsonFile)
       } finally {
