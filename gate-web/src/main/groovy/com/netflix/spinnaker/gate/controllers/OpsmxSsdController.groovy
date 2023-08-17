@@ -248,7 +248,7 @@ class OpsmxSsdController {
       try {
         byte[] jsonFile = IOUtils.toByteArray(inputStream)
         HttpHeaders headers = new HttpHeaders()
-        headers.setContentType(MediaType.parseMediaType("application/json"));
+        headers.setContentType(MediaType.parseMediaType("text/csv"));
         headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
         return ResponseEntity.ok().headers(headers).body(jsonFile)
       } finally {
