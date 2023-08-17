@@ -181,8 +181,10 @@ class OpsmxAuditClientServiceController {
       try {
         byte[] csvFile = IOUtils.toByteArray(inputStream)
         HttpHeaders headers = new HttpHeaders()
-        headers.setContentType(MediaType.parseMediaType("text/csv"));
-        headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+        headers.setContentType(MediaType.parseMediaType("application/json"));
+        log.info(response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+        log.info(response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()))
+        headers.add("Content-Disposition", "attachment;filename=reports.json")
         return ResponseEntity.ok().headers(headers).body(csvFile)
       } finally {
         if (inputStream != null) {
