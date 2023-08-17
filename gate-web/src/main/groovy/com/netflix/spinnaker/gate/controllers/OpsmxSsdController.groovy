@@ -246,11 +246,13 @@ class OpsmxSsdController {
     headers.add("Access-Control-Allow-Headers", "x-requested-with, content-type, Content-Disposition")
     log.info("response for the download json endpoint:" + response.getHeaders())
     if (response.getBody() != null) {
+      log.info("before " +response.getBody().toString())
       InputStream inputStream = response.getBody().in()
       try {
         byte[] jsonFile = IOUtils.toByteArray(inputStream)
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+        log.info("after " +response.getBody().toString())
         return ResponseEntity.ok().headers(headers).body(jsonFile)
       } finally {
         if (inputStream != null) {
