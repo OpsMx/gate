@@ -251,8 +251,10 @@ class OpsmxSsdController {
       try {
         byte[] jsonFile = IOUtils.toByteArray(inputStream)
         headers.setContentType(MediaType.parseMediaType("application/json"));
-        headers.setContentDisposition(response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
-        //headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+        log.info(response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+        log.info(response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()))
+        headers.add("Content-Disposition", "attachment;filename=reports.json")
+       //headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
         log.info("after " +response.getBody().toString())
         return ResponseEntity.ok().headers(headers).body(jsonFile)
       } finally {
