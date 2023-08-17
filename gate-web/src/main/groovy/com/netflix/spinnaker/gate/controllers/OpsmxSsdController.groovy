@@ -234,7 +234,7 @@ class OpsmxSsdController {
   }
 
   @ApiOperation(value = "Endpoint to download json file")
-  @RequestMapping(value = "/{version}/{type}/{source}/downloadjson", produces = "application/json", method = RequestMethod.GET)
+  @RequestMapping(value = "/{version}/{type}/{source}/download/json", produces = "application/json", method = RequestMethod.GET)
   Object downloadJsonFileSsdService(@PathVariable("version") String version,
                                     @PathVariable("type") String type,
                                     @PathVariable("source") String source,
