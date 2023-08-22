@@ -128,11 +128,13 @@ class OpsmxSsdController {
                          @PathVariable("type") String type,
                          @PathVariable("source") String source,
                          @PathVariable("source1") String source1,
+                         @RequestParam(value = "account", required = false) String account,
                          @RequestParam(value = "appId", required = false) Integer appId,
                          @RequestParam(value = "image", required = false) String image,
                          @RequestParam(value = "appName", required = false) String appName,
+                         @RequestParam(value = "noOfDays", required = false) Integer noOfDays,
                          @RequestParam(value = "id", required = false) String id) {
-    return opsMxSsdService.getSddResponse3(version, type, source, source1, appId, image, appName, id)
+    return opsMxSsdService.getSddResponse3(version, type, source, source1,account , appId, image, appName, noOfDays,id)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")

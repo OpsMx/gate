@@ -77,9 +77,11 @@ interface OpsmxSsdService {
                          @Path('type') String type,
                          @Path('source') String source,
                          @Path('source1') String source1,
+                         @Query("account") String account,
                          @Query("appId") Integer appId,
                          @Query("image") String image,
                          @Query("appName") String appName,
+                         @Query("noOfDays") Integer noOfDays,
                          @Query("id") String id)
 
   @GET("/ssdservice/{version}/{type}/{source}/{source1}/{source2}")
