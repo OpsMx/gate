@@ -56,7 +56,9 @@ interface OpsmxAuditClientService {
                                  @Query("noOfDays") String noOfDays,
                                  @Query("search") String search,
                                  @Query("sortOrder") String sortOrder,
-                                 @Query("sortBy") String sortBy)
+                                 @Query("sortBy") String sortBy,
+                                 @Query("updatedTimestamp") Long updatedTimestamp,
+                                 @Query("size") Integer size)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}/{source2}")
   Object getAuditClientResponse4(@Path('version') String version,

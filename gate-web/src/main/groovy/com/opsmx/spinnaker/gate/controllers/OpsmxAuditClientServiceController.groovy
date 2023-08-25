@@ -81,8 +81,10 @@ class OpsmxAuditClientServiceController {
                                  @RequestParam(value = "noOfDays", required = false) String noOfDays,
                                  @RequestParam(value = "search", required = false) String search,
                                  @RequestParam(value = "sortOrder", required = false) String sortOrder,
-                                 @RequestParam(value = "sortBy", required = false) String sortBy) {
-    return opsmxAuditClientService.getAuditClientResponse3(version, type, source, source1, isTreeView, isLatest, pageNo, pageLimit, noOfDays, search, sortOrder, sortBy)
+                                 @RequestParam(value = "sortBy", required = false) String sortBy,
+                                 @RequestParam(value = "updatedTimestamp") Long updatedTimestamp,
+                                 @RequestParam(value = "size", required = false) Integer size) {
+    return opsmxAuditClientService.getAuditClientResponse3(version, type, source, source1, isTreeView, isLatest, pageNo, pageLimit, noOfDays, search, sortOrder, sortBy, updatedTimestamp, size)
   }
 
   @ApiOperation(value = "Endpoint for audit-client rest services")
