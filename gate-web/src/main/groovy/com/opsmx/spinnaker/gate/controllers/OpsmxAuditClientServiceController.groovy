@@ -193,14 +193,4 @@ class OpsmxAuditClientServiceController {
     return ResponseEntity.status(response.getStatus()).build()
   }
 
-  @ApiOperation(value = "Endpoint for audit-client rest services")
-  @RequestMapping(value = "/{version}/users/{username}/pipelineConfig/{pipelineConfigId}/history", method = RequestMethod.GET)
-  Object getAuditClientResponse5(@PathVariable("version") String version,
-                                 @PathVariable("username") String username,
-                                 @PathVariable("pipelineConfigId") String pipelineConfigId,
-                                 @RequestParam(value = "updatedTimestamp") Long updatedTimestamp,
-                                 @RequestParam(value = "size", required = false) Integer size) {
-    return opsmxAuditClientService.getPipelinesConfigHistory(version, username, pipelineConfigId, updatedTimestamp, size)
-  }
-
 }
