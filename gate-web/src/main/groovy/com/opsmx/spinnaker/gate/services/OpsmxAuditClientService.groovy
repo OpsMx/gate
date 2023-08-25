@@ -112,4 +112,11 @@ interface OpsmxAuditClientService {
                                          @Query('startTime') Long startTime,
                                          @Query('endTime') Long endTime,
                                            @Query('days') Integer days)
+
+  @GET("/auditclientservice/{version}/users/{username}/pipelineConfig/{pipelineConfigId}/history")
+  Response getPipelinesConfigHistory(@Path('version') String version,
+                                     @Path('username') String username,
+                                     @Path('pipelineConfigId') String pipelineConfigId,
+                                     @Query("updatedTimestamp") Long updatedTimestamp,
+                                     @Query("size") Integer size)
 }
