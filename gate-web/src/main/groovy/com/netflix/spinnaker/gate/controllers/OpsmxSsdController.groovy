@@ -133,8 +133,11 @@ class OpsmxSsdController {
                          @RequestParam(value = "image", required = false) String image,
                          @RequestParam(value = "appName", required = false) String appName,
                          @RequestParam(value = "noOfDays", required = false) Integer noOfDays,
+                         @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                         @RequestParam(value = "pageLimit", required = false) Integer pageLimit,
+                         @RequestParam(value = "kind", required = false) String kind,
                          @RequestParam(value = "id", required = false) String id) {
-    return opsMxSsdService.getSddResponse3(version, type, source, source1,account , appId, image, appName, noOfDays,id)
+    return opsMxSsdService.getSddResponse3(version, type, source, source1,account , appId, image, appName, noOfDays,pageNo,pageLimit,kind,id)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")

@@ -82,6 +82,9 @@ interface OpsmxSsdService {
                          @Query("image") String image,
                          @Query("appName") String appName,
                          @Query("noOfDays") Integer noOfDays,
+                         @Query("pageNo") Integer pageNo,
+                         @Query("pageLimit") Integer pageLimit,
+                         @Query("kind") String kind,
                          @Query("id") String id)
 
   @GET("/ssdservice/{version}/{type}/{source}/{source1}/{source2}")
