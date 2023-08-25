@@ -105,8 +105,10 @@ class OpsmxAuditClientServiceController {
                               @PathVariable("source1") String source1,
                               @PathVariable("source2") String source2,
                               @PathVariable("source3") String source3,
-                              @RequestParam(value = "noOfDays", required = false) String noOfDays) {
-    return opsmxAuditClientService.getAuditClientResponse5(version, type, source, source1, source2, source3,noOfDays)
+                              @RequestParam(value = "noOfDays", required = false) String noOfDays,
+                                 @RequestParam(value = "updatedTimestamp", required = false) Long updatedTimestamp,
+                                 @RequestParam(value = "size", required = false) Integer size) {
+    return opsmxAuditClientService.getAuditClientResponse5(version, type, source, source1, source2, source3,noOfDays, updatedTimestamp, size)
   }
 
   @ApiOperation(value = "Endpoint for audit-client rest services")
