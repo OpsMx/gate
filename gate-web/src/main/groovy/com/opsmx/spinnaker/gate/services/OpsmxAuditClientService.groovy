@@ -73,7 +73,9 @@ interface OpsmxAuditClientService {
                               @Path('source1') String source1,
                               @Path('source2') String source2,
                               @Path('source3') String source3,
-                              @Query("noOfDays") String noOfDays)
+                              @Query("noOfDays") String noOfDays,
+                                 @Query("updatedTimestamp") Long updatedTimestamp,
+                                 @Query("size") Integer size)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}")
   Object getAuditClientResponse6(@Path('version') String version,
