@@ -122,7 +122,7 @@ interface OpsmxSsdService {
                          @Path('source1') String source1,
                          @Path('source2') String source2,
                          @Path('source3') String source3,
-                         @Query("appId") Integer appId,
+                         @Query("appId") String appId,
                          @Query("image") String image,
                          @Query("appName") String appName)
 
@@ -134,7 +134,7 @@ interface OpsmxSsdService {
                          @Path('source2') String source2,
                          @Path('source3') String source3,
                          @Path('source4') String source4,
-                         @Query("appId") Integer appId,
+                         @Query("appId") String appId,
                          @Query("image") String image,
                          @Query("appName") String appName)
 
@@ -147,7 +147,7 @@ interface OpsmxSsdService {
                          @Path('source3') String source3,
                          @Path('source4') String source4,
                          @Path('source5') String source5,
-                         @Query("appId") Integer appId,
+                         @Query("appId") String appId,
                          @Query("image") String image,
                          @Query("appName") String appName)
 
@@ -155,9 +155,10 @@ interface OpsmxSsdService {
   Response downloadCSVFile(@Path('version') String version,
                            @Path('type') String type,
                            @Path('source') String source,
-                           @Query("appId") Integer appId,
+                           @Query("appId") String appId,
                            @Query("image") String image,
-                           @Query("appName") String appName)
+                           @Query("appName") String appName,
+                           @Query("account") String account)
 
 
   @POST("/ssdservice/{version}/{type}")
@@ -182,9 +183,10 @@ interface OpsmxSsdService {
   Response downloadJsonFile(@Path('version') String version,
                             @Path('type') String type,
                             @Path('source') String source,
-                            @Query("appId") Integer appId,
+                            @Query("appId") String appId,
                             @Query("image") String image,
-                            @Query("appName") String appName)
+                            @Query("appName") String appName,
+                            @Query("account") String account)
 
 
 }
