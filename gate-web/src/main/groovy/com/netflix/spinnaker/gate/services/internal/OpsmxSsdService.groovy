@@ -156,9 +156,10 @@ interface OpsmxSsdService {
   Response downloadCSVFile(@Path('version') String version,
                            @Path('type') String type,
                            @Path('source') String source,
-                           @Query("appId") Integer appId,
+                           @Query("appId") String appId,
                            @Query("image") String image,
-                           @Query("appName") String appName)
+                           @Query("appName") String appName,
+                           @Query("account") String account)
 
 
   @POST("/ssdservice/{version}/{type}")
@@ -183,9 +184,10 @@ interface OpsmxSsdService {
   Response downloadJsonFile(@Path('version') String version,
                             @Path('type') String type,
                             @Path('source') String source,
-                            @Query("appId") Integer appId,
+                            @Query("appId") String appId,
                             @Query("image") String image,
-                            @Query("appName") String appName)
+                            @Query("appName") String appName,
+                            @Query("account") String account)
 
 
 }
