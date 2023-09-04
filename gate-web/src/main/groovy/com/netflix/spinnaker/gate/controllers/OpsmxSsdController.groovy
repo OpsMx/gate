@@ -253,8 +253,9 @@ class OpsmxSsdController {
                                     @RequestParam(value = "appId", required = false) String appId,
                                     @RequestParam(value = "image", required = false) String image,
                                     @RequestParam(value = "appName", required = false) String appName,
-                                    @RequestParam(value = "account", required = false) String account) {
-    Response response = opsMxSsdService.downloadJsonFile(version, type, source, appId, image, appName,account)
+                                    @RequestParam(value = "account", required = false) String account,
+                                    @RequestParam(value = "scoreCardName", required = false) String scoreCardName){
+    Response response = opsMxSsdService.downloadJsonFile(version, type, source, appId, image, appName,account,scoreCardName)
     log.info("response for the download json endpoint:" + response.getHeaders())
     if (response.getBody() != null) {
       InputStream inputStream = response.getBody().in()

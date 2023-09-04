@@ -187,7 +187,8 @@ interface OpsmxSsdService {
                             @Query("appId") String appId,
                             @Query("image") String image,
                             @Query("appName") String appName,
-                            @Query("account") String account)
+                            @Query("account") String account,
+                            @Query("scoreCardName") String scoreCardName)
 
 
 }
