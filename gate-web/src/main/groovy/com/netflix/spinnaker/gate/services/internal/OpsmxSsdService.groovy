@@ -49,8 +49,7 @@ interface OpsmxSsdService {
                          @Query("endTime") String endTime,
                          @Query("severity") String severity,
                          @Query("scope") String scope,
-                         @Query("current") String current,
-                         @Query("scoreCardName") String scoreCardName)
+                         @Query("current") String current)
 
   @GET("/ssdservice/{version}/{type}/{source}")
   Object getSddResponse2(@Path('version') String version,
