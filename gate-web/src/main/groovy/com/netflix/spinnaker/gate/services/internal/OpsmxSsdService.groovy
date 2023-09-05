@@ -187,11 +187,6 @@ interface OpsmxSsdService {
                                  @Path('type') String type,
                                  @Path('source') String source,
                                  @Query("id") String id,
-                                 @Query("Vulnerability") String Vulnerability,
-                                 @Query("Component") String Component,
-                                 @Query("ComponentVersion") String ComponentVersion,
-                                 @Query("Image") String Image,
-                                 @Query("ImageVersion") String ImageVersion,
                                  @Body Object data)
 
   @GET("/ssdservice/{version}/{type}/{source}/download/json")

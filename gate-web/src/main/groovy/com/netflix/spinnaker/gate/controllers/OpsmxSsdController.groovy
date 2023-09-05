@@ -65,13 +65,8 @@ class OpsmxSsdController {
                                  @PathVariable("type") String type,
                                  @PathVariable("source") String source,
                                  @RequestParam(value = "id", required = false) String id,
-                                 @RequestParam(value = "Vulnerability", required = false) String Vulnerability,
-                                 @RequestParam(value = "Component", required = false) String Component,
-                                 @RequestParam(value = "ComponentVersion", required = false) String ComponentVersion,
-                                 @RequestParam(value = "Image", required = false) String Image,
-                                 @RequestParam(value = "ImageVersion", required = false) String ImageVersion,
                                  @RequestBody(required = false) Object data) {
-    return opsMxSsdService.postSsdServiceResponse3(version, type, source, id, Vulnerability, Component, ComponentVersion, Image, ImageVersion, data)
+    return opsMxSsdService.postSsdServiceResponse3(version, type, source, id, data)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
