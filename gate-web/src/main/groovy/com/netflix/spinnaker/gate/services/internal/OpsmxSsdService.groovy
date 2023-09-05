@@ -115,7 +115,10 @@ interface OpsmxSsdService {
                          @Query("fromAccount") String fromAccount,
                          @Query("toAccount") String toAccount,
                          @Query("kind") String kind,
-                         @Query("active") String active)
+                         @Query("active") String active,
+                         @Query("Vulnerability") String Vulnerability,
+                         @Query("Component") String Component,
+                         @Query("ComponentVersion") String ComponentVersion)
 
   @GET("/ssdservice/{version}/{type}/{source}/{source1}/{source2}/{source3}")
   Object getSddResponse5(@Path('version') String version,
@@ -179,6 +182,11 @@ interface OpsmxSsdService {
                                  @Path('type') String type,
                                  @Path('source') String source,
                                  @Query("id") String id,
+                                 @Query("Vulnerability") String Vulnerability,
+                                 @Query("Component") String Component,
+                                 @Query("ComponentVersion") String ComponentVersion,
+                                 @Query("Image") String Image,
+                                 @Query("ImageVersion") String ImageVersion,
                                  @Body Object data)
 
   @GET("/ssdservice/{version}/{type}/{source}/download/json")
