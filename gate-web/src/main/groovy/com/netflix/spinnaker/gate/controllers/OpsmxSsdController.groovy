@@ -54,9 +54,10 @@ class OpsmxSsdController {
                                 @RequestParam(value = "id", required = false) Integer id,
                                 @RequestParam(value = "scope", required = false) String scope,
                                 @RequestParam(value = "appId", required = false) String appId,
+                                @RequestParam(value = "vulnAlert", required = false) boolean vulnAlert,
                                 @RequestBody(required = false) Object data) {
 
-    return opsMxSsdService.postSsdServiceResponse(version, type, stage, policy, policyId,id,scope,appId,data)
+    return opsMxSsdService.postSsdServiceResponse(version, type, stage, policy, policyId,id,scope,appId, vulnAlert,data)
   }
 
   @ApiOperation(value = "Endpoint for ssd rest services")
