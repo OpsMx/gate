@@ -56,9 +56,13 @@ class OpsmxSsdController {
                                 @RequestParam(value = "appId", required = false) String appId,
                                 @RequestParam(value = "vulnAlert", required = false) boolean vulnAlert,
                                 @RequestBody(required = false) Object alertMessage,
+                                @RequestBody(required = false) Object alertTitle,
+                                @RequestBody(required = false) Object suggestions,
+                                @RequestBody(required = false) Object customRuleDescription,
+                                @RequestBody(required = false) Object sampleInput,
                                 @RequestBody(required = false) Object data) {
 
-    return opsMxSsdService.postSsdServiceResponse(version, type, stage, policy, policyId,id,scope,appId, vulnAlert, alertMessage, data)
+    return opsMxSsdService.postSsdServiceResponse(version, type, stage, policy, policyId,id,scope,appId, vulnAlert, alertMessage, alertTitle, suggestions, customRuleDescription, sampleInput, data)
   }
 
   @ApiOperation(value = "Endpoint for ssd rest services")
