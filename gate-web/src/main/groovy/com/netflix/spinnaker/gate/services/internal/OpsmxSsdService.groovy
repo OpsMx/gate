@@ -186,6 +186,7 @@ interface OpsmxSsdService {
                                 @Query("scope") String scope,
                                 @Query("appId") String appId,
                                 @Query("vulnAlert") boolean vulnAlert,
+                                @Body Object alertMessage,
                                 @Body Object data)
 
   @POST("/ssdservice/{version}/{type}/{source}")
