@@ -37,6 +37,7 @@ interface OpsmxSsdOpaService {
 
   @GET("/ssdOpa/api/{version}/{type}")
   Object getSddOpaResponse3(@Path('version') String version,
-                            @Path('type') String type)
+                            @Path('type') String type,
+                            @Path('semgrep') String semgrep)
 
 }

@@ -59,8 +59,9 @@ class OpsmxSsdOpaController {
   @ApiOperation(value = "Endpoint for ssd services")
   @RequestMapping(value = "/api/{version}/{type}", method = RequestMethod.GET)
   Object getSsdOpaResponse1(@PathVariable("version") String version,
-                         @PathVariable("type") String type) {
-    return opsmxSsdOpaService.getSddOpaResponse3(version, type)
+                         @PathVariable("type") String type,
+                            @PathVariable("semgrep") String semgrep) {
+    return opsmxSsdOpaService.getSddOpaResponse3(version, type, semgrep)
   }
 
 
