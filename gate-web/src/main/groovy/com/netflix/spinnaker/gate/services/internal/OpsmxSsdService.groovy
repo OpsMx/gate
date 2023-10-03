@@ -94,7 +94,8 @@ interface OpsmxSsdService {
                          @Query("kind") String kind,
                          @Query("search") String search,
                          @Query("service") String service,
-                         @Query("id") String id)
+                         @Query("id") String id,
+                         @Query("dbomType") String dbomType)
 
   @GET("/ssdservice/{version}/{type}/{source}/{source1}/{source2}")
   Object getSddResponse4(@Path('version') String version,
@@ -129,7 +130,9 @@ interface OpsmxSsdService {
                          @Query("ComponentVersion") String ComponentVersion,
                          @Query("fromApp") String fromApp,
                          @Query("service") String service,
-                         @Query("toApp") String toApp)
+                         @Query("toApp") String toApp,
+                         @Query("dbomType") String dbomType)
+
   @GET("/ssdservice/{version}/{type}/{source}/{source1}/{source2}/{source3}")
   Object getSddResponse5(@Path('version') String version,
                          @Path('type') String type,
@@ -185,8 +188,7 @@ interface OpsmxSsdService {
                                 @Query("id") Integer id,
                                 @Query("scope") String scope,
                                 @Query("appId") String appId,
-                                @Query("vulnAlert") boolean vulnAlert,
-                                @Body Object alertMessage,
+                                @Query("vulnAlert") String vulnAlert,
                                 @Body Object data)
 
   @POST("/ssdservice/{version}/{type}/{source}")
