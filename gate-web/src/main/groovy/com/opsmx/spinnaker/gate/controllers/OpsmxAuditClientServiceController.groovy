@@ -74,9 +74,11 @@ class OpsmxAuditClientServiceController {
                                  @RequestParam(value = "sortBy", required = false) String sortBy,
                                  @RequestParam(value = "limit", required = false) Integer limit,
                                  @RequestParam(value = "applicationName", required = false) String applicationName,
-                                 @RequestParam(value = "agentName", required = false) String agentName) {
-    return opsmxAuditClientService.getDeliveryInsightCharts(version, type, source, chartId, startTime, endTime, days,
-      noOfDays, argoName, search, sort, page, pageLimit, sortBy,limit,applicationName,agentName)
+                                 @RequestParam(value = "agentName", required = false) String agentName,
+                                 @RequestParam(value = "sortOrder", required = false) String sortOrder,
+                                 @RequestParam(value = "filterBy", required = false) String filterBy) {
+    return opsmxAuditClientService.getDeliveryInsightCharts(version, type, source, chartId, startTime, endTime, days, noOfDays, argoName, search, sort, page, pageLimit, sortBy,limit,applicationName,agentName, sortOrder, filterBy)
+
   }
 
   @ApiOperation(value = "Endpoint for audit-client rest services")
@@ -190,15 +192,16 @@ class OpsmxAuditClientServiceController {
                                      @RequestParam(value = "argoName", required = false) String argoName,
                                      @RequestParam(value = "search", required = false) String search,
                                      @RequestParam(value = "noOfDays", required = false) String noOfDays,
-                                     @RequestParam(value = "limit", required = false) Integer limit) {
-    Response response = opsmxAuditClientService.downloadDeliveryInsightsCSVFile(version, type, source, chartId, startTime, endTime, days,argoName,search,noOfDays,limit)
+                                     @RequestParam(value = "limit", required = false) Integer limit,
+                                     @RequestParam(value = "filterBy", required = false) String filterBy) {
+    Response response = opsmxAuditClientService.downloadDeliveryInsightsCSVFile(version, type, source, chartId, startTime, endTime, days,argoName,search,noOfDays,limit,filterBy)
     log.info("response for the delivery insights endpoint:" + response.getHeaders())
     if (response.getBody()!=null) {
       InputStream inputStream = response.getBody().in()
       try {
         byte[] csvFile = IOUtils.toByteArray(inputStream)
         HttpHeaders headers = new HttpHeaders()
-        headers.setContentType(MediaType.parseMediaType("text/csv"));
+        headers.setContentType(MediaType.parseMediaType("text/csv"))
         headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
         return ResponseEntity.ok().headers(headers).body(csvFile)
       } finally {
