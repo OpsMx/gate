@@ -16,12 +16,11 @@
 
 package com.netflix.spinnaker.gate.services
 
-import com.netflix.spinnaker.gate.model.ApprovalGateTriggerResponseModel
+
 import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
 import org.springframework.cloud.openfeign.EnableFeignClients
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 
 @Slf4j
@@ -30,7 +29,7 @@ import org.springframework.stereotype.Service
 class UserInfoService {
 
 
-  UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
+  static UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
 
     try {
