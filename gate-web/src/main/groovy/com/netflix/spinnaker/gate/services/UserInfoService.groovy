@@ -22,10 +22,11 @@ import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
 @Slf4j
-@Component
 @EnableFeignClients
+@Service
 class UserInfoService {
 
 

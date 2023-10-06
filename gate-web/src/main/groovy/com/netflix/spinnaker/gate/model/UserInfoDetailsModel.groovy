@@ -21,9 +21,10 @@ import groovy.transform.Canonical
 @Canonical
 class UserInfoDetailsModel {
 
-  private String userMailId;
-  private String userName;
-  private String firstName;
+  private String userMailId
+  private String userName
+  private String firstName
+
 
   void setUserMailId(String userMailId) {
     this.userMailId = userMailId
@@ -33,6 +34,29 @@ class UserInfoDetailsModel {
     this.userName = userName
   }
 
+  String getUserMailId() {
+    return userMailId
+  }
+
+  String getUserName() {
+    return userName
+  }
+
+  String getFirstName() {
+    return firstName
+  }
+
+  String getLastName() {
+    return lastName
+  }
+
+  Collection<String> getUserRoles() {
+    return userRoles
+  }
+
+  Collection<String> getCloudAccounts() {
+    return cloudAccounts
+  }
 
   void setFirstName(String firstName) {
     this.firstName = firstName
@@ -51,6 +75,6 @@ class UserInfoDetailsModel {
   }
   private String lastName;
 
-  protected Collection<String> userRoles = new ArrayList<>();
-  protected Collection<String> cloudAccounts = new ArrayList<>();
+  protected Collection<String> userRoles = new ArrayList<>()
+  protected Collection<String> cloudAccounts = new ArrayList<>()
 }
