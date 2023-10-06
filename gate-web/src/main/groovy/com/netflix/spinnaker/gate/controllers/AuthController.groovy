@@ -16,8 +16,11 @@
 
 package com.netflix.spinnaker.gate.controllers
 
+import com.netflix.spinnaker.gate.model.ApprovalGateTriggerResponseModel
+import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.gate.security.SpinnakerUser
 import com.netflix.spinnaker.gate.services.PermissionService
+import com.netflix.spinnaker.gate.services.UserInfoService
 import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
@@ -57,6 +60,9 @@ class AuthController {
 
   @Autowired
   PermissionService permissionService
+
+  @Autowired
+  UserInfoService userInfoService;
 
   @Autowired
   AuthController(@Value('${services.deck.base-url:}') URL deckBaseUrl,
@@ -159,5 +165,19 @@ class AuthController {
     return permissionService.isAdmin(
         AuthenticatedRequest.getSpinnakerUser().orElse("anonymous")
     )
+  }
+
+  @ApiOperation(value = "Get user Details", response = UserInfoDetailsModel.class)
+  @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
+  UserInfoDetailsModel userInfo(@ApiIgnore @SpinnakerUser User user) {
+    if (!user) {
+      return user
+    }
+    def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
+    if (fiatRoles) {
+      user.roles = fiatRoles
+    }
+    UserInfoDetailsModel userInfoDetailsModel = userInfoService.getAllInfoOfUser(user)
+    return userInfoDetailsModel
   }
 }
