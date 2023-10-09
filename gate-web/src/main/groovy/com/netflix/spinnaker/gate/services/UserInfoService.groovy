@@ -16,33 +16,35 @@
 
 package com.netflix.spinnaker.gate.services
 
-
+import com.netflix.spinnaker.gate.feignclient.SaporClient
+import com.netflix.spinnaker.gate.model.CloudProviderAccountModel
 import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
-import org.springframework.cloud.openfeign.EnableFeignClients
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
+import java.util.stream.Collectors
+
 @Slf4j
-@EnableFeignClients
 @Service
 class UserInfoService {
 
+  private SaporClient saporClient
 
-  static UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
+  UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
 
     try {
-      //ResponseEntity<List<CloudProviderAccountModel>> cloudProviderAccountModelList = saporClient.getCloudProviderAccounts(user.username)
-      //List<String> extractedCloudAccounts = null
+      ResponseEntity<List<CloudProviderAccountModel>> cloudProviderAccountModelList = saporClient.getCloudProviderAccounts(user.username)
 
-      /*if (cloudProviderAccountModelList.statusCode.is2xxSuccessful() && cloudProviderAccountModelList.body) {
-        extractedCloudAccounts = cloudProviderAccountModelList.body.stream()
+      if (cloudProviderAccountModelList.statusCode.is2xxSuccessful() && cloudProviderAccountModelList.body) {
+        List<String> extractedCloudAccounts = cloudProviderAccountModelList.body.stream()
           .map { account -> "accountType: ${account.accountType}, name: ${account.name}" }
           .collect(Collectors.toList())
 
-        userInfoDetails.cloudAccounts = extractedCloudAccounts
-      }*/
+        userInfoDetails.setCloudAccounts(extractedCloudAccounts)
+      }
 
       userInfoDetails.setUserName(user.username)
       userInfoDetails.setFirstName(user.firstName)
