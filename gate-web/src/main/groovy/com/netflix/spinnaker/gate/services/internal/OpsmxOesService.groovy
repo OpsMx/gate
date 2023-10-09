@@ -16,11 +16,6 @@
 
 package com.netflix.spinnaker.gate.services.internal
 
-import com.netflix.spinnaker.gate.model.CloudProviderAccountModel
-import io.swagger.models.auth.In
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestHeader
 import retrofit.client.Response
 import retrofit.http.*
 
@@ -38,10 +33,6 @@ interface OpsmxOesService {
   @POST("/oes/{source}")
   Object postOesResponse(@Path('source') String source,
                          @Body Object data)
-
-  @GetMapping(value = "/oes/accountsConfig/v3/spinnaker/cloudProviderAccount", produces = "application/json")
-  ResponseEntity<List<CloudProviderAccountModel>> getCloudProviderAccounts(@RequestHeader(value = "x-spinnaker-user") String username)
-
   @GET("/oes/{type}/{source}")
   Object getOesResponse(@Path('type') String type,
                         @Path('source') String source,

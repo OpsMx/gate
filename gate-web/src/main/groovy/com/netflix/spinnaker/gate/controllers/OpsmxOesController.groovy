@@ -46,7 +46,7 @@ import retrofit.client.Response
 @RequestMapping("/oes")
 @RestController
 @Slf4j
-@ConditionalOnExpression('${services.opsmx.enabled:true}')
+@ConditionalOnExpression('${services.opsmx.enabled:false}')
 class OpsmxOesController {
 
   @Autowired
