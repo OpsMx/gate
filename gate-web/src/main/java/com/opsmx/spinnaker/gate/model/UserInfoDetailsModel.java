@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-package com.netflix.spinnaker.gate.model
+package com.opsmx.spinnaker.gate.model;
 
-import groovy.transform.Canonical
-import lombok.Data
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Canonical
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 @Data
-class UserGroupPermissionModel {
-  private List<UserGroupModel> userGroupNames;
-  private List<String> permissionIds;
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class UserInfoDetailsModel {
+
+  private String userName;
+  private String firstName;
+  private String lastName;
+  private String userMailId;
+
+  private Collection<String> userRoles = new ArrayList<>();
+  private Collection<String> cloudAccounts  = new ArrayList<>();
 }

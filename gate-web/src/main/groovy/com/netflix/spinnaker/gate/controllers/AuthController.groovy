@@ -17,11 +17,11 @@
 package com.netflix.spinnaker.gate.controllers
 
 
-import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.gate.security.SpinnakerUser
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired

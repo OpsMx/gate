@@ -16,10 +16,10 @@
 
 package com.opsmx.spinnaker.gate.service;
 
-import com.netflix.spinnaker.gate.model.UserInfoDetailsModel;
 import com.netflix.spinnaker.gate.services.internal.OpsmxOesService;
 import com.netflix.spinnaker.security.User;
 import com.opsmx.spinnaker.gate.model.CloudProviderAccountModel;
+import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel;
 import groovy.util.logging.Slf4j;
 import java.util.List;
 import java.util.stream.Collectors;

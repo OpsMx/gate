@@ -16,9 +16,15 @@
 
 package com.opsmx.spinnaker.gate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class CloudProviderAccountModel {
 
   private String name;
