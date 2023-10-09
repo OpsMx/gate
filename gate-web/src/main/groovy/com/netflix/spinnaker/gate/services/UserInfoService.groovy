@@ -18,23 +18,21 @@ package com.netflix.spinnaker.gate.services
 
 import com.netflix.spinnaker.gate.model.CloudProviderAccountModel
 import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
+import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.User
-import com.opsmx.spinnaker.gate.feignclient.OpsmxOesClient
 import groovy.util.logging.Slf4j
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-
-import java.util.List
-import java.util.stream.Collectors
 
 @Slf4j
 @Service
 class UserInfoService {
 
-  private OpsmxOesClient oesClient
-
-  UserInfoService(OpsmxOesClient oesClient) {
-    this.oesClient = oesClient
+  private OpsmxOesService opsmxOesService
+  @Autowired
+  UserInfoService(OpsmxOesService opsmxOesService) {
+    this.opsmxOesService = opsmxOesService
   }
 
   UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
@@ -42,11 +40,11 @@ class UserInfoService {
     ResponseEntity<List<Object>> cloudProviderAccountModelList
 
     try {
-      cloudProviderAccountModelList = oesClient.getCloudProviderAccounts(user.username)
-    } catch (InterruptedException e) {
+      cloudProviderAccountModelList = opsmxOesService.getOesResponse5("accountsConfig", "v3", "spinnaker", "cloudProviderAccount") as ResponseEntity<List<Object>>
+    } catch (Exception e) {
       // Handle the InterruptedException as needed
       // You can re-throw it or handle it here
-      throw e
+      e.printStackTrace()
     }
 
     if (cloudProviderAccountModelList.statusCode.is2xxSuccessful() && cloudProviderAccountModelList.body != null) {

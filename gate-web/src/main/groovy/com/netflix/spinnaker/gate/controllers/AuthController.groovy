@@ -16,16 +16,14 @@
 
 package com.netflix.spinnaker.gate.controllers
 
-import com.netflix.spinnaker.gate.model.ApprovalGateTriggerResponseModel
+
 import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.gate.security.SpinnakerUser
 import com.netflix.spinnaker.gate.services.PermissionService
-import com.netflix.spinnaker.gate.services.UserInfoService
 import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
-import org.apache.commons.lang3.exception.ExceptionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.access.prepost.PreAuthorize
@@ -62,7 +60,7 @@ class AuthController {
   PermissionService permissionService
 
   @Autowired
-  UserInfoService userInfoService;
+  com.opsmx.spinnaker.gate.service.UserInfoService userInfoService
 
   @Autowired
   AuthController(@Value('${services.deck.base-url:}') URL deckBaseUrl,
