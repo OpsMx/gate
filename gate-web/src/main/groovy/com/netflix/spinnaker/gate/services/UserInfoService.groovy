@@ -39,22 +39,26 @@ class UserInfoService {
 
   UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
-    ResponseEntity<List<CloudProviderAccountModel>> cloudProviderAccountModelList
+    ResponseEntity<List<Object>> cloudProviderAccountModelList
 
     try {
-      cloudProviderAccountModelList = oesClient.getCloudProviderAccounts(user.username) as ResponseEntity<List<CloudProviderAccountModel>>
+      cloudProviderAccountModelList = oesClient.getCloudProviderAccounts(user.username)
     } catch (InterruptedException e) {
       // Handle the InterruptedException as needed
       // You can re-throw it or handle it here
       throw e
     }
 
-      if (cloudProviderAccountModelList.statusCode.'2xxSuccessful' && cloudProviderAccountModelList.body != null) {
-        def extractedCloudAccounts = cloudProviderAccountModelList.body.stream()
-          .map { account -> "accountType: ${account.accountType}, name: ${account.name}" }
-          .collect(Collectors.toList())
+    if (cloudProviderAccountModelList.statusCode.is2xxSuccessful() && cloudProviderAccountModelList.body != null) {
+      List<CloudProviderAccountModel> convertedList = cloudProviderAccountModelList.body.collect { item ->
+        // Assuming CloudProviderAccount is a class with accountType and name properties
+        new CloudProviderAccountModel(
+          accountType: item.accountType,
+          name: item.name
+        )
+      }
 
-        userInfoDetails.setCloudAccounts(extractedCloudAccounts)
+      userInfoDetails.setCloudAccounts(convertedList)
       }
 
       userInfoDetails.setUserName(user.username)
