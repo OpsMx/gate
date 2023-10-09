@@ -16,23 +16,26 @@
 
 package com.netflix.spinnaker.gate.services
 
-import com.netflix.spinnaker.gate.feignclient.OpsmxOesClient
 import com.netflix.spinnaker.gate.model.CloudProviderAccountModel
 import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.feignclient.OpsmxOesClient
 import groovy.util.logging.Slf4j
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
+import java.util.List
 import java.util.stream.Collectors
 
 @Slf4j
 @Service
 class UserInfoService {
 
-  @Autowired
   private OpsmxOesClient oesClient
+
+  UserInfoService(OpsmxOesClient oesClient) {
+    this.oesClient = oesClient
+  }
 
   UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
