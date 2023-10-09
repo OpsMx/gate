@@ -16,20 +16,15 @@
 
 package com.netflix.spinnaker.gate.feignclient
 
-
 import com.netflix.spinnaker.gate.model.CloudProviderAccountModel
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 
-@FeignClient(name = "oes", url = "${services.opsmx.baseUrl}")
-@Service
-class OpsmxOesClient {
+@FeignClient(name = 'oes', url = '${services.opsmx.baseUrl}')
+interface OpsmxOesClient {
 
   @GetMapping(value = "/oes/accountsConfig/v3/spinnaker/cloudProviderAccount", produces = "application/json")
-  ResponseEntity<List<CloudProviderAccountModel>> getCloudProviderAccounts(@RequestHeader(value = "x-spinnaker-user") String username){
-  }
-
+  ResponseEntity<List<CloudProviderAccountModel>> getCloudProviderAccounts(@RequestHeader(value = "x-spinnaker-user") String username)
 }
