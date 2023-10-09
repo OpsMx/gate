@@ -16,6 +16,7 @@
 
 package com.netflix.spinnaker.gate.services.internal
 
+import io.swagger.models.auth.In
 import retrofit.client.Response
 import retrofit.http.*
 
@@ -33,6 +34,7 @@ interface OpsmxOesService {
   @POST("/oes/{source}")
   Object postOesResponse(@Path('source') String source,
                          @Body Object data)
+
   @GET("/oes/{type}/{source}")
   Object getOesResponse(@Path('type') String type,
                         @Path('source') String source,
