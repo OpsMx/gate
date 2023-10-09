@@ -58,7 +58,7 @@ class UserInfoService {
         )
       }
 
-      userInfoDetails.setCloudAccounts(convertedList)
+      userInfoDetails.setCloudAccounts(convertedList as Collection<String>)
       }
 
       userInfoDetails.setUserName(user.username)
