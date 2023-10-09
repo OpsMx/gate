@@ -23,6 +23,7 @@ import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
