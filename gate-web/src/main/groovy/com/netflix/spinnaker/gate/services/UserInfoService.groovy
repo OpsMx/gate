@@ -41,7 +41,7 @@ class UserInfoService {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
 
     try {
-      ResponseEntity<List<CloudProviderAccountModel>> cloudProviderAccountModelList = oesClient.getCloudProviderAccounts(user.username)
+      ResponseEntity<List<CloudProviderAccountModel>> cloudProviderAccountModelList = oesClient.getCloudProviderAccounts(user.username) as ResponseEntity<List<CloudProviderAccountModel>>
 
       if (cloudProviderAccountModelList.statusCode.is2xxSuccessful() && cloudProviderAccountModelList.body) {
         List<String> extractedCloudAccounts = cloudProviderAccountModelList.body.stream()

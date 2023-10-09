@@ -16,7 +16,6 @@
 
 package com.opsmx.spinnaker.gate.feignclient;
 
-import com.netflix.spinnaker.gate.model.CloudProviderAccountModel;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +28,6 @@ public interface OpsmxOesClient {
   @GetMapping(
       value = "/oes/accountsConfig/v3/spinnaker/cloudProviderAccount",
       produces = "application/json")
-  ResponseEntity<List<CloudProviderAccountModel>> getCloudProviderAccounts(
+  ResponseEntity<List<String>> getCloudProviderAccounts(
       @RequestHeader(value = "x-spinnaker-user") String username);
 }
