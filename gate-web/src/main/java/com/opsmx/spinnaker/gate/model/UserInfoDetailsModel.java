@@ -16,14 +16,12 @@
 
 package com.opsmx.spinnaker.gate.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -37,5 +35,5 @@ public class UserInfoDetailsModel {
   private String userMailId;
 
   private Collection<String> userRoles = new ArrayList<>();
-  private Collection<String> cloudAccounts  = new ArrayList<>();
+  private Collection<String> cloudAccounts = new ArrayList<>();
 }
