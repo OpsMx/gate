@@ -22,9 +22,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 
-interface SaporClient {
+@FeignClient(name = "oes", url = "{services.opsmx.baseUrl}")
+interface OpsmxOesClient {
 
-    @GetMapping(value = "/oes/accountsConfig/v3/spinnaker/cloudProviderAccount", produces = "application/json")
-    ResponseEntity<List<CloudProviderAccountModel>> getCloudProviderAccounts(@RequestHeader(value = "x-spinnaker-user") String username)
+  @GetMapping(value = "/oes/accountsConfig/v3/spinnaker/cloudProviderAccount", produces = "application/json")
+  ResponseEntity<List<CloudProviderAccountModel>> getCloudProviderAccounts(@RequestHeader(value = "x-spinnaker-user") String username)
 
 }
