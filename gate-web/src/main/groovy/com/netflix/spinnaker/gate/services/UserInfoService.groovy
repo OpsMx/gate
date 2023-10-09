@@ -16,9 +16,10 @@
 
 package com.netflix.spinnaker.gate.services
 
-import com.netflix.spinnaker.gate.feignclient.SaporClient
+
 import com.netflix.spinnaker.gate.model.CloudProviderAccountModel
 import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
+import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,13 +33,13 @@ import java.util.stream.Collectors
 class UserInfoService {
 
   @Autowired
-  private SaporClient saporClient
+  private OpsmxOesService oesService
 
   UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
 
     try {
-      ResponseEntity<List<CloudProviderAccountModel>> cloudProviderAccountModelList = saporClient.getCloudProviderAccounts(user.username)
+      ResponseEntity<List<CloudProviderAccountModel>> cloudProviderAccountModelList = oesService.getCloudProviderAccounts(user.username)
 
       if (cloudProviderAccountModelList.statusCode.is2xxSuccessful() && cloudProviderAccountModelList.body) {
         List<String> extractedCloudAccounts = cloudProviderAccountModelList.body.stream()

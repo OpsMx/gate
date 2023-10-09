@@ -22,7 +22,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 
-@FeignClient(name = "sapor", url = "{http://oes-api:8085}")
 interface SaporClient {
 
     @GetMapping(value = "/oes/accountsConfig/v3/spinnaker/cloudProviderAccount", produces = "application/json")
