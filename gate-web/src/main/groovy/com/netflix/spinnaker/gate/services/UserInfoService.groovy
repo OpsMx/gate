@@ -43,8 +43,8 @@ class UserInfoService {
     try {
       ResponseEntity<List<CloudProviderAccountModel>> cloudProviderAccountModelList = oesClient.getCloudProviderAccounts(user.username) as ResponseEntity<List<CloudProviderAccountModel>>
 
-      if (cloudProviderAccountModelList.statusCode.is2xxSuccessful() && cloudProviderAccountModelList.body) {
-        List<String> extractedCloudAccounts = cloudProviderAccountModelList.body.stream()
+      if (cloudProviderAccountModelList.statusCode.'2xxSuccessful' && cloudProviderAccountModelList.body != null) {
+        def extractedCloudAccounts = cloudProviderAccountModelList.body.stream()
           .map { account -> "accountType: ${account.accountType}, name: ${account.name}" }
           .collect(Collectors.toList())
 
