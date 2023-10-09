@@ -28,6 +28,6 @@ public interface OpsmxOesClient {
   @GetMapping(
       value = "/oes/accountsConfig/v3/spinnaker/cloudProviderAccount",
       produces = "application/json")
-  ResponseEntity<List<String>> getCloudProviderAccounts(
+  ResponseEntity<List<Object>> getCloudProviderAccounts(
       @RequestHeader(value = "x-spinnaker-user") String username);
 }
