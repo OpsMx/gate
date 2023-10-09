@@ -21,6 +21,7 @@ import com.netflix.spinnaker.gate.model.CloudProviderAccountModel
 import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
@@ -30,6 +31,7 @@ import java.util.stream.Collectors
 @Service
 class UserInfoService {
 
+  @Autowired
   private SaporClient saporClient
 
   UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
