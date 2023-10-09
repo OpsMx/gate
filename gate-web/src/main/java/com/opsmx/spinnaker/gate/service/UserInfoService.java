@@ -30,12 +30,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class UserInfoService {
-  private OpsmxOesService opsmxOesService;
 
-  @Autowired
-  public UserInfoService(OpsmxOesService opsmxOesService) {
-    this.opsmxOesService = opsmxOesService;
-  }
+  @Autowired OpsmxOesService opsmxOesService;
 
   public UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel();
