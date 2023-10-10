@@ -24,10 +24,10 @@ import groovy.transform.ToString
 @JsonInclude
 class UserInfoDetailsModel {
 
-  private String userName;
-  private String firstName;
-  private String lastName;
-  private String userMailId;
+  protected String userName;
+  protected String firstName;
+  protected String lastName;
+  protected String userMailId;
 
   void setUserName(String userName) {
     this.userName = userName
@@ -52,6 +52,6 @@ class UserInfoDetailsModel {
   void setUserMailId(String userMailId) {
     this.userMailId = userMailId
   }
-  private Collection<String> userRoles = new ArrayList<>();
-  private Collection<String> cloudAccounts = new ArrayList<>();
+  protected Collection<String> userRoles = new ArrayList<>();
+  protected Collection<String> cloudAccounts = new ArrayList<>();
 }

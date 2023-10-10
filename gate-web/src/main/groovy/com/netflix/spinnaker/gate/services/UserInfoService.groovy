@@ -71,18 +71,23 @@ class UserInfoService {
       def cloudAccounts = extractedCloudAccounts.collect{
         def accountType = it.getAsJsonPrimitive("accountType").getAsString()
         def name = it.getAsJsonPrimitive("name").getAsString()
-        "Account Type: $accountType, Name: $name"}
+        "accountType: $accountType, name: $name"}
+
       log.info("CLoudAccounts: {}", cloudAccounts)
 
-    userInfoDetails.setCloudAccounts(cloudAccounts)
+      Collection<String> cloudAccountsList = cloudAccounts
+      log.info("CLoudAccountsList: {}", cloudAccountsList)
+
+      userInfoDetails.setCloudAccounts(cloudAccountsList)
+      userInfoDetails.setUserName(user.username)
+      userInfoDetails.setFirstName(user.firstName)
+      userInfoDetails.setLastName(user.lastName)
+      userInfoDetails.setUserMailId(user.email)
+      userInfoDetails.setUserRoles(user.roles)
     }catch (Exception e) {
       e.printStackTrace()
     }
-    userInfoDetails.setUserName(user.username)
-    userInfoDetails.setFirstName(user.firstName)
-    userInfoDetails.setLastName(user.lastName)
-    userInfoDetails.setUserMailId(user.email)
-    userInfoDetails.setUserRoles(user.roles)
+
 
   return userInfoDetails
 }

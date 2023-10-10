@@ -176,7 +176,6 @@ class AuthController {
     if (fiatRoles) {
       user.roles = fiatRoles
     }
-    UserInfoDetailsModel userInfoDetailsModel = userInfoService.getAllInfoOfUser(user)
-    return userInfoDetailsModel
+    return userInfoService.getAllInfoOfUser(user)
   }
 }
