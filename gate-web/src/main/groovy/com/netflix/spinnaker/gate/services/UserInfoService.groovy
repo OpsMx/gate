@@ -78,6 +78,7 @@ class UserInfoService {
       Collection<String> cloudAccountsCollection = cloudAccounts as ArrayList
 
       userInfoDetails.cloudAccounts = cloudAccountsCollection
+      log.info("CLoudAccountsInUserInfo: {}", userInfoDetails.cloudAccounts)
       userInfoDetails.userName = user.username
       userInfoDetails.firstName = user.firstName
       userInfoDetails.lastName = user.lastName

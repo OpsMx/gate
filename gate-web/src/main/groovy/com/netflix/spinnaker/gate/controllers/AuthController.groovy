@@ -168,7 +168,7 @@ class AuthController {
 
   @ApiOperation(value = "Get user Details", response = UserInfoDetailsModel.class)
   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
-  UserInfoDetailsModel userInfo(@SpinnakerUser User user) {
+  UserInfoDetailsModel userInfo(@ApiIgnore @SpinnakerUser User user) {
     /*if (!user) {
       throw new Exception("UnAuthorized User")
     }*/
