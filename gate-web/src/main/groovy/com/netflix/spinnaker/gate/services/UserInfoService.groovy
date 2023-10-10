@@ -75,7 +75,7 @@ class UserInfoService {
 
       log.info("CLoudAccounts: {}", cloudAccounts)
 
-      Collection<String> cloudAccountsCollection = new ArrayList<>(cloudAccounts);
+      Collection<String> cloudAccountsCollection = cloudAccounts as ArrayList
 
       userInfoDetails.cloudAccounts = cloudAccountsCollection
       userInfoDetails.userName = user.username
