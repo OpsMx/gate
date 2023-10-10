@@ -33,29 +33,35 @@ class UserInfoService {
 
   UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
-    def response = opsmxOesService.getOesResponse5(
+    try {
+      def response = opsmxOesService.getOesResponse5(
         "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)
 
-    /*ResponseEntity<List<CloudProviderAccountModel>> entityResponse = (ResponseEntity<List<CloudProviderAccountModel>>) response
+      /*ResponseEntity<List<CloudProviderAccountModel>> entityResponse = (ResponseEntity<List<CloudProviderAccountModel>>) response
 
-    if (entityResponse.statusCode.'2xxSuccessful' && entityResponse.body != null) {
+      if (entityResponse.statusCode.'2xxSuccessful' && entityResponse.body != null) {
       List<String> extractedCloudAccounts =
         entityResponse.getBody().stream()
           .map { account -> "accountType: ${account.accountType}, name: ${account.name}" }
           .collect(Collectors.toList())
 
       userInfoDetails.setCloudAccounts(extractedCloudAccounts)
-    }*/
+      }*/
 
-    //List<CloudProviderAccountModel> accountModels = []
+      //List<CloudProviderAccountModel> accountModels = []
 
-// Iterate through the response and create CloudProviderAccountModel instances
-    def cloudProviderAccountList = response.collect { item -> new CloudProviderAccountModel(
-      name: item.name,
-      accountType: item.accountType
-    )
+      // Iterate through the response and create CloudProviderAccountModel instances
+      log.info("CloudProviderAccounts: {}", response)
+      def cloudProviderAccountList = response.collect { item ->
+        new CloudProviderAccountModel(
+          name: item.name,
+          accountType: item.accountType
+        )
+      }
+      def cloudAccounts = cloudProviderAccountList.collect { it.toString() }
+    } catch (Exception e) {
+      e.printStackTrace()
     }
-    def cloudAccounts = cloudProviderAccountList.collect{it.toString()}
 
     userInfoDetails.setCloudAccounts(cloudAccounts)
     userInfoDetails.setUserName(user.username)

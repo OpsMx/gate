@@ -16,9 +16,12 @@
 
 package com.netflix.spinnaker.gate.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import groovy.transform.Canonical
 
 @Canonical
+@JsonInclude
 class CloudProviderAccountModel {
 
   private String name;

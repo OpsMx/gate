@@ -16,10 +16,12 @@
 
 package com.netflix.spinnaker.gate.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import groovy.transform.Canonical
 import groovy.transform.ToString
 
 @Canonical
+@JsonInclude
 public class UserInfoDetailsModel {
 
   private String userName;
