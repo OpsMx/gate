@@ -22,6 +22,7 @@ import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Slf4j
@@ -51,7 +52,7 @@ class UserInfoService {
       //List<CloudProviderAccountModel> accountModels = []
 
       // Iterate through the response and create CloudProviderAccountModel instances
-      log.info("CloudProviderAccounts: {}", response)
+      /*log.info("CloudProviderAccounts: {}", response)
       def cloudProviderAccountList = response.collect { item ->
         new CloudProviderAccountModel(
           name: item.name,
@@ -60,9 +61,20 @@ class UserInfoService {
       }
       log.info("cloudProviderAccountList: {}", cloudProviderAccountList)
       def cloudAccounts= cloudProviderAccountList.collect { it.toString() }
-      log.info("cloudAccounts: {}", cloudAccounts)
-    userInfoDetails.setCloudAccounts(cloudAccounts)
-    } catch (Exception e) {
+      log.info("cloudAccounts: {}", cloudAccounts)*/
+      log.info("CloudProviderAccounts: {}", response)
+      ResponseEntity<List<CloudProviderAccountModel>> entityResponse = (ResponseEntity<List<CloudProviderAccountModel>>) response
+      log.info("entityResponse: {}", entityResponse)
+      if (entityResponse.statusCode.'2xxSuccessful' && entityResponse.body != null) {
+        Collection<String> extractedCloudAccounts =
+          entityResponse.getBody().stream()
+            .map { account -> "accountType: ${account.accountType}, name: ${account.name}" }
+            .collect(Collectors.toList()) as Collection<String>
+
+        log.info("extractedCloudAccounts: {}", extractedCloudAccounts)
+        userInfoDetails.setCloudAccounts(extractedCloudAccounts)
+    //userInfoDetails.setCloudAccounts(cloudAccounts)
+    } }catch (Exception e) {
       e.printStackTrace()
     }
     userInfoDetails.setUserName(user.username)

@@ -41,7 +41,7 @@ class UserInfoDetailsModel {
     this.lastName = lastName
   }
 
-  void setCloudAccounts(List<String> cloudAccounts) {
+  void setCloudAccounts(Collection<String> cloudAccounts) {
     this.cloudAccounts = cloudAccounts
   }
 
@@ -53,5 +53,5 @@ class UserInfoDetailsModel {
     this.userMailId = userMailId
   }
   private Collection<String> userRoles = new ArrayList<>();
-  private List<String> cloudAccounts = new ArrayList<>();
+  private Collection<String> cloudAccounts = new ArrayList<>();
 }
