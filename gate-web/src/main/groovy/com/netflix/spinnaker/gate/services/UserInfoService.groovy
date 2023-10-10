@@ -16,6 +16,10 @@
 
 package com.netflix.spinnaker.gate.services
 
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.netflix.spinnaker.gate.model.CloudProviderAccountModel
 import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
@@ -31,6 +35,8 @@ class UserInfoService {
 
   @Autowired
   OpsmxOesService opsmxOesService
+
+  Gson gson = new Gson()
 
   UserInfoDetailsModel getAllInfoOfUser(User user) throws Exception {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
@@ -63,16 +69,15 @@ class UserInfoService {
       def cloudAccounts= cloudProviderAccountList.collect { it.toString() }
       log.info("cloudAccounts: {}", cloudAccounts)*/
       log.info("CloudProviderAccounts: {}", response)
-      ResponseEntity<List<CloudProviderAccountModel>> entityResponse = (ResponseEntity<List<CloudProviderAccountModel>>) response
-      log.info("entityResponse: {}", entityResponse)
-      //if (entityResponse.statusCode.'2xxSuccessful' && entityResponse.body != null) {
-        Collection<String> extractedCloudAccounts = entityResponse.getBody().stream()
-            .map { account -> "accountType: ${account.accountType}, name: ${account.name}" }
-            .collect(Collectors.toList()) as Collection<String>
+      def inputStr = gson.toJson(response)
+      def extractedCloudAccounts = gson.fromJson(inputStr, JsonArray.class)
 
-        log.info("extractedCloudAccounts: {}", extractedCloudAccounts)
-        userInfoDetails.setCloudAccounts(extractedCloudAccounts)
-    //userInfoDetails.setCloudAccounts(cloudAccounts)
+      def cloudAccounts = extractedCloudAccounts.collect{
+        def accountType = it.getAsJsonPrimitive("accountType").getAsString()
+        def name = it.getAsJsonPrimitive("name").getAsString()
+        "Account Type: $accountType, Name: $name"}
+
+    userInfoDetails.setCloudAccounts(cloudAccounts)
     }catch (Exception e) {
       e.printStackTrace()
     }
