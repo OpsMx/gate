@@ -65,16 +65,15 @@ class UserInfoService {
       log.info("CloudProviderAccounts: {}", response)
       ResponseEntity<List<CloudProviderAccountModel>> entityResponse = (ResponseEntity<List<CloudProviderAccountModel>>) response
       log.info("entityResponse: {}", entityResponse)
-      if (entityResponse.statusCode.'2xxSuccessful' && entityResponse.body != null) {
-        Collection<String> extractedCloudAccounts =
-          entityResponse.getBody().stream()
+      //if (entityResponse.statusCode.'2xxSuccessful' && entityResponse.body != null) {
+        Collection<String> extractedCloudAccounts = entityResponse.getBody().stream()
             .map { account -> "accountType: ${account.accountType}, name: ${account.name}" }
             .collect(Collectors.toList()) as Collection<String>
 
         log.info("extractedCloudAccounts: {}", extractedCloudAccounts)
         userInfoDetails.setCloudAccounts(extractedCloudAccounts)
     //userInfoDetails.setCloudAccounts(cloudAccounts)
-    } }catch (Exception e) {
+    }catch (Exception e) {
       e.printStackTrace()
     }
     userInfoDetails.setUserName(user.username)
