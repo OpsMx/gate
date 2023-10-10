@@ -86,7 +86,7 @@ public class UserActivityAuditListener implements ApplicationListener {
     oesAuditModel.setAuditData(date);
     oesAuditModel.setEventType(AuditEventType.USER_ACTIVITY_AUDIT);
     String model = gson.toJson(oesAuditModel, OesAuditModel.class);
-    log.info("model: {}", model);
+    log.debug("model: {}", model);
     return model;
   }
 
