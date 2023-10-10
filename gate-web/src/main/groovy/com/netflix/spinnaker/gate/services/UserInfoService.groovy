@@ -58,12 +58,12 @@ class UserInfoService {
           accountType: item.accountType
         )
       }
-      def cloudAccounts = cloudProviderAccountList.collect { it.toString() }
+      def cloudAccounts= cloudProviderAccountList.collect { it.toString() }
+
+    userInfoDetails.setCloudAccounts(cloudAccounts)
     } catch (Exception e) {
       e.printStackTrace()
     }
-
-    userInfoDetails.setCloudAccounts(cloudAccounts)
     userInfoDetails.setUserName(user.username)
     userInfoDetails.setFirstName(user.firstName)
     userInfoDetails.setLastName(user.lastName)
