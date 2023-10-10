@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service
 
 @Slf4j
 @Service
-@Grab(group = 'com.google.code.gson', module = 'gson')
 class UserInfoService {
 
   @Autowired
