@@ -22,7 +22,7 @@ import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.gate.services.UserInfoService
 import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.netflix.spinnaker.security.User
-import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
+import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
@@ -170,7 +170,7 @@ class AuthController {
   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
   UserInfoDetailsModel userInfo(@ApiIgnore @SpinnakerUser User user) {
     /*if (!user) {
-      return user
+      throw new Exception("UnAuthorized User")
     }*/
     def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
     if (fiatRoles) {

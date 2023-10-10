@@ -18,7 +18,7 @@ package com.netflix.spinnaker.gate.services
 
 import com.google.gson.Gson
 import com.google.gson.JsonParser
-import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
+import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
@@ -78,12 +78,12 @@ class UserInfoService {
       Collection<String> cloudAccountsList = cloudAccounts
       log.info("CLoudAccountsList: {}", cloudAccountsList)
 
-      userInfoDetails.setCloudAccounts(cloudAccountsList)
-      userInfoDetails.setUserName(user.username)
-      userInfoDetails.setFirstName(user.firstName)
-      userInfoDetails.setLastName(user.lastName)
-      userInfoDetails.setUserMailId(user.email)
-      userInfoDetails.setUserRoles(user.roles)
+      userInfoDetails.cloudAccounts = cloudAccountsList
+      userInfoDetails.userName = user.username
+      userInfoDetails.firstName = user.firstName
+      userInfoDetails.lastName = user.lastName
+      userInfoDetails.userMailId = user.email
+      userInfoDetails.userRoles = user.roles
     }catch (Exception e) {
       e.printStackTrace()
     }
