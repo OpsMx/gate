@@ -169,9 +169,9 @@ class AuthController {
   @ApiOperation(value = "Get user Details", response = UserInfoDetailsModel.class)
   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
   UserInfoDetailsModel userInfo(@ApiIgnore @SpinnakerUser User user) {
-    if (!user) {
+    /*if (!user) {
       return user
-    }
+    }*/
     def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
     if (fiatRoles) {
       user.roles = fiatRoles

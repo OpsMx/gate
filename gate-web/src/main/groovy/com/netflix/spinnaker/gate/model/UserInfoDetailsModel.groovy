@@ -22,7 +22,7 @@ import groovy.transform.ToString
 
 @Canonical
 @JsonInclude
-public class UserInfoDetailsModel {
+class UserInfoDetailsModel {
 
   private String userName;
   private String firstName;

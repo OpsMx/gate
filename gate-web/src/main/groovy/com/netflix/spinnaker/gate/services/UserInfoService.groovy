@@ -31,7 +31,7 @@ class UserInfoService {
   @Autowired
   OpsmxOesService opsmxOesService
 
-  UserInfoDetailsModel getAllInfoOfUser(User user) throws InterruptedException {
+  UserInfoDetailsModel getAllInfoOfUser(User user) throws Exception {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
     try {
       def response = opsmxOesService.getOesResponse5(
@@ -58,8 +58,9 @@ class UserInfoService {
           accountType: item.accountType
         )
       }
+      log.info("cloudProviderAccountList: {}", cloudProviderAccountList)
       def cloudAccounts= cloudProviderAccountList.collect { it.toString() }
-
+      log.info("cloudAccounts: {}", cloudAccounts)
     userInfoDetails.setCloudAccounts(cloudAccounts)
     } catch (Exception e) {
       e.printStackTrace()
