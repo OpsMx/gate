@@ -17,20 +17,17 @@
 package com.netflix.spinnaker.gate.services
 
 import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.netflix.spinnaker.gate.model.CloudProviderAccountModel
+import com.google.gson.JsonParser
 import com.netflix.spinnaker.gate.model.UserInfoDetailsModel
 import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Slf4j
 @Service
+@Grab(group = 'com.google.code.gson', module = 'gson')
 class UserInfoService {
 
   @Autowired
@@ -70,12 +67,13 @@ class UserInfoService {
       log.info("cloudAccounts: {}", cloudAccounts)*/
       log.info("CloudProviderAccounts: {}", response)
       def inputStr = gson.toJson(response)
-      def extractedCloudAccounts = gson.fromJson(inputStr, JsonArray.class)
+      def extractedCloudAccounts = JsonParser.parseString(inputStr).getAsJsonArray()
 
       def cloudAccounts = extractedCloudAccounts.collect{
         def accountType = it.getAsJsonPrimitive("accountType").getAsString()
         def name = it.getAsJsonPrimitive("name").getAsString()
         "Account Type: $accountType, Name: $name"}
+      log.info("CLoudAccounts: {}", cloudAccounts)
 
     userInfoDetails.setCloudAccounts(cloudAccounts)
     }catch (Exception e) {
