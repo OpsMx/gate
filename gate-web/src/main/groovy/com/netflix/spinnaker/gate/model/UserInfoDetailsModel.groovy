@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package com.opsmx.spinnaker.gate.model;
+package com.netflix.spinnaker.gate.model
 
-import java.util.ArrayList;
-import java.util.Collection;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import groovy.transform.Canonical
+import groovy.transform.ToString
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
+@Canonical
 public class UserInfoDetailsModel {
 
   private String userName;
@@ -34,6 +27,29 @@ public class UserInfoDetailsModel {
   private String lastName;
   private String userMailId;
 
+  void setUserName(String userName) {
+    this.userName = userName
+  }
+
+  void setFirstName(String firstName) {
+    this.firstName = firstName
+  }
+
+  void setLastName(String lastName) {
+    this.lastName = lastName
+  }
+
+  void setCloudAccounts(List<String> cloudAccounts) {
+    this.cloudAccounts = cloudAccounts
+  }
+
+  void setUserRoles(Collection<String> userRoles) {
+    this.userRoles = userRoles
+  }
+
+  void setUserMailId(String userMailId) {
+    this.userMailId = userMailId
+  }
   private Collection<String> userRoles = new ArrayList<>();
-  private Collection<String> cloudAccounts = new ArrayList<>();
+  private List<String> cloudAccounts = new ArrayList<>();
 }

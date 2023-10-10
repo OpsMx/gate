@@ -14,19 +14,29 @@
  * limitations under the License.
  */
 
-package com.opsmx.spinnaker.gate.model;
+package com.netflix.spinnaker.gate.model
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import groovy.transform.Canonical
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-public class CloudProviderAccountModel {
+@Canonical
+class CloudProviderAccountModel {
 
   private String name;
+
+  String getAccountType() {
+    return accountType
+  }
+
+  void setName(String name) {
+    this.name = name
+  }
+
+  void setAccountType(String accountType) {
+    this.accountType = accountType
+  }
+
+  String getName() {
+    return name
+  }
   private String accountType;
 }
