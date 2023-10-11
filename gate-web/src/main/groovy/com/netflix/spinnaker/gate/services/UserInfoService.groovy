@@ -34,11 +34,11 @@ class UserInfoService {
 
   Gson gson = new Gson()
 
-  UserInfoDetailsModel getAllInfoOfUser(User user) throws Exception {
+  UserInfoDetailsModel getAllInfoOfUser(User user, Object response) throws Exception {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
     try {
-      def response = opsmxOesService.getOesResponse5(
-        "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)
+      /*def response = opsmxOesService.getOesResponse5(
+        "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)*/
 
       /*ResponseEntity<List<CloudProviderAccountModel>> entityResponse = (ResponseEntity<List<CloudProviderAccountModel>>) response
 

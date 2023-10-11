@@ -19,6 +19,7 @@ package com.netflix.spinnaker.gate.controllers
 import com.netflix.spinnaker.gate.security.SpinnakerUser
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.gate.services.UserInfoService
+import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.User
 import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel
 import groovy.util.logging.Slf4j
@@ -42,6 +43,9 @@ class OpsmxUserController {
   @Autowired
   UserInfoService userInfoService
 
+  @Autowired
+  OpsmxOesService opsmxOesService
+
   @ApiOperation(value = "Get user Details", response = UserInfoDetailsModel)
   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
   UserInfoDetailsModel userInfo(@ApiIgnore @SpinnakerUser User user) {
@@ -52,6 +56,8 @@ class OpsmxUserController {
     if (fiatRoles) {
       user.roles = fiatRoles
     }
-    return userInfoService.getAllInfoOfUser(user)
+    def response = opsmxOesService.getOesResponse5(
+      "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)
+    return userInfoService.getAllInfoOfUser(user, response)
   }
 }

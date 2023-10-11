@@ -16,6 +16,11 @@
 
 package com.netflix.spinnaker.gate.controllers
 
+import com.netflix.spinnaker.gate.security.SpinnakerUser
+import com.netflix.spinnaker.gate.services.PermissionService
+import com.netflix.spinnaker.gate.services.UserInfoService
+import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel
 import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
@@ -23,6 +28,8 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import springfox.documentation.annotations.ApiIgnore
+
 import java.util.stream.Collectors
 
 import com.netflix.spinnaker.gate.config.ServiceConfiguration
@@ -57,6 +64,12 @@ class OpsmxOesController {
 
   @Autowired
   OkHttpClient okHttpClient
+
+  @Autowired
+  PermissionService permissionService
+
+  @Autowired
+  UserInfoService userInfoService
 
   @ApiOperation(value = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{source}", method = RequestMethod.POST)
@@ -550,5 +563,20 @@ class OpsmxOesController {
       headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
       return ResponseEntity.ok().headers(headers).body(manifestFile)
     }
+  }
+
+  @ApiOperation(value = "Get user Details", response = UserInfoDetailsModel)
+  @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
+  UserInfoDetailsModel userInfo(@ApiIgnore @SpinnakerUser User user) {
+    if (!user) {
+      throw new Exception("UnAuthorized User")
+    }
+    def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
+    if (fiatRoles) {
+      user.roles = fiatRoles
+    }
+    def response = opsmxOesService.getOesResponse5(
+      "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)
+    return userInfoService.getAllInfoOfUser(user, response)
   }
 }
