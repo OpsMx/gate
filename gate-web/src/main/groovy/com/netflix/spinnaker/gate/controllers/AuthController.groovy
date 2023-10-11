@@ -20,6 +20,7 @@ package com.netflix.spinnaker.gate.controllers
 import com.netflix.spinnaker.gate.security.SpinnakerUser
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.gate.services.UserInfoService
+import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.netflix.spinnaker.security.User
 import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel
@@ -62,6 +63,9 @@ class AuthController {
 
   @Autowired
   UserInfoService userInfoService
+
+  @Autowired
+  OpsmxOesService opsmxOesService
 
   @Autowired
   AuthController(@Value('${services.deck.base-url:}') URL deckBaseUrl,
@@ -166,9 +170,9 @@ class AuthController {
     )
   }
 
-  /*@ApiOperation(value = "Get user Details", response = UserInfoDetailsModel)
+  @ApiOperation(value = "Get user Details")
   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
-  UserInfoDetailsModel userInfo(@ApiIgnore @SpinnakerUser User user) {
+  Object userInfo(@ApiIgnore @SpinnakerUser User user) {
     if (!user) {
       throw new Exception("UnAuthorized User")
     }
@@ -176,6 +180,10 @@ class AuthController {
     if (fiatRoles) {
       user.roles = fiatRoles
     }
-    return userInfoService.getAllInfoOfUser(user)
-  }*/
+    def response = opsmxOesService.getOesResponse5(
+      "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)
+    def userInfo = userInfoService.getAllInfoOfUser(user, response)
+    log.info("UserInfo: {}", userInfo)
+    return userInfo
+  }
 }

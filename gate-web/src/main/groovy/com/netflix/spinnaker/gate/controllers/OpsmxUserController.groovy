@@ -46,9 +46,9 @@ class OpsmxUserController {
   @Autowired
   OpsmxOesService opsmxOesService
 
-  @ApiOperation(value = "Get user Details", response = UserInfoDetailsModel)
+  @ApiOperation(value = "Get user Details")
   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
-  UserInfoDetailsModel userInfo(@ApiIgnore @SpinnakerUser User user) {
+  Object userInfo(@ApiIgnore @SpinnakerUser User user) {
     if (!user) {
       throw new Exception("UnAuthorized User")
     }
@@ -58,6 +58,8 @@ class OpsmxUserController {
     }
     def response = opsmxOesService.getOesResponse5(
       "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)
-    return userInfoService.getAllInfoOfUser(user, response)
+    def userInfo = userInfoService.getAllInfoOfUser(user, response)
+    log.info("UserInfo: {}", userInfo)
+    return userInfo
   }
 }

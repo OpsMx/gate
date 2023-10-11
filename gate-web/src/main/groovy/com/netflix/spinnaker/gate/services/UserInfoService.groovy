@@ -35,65 +35,33 @@ class UserInfoService {
   Gson gson = new Gson()
 
   Object getAllInfoOfUser(User user, Object response) throws Exception {
+
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
     try {
-      /*def response = opsmxOesService.getOesResponse5(
-        "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)*/
-
-      /*ResponseEntity<List<CloudProviderAccountModel>> entityResponse = (ResponseEntity<List<CloudProviderAccountModel>>) response
-
-      if (entityResponse.statusCode.'2xxSuccessful' && entityResponse.body != null) {
-      List<String> extractedCloudAccounts =
-        entityResponse.getBody().stream()
-          .map { account -> "accountType: ${account.accountType}, name: ${account.name}" }
-          .collect(Collectors.toList())
-
-      userInfoDetails.setCloudAccounts(extractedCloudAccounts)
-      }*/
-
-      //List<CloudProviderAccountModel> accountModels = []
-
-      // Iterate through the response and create CloudProviderAccountModel instances
-      /*log.info("CloudProviderAccounts: {}", response)
-      def cloudProviderAccountList = response.collect { item ->
-        new CloudProviderAccountModel(
-          name: item.name,
-          accountType: item.accountType
-        )
-      }
-      log.info("cloudProviderAccountList: {}", cloudProviderAccountList)
-      def cloudAccounts= cloudProviderAccountList.collect { it.toString() }
-      log.info("cloudAccounts: {}", cloudAccounts)*/
       log.info("CloudProviderAccounts: {}", response)
       def inputStr = gson.toJson(response)
       def extractedCloudAccounts = JsonParser.parseString(inputStr).getAsJsonArray()
 
-      def cloudAccounts = extractedCloudAccounts.collect{
+      def cloudAccounts = extractedCloudAccounts.collect {
         def accountType = it.getAsJsonPrimitive("accountType").getAsString()
         def name = it.getAsJsonPrimitive("name").getAsString()
-        "accountType: " +  accountType + ","  + "name: " + name}
-
-      /*def cloudAccounts = extractedCloudAccounts.collect{
-        it.getAsJsonPrimitive("name").getAsString() }*/
+        "cloudProvider: " + accountType + " , " + "accountName: " + name
+      }
 
       log.info("CLoudAccounts: {}", cloudAccounts)
 
-      //Collection<String> cloudAccountsCollection = cloudAccounts as ArrayList
-
       userInfoDetails.cloudAccounts = cloudAccounts
-      log.info("CLoudAccountsInUserInfo: {}", userInfoDetails.cloudAccounts)
       userInfoDetails.userName = user.username
       userInfoDetails.firstName = user.firstName
       userInfoDetails.lastName = user.lastName
       userInfoDetails.userMailId = user.email
       userInfoDetails.userRoles = user.roles
 
-      log.info("userInfo: {}", userInfoDetails)
-    }catch (Exception e) {
+    } catch (Exception e) {
       e.printStackTrace()
     }
 
 
-  return userInfoDetails
-}
+    return userInfoDetails
+  }
 }

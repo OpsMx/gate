@@ -74,6 +74,7 @@ swagger:
     - .*auth.*
     - .*applications.*
     - .*securityGroups.*
+    - .*user.*
     - /search
     - .*pipeline.*
     - .*pipelineConfigs.*
