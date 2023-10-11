@@ -34,7 +34,7 @@ class UserInfoService {
 
   Gson gson = new Gson()
 
-  UserInfoDetailsModel getAllInfoOfUser(User user, Object response) throws Exception {
+  Object getAllInfoOfUser(User user, Object response) throws Exception {
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
     try {
       /*def response = opsmxOesService.getOesResponse5(

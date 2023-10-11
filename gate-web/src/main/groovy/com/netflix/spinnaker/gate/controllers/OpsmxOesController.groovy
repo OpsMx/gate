@@ -565,9 +565,9 @@ class OpsmxOesController {
     }
   }
 
-  @ApiOperation(value = "Get user Details", response = UserInfoDetailsModel)
+  @ApiOperation(value = "Get user Details")
   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
-  UserInfoDetailsModel userInfo(@ApiIgnore @SpinnakerUser User user) {
+  Object userInfo(@ApiIgnore @SpinnakerUser User user) {
     if (!user) {
       throw new Exception("UnAuthorized User")
     }
