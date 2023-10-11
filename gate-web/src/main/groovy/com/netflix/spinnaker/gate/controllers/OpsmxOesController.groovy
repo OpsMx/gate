@@ -577,6 +577,8 @@ class OpsmxOesController {
     }
     def response = opsmxOesService.getOesResponse5(
       "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)
-    return userInfoService.getAllInfoOfUser(user, response)
+    def userInfo = userInfoService.getAllInfoOfUser(user, response)
+    log.info("UserInfo: {}", userInfo)
+    return userInfo
   }
 }

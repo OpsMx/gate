@@ -16,11 +16,13 @@
 
 package com.opsmx.spinnaker.gate.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.ArrayList;
 import java.util.Collection;
 import lombok.Data;
 
 @Data
+@JsonInclude
 public class UserInfoDetailsModel {
 
   public String userName;
