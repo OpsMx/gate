@@ -52,7 +52,9 @@ interface OpsmxAuditClientService {
                                  @Query("sortBy") String sortBy,
                                  @Query("limit") Integer limit,
                                  @Query("applicationName") String applicationName,
-                                 @Query("agentName") String agentName)
+                                 @Query("agentName") String agentName,
+                                 @Query("sortOrder") String sortOrder,
+                                 @Query("filterBy") String filterBy)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}")
   Object getAuditClientResponse3(@Path('version') String version,
@@ -127,5 +129,6 @@ interface OpsmxAuditClientService {
                                          @Query('argoName') String argoName,
                                          @Query('search') String search,
                                          @Query("noOfDays") String noOfDays,
-                                         @Query('limit') Integer limit)
+                                         @Query('limit') Integer limit,
+                                         @Query('filterBy') String filterBy)
 }
