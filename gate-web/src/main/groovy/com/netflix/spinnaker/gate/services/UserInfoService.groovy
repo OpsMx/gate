@@ -68,16 +68,19 @@ class UserInfoService {
       def inputStr = gson.toJson(response)
       def extractedCloudAccounts = JsonParser.parseString(inputStr).getAsJsonArray()
 
-      def cloudAccounts = extractedCloudAccounts.collect{
+      /*def cloudAccounts = extractedCloudAccounts.collect{
         def accountType = it.getAsJsonPrimitive("accountType").getAsString()
         def name = it.getAsJsonPrimitive("name").getAsString()
-        "accountType: $accountType, name: $name"}
+        "accountType: $accountType, name: $name"}*/
+
+      def cloudAccounts = extractedCloudAccounts.collect{
+        it.getAsJsonPrimitive("name").getAsString() }
 
       log.info("CLoudAccounts: {}", cloudAccounts)
 
-      Collection<String> cloudAccountsCollection = cloudAccounts as ArrayList
+      //Collection<String> cloudAccountsCollection = cloudAccounts as ArrayList
 
-      userInfoDetails.cloudAccounts = cloudAccountsCollection
+      userInfoDetails.cloudAccounts = cloudAccounts
       log.info("CLoudAccountsInUserInfo: {}", userInfoDetails.cloudAccounts)
       userInfoDetails.userName = user.username
       userInfoDetails.firstName = user.firstName
