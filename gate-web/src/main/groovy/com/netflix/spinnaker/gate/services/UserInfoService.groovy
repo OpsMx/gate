@@ -84,6 +84,8 @@ class UserInfoService {
       userInfoDetails.lastName = user.lastName
       userInfoDetails.userMailId = user.email
       userInfoDetails.userRoles = user.roles
+
+      log.info("userInfo: {}", userInfoDetails)
     }catch (Exception e) {
       e.printStackTrace()
     }

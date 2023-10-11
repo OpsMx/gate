@@ -166,16 +166,16 @@ class AuthController {
     )
   }
 
-  @ApiOperation(value = "Get user Details", response = UserInfoDetailsModel.class)
+  /*@ApiOperation(value = "Get user Details", response = UserInfoDetailsModel)
   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
   UserInfoDetailsModel userInfo(@ApiIgnore @SpinnakerUser User user) {
-    /*if (!user) {
+    if (!user) {
       throw new Exception("UnAuthorized User")
-    }*/
+    }
     def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
     if (fiatRoles) {
       user.roles = fiatRoles
     }
     return userInfoService.getAllInfoOfUser(user)
-  }
+  }*/
 }
