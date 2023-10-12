@@ -24,7 +24,6 @@ import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
-import org.apache.commons.lang3.exception.ExceptionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.access.prepost.PreAuthorize
@@ -169,7 +168,7 @@ class AuthController {
     )
   }
 
-  @ApiOperation(value = "Get user Details")
+  @ApiOperation(value = "Get user Details with cloudAccounts")
   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
   Object userInfo(@ApiIgnore @SpinnakerUser User user) {
     if (!user) {
@@ -181,8 +180,6 @@ class AuthController {
     }
     def response = opsmxOesService.getOesResponse5(
       "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)
-    def userInfo = userInfoService.getAllInfoOfUser(user, response)
-    log.info("UserInfo: {}", userInfo)
-    return userInfo
+    return userInfoService.getAllInfoOfUser(user, response)
   }
 }

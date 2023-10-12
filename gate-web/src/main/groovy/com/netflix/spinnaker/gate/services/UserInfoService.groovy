@@ -18,19 +18,14 @@ package com.netflix.spinnaker.gate.services
 
 import com.google.gson.Gson
 import com.google.gson.JsonParser
-import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel
-import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel
 import groovy.util.logging.Slf4j
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Slf4j
 @Service
 class UserInfoService {
-
-  @Autowired
-  OpsmxOesService opsmxOesService
 
   Gson gson = new Gson()
 
@@ -38,25 +33,17 @@ class UserInfoService {
 
     UserInfoDetailsModel userInfoDetails = new UserInfoDetailsModel()
     try {
-      log.info("CloudProviderAccounts: {}", response)
+      log.info("CloudProviderAccounts response from oes service: {}", response)
       def inputStr = gson.toJson(response)
       def extractedCloudAccounts = JsonParser.parseString(inputStr).getAsJsonArray()
 
-      /*def cloudAccounts = extractedCloudAccounts.collect {
-        def accountType = it.getAsJsonPrimitive("accountType").getAsString()
-        def name = it.getAsJsonPrimitive("name").getAsString()
-        "cloudProvider: " + accountType + " , " + "accountName: " + name
-      }
-*/
       def cloudAccounts = extractedCloudAccounts.collect { accountJson ->
         def accountType = accountJson.getAsJsonPrimitive("accountType").getAsString()
         def name = accountJson.getAsJsonPrimitive("name").getAsString()
-
         def cloudAccount = [cloudProvider: accountType, accountName: name]
         cloudAccount
       }
-
-      log.info("CLoudAccounts: {}", cloudAccounts)
+      log.info("Extracted cloudAccounts for user: {}", cloudAccounts)
 
       userInfoDetails.cloudAccounts = cloudAccounts
       userInfoDetails.userName = user.username
@@ -68,7 +55,6 @@ class UserInfoService {
     } catch (Exception e) {
       e.printStackTrace()
     }
-
     return userInfoDetails
   }
 }
