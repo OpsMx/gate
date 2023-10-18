@@ -69,8 +69,8 @@ interface OpsmxAuditClientService {
                                  @Query("search") String search,
                                  @Query("sortOrder") String sortOrder,
                                  @Query("sortBy") String sortBy,
-                                 @Query("startDate") String startDate,
-                                 @Query("endDate") String endDate)
+                                 @Query("startDate") Long startDate,
+                                 @Query("endDate") Long endDate)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}/{source2}")
   Object getAuditClientResponse4(@Path('version') String version,
@@ -81,8 +81,8 @@ interface OpsmxAuditClientService {
                                  @Query("noOfDays") String noOfDays,
                                  @Query("updatedTimestamp") Long updatedTimestamp,
                                  @Query("size") Integer size,
-                                 @Query("startDate") String startDate,
-                                 @Query("endDate") String endDate)
+                                 @Query("startDate") Long startDate,
+                                 @Query("endDate") Long endDate)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}/{source2}/{source3}")
   Object getAuditClientResponse5(@Path('version') String version,
@@ -92,8 +92,8 @@ interface OpsmxAuditClientService {
                                  @Path('source2') String source2,
                                  @Path('source3') String source3,
                                  @Query("noOfDays") String noOfDays,
-                                 @Query("startDate") String startDate,
-                                 @Query("endDate") String endDate)
+                                 @Query("startDate") Long startDate,
+                                 @Query("endDate") Long endDate)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}")
   Object getAuditClientResponse6(@Path('version') String version,
