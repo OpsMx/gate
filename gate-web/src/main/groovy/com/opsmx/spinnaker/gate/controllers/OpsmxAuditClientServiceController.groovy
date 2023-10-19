@@ -159,8 +159,10 @@ class OpsmxAuditClientServiceController {
                                      @RequestParam(value = "isLatest", required = false) Boolean isLatest,
                                      @RequestParam(value = "pageNo", required = false) Integer pageNo,
                                      @RequestParam(value = "size", required = false) Integer size,
-                                     @RequestParam(value = "noOfDays", required = false) String noOfDays) {
-    Response response = opsmxAuditClientService.downloadCSVFile(version, username, source, isTreeView, isLatest, pageNo, size, noOfDays)
+                                     @RequestParam(value = "noOfDays", required = false) String noOfDays,
+                                     @RequestParam(value = "startDate", required = false) Long startDate,
+                                     @RequestParam(value = "endDate", required = false) Long endDate) {
+    Response response = opsmxAuditClientService.downloadCSVFile(version, username, source, isTreeView, isLatest, pageNo, size, noOfDays, startDate, endDate)
     log.info("response for the insgiths endpoint:" + response.getHeaders())
     if (response.getBody()!=null) {
       InputStream inputStream = response.getBody().in()

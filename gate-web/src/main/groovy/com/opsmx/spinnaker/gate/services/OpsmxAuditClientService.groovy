@@ -116,7 +116,9 @@ interface OpsmxAuditClientService {
                            @Query("isLatest") Boolean isLatest,
                            @Query("pageNo") Integer pageNo,
                            @Query("size") Integer size,
-                           @Query("noOfDays") String noOfDays)
+                           @Query("noOfDays") String noOfDays,
+                           @Query("startDate") Long startDate,
+                           @Query("endDate") Long endDate)
 
   @GET("/auditclientservice/{version}/{type}/{source}/download")
   Response downloadDeliveryInsightsCSVFile(@Path('version') String version,
