@@ -120,7 +120,7 @@ class OpsmxSsdController {
     }
     def obj = AuthenticatedRequest.propagate {
       def request = new Request.Builder()
-        .url(serviceConfiguration.getServiceEndpoint("ssdservice").url + ssdUrl)
+        .url(serviceConfiguration.getServiceEndpoint("ssdservice").url + ssdUrl + "?name=" +data)
         .headers(Headers.of(headersMap))
         .post(uploadFileOkHttp(data, files))
         .build()
@@ -141,6 +141,7 @@ class OpsmxSsdController {
     String fileName = file.getOriginalFilename();
     MultipartBody.Builder builder = new MultipartBody.Builder();
     builder.setType(MultipartBody.FORM);
+    builder.se
     builder.addFormDataPart("file", fileName, new okhttp3.RequestBody() {
       @Override
       public okhttp3.MediaType contentType() {
