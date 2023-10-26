@@ -171,7 +171,7 @@ class OpsmxSsdController {
         }
       }
     });
-    builder.addFormDataPart("postData", null, okhttp3.RequestBody.create(okhttp3.MediaType.parse("text/plain"), data));
+    builder.addFormDataPart("name", null, okhttp3.RequestBody.create(okhttp3.MediaType.parse("text/plain"), data));
     return builder.build();
   }
 
