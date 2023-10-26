@@ -356,7 +356,7 @@ class OpsmxSsdController {
       def error = obj.body().string();
       throw new OesRequestException(error)
     } else {
-      return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
+      return obj ?: "Unknown reason: " + obj.code() as Object
     }
   }
 
@@ -385,7 +385,7 @@ class OpsmxSsdController {
       def error = obj.body().string();
       throw new OesRequestException(error)
     } else {
-      return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
+      return obj ?: "Unknown reason: " + obj.code() as Object
     }
   }
 
