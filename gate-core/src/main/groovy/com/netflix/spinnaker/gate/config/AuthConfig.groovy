@@ -224,7 +224,6 @@ class AuthConfig {
         .antMatchers(HttpMethod.PUT, '/visibilityservice/v4/approvalGates/{id}/connector').permitAll()
         .antMatchers(HttpMethod.POST, '/ssdservice/v1/spinnakerevents').permitAll()
         .antMatchers(HttpMethod.PUT, '/dashboardservice/v4/pipelines/{pipelineId}/gates/{gateId}').permitAll()
-
         .antMatchers(HttpMethod.POST, '/ssdservice/v1/spinnakerevents/').permitAll()
         .antMatchers('/health').permitAll()
         .antMatchers('/prometheus').permitAll()
