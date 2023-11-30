@@ -34,6 +34,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
@@ -92,11 +93,13 @@ class AuthConfig {
         .antMatchers(HttpMethod.POST, '/managed/notifications/callbacks/**').permitAll()
         .antMatchers('/health').permitAll()
         .antMatchers('/**').authenticated()
+
+    Authentication auth  = SecurityContextHolder.getContext().getAuthentication();
     if (fiatSessionFilterEnabled) {
       Filter fiatSessionFilter = new FiatSessionFilter(
         fiatSessionFilterEnabled,
         fiatStatus,
-        permissionEvaluator)
+        permissionEvaluator, auth)
 
       http.addFilterBefore(fiatSessionFilter, AnonymousAuthenticationFilter.class)
     }
