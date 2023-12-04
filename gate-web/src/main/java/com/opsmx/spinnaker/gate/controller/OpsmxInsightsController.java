@@ -1,0 +1,89 @@
+/*
+ * Copyright 2023 OpsMx, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.opsmx.spinnaker.gate.controller;
+
+import io.swagger.annotations.ApiOperation;
+import java.io.IOException;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RequestMapping("/insights")
+@RestController
+@Slf4j
+public class OpsmxInsightsController {
+
+  String username = "admin";
+  String password = "opsmxadmin123";
+  public static final MediaType JSON = MediaType.get("application/json");
+
+  @ApiOperation(value = "get session timeout")
+  @GetMapping(value = "/get")
+  ResponseEntity<Void> getInsights(@RequestParam("type") String type) {
+    OkHttpClient client = new OkHttpClient();
+    String json =
+        "{\n" + "    \"user\": \"admin\",\n" + "    \"password\": \"opsmxadmin123\"\n" + "}";
+    RequestBody body = RequestBody.create(JSON, json);
+    String url = "https://new-grafana.isd-dev.opsmx.net/login";
+    Request request = new Request.Builder().url(url).post(body).build();
+
+    Map<String, String> hdrs = new HashMap<>();
+    try (Response response = client.newCall(request).execute()) {
+      populateHeaders(response, hdrs);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    String redirectUrl = null;
+    if (type.equalsIgnoreCase("pipeline-insights")) {
+      redirectUrl =
+          "https://grafanatesting.isd-dev.opsmx.net/d/a3de564f-60de-46ec-89b2-a46f169a3823/pipeinsight?var-refresh=5s&var-timeFilter=7d&var-offset=1s&var-startTime=1701175016000&var-endTime=1701693416000&from=now-7d&to=now&orgId=1&kiosk";
+    }
+    if (type.equalsIgnoreCase("stage-insights")) {
+      redirectUrl =
+          "https://grafanatesting.isd-dev.opsmx.net/d/cdc08946-b140-4ee1-a769-7705ed/stageinsight?var-refresh=5s&var-timeFilter=7d&var-offset=1s&var-startTime=1701174941000&var-endTime=1701693341000&from=now-7d&to=now&orgId=1&kiosk";
+    }
+    String Cookie =
+        "grafana_session="
+            + hdrs.get("grafana_session")
+            + "grafana_session_expiry="
+            + hdrs.get("grafana_session_expiry");
+    HttpHeaders headers = new HttpHeaders();
+    headers.setLocation(URI.create(redirectUrl));
+    headers.add("Cookie", Cookie);
+    return ResponseEntity.status(302).headers(headers).build();
+  }
+
+  private static void populateHeaders(Response response, Map<String, String> hdrs) {
+    List<String> cookies = response.headers("Set-Cookie");
+    for (String str : cookies) {
+      String[] semicolonSeparated = str.split(";");
+      for (String scSplitStr : semicolonSeparated) {
+        String[] equalsSeparated = scSplitStr.split("=");
+        hdrs.put(equalsSeparated[0].trim(), equalsSeparated[1].trim());
+      }
+    }
+  }
+}
