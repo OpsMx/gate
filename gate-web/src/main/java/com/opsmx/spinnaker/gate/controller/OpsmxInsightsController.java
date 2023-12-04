@@ -17,7 +17,6 @@
 package com.opsmx.spinnaker.gate.controller;
 
 import io.swagger.annotations.ApiOperation;
-import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +52,7 @@ public class OpsmxInsightsController {
     Map<String, String> hdrs = new HashMap<>();
     try (Response response = client.newCall(request).execute()) {
       populateHeaders(response, hdrs);
-    } catch (IOException e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
     String redirectUrl = null;
@@ -65,24 +64,32 @@ public class OpsmxInsightsController {
       redirectUrl =
           "https://grafanatesting.isd-dev.opsmx.net/d/cdc08946-b140-4ee1-a769-7705ed/stageinsight?var-refresh=5s&var-timeFilter=7d&var-offset=1s&var-startTime=1701174941000&var-endTime=1701693341000&from=now-7d&to=now&orgId=1&kiosk";
     }
+    System.out.println("The map is: " + hdrs);
     String Cookie =
         "grafana_session="
             + hdrs.get("grafana_session")
+            + ";"
             + "grafana_session_expiry="
             + hdrs.get("grafana_session_expiry");
+    System.out.println("The Cookie is: " + Cookie);
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(URI.create(redirectUrl));
     headers.add("Cookie", Cookie);
     return ResponseEntity.status(302).headers(headers).build();
   }
 
-  private static void populateHeaders(Response response, Map<String, String> hdrs) {
+  private void populateHeaders(Response response, Map<String, String> hdrs) {
     List<String> cookies = response.headers("Set-Cookie");
+    System.out.println("cookies are: " + cookies);
     for (String str : cookies) {
+      System.out.println("str is: " + str);
       String[] semicolonSeparated = str.split(";");
       for (String scSplitStr : semicolonSeparated) {
+        System.out.println("scSplitStr is: " + scSplitStr);
         String[] equalsSeparated = scSplitStr.split("=");
-        hdrs.put(equalsSeparated[0].trim(), equalsSeparated[1].trim());
+        if (equalsSeparated.length == 2) {
+          hdrs.put(equalsSeparated[0].trim(), equalsSeparated[1].trim());
+        }
       }
     }
   }
