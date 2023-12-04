@@ -45,6 +45,7 @@ public class OpsmxInsightsController {
     OkHttpClient client = new OkHttpClient();
     String json =
         "{\n" + "    \"user\": \"admin\",\n" + "    \"password\": \"opsmxadmin123\"\n" + "}";
+    log.info("json is: " + json);
     RequestBody body = RequestBody.create(JSON, json);
     String url = "https://new-grafana.isd-dev.opsmx.net/login";
     Request request = new Request.Builder().url(url).post(body).build();
@@ -64,14 +65,14 @@ public class OpsmxInsightsController {
       redirectUrl =
           "https://grafanatesting.isd-dev.opsmx.net/d/cdc08946-b140-4ee1-a769-7705ed/stageinsight?var-refresh=5s&var-timeFilter=7d&var-offset=1s&var-startTime=1701174941000&var-endTime=1701693341000&from=now-7d&to=now&orgId=1&kiosk";
     }
-    System.out.println("The map is: " + hdrs);
+    log.info("The map is: " + hdrs);
     String Cookie =
         "grafana_session="
             + hdrs.get("grafana_session")
             + ";"
             + "grafana_session_expiry="
             + hdrs.get("grafana_session_expiry");
-    System.out.println("The Cookie is: " + Cookie);
+    log.info("The Cookie is: " + Cookie);
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(URI.create(redirectUrl));
     headers.add("Cookie", Cookie);
@@ -80,12 +81,12 @@ public class OpsmxInsightsController {
 
   private void populateHeaders(Response response, Map<String, String> hdrs) {
     List<String> cookies = response.headers("Set-Cookie");
-    System.out.println("cookies are: " + cookies);
+    log.info("cookies are: " + cookies);
     for (String str : cookies) {
-      System.out.println("str is: " + str);
+      log.info("str is: " + str);
       String[] semicolonSeparated = str.split(";");
       for (String scSplitStr : semicolonSeparated) {
-        System.out.println("scSplitStr is: " + scSplitStr);
+        log.info("scSplitStr is: " + scSplitStr);
         String[] equalsSeparated = scSplitStr.split("=");
         if (equalsSeparated.length == 2) {
           hdrs.put(equalsSeparated[0].trim(), equalsSeparated[1].trim());
