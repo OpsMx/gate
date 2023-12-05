@@ -71,8 +71,6 @@ public class BasicAuthProvider implements AuthenticationProvider {
           roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
       // Updating roles in fiat service
       permissionService.loginWithRoles(name, roles);
-      // Updating roles in platform service
-      oesAuthorizationService.cacheUserGroups(roles, name);
     }
 
     return new UsernamePasswordAuthenticationToken(user, password, grantedAuthorities);
