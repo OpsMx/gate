@@ -132,11 +132,17 @@ class PermissionService {
 
   Set<Role> getRoles(String userId) {
     if (!fiatStatus.isEnabled()) {
+      log.info("2")
+      log.info("failure case")
       return []
     }
     try {
+      log.info("3")
+      log.info("success case")
       return permissionEvaluator.getPermission(userId)?.roles ?: []
     } catch (RetrofitError e) {
+      log.info("4")
+      log.info("Failure case")
       throw classifyError(e)
     }
   }
