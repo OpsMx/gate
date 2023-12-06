@@ -18,7 +18,7 @@ package com.netflix.spinnaker.gate.services
 
 
 import com.netflix.spinnaker.fiat.shared.FiatStatus
-
+import com.netflix.spinnaker.gate.services.internal.ClouddriverService
 import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Unroll
@@ -69,7 +69,7 @@ class CredentialsServiceSpec extends Specification {
     ["roleB"]          | [acnt("acntA", [READ: ['roleA'], WRITE: ['roleA']], 'roleB')] || []
   }
 
-  static AccountDetails acnt(String name, Map<String, List<String>> permissions = null, String... reqGroupMembership) {
-    new AccountDetails(name: name, requiredGroupMembership: reqGroupMembership, permissions: permissions)
+  static ClouddriverService.AccountDetails acnt(String name, Map<String, List<String>> permissions = null, String... reqGroupMembership) {
+    new ClouddriverService.AccountDetails(name: name, requiredGroupMembership: reqGroupMembership, permissions: permissions)
   }
 }
