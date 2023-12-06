@@ -71,7 +71,6 @@ class AuthController {
   @ApiOperation(value = "Get user", response = User.class)
   @RequestMapping(value = "/user", method = RequestMethod.GET)
   User user(@ApiIgnore @SpinnakerUser User user) {
-    log.info("user :"+ user)
     if (!user) {
       log.info("User " + user.username + " loggedIn Failure");
       return user
@@ -79,8 +78,9 @@ class AuthController {
 
     def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
     if (fiatRoles) {
-      log.info("5")
-      log.info("fiatRoles :" + fiatRoles)
+      log.info("*************************************");
+      log.info("User " + user.username + " loggedIn successfully");
+      log.info("*************************************");
       user.roles = fiatRoles
     }
     log.info("User " + user.username + " loggedIn successfully");
