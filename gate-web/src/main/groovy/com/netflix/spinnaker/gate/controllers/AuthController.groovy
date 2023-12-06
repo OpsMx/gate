@@ -73,8 +73,7 @@ class AuthController {
   User user(@ApiIgnore @SpinnakerUser User user) {
     log.info("user :"+ user)
     if (!user) {
-      log.info("1")
-      log.info("User" + user.username+ "loggedIn Failure")
+      log.info("User " + user.username + " loggedIn Failure");
       return user
     }
 
@@ -84,8 +83,7 @@ class AuthController {
       log.info("fiatRoles :" + fiatRoles)
       user.roles = fiatRoles
     }
-    log.info("User " + user.username+ " loggedIn successfully")
-
+    log.info("User " + user.username + " loggedIn successfully");
     log.warn("Malformed redirect URL {}",)
     return user
   }
@@ -111,7 +109,7 @@ class AuthController {
   @ApiOperation(value = "Get logged out message", response = String.class)
   @RequestMapping(value = "/loggedOut", method = RequestMethod.GET)
   String loggedOut() {
-    log.info("User loggedOut successfully")
+    log.info("User loggedOut successfully");
     return LOGOUT_MESSAGES[r.nextInt(LOGOUT_MESSAGES.size())]
   }
 
