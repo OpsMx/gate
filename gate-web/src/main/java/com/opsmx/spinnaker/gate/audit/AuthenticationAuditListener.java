@@ -49,6 +49,7 @@ public class AuthenticationAuditListener extends AbstractAuthenticationAuditList
       if (event.getAuthentication().isAuthenticated()
           && event instanceof InteractiveAuthenticationSuccessEvent) {
         log.debug("publishEvent InteractiveAuthenticationSuccessEvent");
+        log.info("**************Login : User "+event.getAuthentication().getName()+" Successfully LoggedIn*************");
         handleAuthenticationEvent(event, AuditEventType.AUTHENTICATION_SUCCESSFUL_AUDIT);
         return;
       }
@@ -60,6 +61,7 @@ public class AuthenticationAuditListener extends AbstractAuthenticationAuditList
       } else if (!event.getAuthentication().isAuthenticated()
           && event instanceof AbstractAuthenticationFailureEvent) {
         log.debug("publishEvent AbstractAuthenticationFailureEvent");
+        log.info("*********Login : User "+event.getAuthentication().getName()+" LoggedIn failed***************");
         auditHandler.publishEvent(AuditEventType.AUTHENTICATION_FAILURE_AUDIT, event);
       } else if (event instanceof LogoutSuccessEvent) {
         if (event
@@ -72,6 +74,7 @@ public class AuthenticationAuditListener extends AbstractAuthenticationAuditList
           return;
         }
         log.debug("publishEvent LogoutSuccessEvent");
+        log.info("*****************LogOut : User "+event.getAuthentication().getName()+" Successfully LoggedOut*************");
         auditHandler.publishEvent(AuditEventType.SUCCESSFUL_USER_LOGOUT_AUDIT, event);
       }
 

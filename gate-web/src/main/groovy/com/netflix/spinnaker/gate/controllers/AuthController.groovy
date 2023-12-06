@@ -72,19 +72,13 @@ class AuthController {
   @RequestMapping(value = "/user", method = RequestMethod.GET)
   User user(@ApiIgnore @SpinnakerUser User user) {
     if (!user) {
-      log.info("User " + user.username + " loggedIn Failure");
       return user
     }
 
     def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
     if (fiatRoles) {
-      log.info("*************************************");
-      log.info("User " + user.username + " loggedIn successfully");
-      log.info("*************************************");
       user.roles = fiatRoles
     }
-    log.info("User " + user.username + " loggedIn successfully");
-    log.warn("Malformed redirect URL {}",)
     return user
   }
 
@@ -109,7 +103,6 @@ class AuthController {
   @ApiOperation(value = "Get logged out message", response = String.class)
   @RequestMapping(value = "/loggedOut", method = RequestMethod.GET)
   String loggedOut() {
-    log.info("User loggedOut successfully");
     return LOGOUT_MESSAGES[r.nextInt(LOGOUT_MESSAGES.size())]
   }
 
