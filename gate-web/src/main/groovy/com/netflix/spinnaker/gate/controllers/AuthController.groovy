@@ -71,6 +71,7 @@ class AuthController {
   @ApiOperation(value = "Get user", response = User.class)
   @RequestMapping(value = "/user", method = RequestMethod.GET)
   User user(@ApiIgnore @SpinnakerUser User user) {
+    log.info("user :"+ user)
     if (!user) {
       log.info("1")
       log.info("User" + user.username+ "loggedIn Failure")
