@@ -55,6 +55,7 @@ public class AuthenticationAuditListener extends AbstractAuthenticationAuditList
       if (event.getAuthentication().isAuthenticated()
           && event instanceof InteractiveAuthenticationSuccessEvent) {
         log.debug("publishEvent InteractiveAuthenticationSuccessEvent");
+        log.info("Login: User '"+event.getAuthentication().getName()+"' logged in successfully.");
         handleAuthenticationEvent(event, AuditEventType.AUTHENTICATION_SUCCESSFUL_AUDIT);
         return;
       }
@@ -68,6 +69,7 @@ public class AuthenticationAuditListener extends AbstractAuthenticationAuditList
       } else if (!event.getAuthentication().isAuthenticated()
           && event instanceof AbstractAuthenticationFailureEvent) {
         log.debug("publishEvent AbstractAuthenticationFailureEvent");
+        log.info("Login : User '"+event.getAuthentication().getName()+"' login failed due to incorrect credentials.");
         template.asyncSendBody(
             CamelEndpointConstant.directUserActivity,
             auditHandler.publishEvent(AuditEventType.AUTHENTICATION_FAILURE_AUDIT, event));
@@ -78,10 +80,12 @@ public class AuthenticationAuditListener extends AbstractAuthenticationAuditList
             .getName()
             .equals("org.springframework.security.providers.ExpiringUsernameAuthenticationToken")) {
           log.debug("publishEvent LogoutSuccessEvent with ExpiringUsernameAuthenticationToken");
+          log.info("Logout : User '"+event.getAuthentication().getName()+"' logged out.");
           handleAuthenticationEvent(event, AuditEventType.SUCCESSFUL_USER_LOGOUT_AUDIT);
           return;
         }
         log.debug("publishEvent LogoutSuccessEvent");
+        log.info("Logout : User '"+event.getAuthentication().getName()+"' logged out manually.");
         auditHandler.publishEvent(AuditEventType.SUCCESSFUL_USER_LOGOUT_AUDIT, event);
         AbstractAuthenticationToken auth = (AbstractAuthenticationToken) event.getAuthentication();
         String name = auth.getName();
