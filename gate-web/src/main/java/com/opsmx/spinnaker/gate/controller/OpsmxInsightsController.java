@@ -59,11 +59,11 @@ public class OpsmxInsightsController {
     String redirectUrl = null;
     if (type.equalsIgnoreCase("pipeline-insights")) {
       redirectUrl =
-          "https://grafanatesting.isd-dev.opsmx.net/d/a3de564f-60de-46ec-89b2-a46f169a3823/pipeinsight?var-refresh=5s&var-timeFilter=7d&var-offset=1s&var-startTime=1701175016000&var-endTime=1701693416000&from=now-7d&to=now&orgId=1&kiosk";
+          "https://new-grafana.isd-dev.opsmx.net/d/a3de564f-60de-46ec-89b2-a46f169a3823/pipeinsight?orgId=1&refresh=5s&from=1702107951546&to=1702280751546";
     }
     if (type.equalsIgnoreCase("stage-insights")) {
       redirectUrl =
-          "https://grafanatesting.isd-dev.opsmx.net/d/cdc08946-b140-4ee1-a769-7705ed/stageinsight?var-refresh=5s&var-timeFilter=7d&var-offset=1s&var-startTime=1701174941000&var-endTime=1701693341000&from=now-7d&to=now&orgId=1&kiosk";
+          "https://new-grafana.isd-dev.opsmx.net/d/cdc08946-b140-4ee1-a769-7705ed/stageinsight?orgId=1&refresh=5s&from=1702107989203&to=1702280789203";
     }
     log.info("The map is: " + hdrs);
     String Cookie =
