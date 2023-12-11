@@ -51,16 +51,19 @@ public class OpsmxInsightsController {
     Request request = new Request.Builder().url(url).post(body).build();
 
     Map<String, String> hdrs = new HashMap<>();
+
     try (Response response = client.newCall(request).execute()) {
       populateHeaders(response, hdrs);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+
     String redirectUrl = null;
     if (type.equalsIgnoreCase("pipeline-insights")) {
       redirectUrl =
           "https://new-grafana.isd-dev.opsmx.net/d/a3de564f-60de-46ec-89b2-a46f169a3823/pipeinsight?orgId=1&refresh=5s&from=1702107951546&to=1702280751546";
     }
+
     if (type.equalsIgnoreCase("stage-insights")) {
       redirectUrl =
           "https://new-grafana.isd-dev.opsmx.net/d/cdc08946-b140-4ee1-a769-7705ed/stageinsight?orgId=1&refresh=5s&from=1702107989203&to=1702280789203";
@@ -75,7 +78,9 @@ public class OpsmxInsightsController {
     log.info("The Cookie is: " + Cookie);
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(URI.create(redirectUrl));
-    headers.add("Cookie", Cookie);
+    headers.add(
+        "Authorization",
+        "Bearer eyJrIjoiemxpdDZwMDlwWTI2Q3JGWjZxcDRjMWdUUHNJcXV5R2siLCJuIjoibXktYXBpLWtleSIsImlkIjoxfQ==");
     return ResponseEntity.status(302).headers(headers).build();
   }
 
