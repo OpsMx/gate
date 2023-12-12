@@ -69,18 +69,17 @@ public class OpsmxInsightsController {
           "https://new-grafana.isd-dev.opsmx.net/d/cdc08946-b140-4ee1-a769-7705ed/stageinsight?orgId=1&refresh=5s&from=1702107989203&to=1702280789203";
     }
     log.info("The map is: " + hdrs);
-    String Cookie =
+    String cookie =
         "grafana_session="
             + hdrs.get("grafana_session")
             + ";"
             + "grafana_session_expiry="
             + hdrs.get("grafana_session_expiry");
-    log.info("The Cookie is: " + Cookie);
+    cookie = cookie + "; domain=opsmx.net";
+    log.info("The Cookie is: " + cookie);
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(URI.create(redirectUrl));
-    headers.add(
-        "Authorization",
-        "Bearer eyJrIjoiemxpdDZwMDlwWTI2Q3JGWjZxcDRjMWdUUHNJcXV5R2siLCJuIjoibXktYXBpLWtleSIsImlkIjoxfQ==");
+    headers.add("Set-Cookie", cookie);
     return ResponseEntity.status(302).headers(headers).build();
   }
 
