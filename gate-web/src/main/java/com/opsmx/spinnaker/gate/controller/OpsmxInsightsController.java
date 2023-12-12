@@ -75,7 +75,7 @@ public class OpsmxInsightsController {
             + ";"
             + "grafana_session_expiry="
             + hdrs.get("grafana_session_expiry");
-    cookie = cookie + "; domain=opsmx.net";
+    cookie = cookie + "; domain=opsmx.net; SameSite=None";
     log.info("The Cookie is: " + cookie);
     HttpHeaders headers = new HttpHeaders();
     headers.setLocation(URI.create(redirectUrl));
