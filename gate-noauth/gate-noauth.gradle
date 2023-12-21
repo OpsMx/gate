@@ -1,7 +1,0 @@
-dependencies {
-  implementation project(":gate-core")
-  implementation "io.spinnaker.kork:kork-security"
-  implementation "org.apache.commons:commons-lang3"
-  implementation "org.springframework.session:spring-session-core"
-  implementation "io.spinnaker.fiat:fiat-core:$fiatVersion"
-}

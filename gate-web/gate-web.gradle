@@ -62,8 +62,7 @@ dependencies {
 
   testImplementation "com.graphql-java-kickstart:graphql-spring-boot-starter-test:7.0.1"
 
-  testImplementation project(":gate-ldap")
-  testImplementation project(":gate-noauth")// TODO: Move system tests to own module
+  testImplementation project(":gate-ldap") // TODO: Move system tests to own module
   testImplementation project(":gate-basic")
   testImplementation project(":gate-oauth2")
   testImplementation "com.squareup.okhttp:mockwebserver"

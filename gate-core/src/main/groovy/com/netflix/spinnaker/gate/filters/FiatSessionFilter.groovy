@@ -19,11 +19,16 @@ package com.netflix.spinnaker.gate.filters
 import com.netflix.spinnaker.fiat.model.UserPermission
 import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator
 import com.netflix.spinnaker.fiat.shared.FiatStatus
+import com.netflix.spinnaker.security.AuthenticatedRequest
 import groovy.util.logging.Slf4j
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 
-import javax.servlet.*
+import javax.servlet.Filter
+import javax.servlet.FilterChain
+import javax.servlet.FilterConfig
+import javax.servlet.ServletException
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpSession
 
@@ -38,16 +43,12 @@ class FiatSessionFilter implements Filter {
 
   FiatPermissionEvaluator permissionEvaluator
 
-  Authentication auth
-
   FiatSessionFilter(boolean enabled,
                     FiatStatus fiatStatus,
-                    FiatPermissionEvaluator permissionEvaluator,
-                    Authentication auth ) {
+                    FiatPermissionEvaluator permissionEvaluator) {
     this.enabled = enabled
     this.fiatStatus = fiatStatus
     this.permissionEvaluator = permissionEvaluator
-    this.auth = auth
   }
 
   /**
@@ -59,11 +60,10 @@ class FiatSessionFilter implements Filter {
     UserPermission.View fiatPermission = null
 
     if (fiatStatus.isEnabled() && this.enabled) {
-      String user = auth.getName();
+      String user = AuthenticatedRequest.getSpinnakerUser().orElse(null)
       log.debug("Fiat session filter - found user: ${user}")
 
       if (user != null) {
-        SecurityContextHolder.getContext().setAuthentication(auth);
         fiatPermission = permissionEvaluator.getPermission(user)
         if (fiatPermission == null) {
           HttpServletRequest httpReq = (HttpServletRequest) request
