@@ -57,6 +57,7 @@ class CorsFilter implements Filter {
     response.setHeader("Access-Control-Max-Age", "3600")
     response.setHeader("Access-Control-Allow-Headers", "x-requested-with, content-type, authorization, X-RateLimit-App, X-Spinnaker-Priority, Content-Disposition, Location")
     response.setHeader("Access-Control-Expose-Headers", [Headers.AUTHENTICATION_REDIRECT_HEADER_NAME].join(", "))
+    response.setHeader("strict-transport-security", "max-age=31536000")
     chain.doFilter(req, res)
   }
 
