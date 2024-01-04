@@ -55,7 +55,8 @@ interface OpsmxSsdService {
                          @Query("tag") String tag,
                          @Query("tool") String tool,
                          @Query("tags") String tags,
-                         @Query("action") String action)
+                         @Query("action") String action,
+                         @Query("integrationType") String integrationType)
 
   @GET("/ssdservice/{version}/{type}/{source}")
   Object getSddResponse2(@Path('version') String version,
@@ -219,6 +220,7 @@ interface OpsmxSsdService {
                                   @Query("scope") String scope,
                                   @Query("appId") String appId,
                                   @Query("vulnAlert") String vulnAlert,
+                                  @Query("integrationType") String integrationType,
                                   @Body Object data)
 
   @GET("/ssdservice/{version}/{type}/{source}/download/json")
@@ -258,7 +260,8 @@ interface OpsmxSsdService {
                             @Query("severity") String severity,
                             @Query("scope") String scope,
                             @Query("current") String current,
-                            @Query("tag") String tag)
+                            @Query("tag") String tag,
+                            @Query("integrationType") String integrationType)
 
   @DELETE("/ssdservice/{version}/{type}/{source}")
   Object deleteSddResponse2(@Path('version') String version,
