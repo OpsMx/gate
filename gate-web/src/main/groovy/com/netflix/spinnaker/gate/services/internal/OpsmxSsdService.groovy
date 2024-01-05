@@ -56,7 +56,8 @@ interface OpsmxSsdService {
                          @Query("tool") String tool,
                          @Query("tags") String tags,
                          @Query("action") String action,
-                         @Query("integrationType") String integrationType)
+                         @Query("integrationType") String integrationType,
+                         @Query("name") String name)
 
   @GET("/ssdservice/{version}/{type}/{source}")
   Object getSddResponse2(@Path('version') String version,
@@ -221,6 +222,7 @@ interface OpsmxSsdService {
                                   @Query("appId") String appId,
                                   @Query("vulnAlert") String vulnAlert,
                                   @Query("integrationType") String integrationType,
+                                  @Query("name") String name,
                                   @Body Object data)
 
   @GET("/ssdservice/{version}/{type}/{source}/download/json")
