@@ -108,8 +108,10 @@ class OpsmxSsdController {
                           @RequestParam(value = "scope", required = false) String scope,
                           @RequestParam(value = "appId", required = false) String appId,
                           @RequestParam(value = "vulnAlert", required = false) String vulnAlert,
+                          @RequestParam(value = "integrationType", required = false) String integrationType,
+                          @RequestParam(value = "name", required = false) String name,
                           @RequestBody(required = false) Object data) {
-    return opsMxSsdService.updateSsdServiceResponse(version, type, stage, policy, policyId, id, scope, appId, vulnAlert, data)
+    return opsMxSsdService.updateSsdServiceResponse(version, type, stage, policy, policyId, id, scope, appId, vulnAlert, integrationType, name, data)
   }
 
   @ApiOperation(value = "Update cluster details in ssd rest service")
@@ -151,8 +153,10 @@ class OpsmxSsdController {
                         @RequestParam(value = "tag", required = false) String tag,
                         @RequestParam(value = "tool", required = false) String tool,
                         @RequestParam(value = "tags", required = false) String tags,
-                        @RequestParam(value = "action", required = false) String action) {
-    return opsMxSsdService.getSddResponse1(version, type, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, policy, typeList, alertName, id, startTime, endTime, severity, scope, current, tag, tool, tags, action)
+                        @RequestParam(value = "action", required = false) String action,
+                        @RequestParam(value = "integrationType", required = false) String integrationType,
+                        @RequestParam(value = "name", required = false) String name) {
+    return opsMxSsdService.getSddResponse1(version, type, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, policy, typeList, alertName, id, startTime, endTime, severity, scope, current, tag, tool, tags, action, integrationType, name)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
@@ -381,8 +385,9 @@ class OpsmxSsdController {
                            @RequestParam(value = "severity", required = false) String severity,
                            @RequestParam(value = "scope", required = false) String scope,
                            @RequestParam(value = "current", required = false) String current,
-                           @RequestParam(value = "tag", required = false) String tag) {
-    return opsMxSsdService.deleteSddResponse1(version, type, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, policy, typeList, alertName, id, startTime, endTime, severity, scope, current, tag)
+                           @RequestParam(value = "tag", required = false) String tag,
+                           @RequestParam(value = "integrationType", required = false) String integrationType) {
+    return opsMxSsdService.deleteSddResponse1(version, type, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, policy, typeList, alertName, id, startTime, endTime, severity, scope, current, tag, integrationType)
   }
 
   @ApiOperation(value = "Delete Endpoint for ssd services")
