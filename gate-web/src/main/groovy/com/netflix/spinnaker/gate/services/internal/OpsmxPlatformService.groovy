@@ -180,7 +180,7 @@ interface OpsmxPlatformService {
                                @Path('source2') String source2,
                                @Body Object data)
 
-  @GET("/platformservice/{version}/{type}/{source}/{source1}/{source2}")
+  @GET("/platformservice/{version}/{type}/{source}/{source1}")
   Object downloadManifestResponse5(@Path('version') String version,
                                    @Path('type') String type,
                                    @Path('source') String source,
