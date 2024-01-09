@@ -111,6 +111,7 @@ class OpsmxPlatformController {
                               @RequestParam(name = "applicationId", required = false) Integer applicationId,
                               @RequestParam(name = "canaryId", required = false) Integer canaryId,
                               @RequestParam(value = "applicationName", required = false) String applicationName,
+                              @RequestParam(value = "nameSpace", required = false) String nameSpace,
                               @RequestParam(value = "argoName", required = false) String argoName,
                                HttpServletRequest httpServletRequest) {
 
@@ -118,7 +119,7 @@ class OpsmxPlatformController {
     if (CacheUtil.isRegisteredCachingEndpoint(path)) {
       return handleCaching(path, httpServletRequest, version, type, source, source1, agentName, cdName, datasourceType, permissionId,applicationName,argoName)
     } else {
-      return opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId, applicationId, canaryId,applicationName,argoName)
+      return opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId, applicationId, canaryId,applicationName,argoName,nameSpace)
     }
   }
 
@@ -191,17 +192,17 @@ class OpsmxPlatformController {
     return opsmxPlatformService.getPlatformResponse8(version, type, source, source1, source2, source3, source4, source5, source6, gateType)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
-  @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
-  Object downloadManifest(@PathVariable("version") String version,
-                          @PathVariable("type") String type,
-                          @PathVariable("source") String source,
-                          @PathVariable("source1") String source1,
-                          @RequestParam(value = "argoName", required = false) String argoName,
-                          @RequestParam(value = "agentName", required = false) String agentName,
-                          @RequestParam(value = "nameSpace", required = false) String nameSpace) {
-    return opsmxPlatformService.downloadManifestResponse5(version, type, source, source1, argoName, agentName, nameSpace)
-  }
+//  @ApiOperation(value = "Endpoint for platform rest services")
+//  @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
+//  Object downloadManifest(@PathVariable("version") String version,
+//                          @PathVariable("type") String type,
+//                          @PathVariable("source") String source,
+//                          @PathVariable("source1") String source1,
+//                          @RequestParam(value = "argoName", required = false) String argoName,
+//                          @RequestParam(value = "agentName", required = false) String agentName,
+//                          @RequestParam(value = "nameSpace", required = false) String nameSpace) {
+//    return opsmxPlatformService.downloadManifestResponse5(version, type, source, source1, argoName, agentName, nameSpace)
+//  }
 
   @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value ="/v7/datasource/groups", method = RequestMethod.GET)
