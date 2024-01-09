@@ -16,6 +16,7 @@
 
 package com.netflix.spinnaker.gate.services.internal
 
+import org.mapstruct.Qualifier
 import retrofit.client.Response
 import retrofit.http.*
 
@@ -179,6 +180,16 @@ interface OpsmxPlatformService {
                                @Path('source2') String source2,
                                @Body Object data)
 
+  @GET("/platformservice/{version}/{type}/{source}/{source1}/{source2}")
+  Object downloadManifestResponse5(@Path('version') String version,
+                                   @Path('type') String type,
+                                   @Path('source') String source,
+                                   @Path('source1') String source1,
+                                   @Query('argoName') String argoName,
+                                   @Query('agentName') String agentName,
+                                   @Query('nameSpace') String nameSpace)
+
+
   @POST("/platformservice/{version}/{type}/{source}/{source1}/{source2}/{source3}")
   Object postPlatformResponse6(@Path('version') String version,
                                @Path('type') String type,
@@ -213,6 +224,9 @@ interface OpsmxPlatformService {
                                  @Path('source1') String source1,
                                  @Path('source2') String source2,
                                  @Query("sourceName") String sourceName,
+                                 @Query('argoName') String argoName,
+                                 @Query('agentName') String agentName,
+                                 @Query('nameSpace') String nameSpace,
                                  @Body Object data)
 
   @PUT("/platformservice/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}")

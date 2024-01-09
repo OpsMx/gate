@@ -192,6 +192,18 @@ class OpsmxPlatformController {
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
+  @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
+  Object downloadManifest(@PathVariable("version") String version,
+                          @PathVariable("type") String type,
+                          @PathVariable("source") String source,
+                          @PathVariable("source1") String source1,
+                          @RequestParam(value = "argoName", required = false) String argoName,
+                          @RequestParam(value = "agentName", required = false) String agentName,
+                          @RequestParam(value = "nameSpace", required = false) String nameSpace) {
+    return opsmxPlatformService.downloadManifestResponse5(version, type, source, source1, argoName, agentName, nameSpace)
+  }
+
+  @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value ="/v7/datasource/groups", method = RequestMethod.GET)
   Object getPlatformResponse9(@RequestParam(required = false) String name,
     @RequestParam("isArgoEnabled") Boolean isArgoEnabled){
@@ -316,6 +328,8 @@ class OpsmxPlatformController {
     return opsmxPlatformService.postPlatformResponse5(version, type, source, source1, source2, data)
   }
 
+
+
   @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.POST)
   Object postPlatformResponse6(@PathVariable("version") String version,
@@ -367,9 +381,12 @@ class OpsmxPlatformController {
                                  @PathVariable("source1") String source1,
                                  @PathVariable("source2") String source2,
                                  @RequestParam(value = "sourceName", required = false) String sourceName,
+                                 @RequestParam(value = "argoName", required = false) String argoName,
+                                 @RequestParam(value = "agentName", required = false) String agentName,
+                                 @RequestParam(value = "nameSpace", required = false) String nameSpace,
                                  @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.updatePlatformResponse3(version, type, source, source1, source2,sourceName, data)
+    return opsmxPlatformService.updatePlatformResponse3(version, type, source, source1, source2,sourceName,argoName,agentName,nameSpace, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
