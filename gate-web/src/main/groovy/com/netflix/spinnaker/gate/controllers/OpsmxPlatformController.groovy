@@ -325,16 +325,15 @@ class OpsmxPlatformController {
                                @PathVariable("source") String source,
                                @PathVariable("source1") String source1,
                                @RequestParam("isExists") Boolean isExists,
-                               @RequestParam(value = "description", required = false) String description,
-                               @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
+                               @RequestParam(value = "argoCdUrl") String argoCdUrl,
                                @RequestParam(value = "rolloutsEnabled") Boolean rolloutsEnabled,
-                               @RequestParam(value = "isdUrl", required = false) String isdUrl,
-                               @RequestParam(value = "argoName", required = false) String argoName,
-                               @RequestParam(value = "agentName", required = false) String agentName,
-                               @RequestParam(value = "nameSpace", required = false) String nameSpace,
+                               @RequestParam(value = "isdUrl") String isdUrl,
+                               @RequestParam(value = "argoName") String argoName,
+                               @RequestParam(value = "agentName") String agentName,
+                               @RequestParam(value = "nameSpace") String nameSpace,
                                @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, description, argoCdUrl, rolloutsEnabled,isdUrl,argoName,agentName,nameSpace, data)
+    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, argoCdUrl, rolloutsEnabled,isdUrl,argoName,agentName,nameSpace, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
