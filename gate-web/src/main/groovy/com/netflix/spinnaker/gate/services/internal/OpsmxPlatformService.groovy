@@ -179,12 +179,13 @@ interface OpsmxPlatformService {
                                @Path('source') String source,
                                @Path('source1') String source1,
                                @Query('isExists') boolean isExists,
+                               @Query('description') String description,
+                               @Query('namespace') String namespace,
                                @Query('argoCdUrl') String argoCdUrl,
                                @Query('rolloutsEnabled') boolean rolloutsEnabled,
                                @Query('isdUrl') String isdUrl,
                                @Query('argoName') String argoName,
                                @Query('agentName') String agentName,
-                               @Query('namespace') String namespace,
                                @Body Object data)
 
   @POST("/platformservice/{version}/{type}/{source}/{source1}/{source2}")

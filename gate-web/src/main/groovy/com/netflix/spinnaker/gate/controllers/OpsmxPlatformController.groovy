@@ -324,17 +324,20 @@ class OpsmxPlatformController {
                                @PathVariable("type") String type,
                                @PathVariable("source") String source,
                                @PathVariable("source1") String source1,
-                               @RequestParam(value = "isExists") boolean isExists,
-                               @RequestParam(value = "argoCdUrl") String argoCdUrl,
+                               @RequestParam("isExists") boolean isExists,
+                               @RequestParam(value = "description", required = false) String description,
+                               @RequestParam(value = "namespace", required = false) String namespace,
+                               @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
                                @RequestParam(value = "rolloutsEnabled") boolean rolloutsEnabled,
-                               @RequestParam(value = "isdUrl") String isdUrl,
+                               @RequestParam(value = "isdUrl", required = false) String isdUrl,
                                @RequestParam(value = "argoName") String argoName,
                                @RequestParam(value = "agentName") String agentName,
-                               @RequestParam(value = "namespace") String namespace,
                                @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, argoCdUrl, rolloutsEnabled,isdUrl,argoName,agentName,namespace, data)
+    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, description, namespace, argoCdUrl, rolloutsEnabled, isdUrl, argoName, agentName, data)
   }
+
+
 
   @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.POST)
