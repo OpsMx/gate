@@ -200,7 +200,7 @@ class OpsmxPlatformController {
                                       @RequestParam(value = "argoName", required = false) String argoName,
                                       @RequestParam(value = "agentName", required = false) String agentName,
                                       @RequestParam(value = "namespace", required = false) String namespace) {
-    Response response = opsmxPlatformService.getCdIntegratorManifestDownloadFile(type, source,argoName,argoName, namespace)
+    Response response = opsmxPlatformService.getCdIntegratorManifestDownloadFile(type, source,argoName,agentName, namespace)
     InputStream inputStream = response.getBody().in()
     try {
       byte [] manifestFile = IOUtils.toByteArray(inputStream)
