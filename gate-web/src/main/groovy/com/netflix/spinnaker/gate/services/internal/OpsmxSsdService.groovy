@@ -56,7 +56,7 @@ interface OpsmxSsdService {
                          @Query("tool") String tool,
                          @Query("tags") String tags,
                          @Query("action") String action,
-                         @Query("integrationType") String integrationType,
+                         @Query("integratorType") String integratorType,
                          @Query("name") String name)
 
   @GET("/ssdservice/{version}/{type}/{source}")
