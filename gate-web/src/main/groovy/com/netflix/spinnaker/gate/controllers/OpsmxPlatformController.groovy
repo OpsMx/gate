@@ -330,10 +330,10 @@ class OpsmxPlatformController {
                                @RequestParam(value = "isdUrl") String isdUrl,
                                @RequestParam(value = "argoName") String argoName,
                                @RequestParam(value = "agentName") String agentName,
-                               @RequestParam(value = "nameSpace") String nameSpace,
+                               @RequestParam(value = "namespace") String namespace,
                                @RequestBody(required = false) Object data) {
-   log.info("Hitting API ")
-    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, argoCdUrl, rolloutsEnabled,isdUrl,argoName,agentName,nameSpace, data)
+
+    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, argoCdUrl, rolloutsEnabled,isdUrl,argoName,agentName,namespace, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")

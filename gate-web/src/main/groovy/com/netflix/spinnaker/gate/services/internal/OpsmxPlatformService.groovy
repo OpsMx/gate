@@ -184,7 +184,7 @@ interface OpsmxPlatformService {
                                @Query('isdUrl') String isdUrl,
                                @Query('argoName') String argoName,
                                @Query('agentName') String agentName,
-                               @Query('nameSpace') String nameSpace,
+                               @Query('namespace') String namespace,
                                @Body Object data)
 
   @POST("/platformservice/{version}/{type}/{source}/{source1}/{source2}")
