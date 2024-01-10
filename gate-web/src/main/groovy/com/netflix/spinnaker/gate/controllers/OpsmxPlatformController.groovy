@@ -324,15 +324,15 @@ class OpsmxPlatformController {
                                @PathVariable("type") String type,
                                @PathVariable("source") String source,
                                @PathVariable("source1") String source1,
-                               @RequestParam("isExists") Boolean isExists,
+                               @RequestParam(value = "isExists") boolean isExists,
                                @RequestParam(value = "argoCdUrl") String argoCdUrl,
-                               @RequestParam(value = "rolloutsEnabled") Boolean rolloutsEnabled,
+                               @RequestParam(value = "rolloutsEnabled") boolean rolloutsEnabled,
                                @RequestParam(value = "isdUrl") String isdUrl,
                                @RequestParam(value = "argoName") String argoName,
                                @RequestParam(value = "agentName") String agentName,
                                @RequestParam(value = "nameSpace") String nameSpace,
                                @RequestBody(required = false) Object data) {
-
+   log.info("Hitting API ")
     return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, argoCdUrl, rolloutsEnabled,isdUrl,argoName,agentName,nameSpace, data)
   }
 
