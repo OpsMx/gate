@@ -309,7 +309,7 @@ class OpsmxPlatformController {
                                @RequestParam(value = "agentName") String agentName,
                                @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, description, namespace, argoCdUrl, rolloutsEnabled, isdUrl, argoName, agentName data)
+    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, description, namespace, argoCdUrl, rolloutsEnabled, isdUrl, argoName, agentName, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
