@@ -109,6 +109,13 @@ interface OpsmxPlatformService {
                               @Path('source6') String source6,
                               @Query("type") String gateType)
 
+  @GET("/platformservice/{version}/{type}/{source}/manifest")
+  Response getCdIntegratorManifestDownloadFile(@Path('type') String type,
+                                               @Path('source') String source,
+                                               @Query("argoName") String argoName,
+                                               @Query('agentName') String agentName,
+                                               @Query("namespace") String namespace)
+
   @GET("/platformservice/v7/datasource/groups")
   Object getPlatformResponse9(@Query("name") String name,
                               @Query("isArgoEnabled") boolean isArgoEnabled)
@@ -171,6 +178,9 @@ interface OpsmxPlatformService {
                                @Path('type') String type,
                                @Path('source') String source,
                                @Path('source1') String source1,
+                               @Query('argoName') String argoName,
+                               @Query('agentName') String agentName,
+                               @Query('nameSpace') String nameSpace,
                                @Body Object data)
 
   @POST("/platformservice/{version}/{type}/{source}/{source1}/{source2}")

@@ -192,17 +192,29 @@ class OpsmxPlatformController {
     return opsmxPlatformService.getPlatformResponse8(version, type, source, source1, source2, source3, source4, source5, source6, gateType)
   }
 
-//  @ApiOperation(value = "Endpoint for platform rest services")
-//  @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
-//  Object downloadManifest(@PathVariable("version") String version,
-//                          @PathVariable("type") String type,
-//                          @PathVariable("source") String source,
-//                          @PathVariable("source1") String source1,
-//                          @RequestParam(value = "argoName", required = false) String argoName,
-//                          @RequestParam(value = "agentName", required = false) String agentName,
-//                          @RequestParam(value = "nameSpace", required = false) String nameSpace) {
-//    return opsmxPlatformService.downloadManifestResponse5(version, type, source, source1, argoName, agentName, nameSpace)
-//  }
+  @ApiOperation(value = "download the argo manifest file")
+  @GetMapping(value = "/{version}/{type}/{source}/manifest", produces = "application/octet-stream")
+  @ResponseBody
+  Object getDownloadAgentManifestFile(@PathVariable("type") String type,
+                                      @PathVariable("source") String source,
+                                      @RequestParam(value = "argoName", required = false) String argoName,
+                                      @RequestParam(value = "agentName", required = false) String agentName,
+                                      @RequestParam(value = "namespace", required = false) String namespace) {
+    Response response = opsmxPlatformService.getCdIntegratorManifestDownloadFile(type, source,argoName,argoName, namespace)
+    InputStream inputStream = response.getBody().in()
+    try {
+      byte [] manifestFile = IOUtils.toByteArray(inputStream)
+      HttpHeaders headers = new HttpHeaders()
+      headers.add("Content-Disposition", response.getHeaders().stream()
+        .filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") })
+        .collect(Collectors.toList()).get(0).value)
+      return ResponseEntity.ok().headers(headers).body(manifestFile)
+    } finally{
+      if (inputStream!=null){
+        inputStream.close()
+      }
+    }
+  }
 
   @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value ="/v7/datasource/groups", method = RequestMethod.GET)
@@ -312,9 +324,12 @@ class OpsmxPlatformController {
                                @PathVariable("type") String type,
                                @PathVariable("source") String source,
                                @PathVariable("source1") String source1,
+                               @RequestParam(value = "argoName", required = false) String argoName,
+                               @RequestParam(value = "agentName", required = false) String agentName,
+                               @RequestParam(value = "nameSpace", required = false) String nameSpace,
                                @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, data)
+    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1,argoName,agentName,nameSpace, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
