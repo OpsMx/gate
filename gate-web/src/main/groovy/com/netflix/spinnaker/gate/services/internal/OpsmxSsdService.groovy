@@ -229,7 +229,7 @@ interface OpsmxSsdService {
   @PUT("/ssdservice/{version}/{type}/{source}")
   Object updateSsdServiceResponse1(@Path('version') String version,
                                    @Path('type') String type,
-                                   @Query("source") String source,
+                                   @Path("source") String source,
                                    @Query("integratorType") String integratorType,
                                    @Body Object data)
 
