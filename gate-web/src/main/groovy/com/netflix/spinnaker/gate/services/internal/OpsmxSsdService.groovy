@@ -226,6 +226,13 @@ interface OpsmxSsdService {
                                   @Query("name") String name,
                                   @Body Object data)
 
+  @PUT("/ssdservice/{version}/{type}/{source}")
+  Object updateSsdServiceResponse1(@Path('version') String version,
+                                   @Path('type') String type,
+                                   @Query("source") String source,
+                                   @Query("integratorType") String integratorType,
+                                   @Body Object data)
+
   @GET("/ssdservice/{version}/{type}/{source}/download/json")
   Response downloadJsonFile(@Path('version') String version,
                             @Path('type') String type,

@@ -114,12 +114,23 @@ class OpsmxSsdController {
     return opsMxSsdService.updateSsdServiceResponse(version, type, stage, policy, policyId, id, scope, appId, vulnAlert, integratorType, name, data)
   }
 
+  @ApiOperation(value = "Update endpoint in ssd rest service")
+  @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.PUT)
+  Object updateSsdService1(@PathVariable("version") String version,
+                           @PathVariable("type") String type,
+                           @PathVariable("source") String source,
+                           @RequestParam(value = "integratorType", required = false) String integratorType,
+                           @RequestBody(required = false) Object data) {
+    return opsMxSsdService.updateSsdServiceResponse1(version, type, source, integratorType, data)
+  }
+
   @ApiOperation(value = "Update cluster details in ssd rest service")
   @RequestMapping(value = "/{version}/cluster/{id}", method = RequestMethod.PUT)
   Object updateClusterInSsd(@PathVariable("version") String version,
                             @PathVariable("id") String id,
                             @RequestParam(value = "name", required = false) String name,
                             @RequestParam(value = "account", required = false) String account,
+                            @RequestParam(value = "integratorType", required = false) String integratorType,
                             @RequestParam MultipartFile file) {
     return updateCluster(file, name, account, version, id)
   }
