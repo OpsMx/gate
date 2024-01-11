@@ -183,8 +183,8 @@ interface OpsmxPlatformService {
                                @Query(value = "argoCdUrl") String argoCdUrl,
                                @Query(value = "rolloutsEnabled") Boolean rolloutsEnabled,
                                @Query(value = "isdUrl") String isdUrl,
-                               @Query("argoName") String argoName,
-                               @Query("agentName") String agentName,
+                               @Query(value = "argoName") String argoName,
+                               @Query(value = "agentName") String agentName,
                                @Body Object data)
 
   @POST("/platformservice/{version}/{type}/{source}/{source1}/{source2}")

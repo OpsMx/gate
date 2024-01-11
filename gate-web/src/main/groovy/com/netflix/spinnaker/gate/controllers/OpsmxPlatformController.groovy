@@ -333,8 +333,8 @@ class OpsmxPlatformController {
                                @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
                                @RequestParam(value = "rolloutsEnabled") boolean rolloutsEnabled,
                                @RequestParam(value = "isdUrl", required = false) String isdUrl,
-                               @RequestParam(value = "argoName") String argoName,
-                               @RequestParam(value = "agentName") String agentName,
+                               @RequestParam(value = "argoName", required = false) String argoName,
+                               @RequestParam(value = "agentName", required = false) String agentName,
                                @RequestBody(required = false) Object data) {
 
     return opsmxPlatformService.postPlatformResponse5(version, type, source, source1, source2, isExists, description, namespace, argoCdUrl, rolloutsEnabled, isdUrl, argoName, agentName, data)
