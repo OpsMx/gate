@@ -178,7 +178,7 @@ interface OpsmxPlatformService {
                                @Path('source1') String source1,
                                @Query(value = "isExists") Boolean isExists,
                                @Query(value = "description") String description,
-                               @Query(value = "namespace") String namespace,
+                               @Query(value = "nameSpace") String nameSpace,
                                @Query(value = "argoCdUrl") String argoCdUrl,
                                @Query(value = "rolloutsEnabled") Boolean rolloutsEnabled,
                                @Query(value = "isdUrl") String isdUrl,
