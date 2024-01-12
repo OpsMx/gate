@@ -107,7 +107,7 @@ interface OpsmxPlatformService {
                               @Path('source6') String source6,
                               @Query("type") String gateType)
 
-  @GET("/platformservice/{version}/{type}/{source}/manifest")
+  @GET("/platformservice/v7/{type}/{source}/manifest")
   Response getCdIntegratorManifestDownloadFile(@Path('type') String type,
                                                @Path('source') String source,
                                                @Query("argoName") String argoName,
