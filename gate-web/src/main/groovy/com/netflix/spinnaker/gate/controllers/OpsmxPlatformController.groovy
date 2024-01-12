@@ -191,7 +191,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.getPlatformResponse8(version, type, source, source1, source2, source3, source4, source5, source6, gateType)
   }
 
-  @ApiOperation(value = "download the argo manifest file")
+  @ApiOperation(value = "download the CD Integrator manifest file")
   @GetMapping(value = "/{version}/{type}/{source}/manifest", produces = "application/octet-stream")
   @ResponseBody
   Object getDownloadAgentManifestFile(@PathVariable("type") String type,
@@ -312,17 +312,9 @@ class OpsmxPlatformController {
   Object postPlatformResponse3(@PathVariable("version") String version,
                                @PathVariable("type") String type,
                                @PathVariable("source") String source,
-                               @RequestParam("isExists") boolean isExists,
-                               @RequestParam(value = "description", required = false) String description,
-                               @RequestParam(value = "namespace", required = false) String namespace,
-                               @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
-                               @RequestParam(value = "rolloutsEnabled") boolean rolloutsEnabled,
-                               @RequestParam(value = "isdUrl", required = false) String isdUrl,
-                               @RequestParam(value = "argoName") String argoName,
-                               @RequestParam(value = "agentName") String agentName,
                                @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.postPlatformResponse3(version, type, source, isExists, description, namespace, argoCdUrl, rolloutsEnabled, isdUrl, argoName, agentName, data)
+    return opsmxPlatformService.postPlatformResponse3(version, type, source, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
@@ -351,17 +343,9 @@ class OpsmxPlatformController {
                                @PathVariable("source") String source,
                                @PathVariable("source1") String source1,
                                @PathVariable("source2") String source2,
-                               @RequestParam("isExists") boolean isExists,
-                               @RequestParam(value = "description", required = false) String description,
-                               @RequestParam(value = "namespace", required = false) String namespace,
-                               @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
-                               @RequestParam(value = "rolloutsEnabled") boolean rolloutsEnabled,
-                               @RequestParam(value = "isdUrl", required = false) String isdUrl,
-                               @RequestParam(value = "argoName", required = false) String argoName,
-                               @RequestParam(value = "agentName", required = false) String agentName,
                                @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.postPlatformResponse5(version, type, source, source1, source2, isExists, description, namespace, argoCdUrl, rolloutsEnabled, isdUrl, argoName, agentName, data)
+    return opsmxPlatformService.postPlatformResponse5(version, type, source, source1, source2, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
@@ -372,17 +356,9 @@ class OpsmxPlatformController {
                                @PathVariable("source1") String source1,
                                @PathVariable("source2") String source2,
                                @PathVariable("source3") String source3,
-                               @RequestParam("isExists") boolean isExists,
-                               @RequestParam(value = "description", required = false) String description,
-                               @RequestParam(value = "namespace", required = false) String namespace,
-                               @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
-                               @RequestParam(value = "rolloutsEnabled") boolean rolloutsEnabled,
-                               @RequestParam(value = "isdUrl", required = false) String isdUrl,
-                               @RequestParam(value = "argoName") String argoName,
-                               @RequestParam(value = "agentName") String agentName,
                                @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.postPlatformResponse6(version, type, source, source1, source2, source3, isExists, description, namespace, argoCdUrl, rolloutsEnabled, isdUrl, argoName, agentName, data)
+    return opsmxPlatformService.postPlatformResponse6(version, type, source, source1, source2, source3, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
@@ -410,9 +386,12 @@ class OpsmxPlatformController {
                                  @PathVariable("type") String type,
                                  @PathVariable("source") String source,
                                  @PathVariable("source1") String source1,
+                                 @RequestParam(value = "argoName", required = false ) String argoName,
+                                 @RequestParam(value = "agentName", required = false) String agentName,
+                                 @RequestParam(value = "nameSpace", required = false) String nameSpace,
                                  @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.updatePlatformResponse2(version, type, source, source1, data)
+    return opsmxPlatformService.updatePlatformResponse2(version, type, source, source1, argoName, agentName, nameSpace, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
@@ -423,12 +402,9 @@ class OpsmxPlatformController {
                                  @PathVariable("source1") String source1,
                                  @PathVariable("source2") String source2,
                                  @RequestParam(value = "sourceName", required = false) String sourceName,
-                                 @RequestParam(value = "argoName", required = false) String argoName,
-                                 @RequestParam(value = "agentName", required = false) String agentName,
-                                 @RequestParam(value = "nameSpace", required = false) String nameSpace,
                                  @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.updatePlatformResponse3(version, type, source, source1, source2,sourceName,argoName,agentName,nameSpace, data)
+    return opsmxPlatformService.updatePlatformResponse3(version, type, source, source1, source2, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")

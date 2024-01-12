@@ -169,14 +169,6 @@ interface OpsmxPlatformService {
   Object postPlatformResponse3(@Path('version') String version,
                                @Path('type') String type,
                                @Path('source') String source,
-                               @Query("isExists") boolean isExists,
-                               @Query(value = "description") String description,
-                               @Query(value = "namespace") String namespace,
-                               @Query(value = "argoCdUrl") String argoCdUrl,
-                               @Query(value = "rolloutsEnabled") boolean rolloutsEnabled,
-                               @Query(value = "isdUrl") String isdUrl,
-                               @Query("argoName") String argoName,
-                               @Query("agentName") String agentName,
                                @Body Object data)
 
   @POST("/platformservice/{version}/{type}/{source}/{source1}")
@@ -200,14 +192,6 @@ interface OpsmxPlatformService {
                                @Path('source') String source,
                                @Path('source1') String source1,
                                @Path('source2') String source2,
-                               @Query("isExists") boolean isExists,
-                               @Query(value = "description") String description,
-                               @Query(value = "namespace") String namespace,
-                               @Query(value = "argoCdUrl") String argoCdUrl,
-                               @Query(value = "rolloutsEnabled") boolean rolloutsEnabled,
-                               @Query(value = "isdUrl") String isdUrl,
-                               @Query("argoName") String argoName,
-                               @Query("agentName") String agentName,
                                @Body Object data)
 
   @POST("/platformservice/{version}/{type}/{source}/{source1}/{source2}/{source3}")
@@ -217,14 +201,6 @@ interface OpsmxPlatformService {
                                @Path('source1') String source1,
                                @Path('source2') String source2,
                                @Path('source3') String source3,
-                               @Query("isExists") boolean isExists,
-                               @Query(value = "description") String description,
-                               @Query(value = "namespace") String namespace,
-                               @Query(value = "argoCdUrl") String argoCdUrl,
-                               @Query(value = "rolloutsEnabled") boolean rolloutsEnabled,
-                               @Query(value = "isdUrl") String isdUrl,
-                               @Query("argoName") String argoName,
-                               @Query("agentName") String agentName,
                                @Body Object data)
 
   @PUT("/platformservice/{version}/{type}")
@@ -243,6 +219,9 @@ interface OpsmxPlatformService {
                                  @Path('type') String type,
                                  @Path('source') String source,
                                  @Path('source1') String source1,
+                                 @Query('argoName') String argoName,
+                                 @Query('agentName') String agentName,
+                                 @Query('nameSpace') String nameSpace,
                                  @Body Object data)
 
   @PUT("/platformservice/{version}/{type}/{source}/{source1}/{source2}")
@@ -252,9 +231,6 @@ interface OpsmxPlatformService {
                                  @Path('source1') String source1,
                                  @Path('source2') String source2,
                                  @Query("sourceName") String sourceName,
-                                 @Query('argoName') String argoName,
-                                 @Query('agentName') String agentName,
-                                 @Query('nameSpace') String nameSpace,
                                  @Body Object data)
 
   @PUT("/platformservice/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}")
