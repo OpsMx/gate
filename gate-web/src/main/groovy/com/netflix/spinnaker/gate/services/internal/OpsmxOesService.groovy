@@ -34,7 +34,7 @@ interface OpsmxOesService {
                                      @Path('source1') String source1,
                                      @Query('description') String description,
                                      @Query("isExists") boolean isExists,
-                                     @Query("namespace") String namespace,
+                                     @Query("nameSpace") String nameSpace,
                                      @Query("argoCdUrl") String argoCdUrl,
                                      @Query("rolloutsEnabled") boolean rolloutsEnabled,
                                      @Query("isdUrl") String isdUrl)
