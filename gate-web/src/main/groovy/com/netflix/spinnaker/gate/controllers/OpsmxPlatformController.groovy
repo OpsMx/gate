@@ -192,7 +192,7 @@ class OpsmxPlatformController {
   }
 
   @ApiOperation(value = "download the CD Integrator manifest file")
-  @GetMapping(value = "/{version}/{type}/{source}/manifest", produces = "application/octet-stream")
+  @GetMapping(value = "/v7/{type}/{source}/manifest", produces = "application/octet-stream")
   @ResponseBody
   Object getDownloadAgentManifestFile(@PathVariable("type") String type,
                                       @PathVariable("source") String source,
