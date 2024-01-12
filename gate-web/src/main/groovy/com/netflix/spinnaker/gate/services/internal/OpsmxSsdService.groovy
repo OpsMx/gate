@@ -56,7 +56,7 @@ interface OpsmxSsdService {
                          @Query("tool") String tool,
                          @Query("tags") String tags,
                          @Query("action") String action,
-                         @Query("integrationType") String integrationType,
+                         @Query("integratorType") String integratorType,
                          @Query("name") String name)
 
   @GET("/ssdservice/{version}/{type}/{source}")
@@ -88,7 +88,8 @@ interface OpsmxSsdService {
                          @Query("scope") String scope,
                          @Query("name") String name,
                          @Query("value") String value,
-                         @Query("current") String current)
+                         @Query("current") String current,
+                         @Query("integratorType") String integratorType)
 
   @GET("/ssdservice/{version}/{type}/{source}/{source1}")
   Object getSddResponse3(@Path('version') String version,
@@ -221,9 +222,16 @@ interface OpsmxSsdService {
                                   @Query("scope") String scope,
                                   @Query("appId") String appId,
                                   @Query("vulnAlert") String vulnAlert,
-                                  @Query("integrationType") String integrationType,
+                                  @Query("integratorType") String integratorType,
                                   @Query("name") String name,
                                   @Body Object data)
+
+  @PUT("/ssdservice/{version}/{type}/{source}")
+  Object updateSsdServiceResponse1(@Path('version') String version,
+                                   @Path('type') String type,
+                                   @Path("source") String source,
+                                   @Query("integratorType") String integratorType,
+                                   @Body Object data)
 
   @GET("/ssdservice/{version}/{type}/{source}/download/json")
   Response downloadJsonFile(@Path('version') String version,
@@ -263,7 +271,7 @@ interface OpsmxSsdService {
                             @Query("scope") String scope,
                             @Query("current") String current,
                             @Query("tag") String tag,
-                            @Query("integrationType") String integrationType)
+                            @Query("integratorType") String integratorType)
 
   @DELETE("/ssdservice/{version}/{type}/{source}")
   Object deleteSddResponse2(@Path('version') String version,
