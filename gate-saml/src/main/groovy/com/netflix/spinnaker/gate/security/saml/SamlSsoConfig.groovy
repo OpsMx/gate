@@ -92,7 +92,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
     List<String> requiredRoles
     boolean sortRoles = false
-    boolean forceLowercaseRoles = true
+    boolean forceLowercaseRoles = false
     UserAttributeMapping userAttributeMapping = new UserAttributeMapping()
     long maxAuthenticationAge = 7200
 
@@ -223,6 +223,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
         def email = attributes[userAttributeMapping.email]?.get(0) ?: subjectNameId
         String username = attributes[userAttributeMapping.username]?.get(0) ?: subjectNameId
         def roles = extractRoles(email, attributes, userAttributeMapping, samlSecurityConfigProperties.forceLowercaseRoles)
+        log.info("Printing Roles)))((())()()()((" + roles)
 
         if (samlSecurityConfigProperties.sortRoles) {
           roles = roles.sort()
