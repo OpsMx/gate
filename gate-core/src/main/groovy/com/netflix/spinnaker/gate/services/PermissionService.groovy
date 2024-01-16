@@ -96,6 +96,9 @@ class PermissionService {
 
   @Retryable(value = UpstreamBadRequest.class, maxAttempts = 3, backoff = @Backoff(delay = 4000l))
   void loginWithRoles(String userId, Collection<String> roles) {
+    log.info("&&&&&&&Roles" , roles)
+    log.debug("&&&&&&&Roles&&&&&&&&" , roles)
+
     if (fiatStatus.isEnabled()) {
       try {
         AuthenticatedRequest.allowAnonymous({
