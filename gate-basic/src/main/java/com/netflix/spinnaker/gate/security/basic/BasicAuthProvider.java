@@ -57,7 +57,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
       throw new BadCredentialsException("Invalid username/password combination");
     }
 
-    log.debug("roles configured for user: {} are roles: {}", name, roles);
+    log.info("roles configured for user: {} are roles: {}", name, roles);
     User user = new User();
     user.setEmail(name);
     user.setUsername(name);
@@ -72,7 +72,9 @@ public class BasicAuthProvider implements AuthenticationProvider {
       // Updating roles in fiat service
       permissionService.loginWithRoles(name, roles);
       // Updating roles in platform service
+      log.info("authenticate****** RoleName is "+ roles + "User Name is" + name );
       oesAuthorizationService.cacheUserGroups(roles, name);
+
     }
 
     return new UsernamePasswordAuthenticationToken(user, password, grantedAuthorities);
