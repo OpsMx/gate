@@ -76,7 +76,7 @@ class AuthController {
     }
 
     def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
-    logger.info("Fiat roles for user {}: {}", user.username, fiatRoles)
+
     if (fiatRoles) {
       user.roles = fiatRoles
     }
