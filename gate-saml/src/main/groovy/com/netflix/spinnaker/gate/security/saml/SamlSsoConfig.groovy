@@ -223,6 +223,8 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
         def email = attributes[userAttributeMapping.email]?.get(0) ?: subjectNameId
         String username = attributes[userAttributeMapping.username]?.get(0) ?: subjectNameId
         def roles = extractRoles(email, attributes, userAttributeMapping, samlSecurityConfigProperties.forceLowercaseRoles)
+        log.info("********** SamlSsoConfig : Printing samlSecurityConfigProperties 1 "+ samlSecurityConfigProperties.forceLowercaseRoles)
+        log.info("********** SamlSsoConfig : Printing Roles in 2 "+ roles)
 
         if (samlSecurityConfigProperties.sortRoles) {
           roles = roles.sort()
