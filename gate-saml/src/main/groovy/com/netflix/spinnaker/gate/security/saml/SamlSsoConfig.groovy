@@ -92,7 +92,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
     List<String> requiredRoles
     boolean sortRoles = false
-    boolean forceLowercaseRoles = true
+    boolean forceLowercaseRoles = false
     UserAttributeMapping userAttributeMapping = new UserAttributeMapping()
     long maxAuthenticationAge = 7200
 
