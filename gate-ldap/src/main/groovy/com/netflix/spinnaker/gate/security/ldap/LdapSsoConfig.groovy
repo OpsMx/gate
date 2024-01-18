@@ -175,7 +175,7 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
     private static Set<String> sanitizeRoles(Collection<? extends GrantedAuthority> authorities) {
       log.info("sanitize roles : {}", authorities)
       authorities.findResults {
-        StringUtils.removeStartIgnoreCase(it.authority, "ROLE_")?.toLowerCase()
+        StringUtils.removeStartIgnoreCase(it.authority, "ROLE_")
       }
     }
   }
