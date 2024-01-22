@@ -404,7 +404,7 @@ class OpsmxPlatformController {
                                  @RequestParam(value = "sourceName", required = false) String sourceName,
                                  @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.updatePlatformResponse3(version, type, source, source1, source2, data)
+    return opsmxPlatformService.updatePlatformResponse3(version, type, source, source1, source2,sourceName, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
