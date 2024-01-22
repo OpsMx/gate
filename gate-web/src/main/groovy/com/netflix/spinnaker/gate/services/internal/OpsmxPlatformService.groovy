@@ -107,6 +107,13 @@ interface OpsmxPlatformService {
                               @Path('source6') String source6,
                               @Query("type") String gateType)
 
+  @GET("/platformservice/v7/{type}/{source}/manifest")
+  Response getCdIntegratorManifestDownloadFile(@Path('type') String type,
+                                               @Path('source') String source,
+                                               @Query("argoName") String argoName,
+                                               @Query('agentName') String agentName,
+                                               @Query("nameSpace") String nameSpace)
+
   @GET("/platformservice/v7/datasource/groups")
   Object getPlatformResponse9(@Query("name") String name,
                               @Query("isArgoEnabled") boolean isArgoEnabled)
@@ -169,6 +176,14 @@ interface OpsmxPlatformService {
                                @Path('type') String type,
                                @Path('source') String source,
                                @Path('source1') String source1,
+                               @Query(value = "isExists") Boolean isExists,
+                               @Query(value = "description") String description,
+                               @Query(value = "nameSpace") String nameSpace,
+                               @Query(value = "argoCdUrl") String argoCdUrl,
+                               @Query(value = "rolloutsEnabled") Boolean rolloutsEnabled,
+                               @Query(value = "isdUrl") String isdUrl,
+                               @Query(value = "argoName") String argoName,
+                               @Query(value = "agentName") String agentName,
                                @Body Object data)
 
   @POST("/platformservice/{version}/{type}/{source}/{source1}/{source2}")
@@ -204,6 +219,9 @@ interface OpsmxPlatformService {
                                  @Path('type') String type,
                                  @Path('source') String source,
                                  @Path('source1') String source1,
+                                 @Query('argoName') String argoName,
+                                 @Query('agentName') String agentName,
+                                 @Query('nameSpace') String nameSpace,
                                  @Body Object data)
 
   @PUT("/platformservice/{version}/{type}/{source}/{source1}/{source2}")

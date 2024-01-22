@@ -191,6 +191,30 @@ class OpsmxPlatformController {
     return opsmxPlatformService.getPlatformResponse8(version, type, source, source1, source2, source3, source4, source5, source6, gateType)
   }
 
+  @ApiOperation(value = "download the CD Integrator manifest file")
+  @GetMapping(value = "/v7/{type}/{source}/manifest", produces = "application/octet-stream")
+  @ResponseBody
+  Object getDownloadAgentManifestFile(@PathVariable("type") String type,
+                                      @PathVariable("source") String source,
+                                      @RequestParam(value = "argoName", required = false) String argoName,
+                                      @RequestParam(value = "agentName", required = false) String agentName,
+                                      @RequestParam(value = "nameSpace", required = false) String nameSpace) {
+    Response response = opsmxPlatformService.getCdIntegratorManifestDownloadFile(type, source, argoName, agentName, nameSpace)
+    InputStream inputStream = response.getBody().in()
+    try {
+      byte [] manifestFile = IOUtils.toByteArray(inputStream)
+      HttpHeaders headers = new HttpHeaders()
+      headers.add("Content-Disposition", response.getHeaders().stream()
+        .filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") })
+        .collect(Collectors.toList()).get(0).value)
+      return ResponseEntity.ok().headers(headers).body(manifestFile)
+    } finally{
+      if (inputStream!=null){
+        inputStream.close()
+      }
+    }
+  }
+
   @ApiOperation(value = "Endpoint for platform rest services")
   @RequestMapping(value ="/v7/datasource/groups", method = RequestMethod.GET)
   Object getPlatformResponse9(@RequestParam(required = false) String name,
@@ -299,9 +323,17 @@ class OpsmxPlatformController {
                                @PathVariable("type") String type,
                                @PathVariable("source") String source,
                                @PathVariable("source1") String source1,
+                               @RequestParam(value = "isExists",  required = false) Boolean isExists,
+                               @RequestParam(value = "description", required = false) String description,
+                               @RequestParam(value = "nameSpace", required = false) String nameSpace,
+                               @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
+                               @RequestParam(value = "rolloutsEnabled", required = false) Boolean rolloutsEnabled,
+                               @RequestParam(value = "isdUrl", required = false) String isdUrl,
+                               @RequestParam(value = "argoName",required = false) String argoName,
+                               @RequestParam(value = "agentName",required = false) String agentName,
                                @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, data)
+    return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, description, nameSpace, argoCdUrl, rolloutsEnabled, isdUrl, argoName, agentName, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
@@ -354,9 +386,12 @@ class OpsmxPlatformController {
                                  @PathVariable("type") String type,
                                  @PathVariable("source") String source,
                                  @PathVariable("source1") String source1,
+                                 @RequestParam(value = "argoName", required = false ) String argoName,
+                                 @RequestParam(value = "agentName", required = false) String agentName,
+                                 @RequestParam(value = "nameSpace", required = false) String nameSpace,
                                  @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.updatePlatformResponse2(version, type, source, source1, data)
+    return opsmxPlatformService.updatePlatformResponse2(version, type, source, source1, argoName, agentName, nameSpace, data)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
