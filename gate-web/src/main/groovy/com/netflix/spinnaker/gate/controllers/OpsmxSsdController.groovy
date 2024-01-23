@@ -214,6 +214,9 @@ class OpsmxSsdController {
                          @RequestParam(value = "account", required = false) String account,
                          @RequestParam(value = "appId", required = false) Integer appId,
                          @RequestParam(value = "image", required = false) String image,
+                         @RequestParam(value = "imageTag", required = false) String imageTag,
+                         @RequestParam(value = "stage", required = false) String stage,
+                         @RequestParam(value = "deployedAt", required = false) String deployedAt,
                          @RequestParam(value = "appName", required = false) String appName,
                          @RequestParam(value = "noOfDays", required = false) Integer noOfDays,
                          @RequestParam(value = "pageNo", required = false) Integer pageNo,
@@ -225,7 +228,7 @@ class OpsmxSsdController {
                          @RequestParam(value = "sortOrder", required = false) String sortOrder,
                          @RequestParam(value = "id", required = false) String id,
                          @RequestParam(value = "dbomType", required = false) String dbomType) {
-    return opsMxSsdService.getSddResponse3(version, type, source, source1,account , appId, image, appName, noOfDays, pageNo, pageLimit, kind, search, service,sortBy,sortOrder, id, dbomType)
+    return opsMxSsdService.getSddResponse3(version, type, source, source1,account , appId, image, imageTag, stage, deployedAt, appName, noOfDays, pageNo, pageLimit, kind, search, service,sortBy,sortOrder, id, dbomType)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
