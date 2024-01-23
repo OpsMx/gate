@@ -112,7 +112,8 @@ interface OpsmxSsdService {
                          @Query("sortBy") String sortBy,
                          @Query("sortOrder") String sortOrder,
                          @Query("id") String id,
-                         @Query("dbomType") String dbomType)
+                         @Query("dbomType") String dbomType,
+                         @Query("failed") boolean failed)
 
   @GET("/ssdservice/{version}/{type}/{source}/{source1}/{source2}")
   Object getSddResponse4(@Path('version') String version,

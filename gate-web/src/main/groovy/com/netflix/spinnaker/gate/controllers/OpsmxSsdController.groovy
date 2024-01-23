@@ -227,8 +227,9 @@ class OpsmxSsdController {
                          @RequestParam(value = "sortBy", required = false) String sortBy,
                          @RequestParam(value = "sortOrder", required = false) String sortOrder,
                          @RequestParam(value = "id", required = false) String id,
-                         @RequestParam(value = "dbomType", required = false) String dbomType) {
-    return opsMxSsdService.getSddResponse3(version, type, source, source1,account , appId, image, imageTag, stage, deployedAt, appName, noOfDays, pageNo, pageLimit, kind, search, service,sortBy,sortOrder, id, dbomType)
+                         @RequestParam(value = "dbomType", required = false) String dbomType,
+                         @RequestParam(value = "failed", required = false) boolean failed) {
+    return opsMxSsdService.getSddResponse3(version, type, source, source1,account , appId, image, imageTag, stage, deployedAt, appName, noOfDays, pageNo, pageLimit, kind, search, service,sortBy,sortOrder, id, dbomType, failed)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
