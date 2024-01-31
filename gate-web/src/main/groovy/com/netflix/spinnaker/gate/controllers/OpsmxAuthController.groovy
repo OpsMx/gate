@@ -36,7 +36,7 @@ class OpsmxAuthController {
   @RequestMapping(value = "/redirectauto", method = RequestMethod.GET)
   void redirectAuto(HttpServletRequest request, HttpServletResponse response, @RequestParam String to) {
     log.info("to url : {}", to)
-    log.info("refer: {}",request.getHeader("Referer"))
+    log.info("refer: {}",request.getHeader("referer"))
     validAutoRedirect(to,request.getRequestURL().toString()) ?
       response.sendRedirect(to) :
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Requested redirect address not recognized.")
