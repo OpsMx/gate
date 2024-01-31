@@ -36,7 +36,7 @@ class OpsmxAuthController {
   @RequestMapping(value = "/redirectauto", method = RequestMethod.GET)
   void redirectAuto(HttpServletRequest request, HttpServletResponse response, @RequestParam String to) {
     log.info("to url : {}", to)
-    String hostUrl = request.getRequestURI()
+    String hostUrl = request.getRequestURL().toString()
     log.info("reqeust url : {}", hostUrl)
     validAutoRedirect(to,hostUrl) ?
       response.sendRedirect(to) :
