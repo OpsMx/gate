@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 import javax.servlet.http.HttpServletResponse
+import javax.servlet.http.HttpServletRequest
 
 @Slf4j
 @RestController
@@ -33,17 +34,22 @@ class OpsmxAuthController {
 
   @ApiOperation(value = "Redirect to Deck")
   @RequestMapping(value = "/redirectauto", method = RequestMethod.GET)
-  void redirectAuto(HttpServletResponse response, @RequestParam String to) {
+  void redirectAuto(HttpServletRequest request, HttpServletResponse response, @RequestParam String to) {
     log.info("to url : {}", to)
-    validAutoRedirect(to) ?
+    String host = request.getRemoteHost()
+    validAutoRedirect(to,host) ?
       response.sendRedirect(to) :
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Requested redirect address not recognized.")
   }
 
-  boolean validAutoRedirect(String to) {
+  boolean validAutoRedirect(String to,String host) {
     URL toURL
     try {
       toURL = new URL(to)
+      log.info("HOST:{}",host)
+      String domain = toURL.getHost()
+      log.info("DOMAIN:{}",domain)
+
     } catch (MalformedURLException malEx) {
       log.warn "Malformed redirect URL: $to\n${ExceptionUtils.getStackTrace(malEx)}"
       return false
