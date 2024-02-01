@@ -112,24 +112,25 @@ class OpsmxPlatformController {
                               @RequestParam(name = "canaryId", required = false) Integer canaryId,
                               @RequestParam(value = "applicationName", required = false) String applicationName,
                               @RequestParam(value = "argoName", required = false) String argoName,
+                              @RequestParam(value = "argoId", required = false) String argoId,
                                HttpServletRequest httpServletRequest) {
 
     String path = httpServletRequest.getRequestURI()
     if (CacheUtil.isRegisteredCachingEndpoint(path)) {
-      return handleCaching(path, httpServletRequest, version, type, source, source1, agentName, cdName, datasourceType, permissionId,applicationName,argoName)
+      return handleCaching(path, httpServletRequest, version, type, source, source1, agentName, cdName, datasourceType, permissionId,applicationName,argoName,argoId)
     } else {
-      return opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId, applicationId, canaryId,applicationName,argoName)
+      return opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId, applicationId, canaryId,applicationName,argoName,argoId)
     }
   }
 
-  private Object handleCaching(String path, HttpServletRequest httpServletRequest, String version, String type, String source, String source1, String agentName, String cdName, String datasourceType, String permissionId,String applicationName,String argoName) {
+  private Object handleCaching(String path, HttpServletRequest httpServletRequest, String version, String type, String source, String source1, String agentName, String cdName, String datasourceType, String permissionId,String applicationName,String argoName,String argoId) {
     Object response
     PlatformCachingService platformCachingService = platformCachingServiceBeanFactory.getBean(path)
 
     String userName = httpServletRequest.getUserPrincipal().getName()
     response = platformCachingService.fetchResponseFromCache(userName)
     if (response == null) {
-      response = opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId,applicationName,argoName)
+      response = opsmxPlatformService.getPlatformResponse4(version, type, source, source1, agentName, cdName, datasourceType, permissionId,applicationName,argoName,argoId)
       platformCachingService.cacheResponse(response, userName)
     }
     return response
