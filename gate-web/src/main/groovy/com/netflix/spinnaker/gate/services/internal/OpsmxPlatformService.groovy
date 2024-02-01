@@ -63,7 +63,8 @@ interface OpsmxPlatformService {
                               @Query("applicationId") Integer applicationId,
                               @Query("canaryId") Integer canaryId,
                               @Query("applicationName") String applicationName,
-                              @Query("argoName") String argoName)
+                              @Query("argoName") String argoName,
+                              @Query("argoId") String argoId)
 
   @GET("/platformservice/{version}/{type}/{source}/{source1}/{source2}")
   Object getPlatformResponse5(@Path('version') String version,
