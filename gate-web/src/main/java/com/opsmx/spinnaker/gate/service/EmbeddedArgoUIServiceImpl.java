@@ -44,6 +44,7 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
   public String getBounceEndpoint(String username, String argoId, String path) {
     List<String> groups =
         oesAuthorizationService.getUserGroupsByUsername(username, username).getBody();
+    log.info("printing groups : {}", groups);
     Date currentDate = new Date(System.currentTimeMillis());
     Map<String, Object> header = new LinkedHashMap<>();
     header.put("alg", SignatureAlgorithm.HS256.name());
@@ -61,6 +62,8 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
             .setIssuedAt(currentDate)
             .setIssuer("isd")
             .compact();
+    log.info("JwT token : "+token);
+    log.info("bounceUrl + token : "+ bounceUrl + "?token=" + token);
     return bounceUrl + "?token=" + token;
   }
 }

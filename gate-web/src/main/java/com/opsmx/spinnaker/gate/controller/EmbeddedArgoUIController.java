@@ -37,9 +37,11 @@ public class EmbeddedArgoUIController {
       HttpServletResponse response) {
     String username = AuthenticatedRequest.getSpinnakerUser().orElse(null);
     String location = embeddedArgoUIService.getBounceEndpoint(username, argoid, path);
+    log.info("username : "+username);
+    log.info("location : "+location);
     response.setStatus(302);
     response.setHeader("Location", location);
-    log.debug(
+    log.info(
         "Successfully generated token and redirecting to path {} where argoid is : {} and username is {}",
         path,
         argoid,
