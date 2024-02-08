@@ -42,6 +42,9 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
 
   @Override
   public String getBounceEndpoint(String username, String argoId, String path) {
+    log.info("printing argoId : {}", argoId);
+    log.info("printing path : {}", path);
+    log.info("printing username : {}", username);
     List<String> groups =
         oesAuthorizationService.getUserGroupsByUsername(username, username).getBody();
     log.info("printing groups : {}", groups);
@@ -49,6 +52,7 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
     Map<String, Object> header = new LinkedHashMap<>();
     header.put("alg", SignatureAlgorithm.HS256.name());
     header.put("typ", "JWT");
+    log.info("printing header : {}", header);
     String token =
         Jwts.builder()
             .signWith(SignatureAlgorithm.HS256, secret)
