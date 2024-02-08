@@ -201,8 +201,10 @@ class OpsmxSsdController {
                          @RequestParam(value = "name", required = false) String name,
                          @RequestParam(value = "value", required = false) String value,
                          @RequestParam(value = "current", required = false) String current,
-                         @RequestParam(value = "integratorType", required = false) String integratorType) {
-    return opsMxSsdService.getSddResponse2(version, type, source, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, alertName, riskStatus, id, Vulnerability, Component, ComponentVersion, Image, ImageVersion,service, scope,name,value, current, integratorType)
+                         @RequestParam(value = "integratorType", required = false) String integratorType,
+                         @RequestParam(value = "startTime", required = false) String startTime,
+                         @RequestParam(value = "endTime", required = false) String endTime) {
+    return opsMxSsdService.getSddResponse2(version, type, source, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, alertName, riskStatus, id, Vulnerability, Component, ComponentVersion, Image, ImageVersion, service, scope, name, value, current, integratorType, startTime, endTime)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
