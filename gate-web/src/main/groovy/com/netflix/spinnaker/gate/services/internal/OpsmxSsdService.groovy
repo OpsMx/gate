@@ -89,7 +89,9 @@ interface OpsmxSsdService {
                          @Query("name") String name,
                          @Query("value") String value,
                          @Query("current") String current,
-                         @Query("integratorType") String integratorType)
+                         @Query("integratorType") String integratorType,
+                         @Query("startTime") String startTime,
+                         @Query("endTime") String endTime)
 
   @GET("/ssdservice/{version}/{type}/{source}/{source1}")
   Object getSddResponse3(@Path('version') String version,
