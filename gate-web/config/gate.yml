@@ -187,3 +187,6 @@ security:
 allowUnauthenticatedAccess:
   agentAPI: false
   webhooks: false
+
+ssd:
+  enable: true

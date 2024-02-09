@@ -105,6 +105,9 @@ public class GateWebConfig implements WebMvcConfigurer {
   @Autowired(required = false)
   CustomGatesTriggerRbacInterceptor customGatesTriggerRbacInterceptor
 
+  @Autowired(required = false)
+  private SsdConfigProperties ssdConfigProperties;
+
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(
@@ -189,6 +192,10 @@ public class GateWebConfig implements WebMvcConfigurer {
   }
 
   public void addViewControllers(ViewControllerRegistry registry) {
-    registry.addViewController("/login").setViewName("login")
+    if (!ssdConfigProperties.isEnable()) {
+      registry.addViewController("/login").setViewName("login")
+    } else {
+      registry.addViewController("/login").setViewName("ssd-login")
+    }
   }
 }

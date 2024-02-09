@@ -24,6 +24,7 @@ import com.google.common.base.Strings;
 import com.netflix.spectator.api.Id;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.histogram.PercentileTimer;
+import com.netflix.spinnaker.gate.config.SsdConfigProperties;
 import com.netflix.spinnaker.kork.dynamicconfig.DynamicConfigService;
 import java.io.IOException;
 import java.time.Duration;
@@ -47,6 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * A request interceptor for shedding low-priority requests from Deck.
@@ -86,6 +88,9 @@ public class RequestSheddingFilter extends HttpFilter {
 
   private final Id requestsId;
   private final Id controllerInvocationsId;
+
+  @Autowired(required = false)
+  private SsdConfigProperties ssdConfigProperties;
 
   private final CopyOnWriteArrayList<Pattern> pathPatterns = new CopyOnWriteArrayList<>();
 
@@ -168,7 +173,11 @@ public class RequestSheddingFilter extends HttpFilter {
 
     String uri = request.getRequestURI();
     if ("/error".equals(uri)) {
-      response.sendRedirect("/oes/error");
+      if (!ssdConfigProperties.isEnable()) {
+        response.sendRedirect("/oes/error");
+      } else {
+        response.sendRedirect("/oes/ssd-error");
+      }
       return;
     }
 
