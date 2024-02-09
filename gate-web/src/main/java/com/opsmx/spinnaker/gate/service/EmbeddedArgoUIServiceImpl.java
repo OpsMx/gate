@@ -53,6 +53,9 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
     header.put("alg", SignatureAlgorithm.HS256.name());
     header.put("typ", "JWT");
     log.info("printing header : {}", header);
+    log.info(" Printing setExpiration : "+new Date(System.currentTimeMillis() + 1000L * durationInSeconds));
+    log.info(" Printing setNotBefore : "+currentDate);
+    log.info(" Printing setIssuedAt : "+currentDate);
     String token =
         Jwts.builder()
             .signWith(SignatureAlgorithm.HS256, secret)
