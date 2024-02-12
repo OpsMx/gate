@@ -81,9 +81,10 @@ class OpsmxPlatformController {
                               @RequestParam(value = "applicationName", required = false) String applicationName,
                               @RequestParam(value = "noOfDays", required = false) Integer noOfDays,
                               @RequestParam(value = "filterBy", required = false) String filterBy,
-                              @RequestParam(value = "cdTool", required = false) String cdTool) {
+                              @RequestParam(value = "cdTool", required = false) String cdTool,
+                              @RequestParam(value = "label", required = false) String label) {
     return opsmxPlatformService.getPlatformResponse1(version, type, datasourceType, accountName, source, permission,
-       search, username, pageNo, pageLimit, sortBy, sortOrder, applicationId, applicationName, noOfDays, filterBy, cdTool)
+       search, username, pageNo, pageLimit, sortBy, sortOrder, applicationId, applicationName, noOfDays, filterBy, cdTool,label)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")

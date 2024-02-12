@@ -39,7 +39,8 @@ interface OpsmxPlatformService {
                               @Query("applicationName") String applicationName,
                               @Query("noOfDays") Integer noOfDays,
                               @Query("filterBy") String filterBy,
-                              @Query(value = "cdTool")String cdTool)
+                              @Query(value = "cdTool") String cdTool,
+                              @Query(value = "label") String label)
 
   @GET("/platformservice/{version}/{type}/{source}")
   Object getPlatformResponse(@Path('version') String version,
