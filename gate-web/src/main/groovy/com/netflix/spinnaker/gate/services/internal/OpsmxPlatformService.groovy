@@ -47,7 +47,15 @@ interface OpsmxPlatformService {
                               @Query(value = "destinationName") String destinationName,
                               @Query(value = "sourceTargetRevision") String sourceTargetRevision,
                               @Query(value = "sourceRepositoryPath") String sourceRepositoryPath,
-                              @Query(value = "destinationServer") String  destinationServer)
+                              @Query(value = "destinationServer") String  destinationServer,
+                              @Query(value = "project") String  project,
+                              @Query(value = "destinationNameSpace") String destinationNameSpace,
+                              @Query(value = "syncRevision") String  syncRevision,
+                              @Query(value = "applicationLabels") String  applicationLabels,
+                              @Query(value = "description") String description,
+                              @Query(value = "service") String service,
+                              @Query(value = "image") String image,
+                              @Query(value = "labels") String labels)
 
   @GET("/platformservice/{version}/{type}/{source}")
   Object getPlatformResponse(@Path('version') String version,
