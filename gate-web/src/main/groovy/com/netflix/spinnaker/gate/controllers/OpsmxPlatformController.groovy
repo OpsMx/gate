@@ -82,25 +82,25 @@ class OpsmxPlatformController {
                               @RequestParam(value = "noOfDays", required = false) Integer noOfDays,
                               @RequestParam(value = "filterBy", required = false) String filterBy,
                               @RequestParam(value = "cdTool", required = false) String cdTool,
-                              @RequestParam(value = "label", required = false) String label,
-                              @RequestParam(value = "syncStatus", required = false) String syncStatus,
+                              @RequestParam(value = "cdlabel", required = false) String cdlabel,
+                              @RequestParam(value = "syncstatus", required = false) String syncstatus,
                               @RequestParam(value = "health", required = false) String health,
-                              @RequestParam(value = "sourceRepository", required = false) String sourceRepository,
-                              @RequestParam(value = "destinationName", required = false) String destinationName,
-                              @RequestParam(value = "sourceTargetRevision", required = false) String sourceTargetRevision,
-                              @RequestParam(value = "sourceRepositoryPath", required = false) String sourceRepositoryPath,
+                              @RequestParam(value = "cluster", required = false) String cluster,
+                              @RequestParam(value = "targetrevision", required = false) String targetrevision,
+                              @RequestParam(value = "sourcepath", required = false) String sourcepath,
                               @RequestParam(value = "destinationServer", required = false) String destinationServer,
                               @RequestParam(value = "project", required = false) String project,
-                              @RequestParam(value = "destinationNameSpace", required = false) String destinationNameSpace,
-                              @RequestParam(value = "syncRevision", required = false) String syncRevision,
-                              @RequestParam(value = "applicationLabels", required = false) String applicationLabels,
+                              @RequestParam(value = "namespace", required = false) String namespace,
+                              @RequestParam(value = "revision", required = false) String revision,
+                              @RequestParam(value = "applicationlabel", required = false) String applicationlabel,
                               @RequestParam(value = "description", required = false) String description,
                               @RequestParam(value = "service", required = false) String service,
                               @RequestParam(value = "image", required = false) String image,
-                              @RequestParam(value = "labels", required = false) String labels) {
+                              @RequestParam(value = "clusterlabel", required = false) String clusterlabel,
+                              @RequestParam(value = "application", required = false) String  application) {
     return opsmxPlatformService.getPlatformResponse1(version, type, datasourceType, accountName, source, permission,
        search, username, pageNo, pageLimit, sortBy, sortOrder, applicationId, applicationName, noOfDays, filterBy,
-      cdTool,label,syncStatus,health,sourceRepository,destinationName,sourceTargetRevision,sourceRepositoryPath,destinationServer,project,destinationNameSpace,syncRevision,applicationLabels,description,service, image,labels)
+      cdTool,cdlabel,syncstatus,health,cluster,targetrevision,sourcepath,destinationServer,project,namespace,revision,applicationlabel,description,service, image,clusterlabel,application)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
