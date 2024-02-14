@@ -55,7 +55,7 @@ interface OpsmxPlatformService {
                               @Query(value = "service") String service,
                               @Query(value = "image") String image,
                               @Query(value = "clusterlabel") String clusterlabel,
-                              @Query(value = "labels") String application)
+                              @Query(value = "application") String application)
 
   @GET("/platformservice/{version}/{type}/{source}")
   Object getPlatformResponse(@Path('version') String version,
