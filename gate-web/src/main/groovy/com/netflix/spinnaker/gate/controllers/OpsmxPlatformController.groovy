@@ -82,9 +82,17 @@ class OpsmxPlatformController {
                               @RequestParam(value = "noOfDays", required = false) Integer noOfDays,
                               @RequestParam(value = "filterBy", required = false) String filterBy,
                               @RequestParam(value = "cdTool", required = false) String cdTool,
-                              @RequestParam(value = "label", required = false) String label) {
+                              @RequestParam(value = "label", required = false) String label,
+                              @RequestParam(value = "syncStatus", required = false) String syncStatus,
+                              @RequestParam(value = "health", required = false) String health,
+                              @RequestParam(value = "sourceRepository", required = false) String sourceRepository,
+                              @RequestParam(value = "destinationName", required = false) String destinationName,
+                              @RequestParam(value = "sourceTargetRevision", required = false) String sourceTargetRevision,
+                              @RequestParam(value = "sourceRepositoryPath", required = false) String sourceRepositoryPath,
+                              @RequestParam(value = "destinationServer", required = false) String destinationServer) {
     return opsmxPlatformService.getPlatformResponse1(version, type, datasourceType, accountName, source, permission,
-       search, username, pageNo, pageLimit, sortBy, sortOrder, applicationId, applicationName, noOfDays, filterBy, cdTool,label)
+       search, username, pageNo, pageLimit, sortBy, sortOrder, applicationId, applicationName, noOfDays, filterBy,
+      cdTool,label,syncStatus,health,sourceRepository,destinationName,sourceTargetRevision,sourceRepositoryPath,destinationServer)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")
