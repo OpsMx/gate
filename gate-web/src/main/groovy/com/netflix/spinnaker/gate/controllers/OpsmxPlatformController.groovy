@@ -88,7 +88,7 @@ class OpsmxPlatformController {
                               @RequestParam(value = "cluster", required = false) String cluster,
                               @RequestParam(value = "targetrevision", required = false) String targetrevision,
                               @RequestParam(value = "sourcepath", required = false) String sourcepath,
-                              @RequestParam(value = "destinationServer", required = false) String destinationServer,
+                              @RequestParam(value = "destinationserver", required = false) String destinationserver,
                               @RequestParam(value = "project", required = false) String project,
                               @RequestParam(value = "namespace", required = false) String namespace,
                               @RequestParam(value = "revision", required = false) String revision,
@@ -100,7 +100,7 @@ class OpsmxPlatformController {
                               @RequestParam(value = "application", required = false) String  application) {
     return opsmxPlatformService.getPlatformResponse1(version, type, datasourceType, accountName, source, permission,
        search, username, pageNo, pageLimit, sortBy, sortOrder, applicationId, applicationName, noOfDays, filterBy,
-      cdTool,cdlabel,syncstatus,health,cluster,targetrevision,sourcepath,destinationServer,project,namespace,revision,applicationlabel,description,service, image,clusterlabel,application)
+      cdTool,cdlabel,syncstatus,health,cluster,targetrevision,sourcepath,destinationserver,project,namespace,revision,applicationlabel,description,service, image,clusterlabel,application)
   }
 
   @ApiOperation(value = "Endpoint for platform rest services")

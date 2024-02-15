@@ -46,7 +46,7 @@ interface OpsmxPlatformService {
                               @Query(value = "cluster") String cluster,
                               @Query(value = "targetrevision") String targetrevision,
                               @Query(value = "sourcepath") String sourcepath,
-                              @Query(value = "destinationServer") String  destinationServer,
+                              @Query(value = "destinationserver") String  destinationserver,
                               @Query(value = "project") String  project,
                               @Query(value = "namespace") String namespace,
                               @Query(value = "revision") String  revision,
