@@ -73,9 +73,21 @@ class OpsmxAuditClientServiceController {
                                  @RequestParam(value = "sortBy", required = false) String sortBy,
                                  @RequestParam(value = "limit", required = false) Integer limit,
                                  @RequestParam(value = "applicationName", required = false) String applicationName,
-                                 @RequestParam(value = "agentName", required = false) String agentName) {
+                                 @RequestParam(value = "agentName", required = false) String agentName,
+                                 @RequestParam(value = "project", required = false) String project,
+                                 @RequestParam(value = "cdlabel", required = false) String  cdlabel,
+                                 @RequestParam(value = "application", required = false) String application,
+                                 @RequestParam(value = "sourcerepo", required = false) String  sourcerepo,
+                                 @RequestParam(value = "cluster", required = false) String  cluster,
+                                 @RequestParam(value = "revision", required = false) String revision,
+                                 @RequestParam(value = "applicationlabel", required = false) String applicationlabel,
+                                 @RequestParam(value = "namespace", required = false) String  namespace,
+                                 @RequestParam(value = "clusterlabel", required = false) String  clusterlabel,
+                                 @RequestParam(value = "sourcepath", required = false) String  sourcepath,
+                                 @RequestParam(value = "targetrevision", required = false) String  targetrevision,
+                                 @RequestParam(value = "description", required = false) String  description) {
     return opsmxAuditClientService.getDeliveryInsightCharts(version, type, source, chartId, startTime, endTime, days,
-      noOfDays, argoName, search, sort, page, pageLimit, sortBy,limit,applicationName,agentName)
+      noOfDays, argoName, search, sort, page, pageLimit, sortBy,limit,applicationName,agentName,project,cdlabel,application,sourcerepo,cluster,revision,applicationlabel,namespace,clusterlabel,sourcepath,targetrevision,description)
   }
 
   @ApiOperation(value = "Endpoint for audit-client rest services")

@@ -51,7 +51,19 @@ interface OpsmxAuditClientService {
                                  @Query("sortBy") String sortBy,
                                  @Query("limit") Integer limit,
                                  @Query("applicationName") String applicationName,
-                                 @Query("agentName") String agentName)
+                                 @Query("agentName") String agentName,
+                                 @Query("project") String  project,
+                                 @Query("cdlabel") String   cdlabel,
+                                 @Query("application") String   application,
+                                 @Query("sourcerepo") String  sourcerepo,
+                                 @Query("cluster") String   cluster,
+                                 @Query("revision") String  revision,
+                                 @Query("applicationlabel") String    applicationlabel,
+                                 @Query("namespace") String  namespace,
+                                 @Query("clusterlabel") String  clusterlabel,
+                                 @Query("sourcepath") String  sourcepath,
+                                 @Query("targetrevision") String  targetrevision,
+                                 @Query("description") String  description)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}")
   Object getAuditClientResponse3(@Path('version') String version,
