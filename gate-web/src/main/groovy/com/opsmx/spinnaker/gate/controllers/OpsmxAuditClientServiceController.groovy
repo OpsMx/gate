@@ -85,9 +85,11 @@ class OpsmxAuditClientServiceController {
                                  @RequestParam(value = "clusterlabel", required = false) String  clusterlabel,
                                  @RequestParam(value = "sourcepath", required = false) String  sourcepath,
                                  @RequestParam(value = "targetrevision", required = false) String  targetrevision,
-                                 @RequestParam(value = "description", required = false) String  description) {
+                                 @RequestParam(value = "initiatedby", required = false) String  initiatedby,
+                                 @RequestParam(value = "service", required = false) String  service,
+                                 @RequestParam(value = "image", required = false) String  image) {
     return opsmxAuditClientService.getDeliveryInsightCharts(version, type, source, chartId, startTime, endTime, days,
-      noOfDays, argoName, search, sort, page, pageLimit, sortBy,limit,applicationName,agentName,project,cdlabel,application,sourcerepo,cluster,revision,applicationlabel,namespace,clusterlabel,sourcepath,targetrevision,description)
+      noOfDays, argoName, search, sort, page, pageLimit, sortBy,limit,applicationName,agentName,project,cdlabel,application,sourcerepo,cluster,revision,applicationlabel,namespace,clusterlabel,sourcepath,targetrevision,initiatedby,service,image)
   }
 
   @ApiOperation(value = "Endpoint for audit-client rest services")

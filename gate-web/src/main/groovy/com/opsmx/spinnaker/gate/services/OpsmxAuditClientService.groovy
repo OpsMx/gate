@@ -63,7 +63,9 @@ interface OpsmxAuditClientService {
                                  @Query("clusterlabel") String  clusterlabel,
                                  @Query("sourcepath") String  sourcepath,
                                  @Query("targetrevision") String  targetrevision,
-                                 @Query("description") String  description)
+                                 @Query("initiatedby") String  initiatedby,
+                                 @Query("service") String  service,
+                                 @Query("image") String  image)
 
   @GET("/auditclientservice/{version}/{type}/{source}/{source1}")
   Object getAuditClientResponse3(@Path('version') String version,
