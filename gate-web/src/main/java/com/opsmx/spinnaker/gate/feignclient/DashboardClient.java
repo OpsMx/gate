@@ -18,6 +18,8 @@ package com.opsmx.spinnaker.gate.feignclient;
 
 import com.opsmx.spinnaker.gate.cache.Constants;
 import java.util.Map;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

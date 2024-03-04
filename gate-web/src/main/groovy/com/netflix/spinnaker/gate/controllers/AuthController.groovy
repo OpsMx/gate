@@ -22,6 +22,7 @@ import com.netflix.spinnaker.gate.services.UserInfoService
 import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel
 import groovy.util.logging.Slf4j
 import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
@@ -62,7 +63,7 @@ class AuthController {
   @Autowired
   UserInfoService userInfoService
 
-  @Autowired
+  @Autowired(required=false)
   OpsmxOesService opsmxOesService
 
   @Autowired
@@ -171,15 +172,19 @@ class AuthController {
   @ApiOperation(value = "Get user Details with cloudAccounts")
   @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
   Object userInfo(@ApiIgnore @SpinnakerUser User user) {
+    if (opsmxOesService != null) {
     if (!user) {
       throw new Exception("UnAuthorized User")
     }
-    def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
+    def fiatRoles = permissionService.getRoles(user.username)?.collect { it.name }
     if (fiatRoles) {
       user.roles = fiatRoles
     }
     def response = opsmxOesService.getOesResponse5(
       "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)
     return userInfoService.getAllInfoOfUser(user, response)
+  } else{
+    return new UserInfoDetailsModel();
+  }
   }
 }

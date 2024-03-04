@@ -48,7 +48,7 @@ class DefaultProviderLookupService implements ProviderLookupService, AccountLook
 
   private final AtomicReference<List<AccountDetails>> accountsCache = new AtomicReference<>([])
 
-  @Value('${gate.installation.mode}')
+  @Value('${gate.installation.mode:common}')
   GateInstallationModes gateInstallationMode
 
   @Autowired

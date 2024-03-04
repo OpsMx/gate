@@ -57,7 +57,7 @@ class ApplicationService {
   @Autowired
   ExecutorService executorService
 
-  @Value('${gate.installation.mode}')
+  @Value('${gate.installation.mode:common}')
   GateInstallationModes gateInstallationMode
 
 

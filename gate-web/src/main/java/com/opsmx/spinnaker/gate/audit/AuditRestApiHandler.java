@@ -27,13 +27,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.stereotype.Component;
 
+
+@ConditionalOnExpression("${services.auditservice.enabled:false}")
 @Component
 @EnableFeignClients(basePackageClasses = AuditService.class)
-@ConditionalOnExpression("${services.auditservice.enabled:true}")
 @Slf4j
 public class AuditRestApiHandler implements AuditHandler {
 
-  @Autowired private AuditService auditService;
+  @Autowired(required = false) private AuditService auditService;
   Gson gson = new Gson();
 
   @Override

@@ -20,9 +20,11 @@ import com.opsmx.spinnaker.gate.cache.Constants;
 import com.opsmx.spinnaker.gate.service.DashboardCachingService;
 import com.opsmx.spinnaker.gate.service.DatasourceCachingServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnExpression("${services.dashboard.enabled:false}")
 public class DashboardCachingServiceBeanFactory {
 
   @Autowired private DatasourceCachingServiceImpl datasourceCachingService;

@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
-@ConditionalOnExpression("${message-broker.enabled:true}")
+@ConditionalOnExpression("${message-broker.enabled:false}")
 public class CamelConfig {
 
   @Autowired private UserActivityRouteBuilder userActivityRouteBuilder;
