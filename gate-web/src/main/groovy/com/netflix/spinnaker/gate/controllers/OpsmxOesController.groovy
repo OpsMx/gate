@@ -513,7 +513,7 @@ class OpsmxOesController {
                                       @RequestParam(value = "nameSpace", required = false) String nameSpace,
                                       @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
                                       @RequestParam(value ="rolloutsEnabled", required = false) Boolean rolloutsEnabled,
-                                      @PathVariable(value ="updatedFlag", required = false) Boolean updatedFlag,
+                                      @RequestParam(value ="updatedFlag", required = false) Boolean updatedFlag,
                                       @RequestParam(value = "isdUrl", required = false) String isdUrl) {
     Response response = opsmxOesService.agentManifestDownloadFile(type, source, source1, description, isExists, nameSpace, argoCdUrl, rolloutsEnabled, updatedFlag,isdUrl)
     InputStream inputStream = response.getBody().in()

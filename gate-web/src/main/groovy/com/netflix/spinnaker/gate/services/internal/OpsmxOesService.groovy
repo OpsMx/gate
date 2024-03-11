@@ -37,7 +37,7 @@ interface OpsmxOesService {
                                      @Query("nameSpace") String nameSpace,
                                      @Query("argoCdUrl") String argoCdUrl,
                                      @Query("rolloutsEnabled") boolean rolloutsEnabled,
-                                     @Path("updatedFlag") boolean updatedFlag,
+                                     @Query("updatedFlag") boolean updatedFlag,
                                      @Query("isdUrl") String isdUrl)
 
   @GET("/oes/accountsConfig/{version}/agents/{agentName}/manifest/apple/automation")
