@@ -18,9 +18,11 @@ package com.opsmx.spinnaker.gate.cache.dashboard;
 
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 @Slf4j
+@ConditionalOnExpression("${services.dashboard.enabled:false}")
 @Component
 public class DatasourceCachingImpl implements DatasourceCaching {
 

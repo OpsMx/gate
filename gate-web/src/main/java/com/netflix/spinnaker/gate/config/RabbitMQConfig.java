@@ -22,7 +22,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnExpression("${message-broker.enabled:true}")
+@ConditionalOnExpression("${message-broker.enabled:false}")
 @ConditionalOnProperty(value = "message-broker.endpoint.name", havingValue = "rabbitmq")
 public class RabbitMQConfig implements CamelRouteConfig {
 

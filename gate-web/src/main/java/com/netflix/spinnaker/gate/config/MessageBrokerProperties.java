@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "message-broker")
-@ConditionalOnExpression("${message-broker.enabled:true}")
+@ConditionalOnExpression("${message-broker.enabled:false}")
 @EnableConfigurationProperties({
   MessageBrokerProperties.class,
   MessageBrokerProperties.Endpoint.class

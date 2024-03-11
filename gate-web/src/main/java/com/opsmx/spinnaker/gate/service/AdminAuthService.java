@@ -23,12 +23,14 @@ import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@ConditionalOnExpression("${services.platform.enabled:false}")
 public class AdminAuthService implements PlatformCachingService {
 
   private Gson gson = new Gson();

@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.security.AbstractAuthenticationAuditListener;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -37,10 +38,11 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@ConditionalOnExpression("${services.auditservice.enabled:false}")
 @EnableAsync
 public class AuthenticationAuditListener extends AbstractAuthenticationAuditListener {
 
-  @Autowired private AuditHandler auditHandler;
+  @Autowired(required = false) private AuditHandler auditHandler;
   @Autowired @Lazy private ProducerTemplate template;
 
   Gson gson = new Gson();

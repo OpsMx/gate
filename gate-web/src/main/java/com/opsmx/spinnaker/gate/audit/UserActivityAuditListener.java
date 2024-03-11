@@ -27,6 +27,7 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Lazy;
@@ -37,6 +38,7 @@ import org.springframework.web.context.support.ServletRequestHandledEvent;
 
 @Slf4j
 @Component
+@ConditionalOnExpression("${services.auditservice.enabled:false}")
 @EnableAsync
 public class UserActivityAuditListener implements ApplicationListener {
 

@@ -33,11 +33,11 @@ import java.util.concurrent.TimeUnit
 @ConfigurationProperties(prefix = "retrofit")
 class RetrofitConfig {
 
-  Long connectTimeout
-  Long readTimeout
-  Long callTimeout
-  Long writeTimeout
-  Boolean retryOnConnectionFailure
+  Long connectTimeout = 60000
+  Long readTimeout = 60000
+  Long callTimeout = 60000
+  Long writeTimeout = 60000
+  Boolean retryOnConnectionFailure = true
 
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)

@@ -19,11 +19,13 @@ package com.opsmx.spinnaker.gate.controller;
 import com.opsmx.spinnaker.gate.model.DatasourceRequestModel;
 import com.opsmx.spinnaker.gate.service.DatasourceCachingServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
+@ConditionalOnExpression("${services.dashboard.enabled:false}")
 @RestController
 @RequestMapping(value = "/datasource/cache")
 public class DatasourceCachingController {

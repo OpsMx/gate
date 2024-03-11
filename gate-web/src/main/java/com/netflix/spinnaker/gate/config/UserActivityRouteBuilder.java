@@ -24,7 +24,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnExpression("${message-broker.enabled:true}")
+@ConditionalOnExpression("${message-broker.enabled:false}")
 public class UserActivityRouteBuilder extends RouteBuilder {
 
   private final String userActivity = "userActivity";

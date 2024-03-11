@@ -21,9 +21,11 @@ import com.opsmx.spinnaker.gate.service.AdminAuthService;
 import com.opsmx.spinnaker.gate.service.PlatformCachingService;
 import com.opsmx.spinnaker.gate.util.CacheUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnExpression("${services.platform.enabled:false}")
 public class PlatformCachingServiceBeanFactory {
 
   @Autowired private AdminAuthService adminAuthService;
