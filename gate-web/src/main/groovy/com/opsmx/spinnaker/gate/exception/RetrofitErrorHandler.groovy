@@ -18,7 +18,6 @@ package com.opsmx.spinnaker.gate.exception
 
 import com.google.gson.Gson
 import com.netflix.spinnaker.gate.controllers.OpsmxAutopilotController
-import com.netflix.spinnaker.gate.controllers.OpsmxDashboardController
 import com.netflix.spinnaker.gate.controllers.OpsmxOesController
 import com.netflix.spinnaker.gate.controllers.OpsmxPlatformController
 import com.netflix.spinnaker.gate.controllers.OpsmxVisibilityController
@@ -33,11 +32,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
 import retrofit.RetrofitError
-import retrofit.client.Response
 
 @Slf4j
 @ControllerAdvice(basePackageClasses = [OpsmxSaporPolicyController.class, OpsmxAutopilotController.class,
-OpsmxAuditClientServiceController.class, OpsmxDashboardController.class, OpsmxPlatformController.class,
+OpsmxAuditClientServiceController.class, OpsmxPlatformController.class,
 OpsmxOesController.class, OpsmxVisibilityController.class, OpsmxAuditServiceController.class])
 class RetrofitErrorHandler {
 

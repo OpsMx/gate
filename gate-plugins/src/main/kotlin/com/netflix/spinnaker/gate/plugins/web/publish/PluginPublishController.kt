@@ -24,21 +24,17 @@ import com.netflix.spinnaker.gate.plugins.web.PluginService
 import com.netflix.spinnaker.kork.exceptions.SystemException
 import com.netflix.spinnaker.kork.plugins.update.internal.SpinnakerPluginInfo
 import com.netflix.spinnaker.security.AuthenticatedRequest
-import io.swagger.annotations.ApiOperation
-import java.lang.String.format
+import io.swagger.v3.oas.annotations.Operation
 import lombok.SneakyThrows
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestPart
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.lang.String.format
 
 @RestController
 @RequestMapping("/plugins/publish")
@@ -53,7 +49,7 @@ class PluginPublishController(
   private val okHttpClient: OkHttpClient = okHttpClientProvider.getClient(DefaultServiceEndpoint("front50", front50Url))
 
   @SneakyThrows
-  @ApiOperation(value = "Publish a plugin binary and the plugin info metadata.")
+  @Operation(summary = "Publish a plugin binary and the plugin info metadata.")
   @PostMapping("/{pluginId}/{pluginVersion}", consumes = [MULTIPART_FORM_DATA_VALUE])
   fun publishPlugin(
     @RequestPart("plugin") body: MultipartFile,
@@ -92,7 +88,7 @@ class PluginPublishController(
             .addFormDataPart(
               "plugin",
               format("%s-%s.zip", pluginId, pluginVersion),
-              RequestBody.create(MediaType.parse("application/octet-stream"), body)
+              body.toRequestBody("application/octet-stream".toMediaTypeOrNull(), 0, body.size)
             )
             .build()
         )
@@ -100,7 +96,7 @@ class PluginPublishController(
 
       val response = okHttpClient.newCall(request).execute()
       if (!response.isSuccessful) {
-        val reason = response.body()?.string() ?: "Unknown reason: ${response.code()}"
+        val reason = response.body?.string() ?: "Unknown reason: ${response.code}"
         throw SystemException("Failed to upload plugin binary: $reason")
       }
     }.call()

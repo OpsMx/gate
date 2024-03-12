@@ -21,19 +21,19 @@ import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig
 import com.netflix.spinnaker.gate.services.CredentialsService
 import com.netflix.spinnaker.security.User
 import groovy.util.logging.Slf4j
-import org.apache.commons.lang3.exception.ExceptionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.web.SecurityFilterChain
+//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 
 import java.util.concurrent.CopyOnWriteArrayList
-
 /**
  * Requires auth.anonymous.enabled to be true in Fiat configs to work properly. This
  * is because anonymous users are a special permissions case, because the "user" doesn't actually
@@ -44,7 +44,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 @Slf4j
 @EnableWebSecurity
 @Order(Ordered.LOWEST_PRECEDENCE)
-class AnonymousConfig extends WebSecurityConfigurerAdapter {
+class AnonymousConfig  {
   static String key = "spinnaker-anonymous"
   static String defaultEmail = "anonymous"
 
@@ -56,18 +56,20 @@ class AnonymousConfig extends WebSecurityConfigurerAdapter {
 
   List<String> anonymousAllowedAccounts = new CopyOnWriteArrayList<>()
 
-  void configure(HttpSecurity http) {
+  //void configure(HttpSecurity http) {
+  @Bean
+  SecurityFilterChain configure(HttpSecurity http) throws Exception {
     updateAnonymousAccounts()
     // Not using the ImmutableUser version in order to update allowedAccounts.
     def principal = new User(email: defaultEmail, allowedAccounts: anonymousAllowedAccounts)
 
     http
       .anonymous()
-        .key(key)
-        .principal(principal)
-        .and()
+      .key(key)
+      .principal(principal)
+      .and()
       .csrf()
-        .disable()
+      .disable() as SecurityFilterChain
   }
 
   @Scheduled(fixedDelay = 60000L)

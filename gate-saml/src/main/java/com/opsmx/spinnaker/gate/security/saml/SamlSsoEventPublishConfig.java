@@ -1,8 +1,8 @@
 package com.opsmx.spinnaker.gate.security.saml;
 
+import jakarta.servlet.Filter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.Filter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

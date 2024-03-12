@@ -18,7 +18,7 @@ package com.netflix.spinnaker.gate.controllers
 
 import com.netflix.spinnaker.gate.services.internal.OpsmxSsdOpaService
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.PathVariable
@@ -38,7 +38,7 @@ class OpsmxSsdOpaController {
 
 
 
-  @ApiOperation(value = "Endpoint for ssd rest services")
+  @Operation(summary = "Endpoint for ssd rest services")
   @RequestMapping(value = "/api/{version}/{type}", method = RequestMethod.POST)
   Object postSsdOpaServiceResponse1(@PathVariable("version") String version,
                                     @PathVariable("type") String type,
@@ -46,7 +46,7 @@ class OpsmxSsdOpaController {
     return opsmxSsdOpaService.postSsdOpaServiceResponse1(version, type, data)
   }
 
-  @ApiOperation(value = "Endpoint for ssd rest services")
+  @Operation(summary = "Endpoint for ssd rest services")
   @RequestMapping(value = "{source}/api/{version}/{type}", method = RequestMethod.POST)
   Object postSsdOpaServiceResponse(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -56,7 +56,7 @@ class OpsmxSsdOpaController {
   }
 
 
-  @ApiOperation(value = "Endpoint for ssd services")
+  @Operation(summary = "Endpoint for ssd services")
   @RequestMapping(value = "/api/{version}/{type}", method = RequestMethod.GET)
   Object getSsdOpaResponse1(@PathVariable("version") String version,
                          @PathVariable("type") String type) {

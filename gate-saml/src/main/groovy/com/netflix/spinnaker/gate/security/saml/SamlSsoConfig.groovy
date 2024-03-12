@@ -40,7 +40,7 @@ import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.extensions.saml2.config.SAMLConfigurer
@@ -48,6 +48,7 @@ import org.springframework.security.saml.SAMLCredential
 import org.springframework.security.saml.storage.EmptyStorageFactory
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService
 import org.springframework.security.saml.websso.WebSSOProfileConsumerImpl
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.RememberMeServices
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
@@ -64,7 +65,7 @@ import static org.springframework.security.extensions.saml2.config.SAMLConfigure
 @SpinnakerAuthConfig
 @EnableWebSecurity
 @Slf4j
-class SamlSsoConfig extends WebSecurityConfigurerAdapter {
+class SamlSsoConfig {
 
   @Autowired
   ServerProperties serverProperties
@@ -136,11 +137,10 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   SAMLSecurityConfigProperties samlSecurityConfigProperties
 
-  @Autowired
-  SAMLUserDetailsService samlUserDetailsService
+  SAMLUserDetailsService samlUserDetailsService = samlUserDetailsService()
 
-  @Override
-  void configure(HttpSecurity http) {
+  @Bean
+  SecurityFilterChain configure(HttpSecurity http) throws Exception {
     //We need our session cookie to come across when we get redirected back from the IdP:
     defaultCookieSerializer.setSameSite(null)
     defaultCookieSerializer.setCookieName("gateCookie")
@@ -160,7 +160,6 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
           .and()
         .webSSOProfileConsumer(getWebSSOProfileConsumerImpl())
         .serviceProvider()
-          .storageFactory(new EmptyStorageFactory())
           .entityId(samlSecurityConfigProperties.issuerId)
           .protocol(samlSecurityConfigProperties.redirectProtocol)
           .hostname(samlSecurityConfigProperties.redirectHostname ?: serverProperties?.address?.hostName)
@@ -171,10 +170,11 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
           .keyname(samlSecurityConfigProperties.keyStoreAliasName)
           .keyPassword(samlSecurityConfigProperties.keyStorePassword)
 
-      saml.init(http)
-    SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter()
-    http.addFilterAfter(authTokenUpdateFilter,
-        BasicAuthenticationFilter.class)
+    //      saml.init(http)
+    initSignatureDigest() // Need to be after SAMLConfigurer initializes the global SecurityConfiguration
+    http.apply(saml).init(http)
+    return http.build()
+
     // @formatter:on
 
   }
@@ -253,7 +253,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
               username,
               roles.size(),
               roles,
-              fiatClientConfigurationProperties.legacyFallback
+              fiatClientConfigurationProperties.legacyFallback,e
           )
           id = id.withTag("success", false).withTag("fallback", fiatClientConfigurationProperties.legacyFallback)
 
