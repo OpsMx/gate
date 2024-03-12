@@ -259,6 +259,7 @@ interface OpsmxPlatformService {
                                  @Path('source3') String source3,
                                  @Path('source4') String source4,
                                  @Query("featureType") String featureType,
+                                 @Query("createdStatus") String createdStatus,
                                  @Body Object data)
 
   @GET("/platformservice/{version}/argo/sampleTemplate")

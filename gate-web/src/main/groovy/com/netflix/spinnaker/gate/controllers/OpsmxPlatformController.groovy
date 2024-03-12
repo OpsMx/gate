@@ -435,9 +435,10 @@ class OpsmxPlatformController {
                                  @PathVariable("source3") String source3,
                                  @PathVariable("source4") String source4,
                                  @RequestParam(value = "featureType", required = false) String featureType,
+                                 @RequestParam(name = "createdStatus", required = false) boolean createdStatus,
                                  @RequestBody(required = false) Object data) {
 
-    return opsmxPlatformService.updatePlatformResponse4(version, type, source, source1, source2, source3, source4, featureType,data)
+    return opsmxPlatformService.updatePlatformResponse4(version, type, source, source1, source2, source3, source4, featureType,createdStatus,data)
   }
 
   @ApiOperation(value = "download metric analysis sample template")
