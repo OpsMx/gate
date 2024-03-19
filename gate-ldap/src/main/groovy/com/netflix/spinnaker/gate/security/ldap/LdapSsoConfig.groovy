@@ -80,10 +80,10 @@ class LdapSsoConfig {
   @Autowired
   LoginProps loginProps
 
-  @Autowired
+ /* @Autowired
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder());
-  }
+  }*/
 
   @Bean
   public PasswordEncoder passwordEncoder() {
