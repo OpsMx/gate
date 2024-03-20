@@ -66,6 +66,8 @@ class OpsmxSsdController {
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.POST)
   Object postSsdServiceResponse(@PathVariable("version") String version,
                                 @PathVariable("type") String type,
+                                @RequestParam(value = "orgName", required = false) String orgName,
+                                @RequestParam(value = "teamName", required = false) String teamName,
                                 @RequestParam(value = "stage", required = false) String stage,
                                 @RequestParam(value = "policy", required = false) String policy,
                                 @RequestParam(value = "policyId", required = false) Integer policyId,
@@ -75,7 +77,7 @@ class OpsmxSsdController {
                                 @RequestParam(value = "vulnAlert", required = false) String vulnAlert,
                                 @RequestBody(required = false) Object data) {
 
-    return opsMxSsdService.postSsdServiceResponse(version, type, stage, policy, policyId,id,scope,appId, vulnAlert, data)
+    return opsMxSsdService.postSsdServiceResponse(version, type, orgName, teamName, stage, policy, policyId, id, scope, appId, vulnAlert, data)
   }
 
   @ApiOperation(value = "Endpoint for ssd rest services")
@@ -83,9 +85,11 @@ class OpsmxSsdController {
   Object postSsdServiceResponse3(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
                                  @PathVariable("source") String source,
+                                 @RequestParam(value = "orgName", required = false) String orgName,
+                                 @RequestParam(value = "teamName", required = false) String teamName,
                                  @RequestParam(value = "id", required = false) String id,
                                  @RequestBody(required = false) Object data) {
-    return opsMxSsdService.postSsdServiceResponse3(version, type, source, id, data)
+    return opsMxSsdService.postSsdServiceResponse3(version, type, source, orgName, teamName, id, data)
   }
 
   @ApiOperation(value = "Add cluster details in ssd rest service")
@@ -101,6 +105,8 @@ class OpsmxSsdController {
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.PUT)
   Object updateSsdService(@PathVariable("version") String version,
                           @PathVariable("type") String type,
+                          @RequestParam(value = "orgName", required = false) String orgName,
+                          @RequestParam(value = "teamName", required = false) String teamName,
                           @RequestParam(value = "stage", required = false) String stage,
                           @RequestParam(value = "policy", required = false) String policy,
                           @RequestParam(value = "policyId", required = false) Integer policyId,
@@ -111,7 +117,7 @@ class OpsmxSsdController {
                           @RequestParam(value = "integratorType", required = false) String integratorType,
                           @RequestParam(value = "name", required = false) String name,
                           @RequestBody(required = false) Object data) {
-    return opsMxSsdService.updateSsdServiceResponse(version, type, stage, policy, policyId, id, scope, appId, vulnAlert, integratorType, name, data)
+    return opsMxSsdService.updateSsdServiceResponse(version, type, orgName, teamName, stage, policy, policyId, id, scope, appId, vulnAlert, integratorType, name, data)
   }
 
   @ApiOperation(value = "Update endpoint in ssd rest service")
@@ -119,9 +125,11 @@ class OpsmxSsdController {
   Object updateSsdService1(@PathVariable("version") String version,
                            @PathVariable("type") String type,
                            @PathVariable("source") String source,
+                           @RequestParam(value = "orgName", required = false) String orgName,
+                           @RequestParam(value = "teamName", required = false) String teamName,
                            @RequestParam(value = "integratorType", required = false) String integratorType,
                            @RequestBody(required = false) Object data) {
-    return opsMxSsdService.updateSsdServiceResponse1(version, type, source, integratorType, data)
+    return opsMxSsdService.updateSsdServiceResponse1(version, type, source, orgName, teamName, integratorType, data)
   }
 
   @ApiOperation(value = "Update cluster details in ssd rest service")
@@ -139,6 +147,8 @@ class OpsmxSsdController {
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.GET)
   Object getSsdResponse(@PathVariable("version") String version,
                         @PathVariable("type") String type,
+                        @RequestParam(value = "orgName", required = false) String orgName,
+                        @RequestParam(value = "teamName", required = false) String teamName,
                         @RequestParam(value = "account", required = false) String account,
                         @RequestParam(value = "appId", required = false) String appId,
                         @RequestParam(value = "image", required = false) String image,
@@ -167,7 +177,7 @@ class OpsmxSsdController {
                         @RequestParam(value = "action", required = false) String action,
                         @RequestParam(value = "integratorType", required = false) String integratorType,
                         @RequestParam(value = "name", required = false) String name) {
-    return opsMxSsdService.getSddResponse1(version, type, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, policy, typeList, alertName, id, startTime, endTime, severity, scope, current, tag, tool, tags, action, integratorType, name)
+    return opsMxSsdService.getSddResponse1(version, type, orgName, teamName, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, policy, typeList, alertName, id, startTime, endTime, severity, scope, current, tag, tool, tags, action, integratorType, name)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
@@ -175,6 +185,8 @@ class OpsmxSsdController {
   Object getSsdResponse1(@PathVariable("version") String version,
                          @PathVariable("type") String type,
                          @PathVariable("source") String source,
+                         @RequestParam(value = "orgName", required = false) String orgName,
+                         @RequestParam(value = "teamName", required = false) String teamName,
                          @RequestParam(value = "account", required = false) String account,
                          @RequestParam(value = "appId", required = false) String appId,
                          @RequestParam(value = "image", required = false) String image,
@@ -204,7 +216,7 @@ class OpsmxSsdController {
                          @RequestParam(value = "integratorType", required = false) String integratorType,
                          @RequestParam(value = "startTime", required = false) String startTime,
                          @RequestParam(value = "endTime", required = false) String endTime) {
-    return opsMxSsdService.getSddResponse2(version, type, source, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, alertName, riskStatus, id, Vulnerability, Component, ComponentVersion, Image, ImageVersion, service, scope, name, value, current, integratorType, startTime, endTime)
+    return opsMxSsdService.getSddResponse2(version, type, source, orgName, teamName, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, alertName, riskStatus, id, Vulnerability, Component, ComponentVersion, Image, ImageVersion, service, scope, name, value, current, integratorType, startTime, endTime)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
@@ -213,6 +225,8 @@ class OpsmxSsdController {
                          @PathVariable("type") String type,
                          @PathVariable("source") String source,
                          @PathVariable("source1") String source1,
+                         @RequestParam(value = "orgName", required = false) String orgName,
+                         @RequestParam(value = "teamName", required = false) String teamName,
                          @RequestParam(value = "account", required = false) String account,
                          @RequestParam(value = "appId", required = false) Integer appId,
                          @RequestParam(value = "image", required = false) String image,
@@ -230,7 +244,7 @@ class OpsmxSsdController {
                          @RequestParam(value = "sortOrder", required = false) String sortOrder,
                          @RequestParam(value = "id", required = false) String id,
                          @RequestParam(value = "dbomType", required = false) String dbomType) {
-    return opsMxSsdService.getSddResponse3(version, type, source, source1,account , appId, image, imageTag, stage, deployedAt, appName, noOfDays, pageNo, pageLimit, kind, search, service,sortBy,sortOrder, id, dbomType)
+    return opsMxSsdService.getSddResponse3(version, type, source, source1, orgName, teamName, account, appId, image, imageTag, stage, deployedAt, appName, noOfDays, pageNo, pageLimit, kind, search, service, sortBy, sortOrder, id, dbomType)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
@@ -240,6 +254,8 @@ class OpsmxSsdController {
                          @PathVariable("source") String source,
                          @PathVariable("source1") String source1,
                          @PathVariable("source2") String source2,
+                         @RequestParam(value = "orgName", required = false) String orgName,
+                         @RequestParam(value = "teamName", required = false) String teamName,
                          @RequestParam(value = "account", required = false) String account,
                          @RequestParam(value = "appId", required = false) Integer appId,
                          @RequestParam(value = "image", required = false) String image,
@@ -269,7 +285,7 @@ class OpsmxSsdController {
                          @RequestParam(value = "service", required = false) String service,
                          @RequestParam(value = "toApp", required = false) String toApp,
                          @RequestParam(value = "dbomType", required = false) String dbomType) {
-    return opsMxSsdService.getSddResponse4(version, type, source, source1, source2, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, id, fromImage, toImage, fromImageTag, toImageTag, fromAccount, toAccount, kind, active, Vulnerability, Component, ComponentVersion,fromApp,service,toApp, dbomType)
+    return opsMxSsdService.getSddResponse4(version, type, source, source1, source2, orgName, teamName, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, id, fromImage, toImage, fromImageTag, toImageTag, fromAccount, toAccount, kind, active, Vulnerability, Component, ComponentVersion, fromApp, service, toApp, dbomType)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
@@ -280,10 +296,12 @@ class OpsmxSsdController {
                          @PathVariable("source1") String source1,
                          @PathVariable("source2") String source2,
                          @PathVariable("source3") String source3,
+                         @RequestParam(value = "orgName", required = false) String orgName,
+                         @RequestParam(value = "teamName", required = false) String teamName,
                          @RequestParam(value = "appId", required = false) Integer appId,
                          @RequestParam(value = "image", required = false) String image,
                          @RequestParam(value = "appName", required = false) String appName) {
-    return opsMxSsdService.getSddResponse5(version, type, source, source1, source2, source3, appId, image, appName)
+    return opsMxSsdService.getSddResponse5(version, type, source, source1, source2, source3, orgName, teamName, appId, image, appName)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
@@ -295,10 +313,12 @@ class OpsmxSsdController {
                          @PathVariable("source2") String source2,
                          @PathVariable("source3") String source3,
                          @PathVariable("source4") String source4,
+                         @RequestParam(value = "orgName", required = false) String orgName,
+                         @RequestParam(value = "teamName", required = false) String teamName,
                          @RequestParam(value = "appId", required = false) Integer appId,
                          @RequestParam(value = "image", required = false) String image,
                          @RequestParam(value = "appName", required = false) String appName) {
-    return opsMxSsdService.getSddResponse6(version, type, source, source1, source2, source3, source4, appId, image, appName)
+    return opsMxSsdService.getSddResponse6(version, type, source, source1, source2, source3, source4, orgName, teamName, appId, image, appName)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
@@ -311,10 +331,12 @@ class OpsmxSsdController {
                          @PathVariable("source3") String source3,
                          @PathVariable("source4") String source4,
                          @PathVariable("source5") String source5,
+                         @RequestParam(value = "orgName", required = false) String orgName,
+                         @RequestParam(value = "teamName", required = false) String teamName,
                          @RequestParam(value = "appId", required = false) Integer appId,
                          @RequestParam(value = "image", required = false) String image,
                          @RequestParam(value = "appName", required = false) String appName) {
-    return opsMxSsdService.getSddResponse7(version, type, source, source1, source2, source3, source4, source5, appId, image, appName)
+    return opsMxSsdService.getSddResponse7(version, type, source, source1, source2, source3, source4, source5, orgName, teamName, appId, image, appName)
   }
 
   @ApiOperation(value = "Endpoint to download csv file")
@@ -322,11 +344,13 @@ class OpsmxSsdController {
   Object downloadCSVFileAuditService(@PathVariable("version") String version,
                                      @PathVariable("type") String type,
                                      @PathVariable("source") String source,
+                                     @RequestParam(value = "orgName", required = false) String orgName,
+                                     @RequestParam(value = "teamName", required = false) String teamName,
                                      @RequestParam(value = "appId", required = false) String appId,
                                      @RequestParam(value = "image", required = false) String image,
                                      @RequestParam(value = "appName", required = false) String appName,
                                      @RequestParam(value = "account", required = false) String account) {
-    Response response = opsMxSsdService.downloadCSVFile(version, type, source, appId, image, appName, account)
+    Response response = opsMxSsdService.downloadCSVFile(version, type, source, orgName, teamName, appId, image, appName, account)
     log.info("response for the download csv endpoint:" + response.getHeaders())
     if (response.getBody() != null) {
       InputStream inputStream = response.getBody().in()
@@ -350,13 +374,15 @@ class OpsmxSsdController {
   Object downloadJsonFileSsdService(@PathVariable("version") String version,
                                     @PathVariable("type") String type,
                                     @PathVariable("source") String source,
+                                    @RequestParam(value = "orgName", required = false) String orgName,
+                                    @RequestParam(value = "teamName", required = false) String teamName,
                                     @RequestParam(value = "appId", required = false) String appId,
                                     @RequestParam(value = "image", required = false) String image,
                                     @RequestParam(value = "appName", required = false) String appName,
                                     @RequestParam(value = "account", required = false) String account,
                                     @RequestParam(value = "scoreCardName", required = false) String scoreCardName,
-                                    @RequestParam(value = "semgrep", required = false) String semgrep){
-    Response response = opsMxSsdService.downloadJsonFile(version, type, source, appId, image, appName, account, scoreCardName, semgrep)
+                                    @RequestParam(value = "semgrep", required = false) String semgrep) {
+    Response response = opsMxSsdService.downloadJsonFile(version, type, source, orgName, teamName, appId, image, appName, account, scoreCardName, semgrep)
     log.info("response for the download json endpoint:" + response.getHeaders())
     if (response.getBody() != null) {
       InputStream inputStream = response.getBody().in()
@@ -380,6 +406,8 @@ class OpsmxSsdController {
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.DELETE)
   Object deleteSsdResponse(@PathVariable("version") String version,
                            @PathVariable("type") String type,
+                           @RequestParam(value = "orgName", required = false) String orgName,
+                           @RequestParam(value = "teamName", required = false) String teamName,
                            @RequestParam(value = "account", required = false) String account,
                            @RequestParam(value = "appId", required = false) String appId,
                            @RequestParam(value = "image", required = false) String image,
@@ -404,7 +432,7 @@ class OpsmxSsdController {
                            @RequestParam(value = "current", required = false) String current,
                            @RequestParam(value = "tag", required = false) String tag,
                            @RequestParam(value = "integratorType", required = false) String integratorType) {
-    return opsMxSsdService.deleteSddResponse1(version, type, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, policy, typeList, alertName, id, startTime, endTime, severity, scope, current, tag, integratorType)
+    return opsMxSsdService.deleteSddResponse1(version, type, orgName, teamName, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, policy, typeList, alertName, id, startTime, endTime, severity, scope, current, tag, integratorType)
   }
 
   @ApiOperation(value = "Delete Endpoint for ssd services")
@@ -412,6 +440,8 @@ class OpsmxSsdController {
   Object deleteSsdResponse1(@PathVariable("version") String version,
                             @PathVariable("type") String type,
                             @PathVariable("source") String source,
+                            @RequestParam(value = "orgName", required = false) String orgName,
+                            @RequestParam(value = "teamName", required = false) String teamName,
                             @RequestParam(value = "account", required = false) String account,
                             @RequestParam(value = "appId", required = false) String appId,
                             @RequestParam(value = "image", required = false) String image,
@@ -438,7 +468,7 @@ class OpsmxSsdController {
                             @RequestParam(value = "name", required = false) String name,
                             @RequestParam(value = "value", required = false) String value
   ) {
-    return opsMxSsdService.deleteSddResponse2(version, type, source, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, alertName, riskStatus, id, Vulnerability, Component, ComponentVersion, Image, ImageVersion, service, scope, name, value)
+    return opsMxSsdService.deleteSddResponse2(version, type, source, orgName, teamName, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, alertName, riskStatus, id, Vulnerability, Component, ComponentVersion, Image, ImageVersion, service, scope, name, value)
   }
 
   @ApiOperation(value = "Delete Endpoint for ssd services")
@@ -447,6 +477,8 @@ class OpsmxSsdController {
                             @PathVariable("type") String type,
                             @PathVariable("source") String source,
                             @PathVariable("source1") String source1,
+                            @RequestParam(value = "orgName", required = false) String orgName,
+                            @RequestParam(value = "teamName", required = false) String teamName,
                             @RequestParam(value = "account", required = false) String account,
                             @RequestParam(value = "appId", required = false) Integer appId,
                             @RequestParam(value = "image", required = false) String image,
@@ -461,7 +493,7 @@ class OpsmxSsdController {
                             @RequestParam(value = "sortOrder", required = false) String sortOrder,
                             @RequestParam(value = "id", required = false) String id,
                             @RequestParam(value = "dbomType", required = false) String dbomType) {
-    return opsMxSsdService.deleteSddResponse3(version, type, source, source1, account, appId, image, appName, noOfDays, pageNo, pageLimit, kind, search, service, sortBy, sortOrder, id, dbomType)
+    return opsMxSsdService.deleteSddResponse3(version, type, source, source1, orgName, teamName, account, appId, image, appName, noOfDays, pageNo, pageLimit, kind, search, service, sortBy, sortOrder, id, dbomType)
   }
 
   @ApiOperation(value = "Delete Endpoint for ssd services")
@@ -471,6 +503,8 @@ class OpsmxSsdController {
                             @PathVariable("source") String source,
                             @PathVariable("source1") String source1,
                             @PathVariable("source2") String source2,
+                            @RequestParam(value = "orgName", required = false) String orgName,
+                            @RequestParam(value = "teamName", required = false) String teamName,
                             @RequestParam(value = "account", required = false) String account,
                             @RequestParam(value = "appId", required = false) Integer appId,
                             @RequestParam(value = "image", required = false) String image,
@@ -500,7 +534,7 @@ class OpsmxSsdController {
                             @RequestParam(value = "service", required = false) String service,
                             @RequestParam(value = "toApp", required = false) String toApp,
                             @RequestParam(value = "dbomType", required = false) String dbomType) {
-    return opsMxSsdService.deleteSddResponse4(version, type, source, source1, source2, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, id, fromImage, toImage, fromImageTag, toImageTag, fromAccount, toAccount, kind, active, Vulnerability, Component, ComponentVersion, fromApp, service, toApp, dbomType)
+    return opsMxSsdService.deleteSddResponse4(version, type, source, source1, source2, orgName, teamName, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, id, fromImage, toImage, fromImageTag, toImageTag, fromAccount, toAccount, kind, active, Vulnerability, Component, ComponentVersion, fromApp, service, toApp, dbomType)
   }
 
   @ApiOperation(value = "Delete Endpoint for ssd services")
@@ -511,10 +545,12 @@ class OpsmxSsdController {
                             @PathVariable("source1") String source1,
                             @PathVariable("source2") String source2,
                             @PathVariable("source3") String source3,
+                            @RequestParam(value = "orgName", required = false) String orgName,
+                            @RequestParam(value = "teamName", required = false) String teamName,
                             @RequestParam(value = "appId", required = false) Integer appId,
                             @RequestParam(value = "image", required = false) String image,
                             @RequestParam(value = "appName", required = false) String appName) {
-    return opsMxSsdService.deleteSddResponse5(version, type, source, source1, source2, source3, appId, image, appName)
+    return opsMxSsdService.deleteSddResponse5(version, type, source, source1, source2, source3, orgName, teamName, appId, image, appName)
   }
 
   @ApiOperation(value = "Delete Endpoint for ssd services")
@@ -526,10 +562,12 @@ class OpsmxSsdController {
                             @PathVariable("source2") String source2,
                             @PathVariable("source3") String source3,
                             @PathVariable("source4") String source4,
+                            @RequestParam(value = "orgName", required = false) String orgName,
+                            @RequestParam(value = "teamName", required = false) String teamName,
                             @RequestParam(value = "appId", required = false) Integer appId,
                             @RequestParam(value = "image", required = false) String image,
                             @RequestParam(value = "appName", required = false) String appName) {
-    return opsMxSsdService.deleteSddResponse6(version, type, source, source1, source2, source3, source4, appId, image, appName)
+    return opsMxSsdService.deleteSddResponse6(version, type, source, source1, source2, source3, source4, orgName, teamName, appId, image, appName)
   }
 
   @ApiOperation(value = "Endpoint for ssd services")
@@ -542,10 +580,12 @@ class OpsmxSsdController {
                             @PathVariable("source3") String source3,
                             @PathVariable("source4") String source4,
                             @PathVariable("source5") String source5,
+                            @RequestParam(value = "orgName", required = false) String orgName,
+                            @RequestParam(value = "teamName", required = false) String teamName,
                             @RequestParam(value = "appId", required = false) Integer appId,
                             @RequestParam(value = "image", required = false) String image,
                             @RequestParam(value = "appName", required = false) String appName) {
-    return opsMxSsdService.deleteSddResponse7(version, type, source, source1, source2, source3, source4, source5, appId, image, appName)
+    return opsMxSsdService.deleteSddResponse7(version, type, source, source1, source2, source3, source4, source5, orgName, teamName, appId, image, appName)
   }
 
   private Object addCluster(MultipartFile files, String data, String account, String version) {
