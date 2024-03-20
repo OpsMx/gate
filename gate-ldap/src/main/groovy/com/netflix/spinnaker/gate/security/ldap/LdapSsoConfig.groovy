@@ -54,6 +54,7 @@ import org.springframework.stereotype.Component
 @ConditionalOnExpression('${ldap.enabled:false}')
 @Configuration
 @SpinnakerAuthConfig
+@EnableWebSecurity
 class LdapSsoConfig {
 
   @Autowired
@@ -127,8 +128,19 @@ class LdapSsoConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
     def authenticationManager = ctx.getBean("authenticationManager") as AuthenticationManager
+    defaultCookieSerializer.setSameSite(null)
+    http.formLogin()
+    if (loginProps.mode == null || loginProps.mode.equalsIgnoreCase("session")) {
+    authConfig.configure(http)
+    http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter)
+    http.csrf().disable();
+    } else if (loginProps.mode !=null && loginProps.mode.equalsIgnoreCase("token")) {
+      authConfig.jwtconfigure(http)
+    }
+    return http.build() as SecurityFilterChain
+
+/*    def authenticationManager = ctx.getBean("authenticationManager") as AuthenticationManager
     defaultCookieSerializer.setSameSite(null)
     http.formLogin()
     if (loginProps.mode == null || loginProps.mode.equalsIgnoreCase("session"))
@@ -136,12 +148,11 @@ class LdapSsoConfig {
       authConfig.configure(http)
       http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter)
       http.csrf().disable();
-      return http.build() as SecurityFilterChain
     }
     else if (loginProps.mode !=null && loginProps.mode.equalsIgnoreCase("token")) {
       authConfig.jwtconfigure(http)
     }
-
+    return http.build() as SecurityFilterChain*/
   }
 
   @Bean

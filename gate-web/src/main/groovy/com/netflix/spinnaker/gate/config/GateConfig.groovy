@@ -39,7 +39,6 @@ import com.netflix.spinnaker.gate.filters.RequestSheddingFilter
 import com.netflix.spinnaker.gate.filters.ResetAuthenticatedRequestFilter
 import com.netflix.spinnaker.gate.plugins.deck.DeckPluginConfiguration
 import com.netflix.spinnaker.gate.plugins.web.PluginWebConfiguration
-import com.netflix.spinnaker.gate.retrofit.Slf4jRetrofitLogger
 import com.netflix.spinnaker.gate.services.EurekaLookupService
 import com.netflix.spinnaker.gate.services.internal.*
 import com.netflix.spinnaker.kork.client.ServiceClientProvider
@@ -55,7 +54,6 @@ import com.opsmx.spinnaker.gate.services.OpsmxAuditClientService
 import com.opsmx.spinnaker.gate.services.OpsmxAuditService
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
-import okhttp3.OkHttpClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -74,14 +72,11 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer
 import org.springframework.session.data.redis.config.ConfigureRedisAction
 import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration
-import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
 import org.springframework.web.client.RestTemplate
 import redis.clients.jedis.JedisPool
 import retrofit.Endpoint
 import retrofit.RequestInterceptor
-
-import java.util.HashMap;
 
 import jakarta.servlet.*
 import java.util.concurrent.ExecutorService
@@ -144,13 +139,6 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Bean
   @Primary
   ConfigureRedisAction springBootConfigureRedisAction() {
-    return ConfigureRedisAction.NO_OP
-  }
-
-  @Bean
-  @ConnectionPostProcessor
-  @ConditionalOnProperty("redis.configuration.secure")
-  ConfigureRedisAction connectionPostProcessorConfigureRedisAction() {
     return ConfigureRedisAction.NO_OP
   }
 

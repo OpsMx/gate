@@ -1,11 +1,11 @@
 package com.opsmx.spinnaker.gate.security.ldap;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.ldap.UncategorizedLdapException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,6 +44,6 @@ public class RetryOnExceptionAuthManagerTest {
 
     Authentication actual = fixture.authenticate(authentication);
 
-    Assert.assertEquals(actual, authentication);
+    assertEquals(actual, authentication);
   }
 }
