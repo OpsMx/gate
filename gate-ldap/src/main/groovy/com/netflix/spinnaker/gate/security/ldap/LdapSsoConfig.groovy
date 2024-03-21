@@ -81,11 +81,6 @@ class LdapSsoConfig {
   @Autowired
   LoginProps loginProps
 
- /* @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder());
-  }*/
-
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -140,19 +135,6 @@ class LdapSsoConfig {
     }
     return http.build() as SecurityFilterChain
 
-/*    def authenticationManager = ctx.getBean("authenticationManager") as AuthenticationManager
-    defaultCookieSerializer.setSameSite(null)
-    http.formLogin()
-    if (loginProps.mode == null || loginProps.mode.equalsIgnoreCase("session"))
-    {
-      authConfig.configure(http)
-      http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter)
-      http.csrf().disable();
-    }
-    else if (loginProps.mode !=null && loginProps.mode.equalsIgnoreCase("token")) {
-      authConfig.jwtconfigure(http)
-    }
-    return http.build() as SecurityFilterChain*/
   }
 
   @Bean

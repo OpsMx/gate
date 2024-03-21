@@ -61,7 +61,10 @@ dependencies {
   }
   implementation 'commons-fileupload:commons-fileupload:1.5'
   implementation 'org.apache.camel:camel-core:3.14.1'
-  implementation 'org.apache.camel:camel-rabbitmq:3.14.1'
+  implementation ('org.apache.camel:camel-rabbitmq:3.14.1') {
+    exclude group: 'com.rabbitmq', module: 'amqp-client'
+  }
+  implementation group: 'com.rabbitmq', name: 'amqp-client', version: '5.18.0'
   implementation 'org.apache.camel:camel-jackson:3.14.1'
 
   runtimeOnly "io.spinnaker.kork:kork-runtime"
