@@ -64,7 +64,9 @@ dependencies {
   implementation ('org.apache.camel:camel-rabbitmq:3.14.1') {
     exclude group: 'com.rabbitmq', module: 'amqp-client'
   }
-  implementation group: 'com.rabbitmq', name: 'amqp-client', version: '5.18.0'
+  implementation ("com.rabbitmq:amqp-client:5.18.0") {
+    force(true)
+  }
   implementation 'org.apache.camel:camel-jackson:3.14.1'
 
   runtimeOnly "io.spinnaker.kork:kork-runtime"

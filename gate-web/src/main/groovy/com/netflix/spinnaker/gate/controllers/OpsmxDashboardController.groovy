@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletRequest
 @RestController
 @Slf4j
 @ConditionalOnExpression('${services.dashboard.enabled:false}')
-class xzzOpsmxDashboardController {
+class OpsmxDashboardController {
 /*
  * Copyright 2020 Netflix, Inc.
  *
