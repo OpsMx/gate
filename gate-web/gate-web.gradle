@@ -60,9 +60,9 @@ dependencies {
     exclude group: 'commons-fileupload', module: 'commons-fileupload'
   }
   implementation 'commons-fileupload:commons-fileupload:1.5'
-  implementation 'org.apache.camel:camel-core:3.20.2'
-  implementation 'org.apache.camel:camel-rabbitmq:3.20.2'
-  implementation 'org.apache.camel:camel-jackson:3.20.2'
+  implementation 'org.apache.camel:camel-core:3.14.1'
+  implementation 'org.apache.camel:camel-rabbitmq:3.14.1'
+  implementation 'org.apache.camel:camel-jackson:3.14.1'
 
   runtimeOnly "io.spinnaker.kork:kork-runtime"
   runtimeOnly "org.springframework.boot:spring-boot-properties-migrator"
