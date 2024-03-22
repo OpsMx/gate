@@ -31,7 +31,6 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
-//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 
 import java.util.concurrent.CopyOnWriteArrayList
 /**
@@ -56,7 +55,6 @@ class AnonymousConfig  {
 
   List<String> anonymousAllowedAccounts = new CopyOnWriteArrayList<>()
 
-  //void configure(HttpSecurity http) {
   @Bean
   SecurityFilterChain configure(HttpSecurity http) throws Exception {
     updateAnonymousAccounts()
