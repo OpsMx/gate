@@ -34,8 +34,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-// import
-// org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 /**
@@ -82,7 +80,6 @@ public class IapSsoConfig {
     long expirationTimeAllowedSkew = 30000L;
   }
 
-  // @Override
   public void configure(HttpSecurity http) throws Exception {
     log.info("IAP JWT token verification is enabled.");
 
@@ -103,7 +100,6 @@ public class IapSsoConfig {
     http.addFilterBefore(iapAuthenticationFilter(), BasicAuthenticationFilter.class);
   }
 
-  // @Override
   public void configure(WebSecurity web) throws Exception {
     authConfig.configure(web);
   }
