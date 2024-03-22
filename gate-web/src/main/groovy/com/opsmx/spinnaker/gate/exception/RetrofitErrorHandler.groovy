@@ -18,6 +18,7 @@ package com.opsmx.spinnaker.gate.exception
 
 import com.google.gson.Gson
 import com.netflix.spinnaker.gate.controllers.OpsmxAutopilotController
+import com.netflix.spinnaker.gate.controllers.OpsmxDashboardController
 import com.netflix.spinnaker.gate.controllers.OpsmxOesController
 import com.netflix.spinnaker.gate.controllers.OpsmxPlatformController
 import com.netflix.spinnaker.gate.controllers.OpsmxVisibilityController
@@ -35,7 +36,7 @@ import retrofit.RetrofitError
 
 @Slf4j
 @ControllerAdvice(basePackageClasses = [OpsmxSaporPolicyController.class, OpsmxAutopilotController.class,
-OpsmxAuditClientServiceController.class, OpsmxPlatformController.class,
+OpsmxAuditClientServiceController.class, OpsmxDashboardController.class, OpsmxPlatformController.class,
 OpsmxOesController.class, OpsmxVisibilityController.class, OpsmxAuditServiceController.class])
 class RetrofitErrorHandler {
 

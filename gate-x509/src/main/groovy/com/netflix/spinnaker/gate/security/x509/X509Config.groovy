@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//file:noinspection GroovyAssignabilityCheck
-//file:noinspection GroovyAccessibility
+
 
 package com.netflix.spinnaker.gate.security.x509
 
