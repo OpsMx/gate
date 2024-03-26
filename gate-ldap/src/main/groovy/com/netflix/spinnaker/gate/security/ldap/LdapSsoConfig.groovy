@@ -26,7 +26,6 @@ import groovy.util.logging.Slf4j
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
-import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
@@ -41,9 +40,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
@@ -71,26 +67,10 @@ class LdapSsoConfig {
   LdapUserContextMapper ldapUserContextMapper
 
   @Autowired
-  SecurityProperties securityProperties
-
-  @Autowired
   DefaultCookieSerializer defaultCookieSerializer
 
   @Autowired
-  private UserDetailsService userDataService
-
-  @Autowired
   LoginProps loginProps
-
-  @Bean
-  public void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder());
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
 
   @Autowired
   void ldapConfigure(AuthenticationManagerBuilder auth) throws Exception {
@@ -120,7 +100,7 @@ class LdapSsoConfig {
       ldapConfigurer.userSearchFilter(ldapConfigProps.userSearchFilter)
     }
   }
-  
+
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
