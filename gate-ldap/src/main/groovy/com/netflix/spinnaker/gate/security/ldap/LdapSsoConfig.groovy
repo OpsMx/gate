@@ -21,6 +21,7 @@ import com.netflix.spinnaker.gate.security.AllowedAccountsSupport
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.security.ldap.RetryOnExceptionAuthManager
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -82,6 +83,11 @@ class LdapSsoConfig {
   LoginProps loginProps
 
   @Bean
+  public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder());
+  }
+
+  @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
@@ -114,12 +120,7 @@ class LdapSsoConfig {
       ldapConfigurer.userSearchFilter(ldapConfigProps.userSearchFilter)
     }
   }
-
-  @Bean
-  public AuthenticationManager authenticationManager(
-    AuthenticationConfiguration authConfig) throws Exception {
-    return authConfig.getAuthenticationManager();
-  }
+  
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -127,14 +128,18 @@ class LdapSsoConfig {
     defaultCookieSerializer.setSameSite(null)
     http.formLogin()
     if (loginProps.mode == null || loginProps.mode.equalsIgnoreCase("session")) {
-    authConfig.configure(http)
-    http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter)
-    http.csrf().disable();
-    } else if (loginProps.mode !=null && loginProps.mode.equalsIgnoreCase("token")) {
+      authConfig.configure(http)
+      http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter)
+      http.csrf().disable();
+    } else if (loginProps.mode != null && loginProps.mode.equalsIgnoreCase("token")) {
       authConfig.jwtconfigure(http)
     }
     return http.build() as SecurityFilterChain
+  }
 
+  @Bean
+  protected AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    return new RetryOnExceptionAuthManager(authConfig.getAuthenticationManager());
   }
 
   @Bean

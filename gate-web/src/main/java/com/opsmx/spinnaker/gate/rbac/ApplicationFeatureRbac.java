@@ -16,8 +16,6 @@
 
 package com.opsmx.spinnaker.gate.rbac;
 
-import static org.springframework.http.HttpMethod.*;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.netflix.spinnaker.gate.model.PermissionModel;
@@ -96,54 +94,60 @@ public class ApplicationFeatureRbac {
 
     log.debug("authorizing the endpoint : {}", endpointUrl);
 
-    if (method.equals(GET)) {
-      permission =
-          oesAuthorizationService
-              .fetchPermissions(username, RbacFeatureType.APP.name(), applicationId, username)
-              .getBody();
-      log.info("permissions for the GET API : {}", permission);
-      if (permission == null || !permission.getPermissions().contains(PermissionEnum.view.name())) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.view.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
-    } else if (method.equals(PUT) || method.equals(DELETE)) {
-      if (method.equals(DELETE)
-          && endpointUrl.split("/").length == 4
-          && endpointUrl.trim().contains("/dashboardservice/v3/applications")) {
+    switch (method.name()) {
+      case "GET":
         permission =
             oesAuthorizationService
                 .fetchPermissions(username, RbacFeatureType.APP.name(), applicationId, username)
                 .getBody();
-        log.info("permissions for the DELETE API : {}", permission);
+        log.info("permissions for the GET API : {}", permission);
         if (permission == null
-            || !permission.getPermissions().contains(PermissionEnum.delete.name())) {
+            || !permission.getPermissions().contains(PermissionEnum.view.name())) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
-                  + PermissionEnum.delete.name()
+                  + PermissionEnum.view.name()
                   + PERMISSION_FOR_THE_FEATURE_TYPE
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-      } else {
-        permission =
-            oesAuthorizationService
-                .fetchPermissions(username, RbacFeatureType.APP.name(), applicationId, username)
-                .getBody();
-        log.info("permissions for the PUT or DELETE API : {}", permission);
-        if (permission == null
-            || !permission.getPermissions().contains(PermissionEnum.edit.name())) {
-          throw new AccessForbiddenException(
-              YOU_DO_NOT_HAVE
-                  + PermissionEnum.edit.name()
-                  + PERMISSION_FOR_THE_FEATURE_TYPE
-                  + RbacFeatureType.APP.description
-                  + TO_PERFORM_THIS_OPERATION);
+        break;
+
+      case "PUT":
+      case "DELETE":
+        if (method.equals(HttpMethod.DELETE)
+            && endpointUrl.split("/").length == 4
+            && endpointUrl.trim().contains("/dashboardservice/v3/applications")) {
+          permission =
+              oesAuthorizationService
+                  .fetchPermissions(username, RbacFeatureType.APP.name(), applicationId, username)
+                  .getBody();
+          log.info("permissions for the DELETE API : {}", permission);
+          if (permission == null
+              || !permission.getPermissions().contains(PermissionEnum.delete.name())) {
+            throw new AccessForbiddenException(
+                YOU_DO_NOT_HAVE
+                    + PermissionEnum.delete.name()
+                    + PERMISSION_FOR_THE_FEATURE_TYPE
+                    + RbacFeatureType.APP.description
+                    + TO_PERFORM_THIS_OPERATION);
+          }
+        } else {
+          permission =
+              oesAuthorizationService
+                  .fetchPermissions(username, RbacFeatureType.APP.name(), applicationId, username)
+                  .getBody();
+          log.info("permissions for the PUT or DELETE API : {}", permission);
+          if (permission == null
+              || !permission.getPermissions().contains(PermissionEnum.edit.name())) {
+            throw new AccessForbiddenException(
+                YOU_DO_NOT_HAVE
+                    + PermissionEnum.edit.name()
+                    + PERMISSION_FOR_THE_FEATURE_TYPE
+                    + RbacFeatureType.APP.description
+                    + TO_PERFORM_THIS_OPERATION);
+          }
         }
-      }
+        break;
     }
   }
 
@@ -178,59 +182,64 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint for service Id : {}", endpointUrl);
 
-    if (method.equals(GET)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.view.name(),
-                      serviceId,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info("is authorized for the service Id GET API: {}, {}", serviceId, isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.view.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
-    } else if (method.equals(PUT) || method.equals(DELETE)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.edit.name(),
-                      serviceId,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info(
-          "is authorized for the service Id PUT or DELETE API: {}, {}", serviceId, isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.edit.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
+    switch (method.name()) {
+      case "GET":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.view.name(),
+                        serviceId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info("is authorized for the service Id GET API: {}, {}", serviceId, isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.view.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
+
+      case "PUT":
+      case "DELETE":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.edit.name(),
+                        serviceId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info(
+            "is authorized for the service Id PUT or DELETE API: {}, {}", serviceId, isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.edit.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
     }
   }
 
@@ -259,59 +268,66 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    if (method.equals(GET)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.view.name(),
-                      null,
-                      pipelineId,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info("is authorized for the pipeline Id GET API: {}, {}", pipelineId, isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.view.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
-    } else if (method.equals(PUT) || method.equals(DELETE)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.edit.name(),
-                      null,
-                      pipelineId,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info(
-          "is authorized for the pipeline Id PUT or DELETE API: {}, {}", pipelineId, isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.edit.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
+    switch (method.name()) {
+      case "GET":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.view.name(),
+                        null,
+                        pipelineId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info("is authorized for the pipeline Id GET API: {}, {}", pipelineId, isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.view.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
+
+      case "PUT":
+      case "DELETE":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.edit.name(),
+                        null,
+                        pipelineId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info(
+            "is authorized for the pipeline Id PUT or DELETE API: {}, {}",
+            pipelineId,
+            isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.edit.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
     }
   }
 
@@ -340,58 +356,63 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    if (method.equals(GET)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.view.name(),
-                      null,
-                      null,
-                      gateId,
-                      null,
-                      null,
-                      null,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info("is authorized for the gate Id GET API: {}, {}", gateId, isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.view.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
-    } else if (method.equals(PUT) || method.equals(DELETE)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.edit.name(),
-                      null,
-                      null,
-                      gateId,
-                      null,
-                      null,
-                      null,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info("is authorized for the gate Id PUT or DELETE API: {}, {}", gateId, isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.edit.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
+    switch (method.name()) {
+      case "GET":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.view.name(),
+                        null,
+                        null,
+                        gateId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info("is authorized for the gate Id GET API: {}, {}", gateId, isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.view.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
+
+      case "PUT":
+      case "DELETE":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.edit.name(),
+                        null,
+                        null,
+                        gateId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info("is authorized for the gate Id PUT or DELETE API: {}, {}", gateId, isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.edit.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
     }
   }
 
@@ -427,62 +448,67 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    if (method.equals(GET)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.view.name(),
-                      null,
-                      null,
-                      null,
-                      approvalGateId,
-                      null,
-                      null,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info(
-          "is authorized for the approval gate Id GET API: {}, {}", approvalGateId, isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.view.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
-    } else if (method.equals(PUT) || method.equals(DELETE)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.edit.name(),
-                      null,
-                      null,
-                      null,
-                      approvalGateId,
-                      null,
-                      null,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info(
-          "is authorized for the approval gate Id PUT or DELETE API: {}, {}",
-          approvalGateId,
-          isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.edit.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
+    switch (method.name()) {
+      case "GET":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.view.name(),
+                        null,
+                        null,
+                        null,
+                        approvalGateId,
+                        null,
+                        null,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info(
+            "is authorized for the approval gate Id GET API: {}, {}", approvalGateId, isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.view.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
+
+      case "PUT":
+      case "DELETE":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.edit.name(),
+                        null,
+                        null,
+                        null,
+                        approvalGateId,
+                        null,
+                        null,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info(
+            "is authorized for the approval gate Id PUT or DELETE API: {}, {}",
+            approvalGateId,
+            isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.edit.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
     }
   }
 
@@ -509,64 +535,69 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    if (method.equals(GET)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.view.name(),
-                      null,
-                      null,
-                      null,
-                      null,
-                      approvalGateInstanceId,
-                      null,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info(
-          "is authorized for the approval gate instance Id GET API: {}, {}",
-          approvalGateInstanceId,
-          isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.view.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
-    } else if (method.equals(PUT) || method.equals(DELETE)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.edit.name(),
-                      null,
-                      null,
-                      null,
-                      null,
-                      approvalGateInstanceId,
-                      null,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info(
-          "is authorized for the approval gate instance Id PUT or DELETE API: {}, {}",
-          approvalGateInstanceId,
-          isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.edit.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
+    switch (method.name()) {
+      case "GET":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.view.name(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        approvalGateInstanceId,
+                        null,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info(
+            "is authorized for the approval gate instance Id GET API: {}, {}",
+            approvalGateInstanceId,
+            isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.view.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
+
+      case "PUT":
+      case "DELETE":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.edit.name(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        approvalGateInstanceId,
+                        null,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info(
+            "is authorized for the approval gate instance Id PUT or DELETE API: {}, {}",
+            approvalGateInstanceId,
+            isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.edit.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
     }
   }
 
@@ -593,64 +624,69 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    if (method.equals(GET)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.view.name(),
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      approvalPolicyId,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info(
-          "is authorized for the approval policy Id GET API: {}, {}",
-          approvalPolicyId,
-          isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.view.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
-    } else if (method.equals(PUT) || method.equals(DELETE)) {
-      isAuthorized =
-          Boolean.parseBoolean(
-              oesAuthorizationService
-                  .isAuthorizedUser(
-                      username,
-                      PermissionEnum.edit.name(),
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      approvalPolicyId,
-                      null,
-                      username)
-                  .getBody()
-                  .get("isEnabled"));
-      log.info(
-          "is authorized for the approval policy Id PUT or DELETE API: {}, {}",
-          approvalPolicyId,
-          isAuthorized);
-      if (isAuthorized == null || !isAuthorized) {
-        throw new AccessForbiddenException(
-            YOU_DO_NOT_HAVE
-                + PermissionEnum.edit.name()
-                + PERMISSION_FOR_THE_FEATURE_TYPE
-                + RbacFeatureType.APP.description
-                + TO_PERFORM_THIS_OPERATION);
-      }
+    switch (method.name()) {
+      case "GET":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.view.name(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        approvalPolicyId,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info(
+            "is authorized for the approval policy Id GET API: {}, {}",
+            approvalPolicyId,
+            isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.view.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
+
+      case "PUT":
+      case "DELETE":
+        isAuthorized =
+            Boolean.parseBoolean(
+                oesAuthorizationService
+                    .isAuthorizedUser(
+                        username,
+                        PermissionEnum.edit.name(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        approvalPolicyId,
+                        null,
+                        username)
+                    .getBody()
+                    .get("isEnabled"));
+        log.info(
+            "is authorized for the approval policy Id PUT or DELETE API: {}, {}",
+            approvalPolicyId,
+            isAuthorized);
+        if (isAuthorized == null || !isAuthorized) {
+          throw new AccessForbiddenException(
+              YOU_DO_NOT_HAVE
+                  + PermissionEnum.edit.name()
+                  + PERMISSION_FOR_THE_FEATURE_TYPE
+                  + RbacFeatureType.APP.description
+                  + TO_PERFORM_THIS_OPERATION);
+        }
+        break;
     }
   }
 
