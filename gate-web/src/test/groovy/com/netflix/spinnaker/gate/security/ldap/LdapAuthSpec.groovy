@@ -23,7 +23,7 @@ import com.netflix.spinnaker.gate.security.GateSystemTest
 import com.netflix.spinnaker.gate.security.YamlFileApplicationContextInitializer
 import com.netflix.spinnaker.gate.security.ldap.LdapSsoConfig.LdapConfigProps
 import com.netflix.spinnaker.gate.services.AccountLookupService
-
+import com.netflix.spinnaker.gate.services.internal.ClouddriverService
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -38,7 +38,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import spock.lang.Specification
 
-import javax.servlet.http.Cookie
+import jakarta.servlet.http.Cookie
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
@@ -131,9 +131,9 @@ class LdapAuthSpec extends Specification {
     AccountLookupService accountLookupService() {
       return new AccountLookupService() {
         @Override
-        List<AccountDetails> getAccounts() {
+        List<ClouddriverService.AccountDetails> getAccounts() {
           return [
-              new AccountDetails(name: "foo")
+              new ClouddriverService.AccountDetails(name: "foo")
           ]
         }
       }

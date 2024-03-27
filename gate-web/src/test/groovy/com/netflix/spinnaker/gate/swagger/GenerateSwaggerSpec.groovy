@@ -3,7 +3,7 @@ package com.netflix.spinnaker.gate.swagger
 import com.netflix.spinnaker.gate.Main
 import com.netflix.spinnaker.gate.security.GateSystemTest
 import com.netflix.spinnaker.gate.security.YamlFileApplicationContextInitializer
-
+import com.netflix.spinnaker.gate.services.internal.IgorService
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -48,12 +48,12 @@ class GenerateSwaggerSpec extends Specification {
     Boolean written = false
 
     when:
-    mockMvc.perform(get("/v2/api-docs").accept(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/v3/api-docs").accept(MediaType.APPLICATION_JSON))
       .andDo({ result ->
-      log.info('Generating swagger spec and writing to "swagger.json".')
-      FileUtils.writeStringToFile(new File('swagger.json'), result.getResponse().getContentAsString())
-      written = true
-    })
+        log.info('Generating swagger spec and writing to "swagger.json".')
+        FileUtils.writeStringToFile(new File('swagger.json'), result.getResponse().getContentAsString())
+        written = true
+      })
 
     then:
     written

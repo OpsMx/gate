@@ -25,11 +25,11 @@ import com.opsmx.spinnaker.gate.enums.RbacFeatureType;
 import com.opsmx.spinnaker.gate.exception.AccessForbiddenException;
 import com.opsmx.spinnaker.gate.exception.InvalidResourceIdException;
 import com.opsmx.spinnaker.gate.exception.XSpinnakerUserHeaderMissingException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -94,8 +94,8 @@ public class ApplicationFeatureRbac {
 
     log.debug("authorizing the endpoint : {}", endpointUrl);
 
-    switch (method) {
-      case GET:
+    switch (method.name()) {
+      case "GET":
         permission =
             oesAuthorizationService
                 .fetchPermissions(username, RbacFeatureType.APP.name(), applicationId, username)
@@ -112,8 +112,8 @@ public class ApplicationFeatureRbac {
         }
         break;
 
-      case PUT:
-      case DELETE:
+      case "PUT":
+      case "DELETE":
         if (method.equals(HttpMethod.DELETE)
             && endpointUrl.split("/").length == 4
             && endpointUrl.trim().contains("/dashboardservice/v3/applications")) {
@@ -182,8 +182,8 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint for service Id : {}", endpointUrl);
 
-    switch (method) {
-      case GET:
+    switch (method.name()) {
+      case "GET":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -211,8 +211,8 @@ public class ApplicationFeatureRbac {
         }
         break;
 
-      case PUT:
-      case DELETE:
+      case "PUT":
+      case "DELETE":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -268,8 +268,8 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    switch (method) {
-      case GET:
+    switch (method.name()) {
+      case "GET":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -297,8 +297,8 @@ public class ApplicationFeatureRbac {
         }
         break;
 
-      case PUT:
-      case DELETE:
+      case "PUT":
+      case "DELETE":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -356,8 +356,8 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    switch (method) {
-      case GET:
+    switch (method.name()) {
+      case "GET":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -385,8 +385,8 @@ public class ApplicationFeatureRbac {
         }
         break;
 
-      case PUT:
-      case DELETE:
+      case "PUT":
+      case "DELETE":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -448,8 +448,8 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    switch (method) {
-      case GET:
+    switch (method.name()) {
+      case "GET":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -478,8 +478,8 @@ public class ApplicationFeatureRbac {
         }
         break;
 
-      case PUT:
-      case DELETE:
+      case "PUT":
+      case "DELETE":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -535,8 +535,8 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    switch (method) {
-      case GET:
+    switch (method.name()) {
+      case "GET":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -567,8 +567,8 @@ public class ApplicationFeatureRbac {
         }
         break;
 
-      case PUT:
-      case DELETE:
+      case "PUT":
+      case "DELETE":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -624,8 +624,8 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    switch (method) {
-      case GET:
+    switch (method.name()) {
+      case "GET":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService
@@ -656,8 +656,8 @@ public class ApplicationFeatureRbac {
         }
         break;
 
-      case PUT:
-      case DELETE:
+      case "PUT":
+      case "DELETE":
         isAuthorized =
             Boolean.parseBoolean(
                 oesAuthorizationService

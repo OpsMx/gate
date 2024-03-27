@@ -42,7 +42,9 @@ import org.springframework.stereotype.Component;
 @EnableAsync
 public class AuthenticationAuditListener extends AbstractAuthenticationAuditListener {
 
-  @Autowired(required = false) private AuditHandler auditHandler;
+  @Autowired(required = false)
+  private AuditHandler auditHandler;
+
   @Autowired @Lazy private ProducerTemplate template;
 
   Gson gson = new Gson();

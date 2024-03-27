@@ -24,12 +24,13 @@ import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.kork.core.RetrySupport
 import com.netflix.spinnaker.security.User
-import com.opsmx.spinnaker.gate.security.saml.SamlAuthTokenUpdateFilter
 import groovy.util.logging.Slf4j
 import org.opensaml.saml2.core.Assertion
 import org.opensaml.saml2.core.Attribute
 import org.opensaml.xml.schema.XSAny
 import org.opensaml.xml.schema.XSString
+import org.opensaml.xml.security.BasicSecurityConfiguration
+import org.opensaml.xml.signature.SignatureConstants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.web.ServerProperties
@@ -40,17 +41,15 @@ import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.extensions.saml2.config.SAMLConfigurer
 import org.springframework.security.saml.SAMLCredential
-import org.springframework.security.saml.storage.EmptyStorageFactory
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService
 import org.springframework.security.saml.websso.WebSSOProfileConsumerImpl
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.RememberMeServices
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.session.web.http.DefaultCookieSerializer
 import org.springframework.stereotype.Component
 
@@ -64,7 +63,7 @@ import static org.springframework.security.extensions.saml2.config.SAMLConfigure
 @SpinnakerAuthConfig
 @EnableWebSecurity
 @Slf4j
-class SamlSsoConfig extends WebSecurityConfigurerAdapter {
+class SamlSsoConfig {
 
   @Autowired
   ServerProperties serverProperties
@@ -97,6 +96,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     UserAttributeMapping userAttributeMapping = new UserAttributeMapping()
     long maxAuthenticationAge = 7200
 
+    String signatureDigest = "SHA1" // SHA1 is the default registered in DefaultSecurityConfigurationBootstrap.populateSignatureParams
     /**
      * Ensure that the keystore exists and can be accessed with the given keyStorePassword and keyStoreAliasName
      */
@@ -121,6 +121,10 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
           }
         }
       }
+      // Validate signature digest algorithm
+      if (SignatureAlgorithms.fromName(signatureDigest) == null) {
+        throw new IllegalStateException("Invalid saml.signatureDigest value '${signatureDigest}'. Valid values are ${SignatureAlgorithms.values()}")
+      }
     }
   }
 
@@ -136,11 +140,10 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   SAMLSecurityConfigProperties samlSecurityConfigProperties
 
-  @Autowired
-  SAMLUserDetailsService samlUserDetailsService
+  SAMLUserDetailsService samlUserDetailsService = samlUserDetailsService()
 
-  @Override
-  void configure(HttpSecurity http) {
+  @Bean
+  SecurityFilterChain configure(HttpSecurity http) throws Exception {
     //We need our session cookie to come across when we get redirected back from the IdP:
     defaultCookieSerializer.setSameSite(null)
     defaultCookieSerializer.setCookieName("gateCookie")
@@ -160,7 +163,6 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
           .and()
         .webSSOProfileConsumer(getWebSSOProfileConsumerImpl())
         .serviceProvider()
-          .storageFactory(new EmptyStorageFactory())
           .entityId(samlSecurityConfigProperties.issuerId)
           .protocol(samlSecurityConfigProperties.redirectProtocol)
           .hostname(samlSecurityConfigProperties.redirectHostname ?: serverProperties?.address?.hostName)
@@ -171,13 +173,26 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
           .keyname(samlSecurityConfigProperties.keyStoreAliasName)
           .keyPassword(samlSecurityConfigProperties.keyStorePassword)
 
-      saml.init(http)
-    SamlAuthTokenUpdateFilter authTokenUpdateFilter = new SamlAuthTokenUpdateFilter()
-    http.addFilterAfter(authTokenUpdateFilter,
-        BasicAuthenticationFilter.class)
+    initSignatureDigest() // Need to be after SAMLConfigurer initializes the global SecurityConfiguration
+    http.apply(saml).init(http)
+    return http.build()
+
     // @formatter:on
 
   }
+
+  private void initSignatureDigest() {
+    def secConfig = org.opensaml.Configuration.getGlobalSecurityConfiguration()
+    if (secConfig != null && secConfig instanceof BasicSecurityConfiguration) {
+      BasicSecurityConfiguration basicSecConfig = (BasicSecurityConfiguration) secConfig
+      def algo = SignatureAlgorithms.fromName(samlSecurityConfigProperties.signatureDigest)
+      log.info("Using ${algo} digest for signing SAML messages")
+      basicSecConfig.registerSignatureAlgorithmURI("RSA", algo.rsaSignatureMethod)
+      basicSecConfig.setSignatureReferenceDigestMethod(algo.digestMethod)
+    } else {
+      log.warn("Unable to find global BasicSecurityConfiguration (found '${secConfig}'). Ignoring signatureDigest configuration value.")
+    }
+    }
 
   void configure(WebSecurity web) throws Exception {
     authConfig.configure(web)
@@ -197,7 +212,6 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
     rememberMeServices
   }
 
-  @Bean
   SAMLUserDetailsService samlUserDetailsService() {
     // TODO(ttomsu): This is a NFLX specific user extractor. Make a more generic one?
     new SAMLUserDetailsService() {
@@ -253,7 +267,7 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
               username,
               roles.size(),
               roles,
-              fiatClientConfigurationProperties.legacyFallback
+              fiatClientConfigurationProperties.legacyFallback,e
           )
           id = id.withTag("success", false).withTag("fallback", fiatClientConfigurationProperties.legacyFallback)
 
@@ -310,6 +324,27 @@ class SamlSsoConfig extends WebSecurityConfigurerAdapter {
 
         return attributes
       }
+    }
+  }
+
+  // Available digests taken from org.opensaml.xml.signature.SignatureConstants (RSA signatures)
+  private enum SignatureAlgorithms {
+    SHA1(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1, SignatureConstants.ALGO_ID_DIGEST_SHA1),
+    SHA256(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256, SignatureConstants.ALGO_ID_DIGEST_SHA256),
+    SHA384(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA384, SignatureConstants.ALGO_ID_DIGEST_SHA384),
+    SHA512(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA512, SignatureConstants.ALGO_ID_DIGEST_SHA512),
+    RIPEMD160(SignatureConstants.ALGO_ID_SIGNATURE_RSA_RIPEMD160, SignatureConstants.ALGO_ID_DIGEST_RIPEMD160),
+    MD5(SignatureConstants.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5, SignatureConstants.ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5)
+
+    String rsaSignatureMethod
+    String digestMethod
+    SignatureAlgorithms(String rsaSignatureMethod, String digestMethod) {
+      this.rsaSignatureMethod = rsaSignatureMethod
+      this.digestMethod = digestMethod
+    }
+
+    static SignatureAlgorithms fromName(String digestName) {
+      SignatureAlgorithms.find { it -> (it.name() == digestName.toUpperCase()) } as SignatureAlgorithms
     }
   }
 }

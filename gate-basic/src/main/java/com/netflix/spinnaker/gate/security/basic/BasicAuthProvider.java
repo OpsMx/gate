@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -40,9 +41,10 @@ public class BasicAuthProvider implements AuthenticationProvider {
 
   @Value("${services.platform.enabled:false}")
   private boolean isPlatformEnabled;
-  private List<String> roles;
-  private String name;
-  private String password;
+
+  @Setter private List<String> roles;
+  @Setter private String name;
+  @Setter private String password;
 
   public BasicAuthProvider(
       PermissionService permissionService, OesAuthorizationService oesAuthorizationService) {
@@ -74,10 +76,10 @@ public class BasicAuthProvider implements AuthenticationProvider {
           roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
       // Updating roles in fiat service
       permissionService.loginWithRoles(name, roles);
-      log.info("Platform service enabled value :{}",isPlatformEnabled);
+      log.info("Platform service enabled value :{}", isPlatformEnabled);
       // Updating roles in platform service
-      if(isPlatformEnabled){
-      oesAuthorizationService.cacheUserGroups(roles, name);
+      if (isPlatformEnabled) {
+        oesAuthorizationService.cacheUserGroups(roles, name);
       }
     }
 
@@ -87,17 +89,5 @@ public class BasicAuthProvider implements AuthenticationProvider {
   @Override
   public boolean supports(Class<?> authentication) {
     return authentication == UsernamePasswordAuthenticationToken.class;
-  }
-
-  public void setRoles(List<String> roles) {
-    this.roles = roles;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
   }
 }

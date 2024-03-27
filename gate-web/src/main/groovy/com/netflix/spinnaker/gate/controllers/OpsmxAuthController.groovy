@@ -17,21 +17,21 @@
 package com.netflix.spinnaker.gate.controllers
 
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse
 
 @Slf4j
 @RestController
 @RequestMapping("/auth")
 class OpsmxAuthController {
 
-  @ApiOperation(value = "Redirect to Deck")
+  @Operation(summary = "Redirect to Deck")
   @RequestMapping(value = "/redirectauto", method = RequestMethod.GET)
   void redirectAuto(HttpServletResponse response, @RequestParam String to) {
     log.info("to url : {}", to)

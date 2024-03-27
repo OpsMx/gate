@@ -18,7 +18,7 @@ package com.opsmx.spinnaker.gate.controllers
 
 import com.opsmx.spinnaker.gate.services.OpsmxAuditClientService
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.PathVariable
@@ -42,7 +42,7 @@ class OpsmxAuditClientServiceController {
   @Autowired
   OpsmxAuditClientService opsmxAuditClientService
 
-  @ApiOperation(value = "Endpoint for audit-client rest services")
+  @Operation(summary = "Endpoint for audit-client rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.GET)
   Object getAuditClientResponse1(@PathVariable("version") String version,
                               @PathVariable("type") String type,
@@ -56,7 +56,7 @@ class OpsmxAuditClientServiceController {
     return opsmxAuditClientService.getAuditClientResponse1(version, type,applicationName,noOfDays,page,size,policyStatus,search,sortOrder)
   }
 
-  @ApiOperation(value = "Endpoint for audit-client rest services")
+  @Operation(summary = "Endpoint for audit-client rest services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.GET)
   Object getDeliveryInsightCharts(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -74,7 +74,7 @@ class OpsmxAuditClientServiceController {
     return opsmxAuditClientService.getDeliveryInsightCharts(version, type, source, chartId, startTime, endTime, days, pageNo, pageLimit, search, sortBy, sortOrder, filterBy)
   }
 
-  @ApiOperation(value = "Endpoint for audit-client rest services")
+  @Operation(summary = "Endpoint for audit-client rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
   Object getAuditClientResponse3(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -94,7 +94,7 @@ class OpsmxAuditClientServiceController {
     return opsmxAuditClientService.getAuditClientResponse3(version, type, source, source1, isTreeView, isLatest, pageNo, pageLimit, noOfDays, search, sortOrder, sortBy, startDate, endDate, cdNames)
   }
 
-  @ApiOperation(value = "Endpoint for audit-client rest services")
+  @Operation(summary = "Endpoint for audit-client rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
   Object getAuditClientResponse4(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -111,7 +111,7 @@ class OpsmxAuditClientServiceController {
     return opsmxAuditClientService.getAuditClientResponse4(version, type, source, source1, source2, noOfDays, updatedTimestamp, size, startDate, endDate, cdNames)
   }
 
-  @ApiOperation(value = "Endpoint for audit-client rest services")
+  @Operation(summary = "Endpoint for audit-client rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.GET)
   Object getAuditClientResponse5(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -126,7 +126,7 @@ class OpsmxAuditClientServiceController {
     return opsmxAuditClientService.getAuditClientResponse5(version, type, source, source1, source2, source3, noOfDays, startDate, endDate, cdNames)
   }
 
-  @ApiOperation(value = "Endpoint for audit-client rest services")
+  @Operation(summary = "Endpoint for audit-client rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.GET)
   Object getAuditClientResponse6(@PathVariable("version") String version,
                               @PathVariable("type") String type,
@@ -139,7 +139,7 @@ class OpsmxAuditClientServiceController {
     return opsmxAuditClientService.getAuditClientResponse6(version, type, source, source1, source2, source3, source4)
   }
 
-  @ApiOperation(value = "Endpoint for audit-client rest services")
+  @Operation(summary = "Endpoint for audit-client rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}", method = RequestMethod.GET)
   Object getAuditClientResponse7(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -153,7 +153,7 @@ class OpsmxAuditClientServiceController {
     return opsmxAuditClientService.getAuditClientResponse7(version, type, source, source1, source2, source3, source4, source5)
   }
 
-  @ApiOperation(value = "Endpoint for Insights controller to download csv file")
+  @Operation(summary = "Endpoint for Insights controller to download csv file")
   @RequestMapping(value = "/{version}/users/{username}/{source}/download", produces = "text/csv", method = RequestMethod.GET)
   Object downloadCSVFileAuditService(@PathVariable("version") String version,
                                      @PathVariable("username") String username,
@@ -185,7 +185,7 @@ class OpsmxAuditClientServiceController {
     return ResponseEntity.status(response.getStatus()).build()
   }
 
-  @ApiOperation(value = "Endpoint for Delivery Insights controller to download csv file")
+  @Operation(summary = "Endpoint for Delivery Insights controller to download csv file")
   @RequestMapping(value = "/{version}/{type}/{source}/download", produces = "text/csv", method = RequestMethod.GET)
   Object downloadCSVFileAuditService(@PathVariable("version") String version,
                                      @PathVariable("type") String type,

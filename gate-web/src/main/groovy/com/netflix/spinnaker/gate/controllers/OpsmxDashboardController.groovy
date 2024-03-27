@@ -22,13 +22,13 @@ import com.opsmx.spinnaker.gate.factory.dashboard.DashboardCachingServiceBeanFac
 import com.opsmx.spinnaker.gate.service.DashboardCachingService
 import com.opsmx.spinnaker.gate.util.CacheUtil
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.*
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 
 @RequestMapping("/dashboardservice")
 @RestController
@@ -60,7 +60,7 @@ class OpsmxDashboardController {
   @Value('${gate.installation.mode}')
   GateInstallationModes gateInstallationMode
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.GET)
   Object getDashboardResponse1(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -105,7 +105,7 @@ class OpsmxDashboardController {
   }
 
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.GET)
   Object getDashboardResponse(@PathVariable("version") String version,
                               @PathVariable("type") String type,
@@ -116,7 +116,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.getDashboardResponse(version, type, source,pageNo, pageLimit, search)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
   Object getDashboardResponse4(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -132,7 +132,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.getDashboardResponse4(version, type, source, source1, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
   Object getDashboardResponse5(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -148,7 +148,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.getDashboardResponse5(version, type, source, source1, source2, pageNo, pageLimit, sortBy, sortOrder, noOfDays)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.GET)
   Object getDashboardResponse6(@PathVariable("version") String version,
                           @PathVariable("type") String type,
@@ -161,7 +161,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.getDashboardResponse6(version, type, source, source1, source2, source3, noOfDays)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.GET)
   Object getDashboardResponse7(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -178,7 +178,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.getDashboardResponse7(version, type, source, source1, source2, source3, source4, pageNo, pageLimit, sortBy, sortOrder)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}", method = RequestMethod.GET)
   Object getDashboardResponse8(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -192,7 +192,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.getDashboardResponse8(version, type, source, source1, source2, source3, source4, source5)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}/{source6}", method = RequestMethod.GET)
   Object getDashboardResponse9(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -208,7 +208,7 @@ class OpsmxDashboardController {
   }
 
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}/{source6}/{source7}", method = RequestMethod.GET)
   Object getDashboardResponse10(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -224,7 +224,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.getDashboardResponse10(version, type, source, source1, source2, source3, source4, source5, source6,source7)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.DELETE)
   Object deleteDashboardResponse(@PathVariable("version") String version,
                                 @PathVariable("type") String type) {
@@ -232,7 +232,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.deleteDashboardResponse(version, type)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.DELETE)
   Object deleteDashboardResponse1(@PathVariable("version") String version,
                             @PathVariable("type") String type,
@@ -241,7 +241,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.deleteDashboardResponse1(version, type, source)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.DELETE)
   Object deleteDashboardResponse4(@PathVariable("version") String version,
                              @PathVariable("type") String type,
@@ -251,7 +251,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.deleteDashboardResponse4(version, type, source, source1)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.DELETE)
   Object deleteDashboardResponse5(@PathVariable("version") String version,
                                   @PathVariable("type") String type,
@@ -262,7 +262,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.deleteDashboardResponse5(version, type, source, source1, source2)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.DELETE)
   Object deleteDashboardResponse6(@PathVariable("version") String version,
                                   @PathVariable("type") String type,
@@ -274,7 +274,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.deleteDashboardResponse6(version, type, source, source1, source2, source3)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.DELETE)
   Object deleteDashboardResponse7(@PathVariable("version") String version,
                                   @PathVariable("type") String type,
@@ -291,7 +291,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.deleteDashboardResponse7(version, type, source, source1, source2, source3, source4, cookie)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}", method = RequestMethod.DELETE)
   Object deleteDashboardResponse8(@PathVariable("version") String version,
                                   @PathVariable("type") String type,
@@ -304,7 +304,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.deleteDashboardResponse8(version, type, source, source1, source2, source3, source4, source5)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.POST)
   Object postDashboardResponse(@PathVariable("version") String version,
                           @PathVariable("type") String type,
@@ -313,7 +313,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.postDashboardResponse(version, type,data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.POST)
   Object postDashboardResponse3(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -323,7 +323,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.postDashboardResponse3(version, type, source, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.POST)
   Object postDashboardResponse4(@PathVariable("version") String version,
                            @PathVariable("type") String type,
@@ -342,7 +342,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.postDashboardResponse4(version, type, source, source1, cookie, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.POST)
   Object postDashboardResponse5(@PathVariable("version") String version,
                            @PathVariable("type") String type,
@@ -354,7 +354,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.postDashboardResponse5(version, type, source, source1, source2, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.POST)
   Object postDashboardResponse6(@PathVariable("version") String version,
                            @PathVariable("type") String type,
@@ -367,7 +367,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.postDashboardResponse6(version, type, source, source1, source2, source3, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.POST)
   Object postDashboardResponse7(@PathVariable("version") String version,
                                 @PathVariable("type") String type,
@@ -381,7 +381,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.postDashboardResponse7(version, type, source, source1, source2, source3, source4, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}", method = RequestMethod.POST)
   Object postDashboardResponse8(@PathVariable("version") String version,
                                 @PathVariable("type") String type,
@@ -396,7 +396,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.postDashboardResponse8(version, type, source, source1, source2, source3, source4, source5, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.PUT)
   Object updateDashboardResponse(@PathVariable("version") String version,
                            @PathVariable("type") String type,
@@ -405,7 +405,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.updateDashboardResponse(version, type, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.PUT)
   Object updateDashboardResponse1(@PathVariable("version") String version,
                                 @PathVariable("type") String type,
@@ -415,7 +415,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.updateDashboardResponse1(version, type, source, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.PUT)
   Object updateDashboardResponse2(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -426,7 +426,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.updateDashboardResponse2(version, type, source, source1, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.PUT)
   Object updateDashboardResponse3(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -447,7 +447,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.updateDashboardResponse3(version, type, source, source1, source2, data, cookie)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.PUT)
   Object updateDashboardResponse4(@PathVariable("version") String version,
                                   @PathVariable("type") String type,
@@ -460,7 +460,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.updateDashboardResponse4(version, type, source, source1, source2, source3, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.PUT)
   Object updateDashboardResponse5(@PathVariable("version") String version,
                                   @PathVariable("type") String type,
@@ -474,7 +474,7 @@ class OpsmxDashboardController {
     return opsmxDashboardService.updateDashboardResponse5(version, type, source, source1, source2, source3, source4, data)
   }
 
-  @ApiOperation(value = "Endpoint for dashboard rest services")
+  @Operation(summary = "Endpoint for dashboard rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}", method = RequestMethod.PUT)
   Object updateDashboardResponse6(@PathVariable("version") String version,
                                   @PathVariable("type") String type,

@@ -21,7 +21,7 @@ import com.netflix.spinnaker.gate.exceptions.OesRequestException
 import com.netflix.spinnaker.gate.services.internal.OpsmxSsdService
 import com.netflix.spinnaker.security.AuthenticatedRequest
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
 import okhttp3.Headers
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -62,7 +62,7 @@ class OpsmxSsdController {
   @Autowired
   OkHttpClient okHttpClient
 
-  @ApiOperation(value = "Endpoint for ssd rest services")
+  @Operation(summary = "Endpoint for ssd rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.POST)
   Object postSsdServiceResponse(@PathVariable("version") String version,
                                 @PathVariable("type") String type,
@@ -78,7 +78,7 @@ class OpsmxSsdController {
     return opsMxSsdService.postSsdServiceResponse(version, type, stage, policy, policyId,id,scope,appId, vulnAlert, data)
   }
 
-  @ApiOperation(value = "Endpoint for ssd rest services")
+  @Operation(summary = "Endpoint for ssd rest services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.POST)
   Object postSsdServiceResponse3(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -88,7 +88,7 @@ class OpsmxSsdController {
     return opsMxSsdService.postSsdServiceResponse3(version, type, source, id, data)
   }
 
-  @ApiOperation(value = "Add cluster details in ssd rest service")
+  @Operation(summary = "Add cluster details in ssd rest service")
   @RequestMapping(value = "/{version}/cluster", method = RequestMethod.POST)
   Object addClusterInSsd(@PathVariable("version") String version,
                          @RequestParam(value = "name", required = false) String name,
@@ -97,7 +97,7 @@ class OpsmxSsdController {
     return addCluster(file, name, account, version)
   }
 
-  @ApiOperation(value = "update endpoint for ssd rest services")
+  @Operation(summary = "update endpoint for ssd rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.PUT)
   Object updateSsdService(@PathVariable("version") String version,
                           @PathVariable("type") String type,
@@ -114,7 +114,7 @@ class OpsmxSsdController {
     return opsMxSsdService.updateSsdServiceResponse(version, type, stage, policy, policyId, id, scope, appId, vulnAlert, integratorType, name, data)
   }
 
-  @ApiOperation(value = "Update endpoint in ssd rest service")
+  @Operation(summary = "Update endpoint in ssd rest service")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.PUT)
   Object updateSsdService1(@PathVariable("version") String version,
                            @PathVariable("type") String type,
@@ -124,7 +124,7 @@ class OpsmxSsdController {
     return opsMxSsdService.updateSsdServiceResponse1(version, type, source, integratorType, data)
   }
 
-  @ApiOperation(value = "Update cluster details in ssd rest service")
+  @Operation(summary = "Update cluster details in ssd rest service")
   @RequestMapping(value = "/{version}/cluster/{id}", method = RequestMethod.PUT)
   Object updateClusterInSsd(@PathVariable("version") String version,
                             @PathVariable("id") String id,
@@ -135,7 +135,7 @@ class OpsmxSsdController {
     return updateCluster(file, name, account, version, id)
   }
 
-  @ApiOperation(value = "Endpoint for ssd services")
+  @Operation(summary = "Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.GET)
   Object getSsdResponse(@PathVariable("version") String version,
                         @PathVariable("type") String type,
@@ -170,7 +170,7 @@ class OpsmxSsdController {
     return opsMxSsdService.getSddResponse1(version, type, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, policy, typeList, alertName, id, startTime, endTime, severity, scope, current, tag, tool, tags, action, integratorType, name)
   }
 
-  @ApiOperation(value = "Endpoint for ssd services")
+  @Operation(summary = "Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.GET)
   Object getSsdResponse1(@PathVariable("version") String version,
                          @PathVariable("type") String type,
@@ -207,7 +207,7 @@ class OpsmxSsdController {
     return opsMxSsdService.getSddResponse2(version, type, source, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, alertName, riskStatus, id, Vulnerability, Component, ComponentVersion, Image, ImageVersion, service, scope, name, value, current, integratorType, startTime, endTime)
   }
 
-  @ApiOperation(value = "Endpoint for ssd services")
+  @Operation(summary = "Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
   Object getSsdResponse2(@PathVariable("version") String version,
                          @PathVariable("type") String type,
@@ -233,7 +233,7 @@ class OpsmxSsdController {
     return opsMxSsdService.getSddResponse3(version, type, source, source1,account , appId, image, imageTag, stage, deployedAt, appName, noOfDays, pageNo, pageLimit, kind, search, service,sortBy,sortOrder, id, dbomType)
   }
 
-  @ApiOperation(value = "Endpoint for ssd services")
+  @Operation(summary = "Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
   Object getSsdResponse3(@PathVariable("version") String version,
                          @PathVariable("type") String type,
@@ -272,7 +272,7 @@ class OpsmxSsdController {
     return opsMxSsdService.getSddResponse4(version, type, source, source1, source2, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, id, fromImage, toImage, fromImageTag, toImageTag, fromAccount, toAccount, kind, active, Vulnerability, Component, ComponentVersion,fromApp,service,toApp, dbomType)
   }
 
-  @ApiOperation(value = "Endpoint for ssd services")
+  @Operation(summary = "Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.GET)
   Object getSsdResponse4(@PathVariable("version") String version,
                          @PathVariable("type") String type,
@@ -286,7 +286,7 @@ class OpsmxSsdController {
     return opsMxSsdService.getSddResponse5(version, type, source, source1, source2, source3, appId, image, appName)
   }
 
-  @ApiOperation(value = "Endpoint for ssd services")
+  @Operation(summary = "Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.GET)
   Object getSsdResponse5(@PathVariable("version") String version,
                          @PathVariable("type") String type,
@@ -301,7 +301,7 @@ class OpsmxSsdController {
     return opsMxSsdService.getSddResponse6(version, type, source, source1, source2, source3, source4, appId, image, appName)
   }
 
-  @ApiOperation(value = "Endpoint for ssd services")
+  @Operation(summary = "Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}", method = RequestMethod.GET)
   Object getSsdResponse6(@PathVariable("version") String version,
                          @PathVariable("type") String type,
@@ -317,7 +317,7 @@ class OpsmxSsdController {
     return opsMxSsdService.getSddResponse7(version, type, source, source1, source2, source3, source4, source5, appId, image, appName)
   }
 
-  @ApiOperation(value = "Endpoint to download csv file")
+  @Operation(summary = "Endpoint to download csv file")
   @RequestMapping(value = "/{version}/{type}/{source}/download", produces = "text/csv", method = RequestMethod.GET)
   Object downloadCSVFileAuditService(@PathVariable("version") String version,
                                      @PathVariable("type") String type,
@@ -345,7 +345,7 @@ class OpsmxSsdController {
     return ResponseEntity.status(response.getStatus()).build()
   }
 
-  @ApiOperation(value = "Endpoint to download json file")
+  @Operation(summary = "Endpoint to download json file")
   @RequestMapping(value = "/{version}/{type}/{source}/download/json", produces = "application/json", method = RequestMethod.GET)
   Object downloadJsonFileSsdService(@PathVariable("version") String version,
                                     @PathVariable("type") String type,
@@ -376,7 +376,7 @@ class OpsmxSsdController {
     return ResponseEntity.status(response.getStatus()).build()
   }
 
-  @ApiOperation(value = "Delete Endpoint for ssd services")
+  @Operation(summary = "Delete Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.DELETE)
   Object deleteSsdResponse(@PathVariable("version") String version,
                            @PathVariable("type") String type,
@@ -407,7 +407,7 @@ class OpsmxSsdController {
     return opsMxSsdService.deleteSddResponse1(version, type, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, policy, typeList, alertName, id, startTime, endTime, severity, scope, current, tag, integratorType)
   }
 
-  @ApiOperation(value = "Delete Endpoint for ssd services")
+  @Operation(summary = "Delete Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.DELETE)
   Object deleteSsdResponse1(@PathVariable("version") String version,
                             @PathVariable("type") String type,
@@ -441,7 +441,7 @@ class OpsmxSsdController {
     return opsMxSsdService.deleteSddResponse2(version, type, source, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, alertName, riskStatus, id, Vulnerability, Component, ComponentVersion, Image, ImageVersion, service, scope, name, value)
   }
 
-  @ApiOperation(value = "Delete Endpoint for ssd services")
+  @Operation(summary = "Delete Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.DELETE)
   Object deleteSsdResponse2(@PathVariable("version") String version,
                             @PathVariable("type") String type,
@@ -464,7 +464,7 @@ class OpsmxSsdController {
     return opsMxSsdService.deleteSddResponse3(version, type, source, source1, account, appId, image, appName, noOfDays, pageNo, pageLimit, kind, search, service, sortBy, sortOrder, id, dbomType)
   }
 
-  @ApiOperation(value = "Delete Endpoint for ssd services")
+  @Operation(summary = "Delete Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.DELETE)
   Object deleteSsdResponse3(@PathVariable("version") String version,
                             @PathVariable("type") String type,
@@ -503,7 +503,7 @@ class OpsmxSsdController {
     return opsMxSsdService.deleteSddResponse4(version, type, source, source1, source2, account, appId, image, imageTag, stage, deployedAt, appName, pageNo, pageLimit, sortBy, sortOrder, search, noOfDays, id, fromImage, toImage, fromImageTag, toImageTag, fromAccount, toAccount, kind, active, Vulnerability, Component, ComponentVersion, fromApp, service, toApp, dbomType)
   }
 
-  @ApiOperation(value = "Delete Endpoint for ssd services")
+  @Operation(summary = "Delete Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.DELETE)
   Object deleteSsdResponse4(@PathVariable("version") String version,
                             @PathVariable("type") String type,
@@ -517,7 +517,7 @@ class OpsmxSsdController {
     return opsMxSsdService.deleteSddResponse5(version, type, source, source1, source2, source3, appId, image, appName)
   }
 
-  @ApiOperation(value = "Delete Endpoint for ssd services")
+  @Operation(summary = "Delete Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.DELETE)
   Object deleteSsdResponse5(@PathVariable("version") String version,
                             @PathVariable("type") String type,
@@ -532,7 +532,7 @@ class OpsmxSsdController {
     return opsMxSsdService.deleteSddResponse6(version, type, source, source1, source2, source3, source4, appId, image, appName)
   }
 
-  @ApiOperation(value = "Endpoint for ssd services")
+  @Operation(summary = "Endpoint for ssd services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}", method = RequestMethod.DELETE)
   Object deleteSsdResponse6(@PathVariable("version") String version,
                             @PathVariable("type") String type,

@@ -22,13 +22,10 @@ import org.springframework.boot.autoconfigure.groovy.template.GroovyTemplateAuto
 import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.cache.annotation.EnableCaching
-import org.springframework.context.annotation.Import
 import org.springframework.scheduling.annotation.EnableAsync
 import com.netflix.spinnaker.kork.boot.DefaultPropertiesBuilder
 
 @EnableAsync
-@EnableCaching
 @EnableConfigurationProperties
 @SpringBootApplication(
   scanBasePackages = [

@@ -17,10 +17,9 @@
 package com.opsmx.spinnaker.gate.controllers
 
 import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
-import com.opsmx.spinnaker.gate.exception.XSpinnakerUserHeaderMissingException
 import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.MediaType
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 
 @Slf4j
 @RestController
@@ -42,7 +41,7 @@ class OpsmxSaporPolicyController {
   @Autowired(required = false)
   ApplicationFeatureRbac applicationFeatureRbac
 
-  @ApiOperation(value = "Endpoint for sapor runtime policy evaluation rest services")
+  @Operation(summary = "Endpoint for sapor runtime policy evaluation rest services")
   @PostMapping(value = "{version}/data/**", consumes = MediaType.APPLICATION_JSON_VALUE)
   Object evaluateRuntimePolicy(@PathVariable("version") String version,
                          @RequestBody(required = false) Object data,
@@ -57,7 +56,7 @@ class OpsmxSaporPolicyController {
     return opsmxOesService.evaluateRuntimePolicy(version, data, requestUri)
   }
 
-  @ApiOperation(value = "Endpoint for sapor static policy evaluation rest services")
+  @Operation(summary = "Endpoint for sapor static policy evaluation rest services")
   @PostMapping(value = "{version}/staticPolicy/eval", consumes = MediaType.APPLICATION_JSON_VALUE)
   Object evaluateStaticPolicy(@PathVariable("version") String version,
                      @RequestBody(required = false) Object data) {

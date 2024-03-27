@@ -18,7 +18,7 @@ package com.opsmx.spinnaker.gate.controllers
 
 import com.opsmx.spinnaker.gate.services.OpsmxAuditService
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.PathVariable
@@ -36,7 +36,7 @@ class OpsmxAuditServiceController {
   @Autowired
   OpsmxAuditService opsmxAuditService
 
-  @ApiOperation(value = "Endpoint for audit rest services")
+  @Operation(summary = "Endpoint for audit rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.POST)
   Object postAuditService1(@PathVariable("version") String version,
                                  @PathVariable("type") String type,

@@ -1,13 +1,12 @@
 package com.netflix.spinnaker.gate.controllers
 
-
 import com.netflix.spinnaker.gate.config.AuthenticationRequest
 import com.netflix.spinnaker.gate.config.AuthenticationResponse
 import com.netflix.spinnaker.gate.config.JwtUtil
 import com.netflix.spinnaker.gate.services.UserDataService
 import com.netflix.spinnaker.gate.util.OesRestApi
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
 import org.apache.tomcat.websocket.AuthenticationException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -53,7 +52,7 @@ class TokenAuthController {
   String groupApiPath;
 
 
-  @ApiOperation(value = "New Login for Jwt")
+  @Operation(summary = "New Login for Jwt")
   @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json")
   public ResponseEntity<?> authenticateUser(@RequestBody AuthenticationRequest authenticationRequest ) {
 

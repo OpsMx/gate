@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+if (spinnakerGradleVersion.endsWith('-SNAPSHOT')) {
+  pluginManagement {
+    repositories {
+      mavenLocal()
+      gradlePluginPortal()
+      maven{
+        url "https://nexus.opsmx.net/repository/maven-snapshots/"
+        credentials {
+          username = "NEXUS_USERNAME"
+          password = "NEXUS_PASSWORD"
+        }
+      }
+    }
+  }
+}
 ['fiat', 'kork'].each { prj ->
   String propName = "${prj}Composite"
   String projectPath = "../$prj"
@@ -21,7 +35,7 @@
     includeBuild projectPath
   }
 }
-
+enableFeaturePreview("VERSION_ORDERING_V2")
 rootProject.name = "gate"
 
 include "gate-api",

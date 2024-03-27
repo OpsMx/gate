@@ -29,10 +29,17 @@ dependencies {
   testRuntimeOnly "org.junit.platform:junit-platform-launcher"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }
+test {
+  useJUnitPlatform {
+    includeEngines "junit-jupiter"
+  }
+}
+
+test.jvmArgs = ['--add-opens=java.base/java.nio.file=ALL-UNNAMED', '--add-exports=java.base/java.nio.file=ALL-UNNAMED']
 
 compileTestKotlin {
   kotlinOptions {
-    languageVersion = "1.4"
-    jvmTarget = "11"
+    languageVersion = "1.7"
+    jvmTarget = "17"
   }
 }
