@@ -16,7 +16,7 @@ import org.springframework.security.saml.SAMLProcessingFilter;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
 
-@ConditionalOnExpression("${saml.enabled:false}")
+@ConditionalOnExpression("${spring.security.saml2.enabled:false}")
 @Configuration
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
