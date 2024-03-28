@@ -19,8 +19,6 @@ package com.opsmx.spinnaker.gate.interceptors;
 import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;

@@ -51,6 +51,8 @@ dependencies {
   implementation "org.springframework.session:spring-session-data-redis"
   implementation "de.huxhorn.sulky:de.huxhorn.sulky.ulid:+"
   implementation "org.apache.commons:commons-lang3"
+  implementation 'io.swagger.core.v3:swagger-annotations:2.1.10'
+  implementation 'jakarta.platform:jakarta.jakartaee-api:9.1.0'
 
   implementation "org.springframework:spring-web"
   implementation "org.springframework.boot:spring-boot-starter-actuator"
