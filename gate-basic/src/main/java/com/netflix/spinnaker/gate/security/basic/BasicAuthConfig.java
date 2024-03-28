@@ -26,13 +26,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
@@ -41,7 +42,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @SpinnakerAuthConfig
 @EnableWebSecurity
 @Slf4j
-public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
+public class BasicAuthConfig {
 
   private final AuthConfig authConfig;
 
@@ -90,18 +91,14 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
     auth.authenticationProvider(authProvider);
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain configure(HttpSecurity http) throws Exception {
     defaultCookieSerializer.setSameSite(null);
     http.formLogin()
         .and()
         .httpBasic()
         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     authConfig.configure(http);
-  }
-
-  @Override
-  public void configure(WebSecurity web) throws Exception {
-    authConfig.configure(web);
+    return http.build();
   }
 }

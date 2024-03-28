@@ -16,16 +16,14 @@
 
 package com.netflix.spinnaker.gate.controllers
 
+import io.swagger.v3.oas.annotations.Operation
 import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
-import org.springframework.util.StringUtils
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import retrofit.client.Header
-
 import java.util.stream.Collectors
 
 import com.netflix.spinnaker.gate.config.ServiceConfiguration
@@ -34,7 +32,6 @@ import com.netflix.spinnaker.gate.exceptions.OesRequestException
 import com.netflix.spinnaker.security.AuthenticatedRequest
 
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
 import okhttp3.Headers
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -61,7 +58,7 @@ class OpsmxOesController {
   @Autowired
   OkHttpClient okHttpClient
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{source}", method = RequestMethod.POST)
   Object postOesResponse(@PathVariable("source") String source,
                          @RequestBody(required = false) Object data) {
@@ -69,7 +66,7 @@ class OpsmxOesController {
     return opsmxOesService.postOesResponse(source, data)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}", method = RequestMethod.GET)
   Object getOesResponse(@PathVariable("type") String type,
                         @PathVariable("source") String source,
@@ -86,7 +83,7 @@ class OpsmxOesController {
             applicationName, chartId, imageSource, accountName, startTime, endTime)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}", method = RequestMethod.GET)
   Object getOesResponse4(@PathVariable("type") String type,
                          @PathVariable("source") String source,
@@ -95,7 +92,7 @@ class OpsmxOesController {
     return opsmxOesService.getOesResponse4(type, source, source1)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
   Object getOesResponse5(@PathVariable("type") String type,
                          @PathVariable("source") String source,
@@ -107,7 +104,7 @@ class OpsmxOesController {
     return opsmxOesService.getOesResponse5(type, source, source1, source2,isTreeView,isLatest)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.GET)
   Object getOesResponse6(@PathVariable("type") String type,
                          @PathVariable("source") String source,
@@ -121,7 +118,7 @@ class OpsmxOesController {
     return opsmxOesService.getOesResponse6(type, source, source1, source2, source3, cdType, permissionId, noOfDays)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.GET)
   Object getOesResponse7(@PathVariable("type") String type,
                          @PathVariable("source") String source,
@@ -135,7 +132,7 @@ class OpsmxOesController {
     return opsmxOesService.getOesResponse7(type, source, source1, source2, source3, source4, imageId, executionId, gateIds)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}", method = RequestMethod.DELETE)
   Object deleteOesResponse(@PathVariable("type") String type,
                            @PathVariable("source") String source,
@@ -144,7 +141,7 @@ class OpsmxOesController {
     return opsmxOesService.deleteOesResponse(type, source, accountName)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}", method = RequestMethod.DELETE)
   Object deleteOesResponse4(@PathVariable("type") String type,
                             @PathVariable("source") String source,
@@ -153,7 +150,7 @@ class OpsmxOesController {
     return opsmxOesService.deleteOesResponse4(type, source, source1)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.DELETE)
   Object deleteOesResponse5(@PathVariable("type") String type,
                             @PathVariable("source") String source,
@@ -164,7 +161,7 @@ class OpsmxOesController {
     return opsmxOesService.deleteOesResponse5(type, source, source1, source2, accountId)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.DELETE)
   Object deleteOesResponse6(@PathVariable("type") String type,
                             @PathVariable("source") String source,
@@ -175,14 +172,14 @@ class OpsmxOesController {
     return opsmxOesService.deleteOesResponse6(type, source, source1, source2, source3)
   }
 
-  @ApiOperation(value = "Add or Update dynamic account configured in Spinnaker", response = String.class )
+  @Operation(summary = "Add or Update dynamic account configured in Spinnaker")
   @RequestMapping(value = "/accountsConfig/addOrUpdateDynamicAccount", method = RequestMethod.POST)
   String addOrUpdateAccount(@RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
 	String filename = files ? files.getOriginalFilename() : ''
 	return addOrUpdateDynamicAccount(files, postData.get("postData"))
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}", method = RequestMethod.POST)
   Object postOesResponse(@PathVariable("type") String type,
                          @PathVariable("source") String source,
@@ -193,7 +190,7 @@ class OpsmxOesController {
     return opsmxOesService.postOesResponse(type, source, isTreeView, isLatest, data)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}", method = RequestMethod.POST)
   Object postOesResponse4(@PathVariable("type") String type,
                           @PathVariable("source") String source,
@@ -204,7 +201,7 @@ class OpsmxOesController {
     return opsmxOesService.postOesResponse4(type, source, source1, cdType, data)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.POST)
   Object postOesResponse5(@PathVariable("type") String type,
                           @PathVariable("source") String source,
@@ -215,7 +212,7 @@ class OpsmxOesController {
     return opsmxOesService.postOesResponse5(type, source, source1, source2, data)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.POST)
   Object postOesResponse6(@PathVariable("type") String type,
                           @PathVariable("source") String source,
@@ -227,7 +224,7 @@ class OpsmxOesController {
     return opsmxOesService.postOesResponse6(type, source, source1, source2, source3, data)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}", method = RequestMethod.PUT)
   Object updateOesResponse(@PathVariable("type") String type,
                            @PathVariable("source") String source,
@@ -236,7 +233,7 @@ class OpsmxOesController {
     return opsmxOesService.updateOesResponse(type, source, data)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}", method = RequestMethod.PUT)
   Object updateOesResponse4(@PathVariable("type") String type,
                             @PathVariable("source") String source,
@@ -246,7 +243,7 @@ class OpsmxOesController {
     return opsmxOesService.updateOesResponse4(type, source, source1, data)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}", method = RequestMethod.PUT)
   Object updateOesResponse5(@PathVariable("type") String type,
                             @PathVariable("source") String source,
@@ -258,7 +255,7 @@ class OpsmxOesController {
     return opsmxOesService.updateOesResponse5(type, source, source1, source2, cdType, data)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.PUT)
   Object updateOesResponse6(@PathVariable("type") String type,
                             @PathVariable("source") String source,
@@ -270,34 +267,34 @@ class OpsmxOesController {
     return opsmxOesService.updateOesResponse6(type, source, source1, source2, source3, data)
   }
 
-  @ApiOperation(value = "Add or Update dynamic account configured in Spinnaker", response = String.class )
+  @Operation(summary = "Add or Update dynamic account configured in Spinnaker")
   @RequestMapping(value = "/accountsConfig/cloudProviders/addOrUpdateDynamicAccount", method = RequestMethod.POST)
   String addOrUpdateCloudProver(@RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
     String filename = files ? files.getOriginalFilename() : ''
     return addOrUpdateCloudProverAccount(files, postData.get("postData"))
   }
 
-  @ApiOperation(value = "Add or Update Spinnaker")
+  @Operation(summary = "Add or Update Spinnaker")
   @RequestMapping(value = "/accountsConfig/spinnakerX509", method = RequestMethod.POST)
   Object addOrUpdateSpinnaker(@RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
     return addOrUpdateSpinnaker(files, postData.get("postData"))
   }
 
-  @ApiOperation(value = "Add or Update spinnaker cloudprovider account configured in Spinnaker")
+  @Operation(summary = "Add or Update spinnaker cloudprovider account configured in Spinnaker")
   @RequestMapping(value = "/accountsConfig/spinnaker/addOrUpdateCloudProviderAccount", method = RequestMethod.POST)
   Object addOrUpdateSpinnakerCloudProver(@RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
     String filename = files ? files.getOriginalFilename() : ''
     return addOrUpdateSpinnakerCloudProverAccount(files, postData.get("postData"), null)
   }
 
-  @ApiOperation(value = "Add or Update spinnaker cloudprovider account configured in Spinnaker" )
+  @Operation(summary = "Add or Update spinnaker cloudprovider account configured in Spinnaker" )
   @RequestMapping(value = "/accountsConfig/{version}/spinnaker/addOrUpdateCloudProviderAccount", method = RequestMethod.POST)
   Object addOrUpdateVersionSpinnakerCloudProver(@PathVariable("version") String version, @RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
     String filename = files ? files.getOriginalFilename() : ''
     return addOrUpdateSpinnakerCloudProverAccount(files, postData.get("postData"), version)
   }
 
-  @ApiOperation(value = "Add or Update Spinnaker x509")
+  @Operation(summary = "Add or Update Spinnaker x509")
   @RequestMapping(value = "/accountsConfig/{version}/spinnakerX509", method = RequestMethod.POST)
   Object addOrUpdateSpinnakerSetupV1(@PathVariable("version") String version, @RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
 	return createOrUpdateSpinnaker(files, postData.get("postData"), version)
@@ -466,7 +463,7 @@ class OpsmxOesController {
 	  return builder.build();
   }
 
-  @ApiOperation(value = "download the manifest file")
+  @Operation(summary = "download the manifest file")
   @GetMapping(value = "/accountsConfig/cloudProviders/manifestfile/{agentName}", produces = "application/octet-stream")
   @ResponseBody Object getDownloadManifestFile(@PathVariable("agentName") String agentName){
 
@@ -483,8 +480,7 @@ class OpsmxOesController {
 	  }
 	}
   }
-
-  @ApiOperation(value = "download the manifest file")
+  @Operation(summary = "download the manifest file")
   @GetMapping(value = "accountsConfig/agents/{agentName}/manifest", produces = "application/octet-stream")
   @ResponseBody Object getDownloadAgentManifestFile(@PathVariable("agentName") String agentName){
 
@@ -502,48 +498,7 @@ class OpsmxOesController {
     }
   }
 
-  @ApiOperation(value = "download the argo manifest file")
-  @GetMapping(value = "/{type}/{source}/{source1}/manifest", produces = "application/octet-stream")
-  @ResponseBody
-  Object getDownloadAgentManifestFile(@PathVariable("type") String type,
-                                      @PathVariable("source") String source,
-                                      @PathVariable("source1") String source1,
-                                      @RequestParam(value = "description", required = false) String description,
-                                      @RequestParam(value = "isExists", required = false) Boolean isExists,
-                                      @RequestParam(value = "nameSpace", required = false) String nameSpace,
-                                      @RequestParam(value = "argoCdUrl", required = false) String argoCdUrl,
-                                      @RequestParam(value ="rolloutsEnabled", required = false) Boolean rolloutsEnabled,
-                                      @RequestParam(value ="createdStatus", required = false) Boolean createdStatus,
-                                      @RequestParam(value = "isdUrl", required = false) String isdUrl) {
-    Response response = opsmxOesService.agentManifestDownloadFile(type, source, source1, description, isExists, nameSpace, argoCdUrl, rolloutsEnabled, createdStatus,isdUrl)
-    InputStream inputStream = response.getBody().in()
-    try {
-      byte[] manifestFile = IOUtils.toByteArray(inputStream)
-      String contentDisposition = null
-      String agentId = null
-      HttpHeaders headers = new HttpHeaders()
-      for (Header header : response.getHeaders()) {
-        if (header.getName().trim().equalsIgnoreCase("Content-Disposition")) {
-          contentDisposition = header.getValue()
-        }
-        if (header.getName().trim().equalsIgnoreCase("Id")) {
-          agentId = header.getValue()
-        }
-      }
-      if (!StringUtils.isEmpty(contentDisposition))
-        headers.add("Content-Disposition", contentDisposition)
-      if (!StringUtils.isEmpty(agentId))
-        headers.add("Id", agentId)
-      headers.add("Access-Control-Expose-Headers", "Id")
-      return ResponseEntity.ok().headers(headers).body(manifestFile)
-    } finally {
-      if (inputStream != null) {
-        inputStream.close()
-      }
-    }
-  }
-
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}", method = RequestMethod.GET)
   Object getOesResponse8(@PathVariable("type") String type,
                          @PathVariable("source") String source,
@@ -558,7 +513,7 @@ class OpsmxOesController {
     return opsmxOesService.getOesResponse8(type, source, source1, source2, source3, source4, source5,gateIds)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}/{source6}", method = RequestMethod.GET)
   Object getOesResponse9(@PathVariable("type") String type,
                          @PathVariable("source") String source,
@@ -572,7 +527,7 @@ class OpsmxOesController {
     return opsmxOesService.getOesResponse9(type, source, source1, source2, source3, source4, source5, source6)
   }
 
-  @ApiOperation(value = "Endpoint for Oes rest services")
+  @Operation(summary = "Endpoint for Oes rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.POST)
   Object postOesResponse7(@PathVariable("type") String type,
                           @PathVariable("source") String source,
@@ -585,7 +540,7 @@ class OpsmxOesController {
     return opsmxOesService.postOesResponse7(type, source, source1, source2, source3, source4, data)
   }
 
-  @ApiOperation(value = "download the manifest file")
+  @Operation(summary = "download the manifest file")
   @GetMapping(value = "/accountsConfig/{version}/agents/{agentName}/manifest/apple/automation", produces = "application/octet-stream")
   @ResponseBody
   Object downloadAgentManifestFile(@PathVariable("agentName") String agentName,

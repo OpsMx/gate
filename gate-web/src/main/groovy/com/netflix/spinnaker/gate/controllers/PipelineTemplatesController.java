@@ -22,23 +22,11 @@ import com.netflix.spinnaker.gate.services.PipelineTemplateService;
 import com.netflix.spinnaker.gate.services.PipelineTemplateService.PipelineTemplateDependent;
 import com.netflix.spinnaker.gate.services.TaskService;
 import com.netflix.spinnaker.security.AuthenticatedRequest;
-import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import io.swagger.v3.oas.annotations.Operation;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/pipelineTemplates")
@@ -61,13 +49,13 @@ public class PipelineTemplatesController {
     this.objectMapper = objectMapper;
   }
 
-  @ApiOperation(value = "List pipeline templates.", response = List.class)
+  @Operation(summary = "List pipeline templates.")
   @RequestMapping(method = RequestMethod.GET)
   public Collection<Map> list(@RequestParam(required = false) List<String> scopes) {
     return pipelineTemplateService.findByScope(scopes);
   }
 
-  @ApiOperation(value = "Create a pipeline template.", response = HashMap.class)
+  @Operation(summary = "Create a pipeline template.")
   @RequestMapping(method = RequestMethod.POST)
   @ResponseStatus(value = HttpStatus.ACCEPTED)
   public Map create(@RequestBody Map<String, Object> pipelineTemplate) {
@@ -94,7 +82,7 @@ public class PipelineTemplatesController {
     return taskService.create(operation);
   }
 
-  @ApiOperation(value = "Resolve a pipeline template.", response = HashMap.class)
+  @Operation(summary = "Resolve a pipeline template.")
   @RequestMapping(value = "/resolve", method = RequestMethod.GET)
   public Map resolveTemplates(
       @RequestParam String source,
@@ -103,13 +91,13 @@ public class PipelineTemplatesController {
     return pipelineTemplateService.resolve(source, executionId, pipelineConfigId);
   }
 
-  @ApiOperation(value = "Get a pipeline template.", response = HashMap.class)
+  @Operation(summary = "Get a pipeline template.")
   @RequestMapping(value = "/{id}", method = RequestMethod.GET)
   public Map get(@PathVariable String id) {
     return pipelineTemplateService.get(id);
   }
 
-  @ApiOperation(value = "Update a pipeline template.", response = HashMap.class)
+  @Operation(summary = "Update a pipeline template.")
   @RequestMapping(value = "/{id}", method = RequestMethod.POST)
   @ResponseStatus(value = HttpStatus.ACCEPTED)
   public Map update(
@@ -142,7 +130,7 @@ public class PipelineTemplatesController {
     return taskService.create(operation);
   }
 
-  @ApiOperation(value = "Delete a pipeline template.", response = HashMap.class)
+  @Operation(summary = "Delete a pipeline template.")
   @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
   @ResponseStatus(value = HttpStatus.ACCEPTED)
   public Map delete(
@@ -163,9 +151,7 @@ public class PipelineTemplatesController {
     return taskService.create(operation);
   }
 
-  @ApiOperation(
-      value = "List all pipelines that implement a pipeline template",
-      response = List.class)
+  @Operation(summary = "List all pipelines that implement a pipeline template")
   @RequestMapping(value = "/{id}/dependents", method = RequestMethod.GET)
   public List<PipelineTemplateDependent> listPipelineTemplateDependents(
       @PathVariable String id,

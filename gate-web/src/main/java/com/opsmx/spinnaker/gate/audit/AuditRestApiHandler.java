@@ -30,7 +30,8 @@ import org.springframework.stereotype.Component;
 @ConditionalOnExpression("${services.auditservice.enabled:true}")
 public class AuditRestApiHandler implements AuditHandler {
 
-  @Autowired private AuditService auditService;
+  @Autowired(required = false)
+  private AuditService auditService;
 
   @Override
   public void publishEvent(AuditEventType auditEventType, Object auditData) {

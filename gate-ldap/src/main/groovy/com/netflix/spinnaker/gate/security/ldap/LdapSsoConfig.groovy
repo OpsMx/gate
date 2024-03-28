@@ -21,6 +21,7 @@ import com.netflix.spinnaker.gate.security.AllowedAccountsSupport
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.security.ldap.RetryOnExceptionAuthManager
 import groovy.util.logging.Slf4j
 import com.opsmx.spinnaker.gate.security.ldap.RetryOnExceptionAuthManager
 import org.apache.commons.lang3.StringUtils
@@ -28,22 +29,21 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.ldap.core.DirContextAdapter
 import org.springframework.ldap.core.DirContextOperations
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.session.web.http.DefaultCookieSerializer
@@ -54,7 +54,10 @@ import org.springframework.stereotype.Component
 @Configuration
 @SpinnakerAuthConfig
 @EnableWebSecurity
-class LdapSsoConfig extends WebSecurityConfigurerAdapter {
+class LdapSsoConfig {
+
+  @Autowired
+  ApplicationContext ctx
 
   @Autowired
   AuthConfig authConfig
@@ -66,35 +69,13 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
   LdapUserContextMapper ldapUserContextMapper
 
   @Autowired
-  SecurityProperties securityProperties
-
-  @Autowired
   DefaultCookieSerializer defaultCookieSerializer
-
-  @Autowired
-  private UserDetailsService userDataService
 
   @Autowired
   LoginProps loginProps
 
   @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(userDataService).passwordEncoder(passwordEncoder());
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  @Override
-  public AuthenticationManager authenticationManagerBean() throws Exception {
-    return super.authenticationManagerBean();
-  }
-
-  @Override
-  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+  void ldapConfigure(AuthenticationManagerBuilder auth) throws Exception {
 
     def ldapConfigurer =
         auth.ldapAuthentication()
@@ -122,29 +103,30 @@ class LdapSsoConfig extends WebSecurityConfigurerAdapter {
     }
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    if (loginProps.mode == null || loginProps.mode.equalsIgnoreCase("session"))
-    {
-      defaultCookieSerializer.setSameSite(null)
-      http.formLogin()
+
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    def authenticationManager = ctx.getBean("authenticationManager") as AuthenticationManager
+    defaultCookieSerializer.setSameSite(null)
+    http.formLogin()
+    if (loginProps.mode == null || loginProps.mode.equalsIgnoreCase("session")) {
       authConfig.configure(http)
-      http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter)
-    }
-    else if (loginProps.mode !=null && loginProps.mode.equalsIgnoreCase("token")) {
+      http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter)
+      http.csrf().disable();
+    } else if (loginProps.mode != null && loginProps.mode.equalsIgnoreCase("token")) {
       authConfig.jwtconfigure(http)
     }
-
-    }
-
-  @Override
-  protected AuthenticationManager authenticationManager() throws Exception {
-    return new RetryOnExceptionAuthManager(super.authenticationManager());
+    return http.build() as SecurityFilterChain
   }
 
-  @Override
-  void configure(WebSecurity web) throws Exception {
-    authConfig.configure(web)
+  @Bean
+  protected AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    return new RetryOnExceptionAuthManager(authConfig.getAuthenticationManager());
+  }
+
+  @Bean
+  public WebSecurityCustomizer webSecurityCustomizer() {
+    return (web) -> authConfig.configure(web)
   }
 
   @Component

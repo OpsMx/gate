@@ -1,8 +1,8 @@
 package com.opsmx.spinnaker.gate.security.saml;
 
+import jakarta.servlet.Filter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.Filter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,7 +16,7 @@ import org.springframework.security.saml.SAMLProcessingFilter;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
 
-@ConditionalOnExpression("${saml.enabled:false}")
+@ConditionalOnExpression("${spring.security.saml2.enabled:false}")
 @Configuration
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)

@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.io.IOException
 import java.util.stream.Collectors
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 
 /**
  * A top-level [RestController] that exposes all api extensions under a common
@@ -47,7 +47,7 @@ class ApiExtensionController @Autowired constructor(private val apiExtensionsPro
 
   init {
     val duplicateApiExtensionIds = apiExtensionsProvider.getIfAvailable { ArrayList() }
-      .groupBy { it.id().toLowerCase() }
+      .groupBy { it.id().lowercase() }
       .filter { it.value.size > 1 }
       .map { it.value }
       .flatten()

@@ -1,5 +1,5 @@
 #!/bin/sh
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 export PATH=$PATH:$JAVA_HOME
 
 #export GITHASH=`git rev-parse HEAD`
@@ -18,21 +18,18 @@ echo ${CUSTOMPLUGIN_RELEASEVERSION}
 echo $JAVA_HOME
 
 
- 
   git checkout master
 
   cp -R docker_build /tmp/docker_build
- 
+
   cp -R jaeger /tmp/jaeger
- 
 
  git checkout tags/${TAGNAME}
- 
+
  cp -R /tmp/docker_build docker_build
- 
+
  cp -R /tmp/jaeger jaeger
- 
- 
+
 # Build OES-GATE
 
 
@@ -58,32 +55,32 @@ sh -c "echo gate service building..."
 case "${REGISTRY_USERNAME}" in
   opsmx11)
       echo "Pushing to DEVELOPMENT docker repo: ${DOCKER_HUB_USERNAME}"
-      
+
       IMAGENAME="opsmx11/gate:${TAGNAME}"
-      
+
       echo "Image Name:" $IMAGENAME
-      
-    
+
+
      # sudo docker build --build-arg CUSTOMPLUGIN_RELEASEVERSION=${CUSTOMPLUGIN_RELEASEVERSION} -t $IMAGENAME -f Dockerfile.rhel8-ubi8 .
       sudo docker build --no-cache --build-arg CUSTOMPLUGIN_RELEASEVERSION=${CUSTOMPLUGIN_RELEASEVERSION} -t $IMAGENAME -f docker_build/Dockerfile.rhel8-ubi8 .
      # sudo docker images ${IMAGENAME}
-     
+
       # Push the image
       sudo docker login --username ${REGISTRY_USERNAME} --password ${REGISTRY_PASSWORD}
       sudo docker push $IMAGENAME
-      ;;  
+      ;;
   ksrinimba)
       echo "Pushing to CUSTOMER PRODUCTION quay repo: ${REGISTRY_USERNAME}"
       IMAGENAME="quay.io/opsmxpublic/ubi8-gate:${TAGNAME}"
-      
+
       sudo docker build --build-arg CUSTOMPLUGIN_RELEASEVERSION=${CUSTOMPLUGIN_RELEASEVERSION} -t ${IMAGENAME} -f docker_build/Dockerfile.rhel8-ubi8 .
       #sudo docker images ${IMAGENAME}
-      
-      # Push the image to quay      
+
+      # Push the image to quay
       sudo docker login quay.io --username ${REGISTRY_USERNAME} --password ${REGISTRY_PASSWORD}
       sudo docker push ${IMAGENAME}
       ;;
-      
+
   *)
       echo "Cannot determine repository from credentials: username = ${REGISTRY_USERNAME}"
       exit 1

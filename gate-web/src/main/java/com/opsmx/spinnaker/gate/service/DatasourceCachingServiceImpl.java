@@ -27,11 +27,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.stereotype.Service;
 
 @Slf4j
+@ConditionalOnExpression("${services.dashboard.enabled:false}")
 @Service
 public class DatasourceCachingServiceImpl implements DashboardCachingService {
 
@@ -41,7 +43,8 @@ public class DatasourceCachingServiceImpl implements DashboardCachingService {
 
   @Autowired private DatasourceCaching datasourceCaching;
 
-  @Autowired private DashboardClient dashboardClient;
+  @Autowired(required = false)
+  private DashboardClient dashboardClient;
 
   @Override
   public void cacheResponse(Object response, String userName) {

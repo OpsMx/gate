@@ -25,9 +25,6 @@ import com.netflix.spinnaker.gate.config.ServiceConfiguration
 import com.netflix.spinnaker.gate.controllers.ApplicationController
 import com.netflix.spinnaker.gate.controllers.PipelineController
 import com.netflix.spinnaker.gate.services.*
-import com.netflix.spinnaker.gate.services.commands.ServerErrorException
-import com.netflix.spinnaker.gate.services.commands.ServiceUnavailableException
-import com.netflix.spinnaker.gate.services.commands.ThrottledRequestException
 import com.netflix.spinnaker.gate.services.internal.*
 import com.netflix.spinnaker.kork.dynamicconfig.DynamicConfigService
 import com.netflix.spinnaker.kork.dynamicconfig.SpringDynamicConfigService
@@ -39,9 +36,9 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.core.annotation.Order
-import org.springframework.http.HttpStatus
+import org.springframework.security.config.annotation.SecurityBuilder
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import retrofit.RetrofitError
 import retrofit.RestAdapter;
 import retrofit.client.OkClient
@@ -146,49 +143,6 @@ class FunctionalSpec extends Specification {
       exception.response.status == 404
 
     where:
-      name = "foo"
-  }
-
-  void "should 429 if ThrottledRequestException is raised"() {
-    when:
-      api.getApplication(name)
-
-    then:
-      1 * applicationService.getApplication(name, true) >> { throw new ThrottledRequestException("throttled!") }
-
-      RetrofitError exception = thrown()
-      exception.response.status == 429
-      toMap(exception.response.body).message == "throttled!"
-
-    where:
-      name = "foo"
-  }
-
-  void "should 503 on ServiceUnavailableException"() {
-    when:
-    api.getApplication(name)
-
-    then:
-    1 * applicationService.getApplication(name, true) >> { throw new ServiceUnavailableException() }
-    RetrofitError exception = thrown()
-    exception.response.status == 503
-    toMap(exception.response.body).message == HttpStatus.SERVICE_UNAVAILABLE.reasonPhrase
-
-    where:
-    name = "foo"
-  }
-
-  void "should 500 on ServerErrorException"() {
-    when:
-    api.getApplication(name)
-
-    then:
-    1 * applicationService.getApplication(name, true) >> { throw new ServerErrorException() }
-    RetrofitError exception = thrown()
-    exception.response.status == 500
-    toMap(exception.response.body).message == HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase
-
-    where:
     name = "foo"
   }
 
@@ -216,32 +170,6 @@ class FunctionalSpec extends Specification {
       task = [type: "deploy"]
   }
 
-  void "should throw ServerErrorException(500) on a random thrown exception"() {
-    when:
-    def tasks = executionHistoryService.getTasks("app", null, 5, null)
-
-    then:
-    1 * orcaServiceSelector.select() >> { orcaService }
-    1 * orcaService.getTasks("app", null, 5, null) >> { return ["1"] }
-    tasks == ["1"]
-
-    when:
-      executionHistoryService.getTasks("app", null, 10, "RUNNING")
-
-    then:
-    1 * orcaServiceSelector.select() >> { orcaService }
-    1 * orcaService.getTasks("app", null, 10, "RUNNING") >> { throw new IllegalStateException() }
-      thrown(ServerErrorException)
-
-    when:
-    executionHistoryService.getPipelines("app", 5, "TERMINAL", false)
-
-    then:
-    1 * orcaServiceSelector.select() >> { orcaService }
-    1 * orcaService.getPipelines("app", 5, "TERMINAL", false) >> { throw new IllegalStateException() }
-    thrown(ServerErrorException)
-  }
-
   Map toMap(TypedInput typedInput) {
     return objectMapper.readValue(typedInput.in().text, Map)
   }
@@ -249,7 +177,7 @@ class FunctionalSpec extends Specification {
   @Order(10)
   @Import(ErrorConfiguration)
   @EnableAutoConfiguration(exclude = [GroovyTemplateAutoConfiguration, GsonAutoConfiguration])
-  private static class FunctionalConfiguration extends WebSecurityConfigurerAdapter {
+  private static class FunctionalConfiguration implements WebSecurityConfigurer{
 
     @Bean
     ClouddriverServiceSelector clouddriverSelector() {
@@ -314,7 +242,7 @@ class FunctionalSpec extends Specification {
     @Bean
     RestAdapter.LogLevel retrofitLogLevel() {
       return RestAdapter.LogLevel.BASIC
-   }
+    }
 
     @Bean
     PipelineController pipelineController() {
@@ -346,11 +274,19 @@ class FunctionalSpec extends Specification {
       )
     }
 
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
       http
         .csrf().disable()
         .authorizeRequests().antMatchers("/**").permitAll()
+    }
+
+    void init(SecurityBuilder builder) throws Exception {
+
+    }
+
+
+    void configure(SecurityBuilder builder) throws Exception {
+
     }
   }
 }

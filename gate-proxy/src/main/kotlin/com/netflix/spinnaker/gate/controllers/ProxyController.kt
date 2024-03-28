@@ -30,7 +30,9 @@ import okhttp3.RequestBody
 import okhttp3.internal.http.HttpMethod
 import java.net.SocketException
 import java.util.stream.Collectors
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.http.HttpHeaders
@@ -120,7 +122,7 @@ class ProxyController(
       .toString()
       .substringAfter("/proxies/$proxyId")
 
-    val proxiedUrlBuilder = Request.Builder().url(proxyConfig.uri + proxyPath).build().url().newBuilder()
+    val proxiedUrlBuilder = Request.Builder().url(proxyConfig.uri + proxyPath).build().url.newBuilder()
     for ((key, value) in requestParams) {
       proxiedUrlBuilder.addQueryParameter(key, value)
     }
@@ -134,10 +136,8 @@ class ProxyController(
       val method = request.method
 
       val body = if (HttpMethod.permitsRequestBody(method) && request.contentType != null) {
-        RequestBody.create(
-          okhttp3.MediaType.parse(request.contentType),
-          request.reader.lines().collect(Collectors.joining(System.lineSeparator()))
-        )
+        request.reader.lines().collect(Collectors.joining(System.lineSeparator()))
+          .toRequestBody(request.contentType.toMediaTypeOrNull())
       } else {
         null
       }
@@ -145,9 +145,9 @@ class ProxyController(
       val response = proxy.okHttpClient.newCall(
         Request.Builder().url(proxiedUrl).method(method, body).build()
       ).execute()
-      statusCode = response.code()
+      statusCode = response.code
       contentType = response.header("Content-Type") ?: contentType
-      responseBody = response.body()?.string() ?: ""
+      responseBody = response.body?.string() ?: ""
     } catch (e: SocketException) {
       log.error("Exception processing proxy request", e)
       statusCode = HttpStatus.GATEWAY_TIMEOUT.value()
@@ -165,10 +165,10 @@ class ProxyController(
         .withTag("statusCode", statusCode.toString())
     ).increment()
 
-    val responseObj = if (responseBody.startsWith("{")) {
-      objectMapper.readValue(responseBody, Map::class.java)
+    val responseObj: Any = if (responseBody.startsWith("{")) {
+      objectMapper.readValue(responseBody, Map::class.java) as Map<*, *>
     } else if (responseBody.startsWith("[")) {
-      objectMapper.readValue(responseBody, Collection::class.java)
+      objectMapper.readValue(responseBody, Collection::class.java) as Collection<*>
     } else {
       responseBody
     }

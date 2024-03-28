@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.security.AbstractAuthenticationAuditListener;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -34,10 +35,12 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@ConditionalOnExpression("${services.auditservice.enabled:false}")
 @EnableAsync
 public class AuthenticationAuditListener extends AbstractAuthenticationAuditListener {
 
-  @Autowired private AuditHandler auditHandler;
+  @Autowired(required = false)
+  private AuditHandler auditHandler;
 
   @Async
   @Override

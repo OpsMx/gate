@@ -19,6 +19,8 @@ import com.netflix.spinnaker.fiat.shared.FiatClientConfigurationProperties
 import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator
 import com.netflix.spinnaker.fiat.shared.FiatStatus
 import org.springframework.boot.autoconfigure.security.SecurityProperties
+import org.springframework.context.ApplicationContext
+import org.springframework.context.support.GenericApplicationContext
 import org.springframework.security.config.annotation.ObjectPostProcessor
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -27,6 +29,9 @@ import spock.lang.Specification
 import java.util.stream.Collectors
 
 class AuthConfigTest extends Specification {
+
+  private GenericApplicationContext context = new GenericApplicationContext()
+
   @SuppressWarnings("GroovyAccessibility")
   def "test webhooks are unauthenticated by default"() {
     given:

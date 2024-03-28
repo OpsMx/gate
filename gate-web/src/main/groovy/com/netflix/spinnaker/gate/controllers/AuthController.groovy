@@ -18,11 +18,15 @@ package com.netflix.spinnaker.gate.controllers
 
 import com.netflix.spinnaker.gate.security.SpinnakerUser
 import com.netflix.spinnaker.gate.services.PermissionService
+import com.netflix.spinnaker.gate.services.UserInfoService
+import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
 import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.netflix.spinnaker.security.User
+import com.opsmx.spinnaker.gate.model.UserInfoDetailsModel
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
-import org.apache.commons.lang3.exception.ExceptionUtils
+import io.swagger.v3.oas.annotations.Hidden
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.access.prepost.PreAuthorize
@@ -30,9 +34,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import springfox.documentation.annotations.ApiIgnore
 
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse
 import java.util.regex.Pattern
 
 @Slf4j
@@ -59,6 +62,12 @@ class AuthController {
   PermissionService permissionService
 
   @Autowired
+  UserInfoService userInfoService
+
+  @Autowired(required=false)
+  OpsmxOesService opsmxOesService
+
+  @Autowired
   AuthController(@Value('${services.deck.base-url:}') URL deckBaseUrl,
                  @Value('${services.deck.redirect-host-pattern:#{null}}') String redirectHostPattern) {
     this.deckBaseUrl = deckBaseUrl
@@ -68,9 +77,9 @@ class AuthController {
     }
   }
 
-  @ApiOperation(value = "Get user", response = User.class)
+  @Operation(summary = "Get user")
   @RequestMapping(value = "/user", method = RequestMethod.GET)
-  User user(@ApiIgnore @SpinnakerUser User user) {
+  User user(@Parameter(hidden = true) @SpinnakerUser User user) {
     if (!user) {
       return user
     }
@@ -82,9 +91,9 @@ class AuthController {
     return user
   }
 
-  @ApiOperation(value = "Get service accounts", response = List.class)
+  @Operation(summary = "Get service accounts")
   @RequestMapping(value = "/user/serviceAccounts", method = RequestMethod.GET)
-  List<String> getServiceAccounts(@ApiIgnore @SpinnakerUser User user,
+  List<String> getServiceAccounts(@Parameter(hidden = true) @SpinnakerUser User user,
                                   @RequestParam(name = "application", required = false) String application) {
 
     String appName = Optional.ofNullable(application)
@@ -100,7 +109,7 @@ class AuthController {
     return permissionService.getServiceAccountsForApplication(user, appName)
   }
 
-  @ApiOperation(value = "Get logged out message", response = String.class)
+  @Operation(summary = "Get logged out message")
   @RequestMapping(value = "/loggedOut", method = RequestMethod.GET)
   String loggedOut() {
     return LOGOUT_MESSAGES[r.nextInt(LOGOUT_MESSAGES.size())]
@@ -110,14 +119,14 @@ class AuthController {
    * On-demand endpoint to sync the user roles, in case
    * waiting for the periodic refresh won't work.
    */
-  @ApiOperation(value = "Sync user roles")
+  @Operation(summary = "Sync user roles")
   @RequestMapping(value = "/roles/sync", method = RequestMethod.POST)
   @PreAuthorize("@authController.isAdmin()")
   void sync() {
     permissionService.sync()
   }
 
-  @ApiOperation(value = "Redirect to Deck")
+  @Operation(summary = "Redirect to Deck")
   @RequestMapping(value = "/redirect", method = RequestMethod.GET)
   void redirect(HttpServletResponse response, @RequestParam String to) {
     log.info("to url : {}", to)
@@ -159,5 +168,24 @@ class AuthController {
     return permissionService.isAdmin(
         AuthenticatedRequest.getSpinnakerUser().orElse("anonymous")
     )
+  }
+
+  @Operation(summary = "Get user Details with cloudAccounts")
+  @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
+  Object userInfo(@Parameter(hidden = true) @SpinnakerUser User user) {
+    if (opsmxOesService != null) {
+    if (!user) {
+      throw new Exception("UnAuthorized User")
+    }
+    def fiatRoles = permissionService.getRoles(user.username)?.collect { it.name }
+    if (fiatRoles) {
+      user.roles = fiatRoles
+    }
+    def response = opsmxOesService.getOesResponse5(
+      "accountsConfig", "v3", "spinnaker", "cloudProviderAccount", false, false)
+    return userInfoService.getAllInfoOfUser(user, response)
+  } else{
+    return new UserInfoDetailsModel();
+  }
   }
 }

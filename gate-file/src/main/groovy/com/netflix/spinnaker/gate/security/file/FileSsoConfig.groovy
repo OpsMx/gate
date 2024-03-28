@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -20,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 @Configuration
 @SpinnakerAuthConfig
 @EnableWebSecurity
-class FileSsoConfig extends WebSecurityConfigurerAdapter {
+class FileSsoConfig {
 
   @Autowired
   AuthConfig authConfig
@@ -38,17 +36,14 @@ class FileSsoConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
-  @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
       auth.getDefaultUserDetailsService()
   }
 
-  @Override
   protected void configure(HttpSecurity http) throws Exception {
       authConfig.jwtconfigure(http)
   }
 
-  @Override
   void configure(WebSecurity web) throws Exception {
     authConfig.configure(web)
   }
