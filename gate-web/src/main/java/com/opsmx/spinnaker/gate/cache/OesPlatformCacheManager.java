@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OpsMx, Inc.
+ * Copyright 2024 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,33 @@
 
 package com.opsmx.spinnaker.gate.cache;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 @Configuration
-@ConditionalOnExpression("${services.dashboard.enabled:false}")
-public class OesCacheManager {
+@ConditionalOnExpression("${services.platform.enabled:false}")
+public class OesPlatformCacheManager {
 
-  @Getter private CacheManager concurrentMapCacheManager;
+  @Getter private CaffeineCacheManager caffeineCacheManager;
 
-  @Primary
-  @Bean(name = "concurrentMapCacheManager")
-  public CacheManager concurrentMapCacheManager() {
-    concurrentMapCacheManager = new ConcurrentMapCacheManager("datasource");
-    return concurrentMapCacheManager;
+  @Value("${cache.expiryTime:600000}")
+  private String cacheExpiryTimeout;
+
+  @Bean(name = "caffeineCacheManager")
+  public CacheManager cacheManager() {
+
+    CaffeineCacheManager cacheManager = new CaffeineCacheManager("adminAuth");
+    cacheManager.setCaffeine(
+        Caffeine.newBuilder()
+            .expireAfterWrite(Long.parseLong(cacheExpiryTimeout), TimeUnit.MILLISECONDS));
+    caffeineCacheManager = cacheManager;
+    return cacheManager;
   }
 }

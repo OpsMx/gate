@@ -17,7 +17,7 @@
 package com.opsmx.spinnaker.gate.service;
 
 import com.google.gson.Gson;
-import com.opsmx.spinnaker.gate.cache.OesCacheManager;
+import com.opsmx.spinnaker.gate.cache.OesPlatformCacheManager;
 import com.opsmx.spinnaker.gate.cache.platform.AuthorizationCaching;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class AdminAuthService implements PlatformCachingService {
 
   private Gson gson = new Gson();
 
-  @Autowired private OesCacheManager oesCacheManager;
+  @Autowired private OesPlatformCacheManager oesPlatformCacheManager;
 
   @Autowired private AuthorizationCaching authorizationCaching;
 
@@ -50,7 +50,7 @@ public class AdminAuthService implements PlatformCachingService {
   @Override
   public boolean isCacheNotEmpty(String userName) {
 
-    CacheManager cacheManager = oesCacheManager.getCaffeineCacheManager();
+    CacheManager cacheManager = oesPlatformCacheManager.getCaffeineCacheManager();
     CaffeineCache caffeineCache = (CaffeineCache) cacheManager.getCache("adminAuth");
     Set<Object> keySet = caffeineCache.getNativeCache().asMap().keySet();
     return keySet.stream()
