@@ -265,16 +265,9 @@ class GateConfig extends RedisHttpSessionConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty("services.ssdservice.enabled")
-  OpsmxSsdService ops() {
-    createClient "ssdservice", OpsmxSsdService
-  }
-
-
-  @Bean
-  @ConditionalOnProperty("services.ssdopsmxservice.enabled")
-  OpsmxSsdOpaService  ssdOpa() {
-    createClient "ssdopaservice", OpsmxSsdOpaService
+  @ConditionalOnProperty("services.keel.enabled")
+  KeelService keelService() {
+    createClient "keel", KeelService
   }
 
   @Bean
@@ -349,11 +342,11 @@ class GateConfig extends RedisHttpSessionConfiguration {
     createClient "mine", MineService
   }
 
-  @Bean
-  @ConditionalOnProperty("services.keel.enabled")
-  KeelService keelService() {
-    createClient "keel", KeelService
-  }
+//  @Bean
+//  @ConditionalOnProperty("services.keel.enabled")
+//  KeelService keelService(OkHttpClient okHttpClient) {
+//    createClient "keel", KeelService, okHttpClient
+//  }
 
   @Bean
   @ConditionalOnProperty('services.kayenta.enabled')

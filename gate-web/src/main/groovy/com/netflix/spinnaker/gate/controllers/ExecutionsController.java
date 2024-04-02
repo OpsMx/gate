@@ -106,40 +106,40 @@ public class ExecutionsController {
                       + "- Every other value is compared using the Java \"equals\" method (Groovy \"==\" operator)")
           @RequestParam(value = "trigger", required = false)
           String trigger,
-      @ApiParam(
-              value =
+      @Parameter(
+              name =
                   "Only includes executions that were built at or after the given time, represented as a Unix timestamp in ms (UTC). This value must be >= 0 and <= the value of [triggerTimeEndBoundary], if provided. If this value is missing, it is defaulted to 0.")
           @RequestParam(value = "triggerTimeStartBoundary", defaultValue = "0")
           long triggerTimeStartBoundary,
-      @ApiParam(
-              value =
+      @Parameter(
+              name =
                   "Only includes executions that were built at or before the given time, represented as a Unix timestamp in ms (UTC). This value must be <= 9223372036854775807 (Long.MAX_VALUE) and >= the value of [triggerTimeStartBoundary], if provided. If this value is missing, it is defaulted to 9223372036854775807.")
           @RequestParam(
               value = "triggerTimeEndBoundary",
               defaultValue = "9223372036854775807" /* Long.MAX_VALUE */)
           long triggerTimeEndBoundary,
-      @ApiParam(
-              value =
+      @Parameter(
+              name =
                   "Only includes executions with a status that is equal to a status provided in this field. The list of statuses should be given as a comma-delimited string. If this value is missing, includes executions of all statuses. Allowed statuses are: NOT_STARTED, RUNNING, PAUSED, SUSPENDED, SUCCEEDED, FAILED_CONTINUE, TERMINAL, CANCELED, REDIRECT, STOPPED, SKIPPED, BUFFERED.")
           @RequestParam(value = "statuses", required = false)
           String statuses,
-      @ApiParam(
-              value =
+      @Parameter(
+              name =
                   "Sets the first item of the resulting list for pagination. The list is 0-indexed. This value must be >= 0. If this value is missing, it is defaulted to 0.")
           @RequestParam(value = "startIndex", defaultValue = "0")
           int startIndex,
-      @ApiParam(
-              value =
+      @Parameter(
+              name =
                   "Sets the size of the resulting list for pagination. This value must be > 0. If this value is missing, it is defaulted to 10.")
           @RequestParam(value = "size", defaultValue = "10")
           int size,
-      @ApiParam(
-              value =
+      @Parameter(
+              name =
                   "Reverses the resulting list before it is paginated. If this value is missing, it is defaulted to false.")
           @RequestParam(value = "reverse", defaultValue = "false")
           boolean reverse,
-      @ApiParam(
-              value =
+      @Parameter(
+              name =
                   "Expands each execution object in the resulting list. If this value is missing, it is defaulted to false.")
           @RequestParam(value = "expand", defaultValue = "false")
           boolean expand) {

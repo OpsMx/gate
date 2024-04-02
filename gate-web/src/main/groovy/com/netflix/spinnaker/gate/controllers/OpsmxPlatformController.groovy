@@ -397,7 +397,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.updatePlatformResponse4(version, type, source, source1, source2, source3, source4, featureType,createdStatus,data)
   }
 
-  @Operation(value = "download metric analysis sample template")
+  @Operation(summary = "download metric analysis sample template")
   @GetMapping(value = "/{version}/argo/sampleTemplate", produces = "application/octet-stream")
   @ResponseBody Object downloadSampleTemplate(@PathVariable("version") String version) {
     Response response = opsmxPlatformService.downloadSampleTemplate(version)

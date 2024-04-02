@@ -19,15 +19,15 @@ package com.netflix.spinnaker.gate.interceptors;
 import static com.netflix.spinnaker.kork.common.Header.REQUEST_ID;
 
 import com.netflix.spinnaker.security.AuthenticatedRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * Return value of SPINNAKER_REQUEST_ID (set via
  * com.netflix.spinnaker.filters.AuthenticatedRequestFilter) to gate callers as a response header.
  */
-public class RequestIdInterceptor extends HandlerInterceptorAdapter {
+public class RequestIdInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(
       HttpServletRequest request, HttpServletResponse response, Object handler) {

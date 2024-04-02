@@ -24,9 +24,6 @@ dependencies {
   //Spinnaker GATE change start
   implementation "io.spinnaker.kork:kork-plugins"
   //Spinnaker GATE change end
-  implementation 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
-  implementation 'jakarta.servlet:jakarta.servlet-api:4.0.0'
-
 
   implementation "com.jakewharton.retrofit:retrofit1-okhttp3-client:1.1.0"
   implementation "com.squareup.retrofit:converter-jackson:1.9.0"

@@ -18,6 +18,7 @@ package com.netflix.spinnaker.gate.controllers
 
 import groovy.util.logging.Slf4j
 import io.swagger.v3.oas.annotations.Operation
+import jakarta.servlet.http.HttpServletRequest
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod

@@ -3,14 +3,15 @@ package com.opsmx.spinnaker.gate;
 import com.netflix.spinnaker.gate.config.AuthConfig;
 import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -23,13 +24,13 @@ import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher
 @Configuration
 @EnableWebSecurity
 @Order(1)
-public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
+public class CustomTokenSecurityConfig {
 
   @Autowired AuthConfig authConfig;
   @Autowired private CustomApiTokenAuthenticationProvider customApiTokenAuthenticationProvider;
 
-  @Override
-  protected void configure(HttpSecurity httpSecurity) throws Exception {
+  @Bean
+  protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
     authConfig.configure(httpSecurity);
     httpSecurity
         .sessionManagement()
@@ -39,7 +40,7 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .requestCache()
         .disable()
-        .requestMatcher(new RequestHeaderRequestMatcher("x-opsmx-token"))
+        .securityMatcher(new RequestHeaderRequestMatcher("x-opsmx-token"))
         .addFilterBefore(
             new CustomTokenAuthenticationFilter(
                 authenticationManager(),
@@ -121,9 +122,10 @@ public class CustomTokenSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/platformservice/v6/datasource/{id:[0-9]+}", "PUT", false),
                     new AntPathRequestMatcher("/platformservice/v7/datasource", "GET", false))),
             AnonymousAuthenticationFilter.class);
+    return httpSecurity.build();
   }
 
-  @Override
+  @Bean
   public AuthenticationManager authenticationManager() {
     return new ProviderManager(Collections.singletonList(customApiTokenAuthenticationProvider));
   }

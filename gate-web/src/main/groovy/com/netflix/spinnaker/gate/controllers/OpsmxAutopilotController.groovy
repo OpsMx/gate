@@ -320,7 +320,7 @@ class OpsmxAutopilotController {
     return opsmxAutopilotService.getAutoResponse6(type, source, source1, source2, source3,pageNo,pageLimit,noOfDays,search,verificationType,status,cdtool)
   }
 
-  @Operation(value = "Endpoint for autopilot rest services")
+  @Operation(summary = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/{type}/{source}/{source1}/{source2}/tags", method = RequestMethod.GET)
   Object getAutoResponse13(@PathVariable("type") String type,
                            @PathVariable("source") String source,
@@ -392,7 +392,7 @@ class OpsmxAutopilotController {
   }
 
 
-  @Operation(value = "Endpoint for autopilot rest services")
+  @Operation(summary =  "Endpoint for autopilot rest services")
   @RequestMapping(value = "/api/v5/global/template", method = RequestMethod.GET)
   Object getAutoResponse11(@RequestParam(value = "templateType") String templateType,
                           @RequestParam(value = "templateName") String templateName,
@@ -400,7 +400,7 @@ class OpsmxAutopilotController {
     return opsmxAutopilotService.getAutoResponse11(templateType, templateName, versionNo)
   }
 
-  @Operation(value = "Endpoint for autopilot rest services")
+  @Operation(summary =  "Endpoint for autopilot rest services")
   @RequestMapping(value = "/api/v5/global/templates", method = RequestMethod.GET)
   Object getAutoResponse12(@RequestParam(value = "templateType", required = false) String templateType,
                            @RequestParam(value = "isFindAllVersions", required = false) String isFindAllVersions,
@@ -416,7 +416,7 @@ class OpsmxAutopilotController {
 
 
 
-  @Operation(value = "Endpoint for autopilot rest services")
+  @Operation(summary =  "Endpoint for autopilot rest services")
   @RequestMapping(value = "/{type}", method = RequestMethod.DELETE)
   Object deleteAutoResponse1(@PathVariable("type") String type) {
 
@@ -484,7 +484,7 @@ class OpsmxAutopilotController {
     return opsmxAutopilotService.deleteAutoResponse6(type, source, source1, source2, source3, source4)
   }
 
-  @Operation(value = "Endpoint for autopilot rest services")
+  @Operation(summary = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/api/{version}/global/template", method = RequestMethod.DELETE)
   Object deleteAutoResponse7(@PathVariable("version") String version,
                              @RequestParam(value = "templateType") String templateType,
@@ -495,7 +495,7 @@ class OpsmxAutopilotController {
 
 
 
-  @Operation(value = "Endpoint for autopilot rest services")
+  @Operation(summary = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/{type}", method = RequestMethod.POST)
   Object postAutoResponse(@PathVariable("type") String type,
                          @RequestBody(required = false) Object data) {
@@ -632,7 +632,7 @@ class OpsmxAutopilotController {
     return opsmxAutopilotService.updateAutopilotResponse6(type, source, source1, source2, source3, source4, source5, data)
   }
 
-  @Operation(value = "Endpoint for autopilot rest services")
+  @Operation(summary = "Endpoint for autopilot rest services")
   @GetMapping(value = "/{type}/{source}/downloadUpdatedLogtemplate", produces = "application/octet-stream")
   @ResponseBody Object downloadUpdatedLogtemplate(@PathVariable("type") String type,
                                       @PathVariable("source") String source,

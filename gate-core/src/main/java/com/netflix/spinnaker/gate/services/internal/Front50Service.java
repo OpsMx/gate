@@ -25,7 +25,7 @@ import retrofit.http.*;
 
 public interface Front50Service {
   @GET("/credentials")
-  List<Map> getCredentials();
+  public abstract List<Map> getCredentials();
 
   @GET("/v2/applications?restricted=false")
   List<Map> getAllApplicationsUnrestricted();
