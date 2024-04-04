@@ -41,7 +41,7 @@ dependencies {
   //Spinnaker changes end
 
   implementation "io.spinnaker.kork:kork-swagger"
-  implementation "org.springframework:spring-web"
+  implementation group: 'org.springframework', name: 'spring-web', version: '6.1.5'
   implementation "org.pf4j:pf4j-update:+"
 }
 test {
