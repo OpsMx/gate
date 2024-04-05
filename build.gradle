@@ -53,8 +53,7 @@ allprojects {
       implementation "net.logstash.logback:logstash-logback-encoder:4.11"
       implementation "org.jetbrains.kotlin:kotlin-reflect"
       implementation "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.6.0"
-
-      testImplementation "org.spockframework:spock-core"
+      implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.1.2'
       testImplementation "org.spockframework:spock-spring"
       testImplementation "org.springframework.boot:spring-boot-starter-test"
       testImplementation "org.hamcrest:hamcrest-core"
