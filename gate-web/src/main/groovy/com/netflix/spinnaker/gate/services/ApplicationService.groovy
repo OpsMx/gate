@@ -57,7 +57,7 @@ class ApplicationService {
   @Autowired
   ExecutorService executorService
 
-  @Value('${gate.installation.mode}')
+  @Value('${gate.installation.mode:common}')
   GateInstallationModes gateInstallationMode
 
 
@@ -97,8 +97,8 @@ class ApplicationService {
     }
     List<Map> flat = (List<Map>) all?.flatten()?.toList()
     return mergeApps(flat, serviceConfiguration.getService('front50')).collect {
-      it.attributes
-    } as List<Map>
+      it['attributes']
+    } as List<Map> as List<Map<String, Object>>
   }
 
   List<Map> getAllApplications() {

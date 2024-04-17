@@ -18,9 +18,9 @@ package com.opsmx.spinnaker.gate.service;
 
 import com.opsmx.spinnaker.gate.model.AuthProviderModel;
 import com.opsmx.spinnaker.gate.util.KeycloakAuthUtils;
+import jakarta.validation.ValidationException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.IdentityProviderMapperRepresentation;
 import org.keycloak.representations.idm.IdentityProviderRepresentation;

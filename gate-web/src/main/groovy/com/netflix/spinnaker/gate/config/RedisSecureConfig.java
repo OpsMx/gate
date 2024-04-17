@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Netflix, Inc.
+ * Copyright 2024 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,22 @@
 
 package com.netflix.spinnaker.gate.config;
 
-import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.session.data.redis.config.ConfigureRedisAction;
 
 @Configuration
-@Order(HIGHEST_PRECEDENCE + 23)
-public class ManagedDeliverySchemaEndpointConfiguration {
+public class RedisSecureConfig {
+  /**
+   * Always disable the ConfigureRedisAction that Spring Boot uses internally. Instead, we use one
+   * qualified with @ConnectionPostProcessor. See {@link
+   * PostConnectionConfiguringJedisConnectionFactory, GateConfig}.
+   */
   @Bean
-  public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-    http.securityMatcher(new AntPathRequestMatcher("/managed/delivery-configs/schema"))
-        .authorizeRequests()
-        .anyRequest()
-        .permitAll();
-    return http.build();
+  @PostConnectionConfiguringJedisConnectionFactory.ConnectionPostProcessor
+  @ConditionalOnProperty("redis.configuration.secure")
+  ConfigureRedisAction connectionPostProcessorConfigureRedisAction() {
+    return ConfigureRedisAction.NO_OP;
   }
 }

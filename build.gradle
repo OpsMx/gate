@@ -7,18 +7,33 @@ plugins {
 
 allprojects {
   apply plugin: 'io.spinnaker.project'
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
+  tasks.withType( Copy).all {
+    duplicatesStrategy 'exclude'
+  }
 
   group = "io.spinnaker.gate"
 
-  if (name != "gate-bom") {
-    apply plugin: 'java-library'
-    apply plugin: 'groovy'
+
 
     if ([korkVersion, fiatVersion].find { it.endsWith('-SNAPSHOT') }) {
       repositories {
         mavenLocal()
+        maven{
+          url "https://nexus.opsmx.net/repository/maven-snapshots/"
+          credentials {
+            username = "NEXUS_USERNAME"
+            password = "NEXUS_PASSWORD"
+          }
+        }
       }
     }
+  if (name != "gate-bom" && name != "gate-api") {
+    apply plugin: 'java-library'
+    apply plugin: 'groovy'
 
     repositories {
       maven { url 'https://build.shibboleth.net/nexus/content/repositories/releases/' }
@@ -33,43 +48,49 @@ allprojects {
       compileOnly "org.projectlombok:lombok"
       annotationProcessor "org.projectlombok:lombok"
       testAnnotationProcessor "org.projectlombok:lombok"
-      compile("org.springframework.cloud:spring-cloud-starter-vault-config")
-      compile("io.micrometer:micrometer-registry-prometheus")
 
-
-      implementation "org.codehaus.groovy:groovy-all"
-      implementation "net.logstash.logback:logstash-logback-encoder"
+      implementation "org.apache.groovy:groovy:4.0.9"
+      implementation "net.logstash.logback:logstash-logback-encoder:4.11"
       implementation "org.jetbrains.kotlin:kotlin-reflect"
+      implementation "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.6.0"
 
       testImplementation "org.spockframework:spock-core"
       testImplementation "org.spockframework:spock-spring"
       testImplementation "org.springframework.boot:spring-boot-starter-test"
       testImplementation "org.hamcrest:hamcrest-core"
-      testRuntimeOnly "cglib:cglib-nodep"
+      testRuntimeOnly "cglib:cglib-nodep:3.3.0"
       testRuntimeOnly "org.objenesis:objenesis"
     }
 
+    java {
+      sourceCompatibility = JavaVersion.VERSION_17
+      targetCompatibility = JavaVersion.VERSION_17
+    }
+
     configurations.all {
-      exclude group: 'javax.servlet', module: 'servlet-api'
       exclude group: 'javax.servlet', module: 'javax.servlet-api'
-      resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'org.apache.logging.log4j') {
-          details.useVersion '2.19.0'
+   //   exclude group: 'javax.servlet', module: 'servlet-api'
+    }
+
+  }
+
+  tasks.withType(JavaExec) {
+    if (System.getProperty('DEBUG', 'false') == 'true') {
+      jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8184'
+    }
+  }
+
+  test {
+    testLogging {
+      exceptionFormat = 'full'
+      afterSuite { desc, result ->
+        if (!desc.parent) {
+          println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+          println "Report file: ${reports.html.entryPoint}"
         }
       }
     }
-
-    tasks.withType(JavaExec) {
-      if (System.getProperty('DEBUG', 'false') == 'true') {
-        jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8184'
-      }
-    }
-
-    test {
-      testLogging {
-        exceptionFormat = 'full'
-      }
-    }
+    useJUnitPlatform()
   }
 }
 

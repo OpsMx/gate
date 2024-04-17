@@ -19,25 +19,14 @@ package com.netflix.spinnaker.gate.controllers;
 import com.netflix.frigga.Names;
 import com.netflix.spinnaker.gate.services.EntityTagsService;
 import com.netflix.spinnaker.gate.services.TaskService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.HandlerMapping;
 
 @RestController
@@ -54,8 +43,9 @@ public class EntityTagsController {
 
   @RequestMapping(method = RequestMethod.GET)
   public Collection<Map> list(
-      @ApiParam(
-              "Any parameters to filter by, passed as individual parameters. Options are: \n  cloudProvider, application, entityType, entityId, idPrefix, account, region, namespace, maxResults")
+      @Parameter(
+              name =
+                  "Any parameters to filter by, passed as individual parameters. Options are: \n  cloudProvider, application, entityType, entityId, idPrefix, account, region, namespace, maxResults")
           @RequestParam
           Map<String, Object> allParameters,
       @RequestHeader(value = "X-RateLimit-App", required = false) String sourceApp) {
@@ -74,9 +64,9 @@ public class EntityTagsController {
     return entityTagsService.get(id, request.getHeader("X-RateLimit-App"));
   }
 
-  @ApiOperation(
-      value = "Deletes a subset of tags for the provided tag ID",
-      notes =
+  @Operation(
+      summary = "Deletes a subset of tags for the provided tag ID",
+      description =
           "multiple tags can be deleted for an entity using a comma as a separator, e.g. /tag1,tag2")
   @RequestMapping(value = "/{id}/{tag}", method = RequestMethod.DELETE)
   @ResponseStatus(value = HttpStatus.ACCEPTED)

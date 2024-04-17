@@ -1,4 +1,4 @@
-FROM quay.io/opsmxpublic/ubi8-jre-11:v1
+FROM quay.io/opsmxpublic/ubi8-jre-17:v1
 MAINTAINER OpsMx
 
 # Install procps(ps)

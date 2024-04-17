@@ -55,6 +55,7 @@ class PluginService(
     return initiateTask("Delete Plugin info with Id: $id", listOf(jobMap))
   }
 
+  @Suppress("UNCHECKED_CAST")
   private fun initiateTask(description: String, jobs: List<Map<String, Any>>): Map<String, Any> {
     val taskMap = mapOf(
       Pair("description", description),

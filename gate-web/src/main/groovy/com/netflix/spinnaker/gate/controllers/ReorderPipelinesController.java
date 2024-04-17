@@ -23,12 +23,8 @@ import com.netflix.spinnaker.kork.web.exceptions.InvalidRequestException;
 import com.netflix.spinnaker.security.AuthenticatedRequest;
 import groovy.transform.CompileStatic;
 import groovy.util.logging.Slf4j;
-import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import io.swagger.v3.oas.annotations.Operation;
+import java.util.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,13 +43,13 @@ public class ReorderPipelinesController {
 
   @Autowired TaskService taskService;
 
-  @ApiOperation(value = "Re-order pipelines")
+  @Operation(summary = "Re-order pipelines")
   @RequestMapping(value = "/pipelines/reorder", method = RequestMethod.POST)
   public Map reorderPipelines(@RequestBody ReorderPipelinesCommand reorderPipelinesCommand) {
     return handlePipelineReorder(reorderPipelinesCommand, false);
   }
 
-  @ApiOperation(value = "Re-order pipeline strategies")
+  @Operation(summary = "Re-order pipeline strategies")
   @RequestMapping(value = "/strategies/reorder", method = RequestMethod.POST)
   public Map reorderPipelineStrategies(
       @RequestBody ReorderPipelinesCommand reorderPipelinesCommand) {

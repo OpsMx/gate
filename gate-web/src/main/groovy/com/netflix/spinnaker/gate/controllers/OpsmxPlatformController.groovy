@@ -16,23 +16,25 @@
 
 package com.netflix.spinnaker.gate.controllers
 
-import com.netflix.spinnaker.gate.config.ServiceConfiguration
+
 import com.netflix.spinnaker.gate.services.internal.OpsmxPlatformService
 import com.opsmx.spinnaker.gate.factory.platform.PlatformCachingServiceBeanFactory
 import com.opsmx.spinnaker.gate.service.PlatformCachingService
 import com.opsmx.spinnaker.gate.util.CacheUtil
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
-import okhttp3.OkHttpClient
+import io.swagger.v3.oas.annotations.Operation
+import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import retrofit.client.Response
 import org.apache.commons.io.IOUtils
 import org.springframework.http.MediaType
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 import java.util.stream.Collectors
 import org.springframework.http.ResponseEntity
 
@@ -63,7 +65,7 @@ class OpsmxPlatformController {
   @Autowired
   PlatformCachingServiceBeanFactory platformCachingServiceBeanFactory
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.GET)
   Object getPlatformResponse1(@PathVariable("version") String version,
                               @PathVariable("type") String type,
@@ -103,7 +105,7 @@ class OpsmxPlatformController {
       cdTool,cdlabel,syncstatus,health,cluster,targetrevision,sourcepath,destinationserver,project,namespace,revision,applicationlabel,description,service, image,clusterlabel,application)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.GET)
   Object getPlatformResponse(@PathVariable("version") String version,
                              @PathVariable("type") String type,
@@ -115,7 +117,7 @@ class OpsmxPlatformController {
                              @RequestParam(value = "agentName", required = false) String agentName) {
     return opsmxPlatformService.getPlatformResponse(version, type, source, source1, chartId, noOfDays,argoName, agentName)
   }
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.GET)
   Object getPlatformResponse4(@PathVariable("version") String version,
                               @PathVariable("type") String type,
@@ -153,7 +155,7 @@ class OpsmxPlatformController {
     return response
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.GET)
   Object getPlatformResponse5(@PathVariable("version") String version,
                               @PathVariable("type") String type,
@@ -168,7 +170,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.getPlatformResponse5(version, type, source, source1, source2, permissionId, resourceType,featureType,sourceName)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.GET)
   Object getPlatformResponse6(@PathVariable("version") String version,
                               @PathVariable("type") String type,
@@ -182,7 +184,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.getPlatformResponse6(version, type, source, source1, source2, source3, agentName, sourceType)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.GET)
   Object getPlatformResponse7(@PathVariable("version") String version,
                               @PathVariable("type") String type,
@@ -194,7 +196,7 @@ class OpsmxPlatformController {
 
     return opsmxPlatformService.getPlatformResponse7(version, type, source, source1, source2, source3, source4)
   }
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}/{source5}/{source6}", method = RequestMethod.GET)
   Object getPlatformResponse8(@PathVariable("version") String version,
                               @PathVariable("type") String type,
@@ -209,7 +211,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.getPlatformResponse8(version, type, source, source1, source2, source3, source4, source5, source6, gateType)
   }
 
-  @ApiOperation(value = "download the CD Integrator manifest file")
+  @Operation(summary = "download the CD Integrator manifest file")
   @GetMapping(value = "/v7/{type}/{source}/manifest", produces = "application/octet-stream")
   @ResponseBody
   Object getDownloadAgentManifestFile(@PathVariable("type") String type,
@@ -233,14 +235,14 @@ class OpsmxPlatformController {
     }
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value ="/v7/datasource/groups", method = RequestMethod.GET)
   Object getPlatformResponse9(@RequestParam(required = false) String name,
     @RequestParam("isArgoEnabled") Boolean isArgoEnabled){
     return opsmxPlatformService.getPlatformResponse9(name,isArgoEnabled)
   }
 
-  @ApiOperation(value = "Endpoint for Insights controller to download csv file")
+  @Operation(summary = "Endpoint for Insights controller to download csv file")
   @GetMapping(value = "/{version}/insights/download", produces = "text/csv")
   Object downloadCsvFile(@PathVariable("version") String version,
                          @RequestParam(value = "chartId", required = false) Integer chartId,
@@ -261,7 +263,7 @@ class OpsmxPlatformController {
     }
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.DELETE)
   Object deletePlatformResponse(@PathVariable("version") String version,
                                 @PathVariable("type") String type,
@@ -269,7 +271,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.deletePlatformResponse(version, type, accountName)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.DELETE)
   Object deletePlatformResponse1(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -281,7 +283,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.deletePlatformResponse1(version, type, source, argoName, agentName, checkOnlyDeletedArgo)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.DELETE)
   Object deletePlatformResponse4(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -291,7 +293,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.deletePlatformResponse4(version, type, source, source1)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.DELETE)
   Object deletePlatformResponse5(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -304,7 +306,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.deletePlatformResponse5(version, type, source, source1,source2,featureType)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.DELETE)
   Object deletePlatformResponse6(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -316,7 +318,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.deletePlatformResponse6(version, type, source, source1,source2,source3)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.POST)
   Object postPlatformResponse(@PathVariable("version") String version,
                               @PathVariable("type") String type,
@@ -325,7 +327,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.postPlatformResponse(version, type, data)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.POST)
   Object postPlatformResponse3(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -335,7 +337,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.postPlatformResponse3(version, type, source, data)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.POST)
   Object postPlatformResponse4(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -354,7 +356,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.postPlatformResponse4(version, type, source, source1, isExists, description, nameSpace, argoCdUrl, rolloutsEnabled, isdUrl, argoName, agentName, data)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.POST)
   Object postPlatformResponse5(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -366,7 +368,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.postPlatformResponse5(version, type, source, source1, source2, data)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}", method = RequestMethod.POST)
   Object postPlatformResponse6(@PathVariable("version") String version,
                                @PathVariable("type") String type,
@@ -379,7 +381,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.postPlatformResponse6(version, type, source, source1, source2, source3, data)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}", method = RequestMethod.PUT)
   Object updatePlatformResponse(@PathVariable("version") String version,
                                 @PathVariable("type") String type,
@@ -388,7 +390,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.updatePlatformResponse(version, type, data)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.PUT)
   Object updatePlatformResponse1(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -398,7 +400,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.updatePlatformResponse1(version, type, source, data)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.PUT)
   Object updatePlatformResponse2(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -412,7 +414,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.updatePlatformResponse2(version, type, source, source1, argoName, agentName, nameSpace, data)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}", method = RequestMethod.PUT)
   Object updatePlatformResponse3(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -425,7 +427,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.updatePlatformResponse3(version, type, source, source1, source2,sourceName, data)
   }
 
-  @ApiOperation(value = "Endpoint for platform rest services")
+  @Operation(summary = "Endpoint for platform rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}/{source2}/{source3}/{source4}", method = RequestMethod.PUT)
   Object updatePlatformResponse4(@PathVariable("version") String version,
                                  @PathVariable("type") String type,
@@ -441,7 +443,7 @@ class OpsmxPlatformController {
     return opsmxPlatformService.updatePlatformResponse4(version, type, source, source1, source2, source3, source4, featureType,createdStatus,data)
   }
 
-  @ApiOperation(value = "download metric analysis sample template")
+  @Operation(summary = "download metric analysis sample template")
   @GetMapping(value = "/{version}/argo/sampleTemplate", produces = "application/octet-stream")
   @ResponseBody Object downloadSampleTemplate(@PathVariable("version") String version) {
     Response response = opsmxPlatformService.downloadSampleTemplate(version)

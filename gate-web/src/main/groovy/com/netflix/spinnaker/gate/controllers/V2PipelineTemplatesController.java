@@ -16,9 +16,7 @@
 
 package com.netflix.spinnaker.gate.controllers;
 
-import static com.netflix.spinnaker.gate.controllers.PipelineTemplatesController.encodeAsBase64;
-import static com.netflix.spinnaker.gate.controllers.PipelineTemplatesController.getApplicationFromTemplate;
-import static com.netflix.spinnaker.gate.controllers.PipelineTemplatesController.getNameFromTemplate;
+import static com.netflix.spinnaker.gate.controllers.PipelineTemplatesController.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spinnaker.gate.controllers.PipelineTemplatesController.PipelineTemplate;
@@ -28,23 +26,12 @@ import com.netflix.spinnaker.gate.services.V2PipelineTemplateService;
 import com.netflix.spinnaker.kork.exceptions.HasAdditionalAttributes;
 import com.netflix.spinnaker.security.AuthenticatedRequest;
 import groovy.transform.InheritConstructors;
-import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import io.swagger.v3.oas.annotations.Operation;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/v2/pipelineTemplates")
@@ -69,25 +56,25 @@ public class V2PipelineTemplatesController {
   }
 
   // TODO(louisjimenez): Deprecated. Will be replaced with /versions endpoint starting with 1.19.
-  @ApiOperation(value = "(ALPHA) List pipeline templates.", response = List.class)
+  @Operation(summary = "(ALPHA) List pipeline templates.")
   @RequestMapping(method = RequestMethod.GET)
   public Collection<Map> list(@RequestParam(required = false) List<String> scopes) {
     return v2PipelineTemplateService.findByScope(scopes);
   }
 
-  @ApiOperation(value = "List pipeline templates with versions", response = Map.class)
+  @Operation(summary = "List pipeline templates with versions")
   @RequestMapping(value = "/versions", method = RequestMethod.GET)
   public Map<String, List<Map>> listVersions(@RequestParam(required = false) List<String> scopes) {
     return v2PipelineTemplateService.findVersionsByScope(scopes);
   }
 
-  @ApiOperation(value = "(ALPHA) Plan a pipeline template configuration.", response = HashMap.class)
+  @Operation(summary = "(ALPHA) Plan a pipeline template configuration.")
   @RequestMapping(value = "/plan", method = RequestMethod.POST)
   public Map<String, Object> plan(@RequestBody Map<String, Object> pipeline) {
     return v2PipelineTemplateService.plan(pipeline);
   }
 
-  @ApiOperation(value = "(ALPHA) Create a pipeline template.", response = HashMap.class)
+  @Operation(summary = "(ALPHA) Create a pipeline template.")
   @RequestMapping(value = "/create", method = RequestMethod.POST)
   @ResponseStatus(value = HttpStatus.OK)
   public Map create(
@@ -133,7 +120,7 @@ public class V2PipelineTemplatesController {
     }
   }
 
-  @ApiOperation(value = "(ALPHA) Update a pipeline template.", response = HashMap.class)
+  @Operation(summary = "(ALPHA) Update a pipeline template.")
   @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
   @ResponseStatus(value = HttpStatus.OK)
   public Map update(
@@ -175,7 +162,7 @@ public class V2PipelineTemplatesController {
     return operation;
   }
 
-  @ApiOperation(value = "(ALPHA) Get a pipeline template.", response = HashMap.class)
+  @Operation(summary = "(ALPHA) Get a pipeline template.")
   @RequestMapping(value = "/{id}", method = RequestMethod.GET)
   public Map get(
       @PathVariable String id,
@@ -184,7 +171,7 @@ public class V2PipelineTemplatesController {
     return v2PipelineTemplateService.get(id, tag, digest);
   }
 
-  @ApiOperation(value = "Delete a pipeline template.", response = HashMap.class)
+  @Operation(summary = "Delete a pipeline template.")
   @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
   @ResponseStatus(value = HttpStatus.OK)
   public Map delete(
@@ -209,9 +196,7 @@ public class V2PipelineTemplatesController {
     return taskService.createAndWaitForCompletion(operation);
   }
 
-  @ApiOperation(
-      value = "(ALPHA) List all pipelines that implement a pipeline template",
-      response = List.class)
+  @Operation(summary = "(ALPHA) List all pipelines that implement a pipeline template")
   @RequestMapping(value = "/{id}/dependents", method = RequestMethod.GET)
   public List<PipelineTemplateDependent> listPipelineTemplateDependents(@PathVariable String id) {
     return v2PipelineTemplateService.getTemplateDependents(id);
