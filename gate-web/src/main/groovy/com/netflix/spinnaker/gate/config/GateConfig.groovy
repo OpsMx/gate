@@ -372,7 +372,12 @@ class GateConfig extends RedisHttpSessionConfiguration {
                              Class<T> type,
                              String dynamicName = null,
                              boolean forceEnabled = false) {
+    log.info(" ********Printing dynamicName value : {}", dynamicName )
+    log.info(" ********Printing serviceName value : {}", serviceName )
+    log.info(" ********Printing forceEnabled value : {}", forceEnabled )
     Service service = serviceConfiguration.getService(serviceName)
+    log.info(" Printing service value : {}", service )
+
     if (service == null) {
       throw new IllegalArgumentException("Unknown service ${serviceName} requested of type ${type}")
     }
@@ -382,6 +387,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
     }
 
     Endpoint endpoint = serviceConfiguration.getServiceEndpoint(serviceName, dynamicName)
+     log.info(" ******Printing Endpoint value : {}", endpoint )
 
     buildService(serviceName, type, endpoint)
   }
