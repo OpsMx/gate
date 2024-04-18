@@ -376,7 +376,14 @@ class GateConfig extends RedisHttpSessionConfiguration {
     log.info(" ********Printing serviceName value : {}", serviceName )
     log.info(" ********Printing forceEnabled value : {}", forceEnabled )
     Service service = serviceConfiguration.getService(serviceName)
-    log.info(" Printing service value : {}", service )
+    log.info(" Printing service value baseUrl : {}", service.baseUrl )
+    log.info(" Printing service value baseUrls : {}", service.baseUrls )
+    log.info(" Printing service value config : {}", service.config )
+    log.info(" Printing service value enabled : {}", service.enabled )
+    log.info(" Printing service value priority : {}", service.priority )
+    log.info(" Printing service value shards : {}", service.shards )
+    log.info(" Printing service value vipAddress : {}", service.vipAddress )
+    log.info(" Printing service value metaClass : {}", service.metaClass )
 
     if (service == null) {
       throw new IllegalArgumentException("Unknown service ${serviceName} requested of type ${type}")
