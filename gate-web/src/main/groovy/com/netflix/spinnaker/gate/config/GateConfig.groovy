@@ -506,7 +506,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
   }
 
   @Bean
-  @ConditionalOnExpression('${services.fiat.enabled:true}')
+  @ConditionalOnExpression('${services.fiat.enabled:false}')
   FiatPermissionEvaluator fiatPermissionEvaluator(FiatStatus fiatStatus,
                                                   Registry registry,
                                                   FiatService fiatService,
@@ -514,7 +514,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
     return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
   }
   @Bean
-  @ConditionalOnExpression('${services.fiat.enabled:true}')
+  @ConditionalOnExpression('${services.fiat.enabled:false}')
   static MethodSecurityExpressionHandler expressionHandler(
     Registry registry,
     FiatService fiatService,
