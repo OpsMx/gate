@@ -193,7 +193,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Bean
   ExtendedFiatService extendedFiatService() {
     // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-    createClient "fiat", ExtendedFiatService,  null, true
+    createClient "fiat", ExtendedFiatService,  null, false
   }
 
   @Bean
