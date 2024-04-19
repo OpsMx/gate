@@ -83,7 +83,7 @@ import java.util.concurrent.Executors
 import static retrofit.Endpoints.newFixedEndpoint
 
 @CompileStatic
-@Configuration(enforceUniqueMethods = false)
+@Configuration
 @Slf4j
 @EnableConfigurationProperties([FiatClientConfigurationProperties, DynamicRoutingConfigProperties])
 @Import([PluginsAutoConfiguration, DeckPluginConfiguration, PluginWebConfiguration])
