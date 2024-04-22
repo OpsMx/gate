@@ -202,7 +202,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @ConditionalOnProperty("services.fiat.config.dynamic-endpoints.login")
   FiatService fiatLoginService() {
     // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-    createClient "fiat", FiatService,  "login", false
+    createClient "fiat", FiatService,  "login", true
   }
 
 
@@ -513,15 +513,15 @@ class GateConfig extends RedisHttpSessionConfiguration {
                                                   FiatClientConfigurationProperties fiatClientConfigurationProperties) {
     return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
   }
-  @Bean
-  static MethodSecurityExpressionHandler expressionHandler(
-    Registry registry,
-    FiatService fiatService,
-    FiatClientConfigurationProperties configProps,
-    FiatStatus fiatStatus) {
-    var expressionHandler = new DefaultMethodSecurityExpressionHandler();
-    expressionHandler.setPermissionEvaluator(
-      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
-    return expressionHandler;
-  }
+//  @Bean
+//  static MethodSecurityExpressionHandler expressionHandler(
+//    Registry registry,
+//    FiatService fiatService,
+//    FiatClientConfigurationProperties configProps,
+//    FiatStatus fiatStatus) {
+//    var expressionHandler = new DefaultMethodSecurityExpressionHandler();
+//    expressionHandler.setPermissionEvaluator(
+//      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
+//    return expressionHandler;
+//  }
 }
