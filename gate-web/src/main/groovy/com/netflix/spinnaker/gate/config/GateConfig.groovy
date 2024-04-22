@@ -92,6 +92,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
   private ServiceClientProvider serviceClientProvider
 
+
   @SuppressWarnings('GrDeprecatedAPIUsage')
   @Value('${server.session.timeout-in-seconds:3600}')
   void setSessionTimeout(int maxInactiveIntervalInSeconds) {
@@ -151,6 +152,13 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
   @Autowired
   EurekaLookupService eurekaLookupService
+
+  private  FiatService fiatService;
+
+  @Autowired
+  public GateService(FiatService fiatService) {
+    this.fiatService = fiatService;
+  }
 
   @Autowired
   ServiceConfiguration serviceConfiguration
