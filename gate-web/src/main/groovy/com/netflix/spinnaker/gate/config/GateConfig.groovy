@@ -185,14 +185,13 @@ class GateConfig extends RedisHttpSessionConfiguration {
     return new OrcaServiceSelector(createClientSelector("orca", OrcaService), contextProvider)
   }
 
-  @Bean
-  @Primary
   FiatService fiatService() {
+    log.info("printing this log 1")
     // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
     createClient "fiat", FiatService, null, false
   }
 
-  @Bean
+
   ExtendedFiatService extendedFiatService() {
     // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
     createClient "fiat", ExtendedFiatService,  null, false
