@@ -153,13 +153,6 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Autowired
   EurekaLookupService eurekaLookupService
 
-  private  FiatService fiatService;
-
-  @Autowired
-  public GateService(FiatService fiatService) {
-    this.fiatService = fiatService;
-  }
-
   @Autowired
   ServiceConfiguration serviceConfiguration
 
