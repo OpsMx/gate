@@ -513,15 +513,15 @@ class GateConfig extends RedisHttpSessionConfiguration {
                                                   FiatClientConfigurationProperties fiatClientConfigurationProperties) {
     return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
   }
-//  @Bean
-//  static MethodSecurityExpressionHandler expressionHandler(
-//    Registry registry,
-//    FiatService fiatService,
-//    FiatClientConfigurationProperties configProps,
-//    FiatStatus fiatStatus) {
-//    var expressionHandler = new DefaultMethodSecurityExpressionHandler();
-//    expressionHandler.setPermissionEvaluator(
-//      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
-//    return expressionHandler;
-//  }
+  @Bean
+  static MethodSecurityExpressionHandler expressionHandler(
+    Registry registry,
+    FiatService fiatService,
+    FiatClientConfigurationProperties configProps,
+    FiatStatus fiatStatus) {
+    var expressionHandler = new DefaultMethodSecurityExpressionHandler();
+    expressionHandler.setPermissionEvaluator(
+      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
+    return expressionHandler;
+  }
 }
