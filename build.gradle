@@ -19,7 +19,7 @@ allprojects {
 
 
 
-    if ([korkVersion, fiatVersion].find { it.endsWith('-SNAPSHOT') }) {
+    if ([korkVersion].find { it.endsWith('-SNAPSHOT') }) {
       repositories {
         mavenLocal()
         maven{
