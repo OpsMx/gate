@@ -520,8 +520,8 @@ class GateConfig extends RedisHttpSessionConfiguration {
     FiatClientConfigurationProperties configProps,
     FiatStatus fiatStatus) {
     var expressionHandler = new DefaultMethodSecurityExpressionHandler();
-    expressionHandler.setPermissionEvaluator(
-      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
+//    expressionHandler.setPermissionEvaluator(
+//      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
     return expressionHandler;
   }
 }
