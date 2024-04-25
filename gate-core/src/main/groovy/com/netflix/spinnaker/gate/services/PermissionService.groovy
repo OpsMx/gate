@@ -56,8 +56,8 @@ class PermissionService {
   @Autowired
   FiatService fiatService
 
-  @Autowired
-  ExtendedFiatService extendedFiatService
+//  @Autowired
+//  ExtendedFiatService extendedFiatService
 
   @Autowired
   ServiceAccountFilterConfigProps serviceAccountFilterConfigProps
