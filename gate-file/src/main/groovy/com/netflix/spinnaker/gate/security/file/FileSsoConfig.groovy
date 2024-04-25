@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 @Configuration
 @SpinnakerAuthConfig
 @EnableWebSecurity
-class FileSsoConfig {
+class FileSsoConfig  {
 
   @Autowired
   AuthConfig authConfig
@@ -36,14 +36,17 @@ class FileSsoConfig {
     return new BCryptPasswordEncoder();
   }
 
+  @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
       auth.getDefaultUserDetailsService()
   }
 
+  @Override
   protected void configure(HttpSecurity http) throws Exception {
       authConfig.jwtconfigure(http)
   }
 
+  @Override
   void configure(WebSecurity web) throws Exception {
     authConfig.configure(web)
   }

@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext
 import com.netflix.spectator.api.Registry
 import com.netflix.spinnaker.config.DefaultServiceEndpoint
 import com.netflix.spinnaker.config.OkHttp3ClientConfiguration
@@ -52,10 +53,10 @@ import com.opsmx.spinnaker.gate.services.OpsmxAuditClientService
 import com.opsmx.spinnaker.gate.services.OpsmxAuditService
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import org.apache.camel.spi.annotations.Component
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -76,7 +77,6 @@ import org.springframework.web.client.RestTemplate
 import redis.clients.jedis.JedisPool
 import retrofit.Endpoint
 import retrofit.RequestInterceptor
-
 import jakarta.servlet.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -84,7 +84,7 @@ import java.util.concurrent.Executors
 import static retrofit.Endpoints.newFixedEndpoint
 
 @CompileStatic
-@Configuration(enforceUniqueMethods = false)
+@Configuration
 @Slf4j
 @EnableConfigurationProperties([FiatClientConfigurationProperties, DynamicRoutingConfigProperties])
 @Import([PluginsAutoConfiguration, DeckPluginConfiguration, PluginWebConfiguration])
@@ -92,8 +92,6 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
   private ServiceClientProvider serviceClientProvider
 
-
-  @SuppressWarnings('GrDeprecatedAPIUsage')
   @Value('${server.session.timeout-in-seconds:3600}')
   void setSessionTimeout(int maxInactiveIntervalInSeconds) {
     super.setMaxInactiveIntervalInSeconds(maxInactiveIntervalInSeconds)
@@ -109,7 +107,6 @@ class GateConfig extends RedisHttpSessionConfiguration {
     this.serviceClientProvider = serviceClientProvider
   }
 
-  @SuppressWarnings('GrDeprecatedAPIUsage')
   @Autowired
   GateConfig(@Value('${server.session.timeout-in-seconds:3600}') int maxInactiveIntervalInSeconds) {
     super.setMaxInactiveIntervalInSeconds(maxInactiveIntervalInSeconds)
@@ -185,25 +182,25 @@ class GateConfig extends RedisHttpSessionConfiguration {
     return new OrcaServiceSelector(createClientSelector("orca", OrcaService), contextProvider)
   }
 
-//  @Bean
-//  @Primary
-//  FiatService fiatService() {
-//    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-//    createClient "fiat", FiatService, null, false
-//  }
+  @Bean
+  @Primary
+  FiatService fiatService() {
+    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
+    createClient "fiat", FiatService, null, true
+  }
 
-//  @Bean
-//  ExtendedFiatService extendedFiatService() {
-//    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-//    createClient "fiat", ExtendedFiatService,  null, false
-//  }
+  @Bean
+  ExtendedFiatService extendedFiatService() {
+    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
+    createClient "fiat", ExtendedFiatService,  null, true
+  }
 
-//  @Bean
-//  @ConditionalOnProperty("services.fiat.config.dynamic-endpoints.login")
-//  FiatService fiatLoginService() {
-//    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-//    createClient "fiat", FiatService,  "login", true
-//  }
+  @Bean
+  @ConditionalOnProperty("services.fiat.config.dynamic-endpoints.login")
+  FiatService fiatLoginService() {
+    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
+    createClient "fiat", FiatService,  "login", true
+  }
 
 
   @Bean
@@ -273,6 +270,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Bean
   ClouddriverServiceSelector clouddriverServiceSelector(ClouddriverService defaultClouddriverService,
                                                         DynamicConfigService dynamicConfigService,
+                                                        DynamicRoutingConfigProperties properties,
                                                         RequestContextProvider contextProvider
   ) {
     if (serviceConfiguration.getService("clouddriver").getConfig().containsKey("dynamicEndpoints")) {
@@ -342,12 +340,6 @@ class GateConfig extends RedisHttpSessionConfiguration {
     createClient "mine", MineService
   }
 
-//  @Bean
-//  @ConditionalOnProperty("services.keel.enabled")
-//  KeelService keelService(OkHttpClient okHttpClient) {
-//    createClient "keel", KeelService, okHttpClient
-//  }
-
   @Bean
   @ConditionalOnProperty('services.kayenta.enabled')
   KayentaService kayentaService(OkHttpClientConfigurationProperties props,
@@ -374,19 +366,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
                              Class<T> type,
                              String dynamicName = null,
                              boolean forceEnabled = false) {
-    log.info(" ********Printing dynamicName value : {}", dynamicName )
-    log.info(" ********Printing serviceName value : {}", serviceName )
-    log.info(" ********Printing forceEnabled value : {}", forceEnabled )
     Service service = serviceConfiguration.getService(serviceName)
-    log.info(" Printing service value baseUrl : {}", service.baseUrl )
-    log.info(" Printing service value baseUrls : {}", service.baseUrls )
-    log.info(" Printing service value config : {}", service.config )
-    log.info(" Printing service value enabled : {}", service.enabled )
-    log.info(" Printing service value priority : {}", service.priority )
-    log.info(" Printing service value shards : {}", service.shards )
-    log.info(" Printing service value vipAddress : {}", service.vipAddress )
-    log.info(" Printing service value metaClass : {}", service.metaClass )
-
     if (service == null) {
       throw new IllegalArgumentException("Unknown service ${serviceName} requested of type ${type}")
     }
@@ -408,7 +388,16 @@ class GateConfig extends RedisHttpSessionConfiguration {
       .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
       .registerModule(new JavaTimeModule())
 
-    serviceClientProvider.getService(type, new DefaultServiceEndpoint(serviceName, endpoint.url), objectMapper)
+    //serviceClientProvider.getService(type, new DefaultServiceEndpoint(serviceName, endpoint.url), objectMapper)
+//    new RestAdapter.Builder()
+//      .setRequestInterceptor(spinnakerRequestInterceptor)
+//      .setEndpoint(endpoint)
+//      .setClient(new Ok3Client(client))
+//      .setConverter(new JacksonConverter(objectMapper))
+//      .setLogLevel(RestAdapter.LogLevel.valueOf(retrofitLogLevel))
+//      .setLog(new Slf4jRetrofitLogger(type))
+//      .build()
+//      .create(type)
 
   }
 
@@ -499,29 +488,29 @@ class GateConfig extends RedisHttpSessionConfiguration {
     return frb
   }
 
-//  @Bean
-//  FiatStatus fiatStatus(DynamicConfigService dynamicConfigService,
-//                        Registry registry,
-//                        FiatClientConfigurationProperties fiatClientConfigurationProperties) {
-//    return new FiatStatus(registry, dynamicConfigService, fiatClientConfigurationProperties)
-//  }
+  @Bean
+  FiatStatus fiatStatus(DynamicConfigService dynamicConfigService,
+                        Registry registry,
+                        FiatClientConfigurationProperties fiatClientConfigurationProperties) {
+    return new FiatStatus(registry, dynamicConfigService, fiatClientConfigurationProperties)
+  }
 
-//  @Bean
-//  FiatPermissionEvaluator fiatPermissionEvaluator(FiatStatus fiatStatus,
-//                                                  Registry registry,
-//                                                  FiatService fiatService,
-//                                                  FiatClientConfigurationProperties fiatClientConfigurationProperties) {
-//    return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
-//  }
-//  @Bean
-//  static MethodSecurityExpressionHandler expressionHandler(
-//    Registry registry,
-//    FiatService fiatService,
-//    FiatClientConfigurationProperties configProps,
-//    FiatStatus fiatStatus) {
-//    var expressionHandler = new DefaultMethodSecurityExpressionHandler();
-//    expressionHandler.setPermissionEvaluator(
-//      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
-//    return expressionHandler;
-//  }
+  @Bean
+  FiatPermissionEvaluator fiatPermissionEvaluator(FiatStatus fiatStatus,
+                                                  Registry registry,
+                                                  FiatService fiatService,
+                                                  FiatClientConfigurationProperties fiatClientConfigurationProperties) {
+    return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
+  }
+    @Component
+    static class HystrixFilter implements Filter {
+      @Override
+      void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
+        HystrixRequestContext.initializeContext()
+        chain.doFilter(request, response)
+      }
+      void init(FilterConfig filterConfig) throws ServletException {}
+      void destroy() {}
+    }
 }

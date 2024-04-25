@@ -78,14 +78,14 @@ class OAuth2SsoConfig {
     new SpinnakerUserInfoTokenServices()
   }
 
-  @Bean
-  SecurityFilterChain configure(HttpSecurity http) throws Exception {
+  @Override
+  void configure(HttpSecurity http) throws Exception {
     defaultCookieSerializer.setSameSite(null)
     authConfig.configure(http)
 
     http.exceptionHandling().authenticationEntryPoint(entryPoint)
     http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter)
-    http.addFilterBefore(externalAuthTokenFilter, AbstractPreAuthenticatedProcessingFilter.class) as SecurityFilterChain
+    http.addFilterBefore(externalAuthTokenFilter, AbstractPreAuthenticatedProcessingFilter.class)
   }
 
   void configure(WebSecurity web) throws Exception {

@@ -57,8 +57,7 @@ class AnonymousConfig  {
 
   List<String> anonymousAllowedAccounts = new CopyOnWriteArrayList<>()
 
-  @Bean
-  SecurityFilterChain configure(HttpSecurity http) throws Exception {
+  void configure(HttpSecurity http) {
     updateAnonymousAccounts()
     // Not using the ImmutableUser version in order to update allowedAccounts.
     def principal = new User(email: defaultEmail, allowedAccounts: anonymousAllowedAccounts)
@@ -69,7 +68,7 @@ class AnonymousConfig  {
         .principal(principal)
         .and()
       .csrf()
-      .disable() as SecurityFilterChain
+        .disable()
   }
 
   @Scheduled(fixedDelay = 60000L)
