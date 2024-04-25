@@ -78,8 +78,8 @@ class OAuth2SsoConfig {
     new SpinnakerUserInfoTokenServices()
   }
 
-  @Override
-  void configure(HttpSecurity http) throws Exception {
+  @Bean
+  SecurityFilterChain configure(HttpSecurity http) throws Exception {
     defaultCookieSerializer.setSameSite(null)
     authConfig.configure(http)
 

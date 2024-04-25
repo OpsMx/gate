@@ -17,7 +17,6 @@ package com.netflix.spinnaker.gate.security.basic;
 
 import com.netflix.spinnaker.gate.services.OesAuthorizationService;
 import com.netflix.spinnaker.gate.services.PermissionService;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

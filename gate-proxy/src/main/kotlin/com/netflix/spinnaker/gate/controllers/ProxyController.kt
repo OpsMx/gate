@@ -165,10 +165,10 @@ class ProxyController(
         .withTag("statusCode", statusCode.toString())
     ).increment()
 
-    val responseObj = if (responseBody.startsWith("{")) {
-      objectMapper.readValue(responseBody, Map::class.java)
+    val responseObj: Any = if (responseBody.startsWith("{")) {
+      objectMapper.readValue(responseBody, Map::class.java) as Map<*, *>
     } else if (responseBody.startsWith("[")) {
-      objectMapper.readValue(responseBody, Collection::class.java)
+      objectMapper.readValue(responseBody, Collection::class.java) as Collection<*>
     } else {
       responseBody
     }

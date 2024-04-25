@@ -39,7 +39,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @SpinnakerAuthConfig
 @EnableWebSecurity
 @Slf4j
-public class BasicAuthConfig  {
+public class BasicAuthConfig {
 
   @Autowired private final AuthConfig authConfig;
   @Autowired private final BasicAuthProvider authProvider;
