@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "dashboardservice", url = "${services.dashboard.baseUrl}")
+@FeignClient(name = "dashboardservice", url = " http://oes-dashboard:8094")
 public interface DashboardClient {
 
   @GetMapping(
