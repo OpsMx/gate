@@ -84,7 +84,7 @@ import java.util.concurrent.Executors
 import static retrofit.Endpoints.newFixedEndpoint
 
 @CompileStatic
-@Configuration
+@Configuration(enforceUniqueMethods = false)
 @Slf4j
 @EnableConfigurationProperties([FiatClientConfigurationProperties, DynamicRoutingConfigProperties])
 @Import([PluginsAutoConfiguration, DeckPluginConfiguration, PluginWebConfiguration])
@@ -92,6 +92,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
   private ServiceClientProvider serviceClientProvider
 
+  @SuppressWarnings('GrDeprecatedAPIUsage')
   @Value('${server.session.timeout-in-seconds:3600}')
   void setSessionTimeout(int maxInactiveIntervalInSeconds) {
     super.setMaxInactiveIntervalInSeconds(maxInactiveIntervalInSeconds)
@@ -107,6 +108,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
     this.serviceClientProvider = serviceClientProvider
   }
 
+  @SuppressWarnings('GrDeprecatedAPIUsage')
   @Autowired
   GateConfig(@Value('${server.session.timeout-in-seconds:3600}') int maxInactiveIntervalInSeconds) {
     super.setMaxInactiveIntervalInSeconds(maxInactiveIntervalInSeconds)
@@ -261,16 +263,10 @@ class GateConfig extends RedisHttpSessionConfiguration {
     createClient "auditservice", OpsmxAuditService
   }
 
-  @Bean
-  @ConditionalOnProperty("services.keel.enabled")
-  KeelService keelService() {
-    createClient "keel", KeelService
-  }
 
   @Bean
   ClouddriverServiceSelector clouddriverServiceSelector(ClouddriverService defaultClouddriverService,
                                                         DynamicConfigService dynamicConfigService,
-                                                        DynamicRoutingConfigProperties properties,
                                                         RequestContextProvider contextProvider
   ) {
     if (serviceConfiguration.getService("clouddriver").getConfig().containsKey("dynamicEndpoints")) {
@@ -341,6 +337,12 @@ class GateConfig extends RedisHttpSessionConfiguration {
   }
 
   @Bean
+  @ConditionalOnProperty("services.keel.enabled")
+  KeelService keelService() {
+    createClient "keel", KeelService
+  }
+
+  @Bean
   @ConditionalOnProperty('services.kayenta.enabled')
   KayentaService kayentaService(OkHttpClientConfigurationProperties props,
                                 OkHttp3MetricsInterceptor interceptor,
@@ -388,16 +390,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
       .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
       .registerModule(new JavaTimeModule())
 
-    //serviceClientProvider.getService(type, new DefaultServiceEndpoint(serviceName, endpoint.url), objectMapper)
-//    new RestAdapter.Builder()
-//      .setRequestInterceptor(spinnakerRequestInterceptor)
-//      .setEndpoint(endpoint)
-//      .setClient(new Ok3Client(client))
-//      .setConverter(new JacksonConverter(objectMapper))
-//      .setLogLevel(RestAdapter.LogLevel.valueOf(retrofitLogLevel))
-//      .setLog(new Slf4jRetrofitLogger(type))
-//      .build()
-//      .create(type)
+    serviceClientProvider.getService(type, new DefaultServiceEndpoint(serviceName, endpoint.url), objectMapper)
 
   }
 
@@ -431,7 +424,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
   @Bean
   FilterRegistrationBean resetAuthenticatedRequestFilter() {
-    def frb = new FilterRegistrationBean(new ResetAuthenticatedRequestFilter() )
+    def frb = new FilterRegistrationBean(new ResetAuthenticatedRequestFilter())
     frb.order = Ordered.HIGHEST_PRECEDENCE
     return frb
   }
@@ -446,7 +439,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
   FilterRegistrationBean authenticatedRequestFilter() {
     // no need to force the `AuthenticatedRequestFilter` to create a request id as that is
     // handled by the `RequestTimingFilter`.
-    def frb = new FilterRegistrationBean(new AuthenticatedRequestFilter(false, true, false, false))
+    def frb = new FilterRegistrationBean(new AuthenticatedRequestFilter(true, true, false, false))
     frb.order = Ordered.LOWEST_PRECEDENCE - 1
     return frb
   }
@@ -488,7 +481,9 @@ class GateConfig extends RedisHttpSessionConfiguration {
     return frb
   }
 
+
   @Bean
+  @ConditionalOnProperty(name = "fiat.enabled", havingValue = "true")
   FiatStatus fiatStatus(DynamicConfigService dynamicConfigService,
                         Registry registry,
                         FiatClientConfigurationProperties fiatClientConfigurationProperties) {
@@ -502,15 +497,15 @@ class GateConfig extends RedisHttpSessionConfiguration {
                                                   FiatClientConfigurationProperties fiatClientConfigurationProperties) {
     return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
   }
-    @Component
-    static class HystrixFilter implements Filter {
-      @Override
-      void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-        throws IOException, ServletException {
-        HystrixRequestContext.initializeContext()
-        chain.doFilter(request, response)
-      }
-      void init(FilterConfig filterConfig) throws ServletException {}
-      void destroy() {}
-    }
+  @Bean
+  static MethodSecurityExpressionHandler expressionHandler(
+    Registry registry,
+    FiatService fiatService,
+    FiatClientConfigurationProperties configProps,
+    FiatStatus fiatStatus) {
+    var expressionHandler = new DefaultMethodSecurityExpressionHandler();
+    expressionHandler.setPermissionEvaluator(
+      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
+    return expressionHandler;
+  }
 }

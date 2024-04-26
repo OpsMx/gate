@@ -26,6 +26,7 @@ import com.netflix.spinnaker.gate.services.internal.EurekaService
 import groovy.transform.Immutable
 import okhttp3.OkHttpClient
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 import retrofit.RestAdapter
 import retrofit.RetrofitError
@@ -45,8 +46,12 @@ class EurekaLookupService {
   @Autowired
   ServiceConfiguration serviceConfiguration
 
-  @Autowired
-  OkHttpClient okHttpClient
+  @Bean
+  public OkHttpClient okHttpClient() {
+    return new OkHttpClient.Builder()
+      .connectTimeout(10, TimeUnit.SECONDS) // Adjust timeout duration as needed
+      .build();
+  }
 
   @PostConstruct
   void init() {
