@@ -22,7 +22,6 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoR
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken
 import org.springframework.security.oauth2.common.OAuth2AccessToken
-import org.springframework.security.oauth2.provider.authentication.BearerTokenExtractor
 import org.springframework.stereotype.Component
 
 import jakarta.servlet.Filter
@@ -46,7 +45,6 @@ class ExternalAuthTokenFilter implements Filter {
   @Autowired(required = false)
   UserInfoRestTemplateFactory userInfoRestTemplateFactory
 
-  BearerTokenExtractor extractor = new BearerTokenExtractor()
 
   @Override
   void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
