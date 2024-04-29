@@ -23,12 +23,10 @@ import com.opsmx.spinnaker.gate.service.PlatformCachingService
 import com.opsmx.spinnaker.gate.util.CacheUtil
 import groovy.util.logging.Slf4j
 import io.swagger.v3.oas.annotations.Operation
-import org.apache.commons.io.IOUtils
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import retrofit.client.Response
 import org.apache.commons.io.IOUtils
@@ -59,10 +57,12 @@ class OpsmxPlatformController {
  * limitations under the License.
  */
 
-  @Autowired(required = true)
+  @Autowired
+  @Lazy
   OpsmxPlatformService opsmxPlatformService
 
-  @Autowired(required = true)
+  @Autowired
+  @Lazy
   PlatformCachingServiceBeanFactory platformCachingServiceBeanFactory
 
   @Operation(summary = "Endpoint for platform rest services")
