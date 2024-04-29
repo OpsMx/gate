@@ -39,7 +39,7 @@ import org.springframework.http.ResponseEntity
 @ConditionalOnExpression('${services.auditclient.enabled:false}')
 class OpsmxAuditClientServiceController {
 
-  @Autowired
+  @Autowired(required = false)
   OpsmxAuditClientService opsmxAuditClientService
 
   @Operation(summary = "Endpoint for audit-client rest services")
