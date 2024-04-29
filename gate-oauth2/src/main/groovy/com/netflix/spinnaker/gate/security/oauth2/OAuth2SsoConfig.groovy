@@ -85,7 +85,7 @@ class OAuth2SsoConfig {
 
     http.exceptionHandling().authenticationEntryPoint(entryPoint)
     http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter)
-    http.addFilterBefore(externalAuthTokenFilter, AbstractPreAuthenticatedProcessingFilter.class)
+    http.addFilterBefore(externalAuthTokenFilter, AbstractPreAuthenticatedProcessingFilter.class) as SecurityFilterChain
   }
 
   void configure(WebSecurity web) throws Exception {
