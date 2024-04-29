@@ -16,7 +16,7 @@ import static com.netflix.spinnaker.gate.retrofit.UpstreamBadRequest.classifyErr
 @Service
 class OesPermissionService extends PermissionService{
 
-  @Value('${services.platform.enabled}')
+  @Value('true')
   boolean isOesAuthorizationServiceEnabled
 
   @Autowired
