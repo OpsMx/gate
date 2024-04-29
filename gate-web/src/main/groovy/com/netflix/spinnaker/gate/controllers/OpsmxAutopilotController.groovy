@@ -63,7 +63,7 @@ class OpsmxAutopilotController {
  * limitations under the License.
  */
 
-  @Autowired
+  @Autowired(required = false)
   OpsmxAutopilotService opsmxAutopilotService
 
   @Autowired(required = false)

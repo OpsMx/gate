@@ -53,7 +53,7 @@ class OpsmxVisibilityController {
  * limitations under the License.
  */
 
-  @Autowired
+  @Autowired(required = false)
   OpsmxVisibilityService opsmxVisibilityService
 
   Gson gson = new Gson()
