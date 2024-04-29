@@ -57,12 +57,10 @@ class OpsmxPlatformController {
  * limitations under the License.
  */
 
-  @Autowired
-  @Lazy
+  @Autowired(required = false)
   OpsmxPlatformService opsmxPlatformService
 
   @Autowired
-  @Lazy
   PlatformCachingServiceBeanFactory platformCachingServiceBeanFactory
 
   @Operation(summary = "Endpoint for platform rest services")
