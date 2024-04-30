@@ -34,7 +34,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
-import org.springframework.util.Base64Utils
+
 import spock.lang.Specification
 
 import jakarta.servlet.http.Cookie
