@@ -45,6 +45,7 @@ class ExternalAuthTokenFilter implements Filter {
   @Autowired(required = false)
   UserInfoRestTemplateFactory userInfoRestTemplateFactory
 
+  BearerTokenExtractor extractor = new BearerTokenExtractor()
 
   @Override
   void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
