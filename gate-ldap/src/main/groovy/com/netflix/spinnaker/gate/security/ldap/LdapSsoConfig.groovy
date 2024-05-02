@@ -25,6 +25,7 @@ import com.opsmx.spinnaker.gate.security.ldap.RetryOnExceptionAuthManager
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.ApplicationContext
@@ -130,17 +131,21 @@ class LdapSsoConfig {
   @Component
   static class LdapUserContextMapper implements UserDetailsContextMapper {
 
-    @Autowired
+    @Autowired(required = false)
     PermissionService permissionService
 
     @Autowired
     AllowedAccountsSupport allowedAccountsSupport
 
+    @Value('${services.fiat.enabled:false}')
+    private boolean isFiatEnabled;
+
     @Override
     UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<? extends GrantedAuthority> authorities) {
       def roles = sanitizeRoles(authorities)
-      permissionService.loginWithRoles(username, roles)
-
+      if(isFiatEnabled) {
+        permissionService.loginWithRoles(username, roles)
+      }
       return new User(username: username,
                       email: ctx.getStringAttribute("mail"),
                       roles: roles,
