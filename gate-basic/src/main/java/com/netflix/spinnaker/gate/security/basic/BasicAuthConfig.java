@@ -26,11 +26,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
@@ -61,8 +65,10 @@ public class BasicAuthConfig {
     this.authProvider = authProvider;
   }
 
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  @Bean
+  public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+    AuthenticationManagerBuilder authenticationManagerBuilder =
+        http.getSharedObject(AuthenticationManagerBuilder.class);
     if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
       throw new AuthenticationServiceException(
           "User credentials are not configured properly. Please check username and password are properly configured");
@@ -78,22 +84,36 @@ public class BasicAuthConfig {
 
     authProvider.setName(this.name);
     authProvider.setPassword(this.password);
-
-    auth.authenticationProvider(authProvider);
+    authenticationManagerBuilder.authenticationProvider(authProvider);
+    authenticationManagerBuilder.eraseCredentials(false);
+    return authenticationManagerBuilder.build();
   }
 
   @Bean
-  protected void configure(HttpSecurity http) throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     defaultCookieSerializer.setSameSite(null);
+    http.csrf().disable();
     http.formLogin()
         .and()
         .httpBasic()
         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     authConfig.configure(http);
+    return http.build();
   }
 
   @Bean
-  public void configure(WebSecurity web) throws Exception {
-    authConfig.configure(web);
+  public WebSecurityCustomizer webSecurityCustomizer() {
+    return (web) -> {
+      try {
+        authConfig.configure(web);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    };
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
 }

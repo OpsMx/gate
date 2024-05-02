@@ -20,7 +20,10 @@ import com.netflix.spinnaker.gate.services.PermissionService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,10 +42,14 @@ public class BasicAuthProvider implements AuthenticationProvider {
   private final PermissionService permissionService;
   private final OesAuthorizationService oesAuthorizationService;
 
-  private List<String> roles;
-  private String name;
-  private String password;
+  @Value("${services.platform.enabled:false}")
+  private boolean isPlatformEnabled;
 
+  @Setter private List<String> roles;
+  @Setter private String name;
+  @Setter private String password;
+
+  @Autowired
   public BasicAuthProvider(
       PermissionService permissionService, OesAuthorizationService oesAuthorizationService) {
     this.permissionService = permissionService;
@@ -69,8 +76,13 @@ public class BasicAuthProvider implements AuthenticationProvider {
               .collect(Collectors.toList()));
       // Updating roles in fiat service
       permissionService.loginWithRoles(name, roles);
+      log.info("Platform service enabled value :{}", isPlatformEnabled);
       // Updating roles in platform service
-      oesAuthorizationService.cacheUserGroups(roles, name);
+      if (isPlatformEnabled) {
+        oesAuthorizationService.cacheUserGroups(roles, name);
+      }
+    } else {
+      grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
     }
     UserDetails principal = new User(name, password, grantedAuthorities);
     return new UsernamePasswordAuthenticationToken(principal, password, grantedAuthorities);
@@ -79,17 +91,5 @@ public class BasicAuthProvider implements AuthenticationProvider {
   @Override
   public boolean supports(Class<?> authentication) {
     return authentication == UsernamePasswordAuthenticationToken.class;
-  }
-
-  public void setRoles(List<String> roles) {
-    this.roles = roles;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
   }
 }

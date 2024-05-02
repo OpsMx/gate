@@ -26,7 +26,6 @@ import groovy.util.logging.Slf4j
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
-import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
@@ -41,7 +40,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
@@ -54,7 +52,10 @@ import org.springframework.stereotype.Component
 @Configuration
 @SpinnakerAuthConfig
 @EnableWebSecurity
-class LdapSsoConfig  {
+class LdapSsoConfig {
+
+  @Autowired
+  ApplicationContext ctx
 
   @Autowired
   AuthConfig authConfig
@@ -66,13 +67,7 @@ class LdapSsoConfig  {
   LdapUserContextMapper ldapUserContextMapper
 
   @Autowired
-  SecurityProperties securityProperties
-
-  @Autowired
   DefaultCookieSerializer defaultCookieSerializer
-
-  @Autowired
-  private UserDetailsService userDataService
 
   @Autowired
   LoginProps loginProps
@@ -106,20 +101,21 @@ class LdapSsoConfig  {
     }
   }
 
+
   @Bean
-  protected void configure(HttpSecurity http) throws Exception {
-    if (loginProps.mode == null || loginProps.mode.equalsIgnoreCase("session"))
-    {
-      defaultCookieSerializer.setSameSite(null)
-      http.formLogin()
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    def authenticationManager = ctx.getBean("authenticationManager") as AuthenticationManager
+    defaultCookieSerializer.setSameSite(null)
+    http.formLogin()
+    if (loginProps.mode == null || loginProps.mode.equalsIgnoreCase("session")) {
       authConfig.configure(http)
-      http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter)
-    }
-    else if (loginProps.mode !=null && loginProps.mode.equalsIgnoreCase("token")) {
+      http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter)
+      http.csrf().disable();
+    } else if (loginProps.mode != null && loginProps.mode.equalsIgnoreCase("token")) {
       authConfig.jwtconfigure(http)
     }
-
-    }
+    return http.build() as SecurityFilterChain
+  }
 
   @Bean
   protected AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
