@@ -35,6 +35,7 @@ import com.opsmx.spinnaker.gate.interceptors.FeatureVisibilityRbacInterceptor
 import com.opsmx.spinnaker.gate.interceptors.PipelineIdRbacInterceptor
 import com.opsmx.spinnaker.gate.interceptors.ServiceIdRbacInterceptor
 import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac
+import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
@@ -55,6 +56,9 @@ import retrofit.RetrofitError
 import jakarta.servlet.Filter
 import jakarta.servlet.http.HttpServletResponse
 
+import java.sql.SQLOutput
+
+@Slf4j
 @Configuration
 @ComponentScan
 public class GateWebConfig implements WebMvcConfigurer {
@@ -145,7 +149,7 @@ public class GateWebConfig implements WebMvcConfigurer {
   UpstreamBadRequestExceptionHandler upstreamBadRequestExceptionHandler() {
     return new UpstreamBadRequestExceptionHandler()
   }
-
+  @Slf4j
   @ControllerAdvice
   static class UpstreamBadRequestExceptionHandler {
     @ResponseBody
@@ -184,6 +188,7 @@ public class GateWebConfig implements WebMvcConfigurer {
   }
 
   public void addViewControllers(ViewControllerRegistry registry) {
+    System.out.println("***hitting login Api***")
     registry.addViewController("/login").setViewName("login")
   }
 }

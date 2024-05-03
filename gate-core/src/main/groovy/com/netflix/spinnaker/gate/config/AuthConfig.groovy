@@ -99,6 +99,8 @@ class AuthConfig {
 
   void configure(HttpSecurity http) throws Exception {
     // @formatter:off
+    log.info("********{Hitting AuthConfig Class}********")
+
     if(isAgentAPIUnauthenticatedAccessEnabled && isSpinnakerWebhooksUnauthenticatedAccessEnabled){
       http.authorizeHttpRequests((authz) ->
         authz
@@ -342,6 +344,7 @@ class AuthConfig {
 
 
     if (ldapEnabled) {
+      log.info("********{Hitting /login Url}********")
       http.formLogin().loginPage("/login").permitAll()
     }
 
