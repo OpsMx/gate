@@ -74,8 +74,8 @@ class X509AuthenticationUserDetailsService implements AuthenticationUserDetailsS
   @Autowired
   DynamicConfigService dynamicConfigService
 
-  @Autowired
-  FiatPermissionEvaluator fiatPermissionEvaluator
+//  @Autowired
+//  FiatPermissionEvaluator fiatPermissionEvaluator
 
   @Autowired
   FiatClientConfigurationProperties fiatClientConfigurationProperties

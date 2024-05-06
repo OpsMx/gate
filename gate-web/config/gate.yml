@@ -4,7 +4,7 @@ server:
     enabled: true
 
 fiat:
-  enabled: false
+  enabled: true
 
 services:
   deck:

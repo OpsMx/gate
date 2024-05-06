@@ -63,8 +63,8 @@ class AuthConfig {
 //  @Autowired
 //  FiatStatus fiatStatus
 
-  @Autowired
-  FiatPermissionEvaluator permissionEvaluator
+//  @Autowired
+//  FiatPermissionEvaluator permissionEvaluator
 
   @Autowired
   RequestMatcherProvider requestMatcherProvider

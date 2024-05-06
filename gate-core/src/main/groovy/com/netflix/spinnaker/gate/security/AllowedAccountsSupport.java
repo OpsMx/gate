@@ -3,7 +3,6 @@ package com.netflix.spinnaker.gate.security;
 import com.netflix.spinnaker.fiat.model.Authorization;
 import com.netflix.spinnaker.fiat.model.UserPermission;
 import com.netflix.spinnaker.fiat.model.resources.Account;
-import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator;
 import com.netflix.spinnaker.fiat.shared.FiatStatus;
 import com.netflix.spinnaker.gate.services.CredentialsService;
 import com.netflix.spinnaker.security.AuthenticatedRequest;
@@ -22,25 +21,20 @@ public class AllowedAccountsSupport {
 
   private final FiatStatus fiatStatus;
 
-  private final FiatPermissionEvaluator fiatPermissionEvaluator;
+  //  private final FiatPermissionEvaluator fiatPermissionEvaluator;
 
   private final CredentialsService credentialsService;
 
   @Autowired
-  public AllowedAccountsSupport(
-      FiatStatus fiatStatus,
-      FiatPermissionEvaluator fiatPermissionEvaluator,
-      CredentialsService credentialsService) {
+  public AllowedAccountsSupport(FiatStatus fiatStatus, CredentialsService credentialsService) {
     this.fiatStatus = fiatStatus;
-    this.fiatPermissionEvaluator = fiatPermissionEvaluator;
     this.credentialsService = credentialsService;
   }
 
   public Collection<String> filterAllowedAccounts(String username, Collection<String> roles) {
     if (fiatStatus.isEnabled()) {
       UserPermission.View permission =
-          AuthenticatedRequest.allowAnonymous(
-              () -> fiatPermissionEvaluator.getPermission(username));
+          AuthenticatedRequest.allowAnonymous(() -> new UserPermission.View());
       if (permission == null) {
         return new ArrayList<>();
       }
