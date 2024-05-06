@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -24,9 +23,7 @@ public class SamlSsoEventPublishConfig {
 
   private ApplicationEventPublisher applicationEventPublisher;
 
-  @Autowired
-  @Qualifier("springSecurityFilterChain")
-  private Filter springSecurityFilterChain;
+  @Autowired private Filter springSecurityFilterChain;
 
   @Autowired
   public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
