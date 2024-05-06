@@ -49,7 +49,7 @@ services:
     baseUrl: http://localhost:8087
     enabled: false
   fiat:
-    enabled: true
+    enabled: false
     baseUrl: http://localhost:7003
   flapjack:
     enabled: false
