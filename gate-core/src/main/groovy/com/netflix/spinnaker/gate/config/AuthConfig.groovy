@@ -60,8 +60,8 @@ class AuthConfig {
   @Autowired
   FiatClientConfigurationProperties configProps
 
-  @Autowired
-  FiatStatus fiatStatus
+//  @Autowired
+//  FiatStatus fiatStatus
 
   @Autowired
   FiatPermissionEvaluator permissionEvaluator
@@ -78,7 +78,7 @@ class AuthConfig {
   @Value('${security.debug:false}')
   boolean securityDebug
 
-  @Value('${fiat.session-filter.enabled:true}')
+  @Value('${fiat.session-filter.enabled:false}')
   boolean fiatSessionFilterEnabled
 
 
