@@ -29,7 +29,7 @@ import retrofit.RetrofitError
 class PluginsInstalledController(
   private val clouddriverService: ClouddriverService,
   private val echoService: ObjectProvider<EchoService>,
-  private val fiatService: ExtendedFiatService,
+//  private val fiatService: ExtendedFiatService,
   private val front50Service: Front50Service,
   private val igorService: ObjectProvider<IgorService>,
   private val keelService: ObjectProvider<KeelService>,
@@ -50,7 +50,7 @@ class PluginsInstalledController(
       clouddriver -> mutableMapOf(Pair(service, callService { clouddriverService.installedPlugins }))
       deck -> mutableMapOf(Pair(service, deckPlugins()))
       echo -> if (echoService.ifAvailable != null) mutableMapOf(Pair(service, callService { echoService.ifAvailable!!.installedPlugins })) else emptyMap()
-      fiat -> mutableMapOf(Pair(service, callService { fiatService.installedPlugins }))
+//      fiat -> mutableMapOf(Pair(service, callService { fiatService.installedPlugins }))
       front50 -> mutableMapOf(Pair(service, callService { front50Service.installedPlugins }))
       gate -> mutableMapOf(Pair(service, gatePlugins()))
       igor -> if (igorService.ifAvailable != null) mutableMapOf(Pair(service, callService { igorService.ifAvailable!!.installedPlugins })) else emptyMap()
@@ -68,7 +68,7 @@ class PluginsInstalledController(
           Pair(clouddriver, callService { clouddriverService.installedPlugins }),
           Pair(deck, deckPlugins()),
           echoPair,
-          Pair(fiat, callService { fiatService.installedPlugins }),
+//          Pair(fiat, callService { fiatService.installedPlugins }),
           Pair(front50, callService { front50Service.installedPlugins }),
           Pair(gate, gatePlugins()),
           igorPair,
@@ -132,7 +132,7 @@ class PluginsInstalledController(
     const val clouddriver: String = "clouddriver"
     const val deck: String = "deck"
     const val echo: String = "echo"
-    const val fiat: String = "fiat"
+//    const val fiat: String = "fiat"
     const val front50: String = "front50"
     const val gate: String = "gate"
     const val igor: String = "igor"
