@@ -66,8 +66,8 @@ class PermissionService {
 //  @Qualifier("fiatLoginService")
 //  Optional<FiatService> fiatLoginService
 
-  @Autowired
-  FiatPermissionEvaluator permissionEvaluator
+//  @Autowired
+//  FiatPermissionEvaluator permissionEvaluator
 
 //  @Autowired
 //  FiatStatus fiatStatus
