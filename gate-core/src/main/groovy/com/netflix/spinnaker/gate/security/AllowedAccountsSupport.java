@@ -1,13 +1,7 @@
 package com.netflix.spinnaker.gate.security;
 
-import com.netflix.spinnaker.fiat.model.Authorization;
-import com.netflix.spinnaker.fiat.model.UserPermission;
-import com.netflix.spinnaker.fiat.model.resources.Account;
 import com.netflix.spinnaker.gate.services.CredentialsService;
-import com.netflix.spinnaker.security.AuthenticatedRequest;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,30 +24,36 @@ public class AllowedAccountsSupport {
   }
 
   public Collection<String> filterAllowedAccounts(String username, Collection<String> roles) {
+    //    if (fiatStatus.isEnabled()) {
+    //      UserPermission.View permission =
+    //          AuthenticatedRequest.allowAnonymous(
+    //              () -> fiatPermissionEvaluator.getPermission(username));
+    //      if (permission == null) {
+    //        return new ArrayList<>();
+    //      }
+    //
+    //      if (permission.isLegacyFallback()) {
+    //        // fetch allowed accounts as if fiat were not enabled (ie. check available roles
+    // against
+    //        // clouddriver directly)
+    //        Collection<String> allowedAccounts = credentialsService.getAccountNames(roles, true);
+    //
+    //        log.warn(
+    //            "Unable to fetch fiat permissions, will fallback to legacy account permissions
+    // (user: {}, roles: {}, allowedAccounts: {})",
+    //            username,
+    //            roles,
+    //            allowedAccounts);
+    //
+    //        return allowedAccounts;
+    //      }
+    //
+    //      return permission.getAccounts().stream()
+    //          .filter(v -> v.getAuthorizations().contains(Authorization.WRITE))
+    //          .map(Account.View::getName)
+    //          .collect(Collectors.toSet());
+    //    }
 
-    UserPermission.View permission =
-        AuthenticatedRequest.allowAnonymous(() -> new UserPermission.View());
-    if (permission == null) {
-      return new ArrayList<>();
-    }
-
-    if (permission.isLegacyFallback()) {
-      // fetch allowed accounts as if fiat were not enabled (ie. check available roles against
-      // clouddriver directly)
-      Collection<String> allowedAccounts = credentialsService.getAccountNames(roles, true);
-
-      log.warn(
-          "Unable to fetch fiat permissions, will fallback to legacy account permissions (user: {}, roles: {}, allowedAccounts: {})",
-          username,
-          roles,
-          allowedAccounts);
-
-      return allowedAccounts;
-    }
-
-    return permission.getAccounts().stream()
-        .filter(v -> v.getAuthorizations().contains(Authorization.WRITE))
-        .map(Account.View::getName)
-        .collect(Collectors.toSet());
+    return credentialsService.getAccountNames(roles);
   }
 }
