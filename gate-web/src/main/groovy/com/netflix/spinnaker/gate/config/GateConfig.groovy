@@ -184,25 +184,25 @@ class GateConfig extends RedisHttpSessionConfiguration {
     return new OrcaServiceSelector(createClientSelector("orca", OrcaService), contextProvider)
   }
 
-  @Bean
-  @Primary
-  FiatService fiatService() {
-    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-    createClient "fiat", FiatService, null, true
-  }
+//  @Bean
+//  @Primary
+//  FiatService fiatService() {
+//    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
+//    createClient "fiat", FiatService, null, true
+//  }
 
-  @Bean
-  ExtendedFiatService extendedFiatService() {
-    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-    createClient "fiat", ExtendedFiatService,  null, true
-  }
+//  @Bean
+//  ExtendedFiatService extendedFiatService() {
+//    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
+//    createClient "fiat", ExtendedFiatService,  null, true
+//  }
 
-  @Bean
-  @ConditionalOnProperty("services.fiat.config.dynamic-endpoints.login")
-  FiatService fiatLoginService() {
-    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-    createClient "fiat", FiatService,  "login", true
-  }
+//  @Bean
+//  @ConditionalOnProperty("services.fiat.config.dynamic-endpoints.login")
+//  FiatService fiatLoginService() {
+//    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
+//    createClient "fiat", FiatService,  "login", true
+//  }
 
 
   @Bean
@@ -482,30 +482,30 @@ class GateConfig extends RedisHttpSessionConfiguration {
   }
 
 
-  @Bean
-  @ConditionalOnProperty(name = "fiat.enabled", havingValue = "true")
-  FiatStatus fiatStatus(DynamicConfigService dynamicConfigService,
-                        Registry registry,
-                        FiatClientConfigurationProperties fiatClientConfigurationProperties) {
-    return new FiatStatus(registry, dynamicConfigService, fiatClientConfigurationProperties)
-  }
+//  @Bean
+//  @ConditionalOnProperty(name = "fiat.enabled", havingValue = "true")
+//  FiatStatus fiatStatus(DynamicConfigService dynamicConfigService,
+//                        Registry registry,
+//                        FiatClientConfigurationProperties fiatClientConfigurationProperties) {
+//    return new FiatStatus(registry, dynamicConfigService, fiatClientConfigurationProperties)
+//  }
 
-  @Bean
-  FiatPermissionEvaluator fiatPermissionEvaluator(FiatStatus fiatStatus,
-                                                  Registry registry,
-                                                  FiatService fiatService,
-                                                  FiatClientConfigurationProperties fiatClientConfigurationProperties) {
-    return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
-  }
-  @Bean
-  static MethodSecurityExpressionHandler expressionHandler(
-    Registry registry,
-    FiatService fiatService,
-    FiatClientConfigurationProperties configProps,
-    FiatStatus fiatStatus) {
-    var expressionHandler = new DefaultMethodSecurityExpressionHandler();
-    expressionHandler.setPermissionEvaluator(
-      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
-    return expressionHandler;
-  }
+//  @Bean
+//  FiatPermissionEvaluator fiatPermissionEvaluator(FiatStatus fiatStatus,
+//                                                  Registry registry,
+//                                                  FiatService fiatService,
+//                                                  FiatClientConfigurationProperties fiatClientConfigurationProperties) {
+//    return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
+//  }
+//  @Bean
+//  static MethodSecurityExpressionHandler expressionHandler(
+//    Registry registry,
+//    FiatService fiatService,
+//    FiatClientConfigurationProperties configProps,
+//    FiatStatus fiatStatus) {
+//    var expressionHandler = new DefaultMethodSecurityExpressionHandler();
+//    expressionHandler.setPermissionEvaluator(
+//      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
+//    return expressionHandler;
+//  }
 }
