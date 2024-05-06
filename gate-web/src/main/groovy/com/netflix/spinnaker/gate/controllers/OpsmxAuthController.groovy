@@ -18,7 +18,6 @@ package com.netflix.spinnaker.gate.controllers
 
 import groovy.util.logging.Slf4j
 import io.swagger.v3.oas.annotations.Operation
-import jakarta.servlet.http.HttpServletRequest
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -36,15 +35,20 @@ class OpsmxAuthController {
   @RequestMapping(value = "/redirectauto", method = RequestMethod.GET)
   void redirectAuto(HttpServletResponse response, @RequestParam String to) {
     log.info("to url : {}", to)
-    validAutoRedirect(to) ?
+    validAutoRedirect(to,request.getRequestURL().toString()) ?
       response.sendRedirect(to) :
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Requested redirect address not recognized.")
   }
 
-  boolean validAutoRedirect(String to) {
+  boolean validAutoRedirect(String to,String from) {
     URL toURL
+    URL hostURL
     try {
       toURL = new URL(to)
+      hostURL = new URL(from)
+      if (!toURL.getHost().equals(hostURL.getHost())) {
+        return false
+      }
     } catch (MalformedURLException malEx) {
       log.warn "Malformed redirect URL: $to\n${ExceptionUtils.getStackTrace(malEx)}"
       return false
