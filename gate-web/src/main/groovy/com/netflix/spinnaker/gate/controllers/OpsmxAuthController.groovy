@@ -18,6 +18,7 @@ package com.netflix.spinnaker.gate.controllers
 
 import groovy.util.logging.Slf4j
 import io.swagger.v3.oas.annotations.Operation
+import jakarta.servlet.http.HttpServletRequest
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -33,7 +34,7 @@ class OpsmxAuthController {
 
   @Operation(summary = "Redirect to Deck")
   @RequestMapping(value = "/redirectauto", method = RequestMethod.GET)
-  void redirectAuto(HttpServletResponse response, @RequestParam String to) {
+  void redirectAuto(HttpServletRequest request, HttpServletResponse response, @RequestParam String to) {
     log.info("to url : {}", to)
     validAutoRedirect(to,request.getRequestURL().toString()) ?
       response.sendRedirect(to) :
