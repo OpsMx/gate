@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import retrofit.RetrofitError;
@@ -70,7 +69,7 @@ public class SlackController {
     return slackChannelsCache.get();
   }
 
-  @Scheduled(fixedDelayString = "${slack.channel-refresh-interval-millis:600000}")
+  //  @Scheduled(fixedDelayString = "${slack.channel-refresh-interval-millis:600000}")
   void refreshSlack() {
     try {
       Long startTime = System.nanoTime();

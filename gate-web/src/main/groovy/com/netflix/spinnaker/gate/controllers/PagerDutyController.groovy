@@ -73,7 +73,7 @@ class PagerDutyController {
   }
 
 
-  @Scheduled(fixedDelay = 300000L)
+//  @Scheduled(fixedDelay = 300000L)
   void refreshPagerDuty() {
     try {
       log.info("Refreshing PagerDuty service list")

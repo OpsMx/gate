@@ -71,7 +71,7 @@ class AnonymousConfig  {
         .disable()
   }
 
-  @Scheduled(fixedDelay = 60000L)
+//  @Scheduled(fixedDelay = 60000L)
   void updateAnonymousAccounts() {
     if (fiatStatus.isEnabled()) {
       return

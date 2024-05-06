@@ -88,7 +88,7 @@ class DownstreamServicesHealthIndicator extends AbstractHealthIndicator {
     failuresByService.get().isEmpty() ? builder.up() : builder.down().withDetail("errors", failuresByService.get())
   }
 
-  @Scheduled(fixedDelay = 30000L)
+//  @Scheduled(fixedDelay = 30000L)
   void checkDownstreamServiceHealth() {
     if (skipDownstreamServiceChecks.get()) {
       return

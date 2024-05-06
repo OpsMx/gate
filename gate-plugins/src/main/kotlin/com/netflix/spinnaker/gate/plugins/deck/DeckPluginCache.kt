@@ -66,10 +66,10 @@ class DeckPluginCache(
    *
    * The default refresh interval is every minute.
    */
-  @Scheduled(
-    fixedDelayString = "\${spinnaker.extensibility.deck-proxy.cache-refresh-interval-ms:60000}",
-    initialDelay = 0
-  )
+//  @Scheduled(
+//    fixedDelayString = "\${spinnaker.extensibility.deck-proxy.cache-refresh-interval-ms:60000}",
+//    initialDelay = 0
+//  )
   internal fun refresh() {
     registry.timer(refreshDurationId).record {
       log.info("Refreshing plugin cache")
