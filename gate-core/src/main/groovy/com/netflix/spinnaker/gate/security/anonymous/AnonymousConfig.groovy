@@ -52,8 +52,8 @@ class AnonymousConfig  {
   @Autowired
   CredentialsService credentialsService
 
-  @Autowired
-  FiatStatus fiatStatus
+//  @Autowired
+//  FiatStatus fiatStatus
 
   List<String> anonymousAllowedAccounts = new CopyOnWriteArrayList<>()
 

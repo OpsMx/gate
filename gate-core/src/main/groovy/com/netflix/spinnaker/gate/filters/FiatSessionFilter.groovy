@@ -21,6 +21,7 @@ import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator
 import com.netflix.spinnaker.fiat.shared.FiatStatus
 import com.netflix.spinnaker.security.AuthenticatedRequest
 import groovy.util.logging.Slf4j
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.context.SecurityContextHolder
 
 import jakarta.servlet.Filter
@@ -38,16 +39,14 @@ import static net.logstash.logback.argument.StructuredArguments.value
 class FiatSessionFilter implements Filter {
 
   boolean enabled
-
+  @Value('${services.fiat.enabled:false}')
   FiatStatus fiatStatus
   private List<String> roles;
   FiatPermissionEvaluator permissionEvaluator
 
   FiatSessionFilter(boolean enabled,
-                    FiatStatus fiatStatus,
                     FiatPermissionEvaluator permissionEvaluator) {
     this.enabled = enabled
-    this.fiatStatus = fiatStatus
     this.permissionEvaluator = permissionEvaluator
   }
 
