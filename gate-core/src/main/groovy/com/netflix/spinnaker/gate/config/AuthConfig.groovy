@@ -57,8 +57,8 @@ class AuthConfig {
   @Autowired
   SecurityProperties securityProperties
 
-  @Autowired
-  FiatClientConfigurationProperties configProps
+//  @Autowired
+//  FiatClientConfigurationProperties configProps
 
 //  @Autowired
 //  FiatStatus fiatStatus
