@@ -133,6 +133,10 @@ public class RequestSheddingFilter extends HttpFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws IOException, ServletException {
     log.info(" 1 doFilter method ******");
+    log.info(
+        " +++Printing : {} , {} ",
+        configService.isEnabled(ENABLED_KEY, false),
+        isDroppable(request));
     if (configService.isEnabled(ENABLED_KEY, false) && isDroppable(request)) {
       log.info(" 2 doFilter method____ ");
       if (shouldDropRequestWithChance()) {
