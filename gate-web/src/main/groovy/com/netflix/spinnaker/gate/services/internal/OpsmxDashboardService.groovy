@@ -16,9 +16,8 @@
 
 package com.netflix.spinnaker.gate.services.internal
 
-import org.springframework.stereotype.Service
 import retrofit.http.*
-@Service
+
 interface OpsmxDashboardService {
 
   @GET("/dashboardservice/{version}/{type}")

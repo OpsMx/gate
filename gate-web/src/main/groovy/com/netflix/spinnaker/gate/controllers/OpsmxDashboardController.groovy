@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.web.bind.annotation.*
 
 import jakarta.servlet.http.HttpServletRequest
@@ -34,6 +35,7 @@ import jakarta.servlet.http.HttpServletRequest
 @RestController
 @Slf4j
 @ConditionalOnExpression('${services.dashboard.enabled:false}')
+@ComponentScan('com.netflix.spinnaker.gate.services.internal')
 class OpsmxDashboardController {
 /*
  * Copyright 2020 Netflix, Inc.
