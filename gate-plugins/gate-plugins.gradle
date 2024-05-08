@@ -24,14 +24,6 @@ dependencies {
   implementation "dev.minutest:minutest:1.13.0"
   implementation "io.mockk:mockk:1.10.5"
   implementation "com.google.guava:guava"
-  //OES-GATE changes start
-  //implementation "com.netflix.spinnaker.fiat:fiat-core:$fiatVersion"
-  //implementation "com.netflix.spinnaker.fiat:fiat-api:$fiatVersion"
-
-  //implementation "com.netflix.spinnaker.kork:kork-plugins"
-  //implementation "com.netflix.spinnaker.kork:kork-swagger"
-  //implementation "com.netflix.spinnaker.kork:kork-web"
-  //OES-GATE changes end
 
   //Spinnaker changes start
   implementation "io.spinnaker.fiat:fiat-core:$fiatVersion"

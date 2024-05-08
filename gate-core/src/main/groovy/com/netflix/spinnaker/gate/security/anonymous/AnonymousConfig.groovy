@@ -52,9 +52,6 @@ class AnonymousConfig  {
   @Autowired
   CredentialsService credentialsService
 
-//  @Autowired
-//  FiatStatus fiatStatus
-
   List<String> anonymousAllowedAccounts = new CopyOnWriteArrayList<>()
 
   void configure(HttpSecurity http) {
@@ -71,7 +68,6 @@ class AnonymousConfig  {
         .disable()
   }
 
-//  @Scheduled(fixedDelay = 60000L)
   void updateAnonymousAccounts() {
     if (fiatStatus.isEnabled()) {
       return

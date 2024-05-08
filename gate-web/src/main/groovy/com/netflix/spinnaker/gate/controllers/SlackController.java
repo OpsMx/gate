@@ -69,7 +69,6 @@ public class SlackController {
     return slackChannelsCache.get();
   }
 
-  //  @Scheduled(fixedDelayString = "${slack.channel-refresh-interval-millis:600000}")
   void refreshSlack() {
     try {
       Long startTime = System.nanoTime();

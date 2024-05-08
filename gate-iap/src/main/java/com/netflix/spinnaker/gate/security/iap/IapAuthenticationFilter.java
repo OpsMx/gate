@@ -223,7 +223,6 @@ public class IapAuthenticationFilter extends OncePerRequestFilter {
    * Clears the public key cache every 5 hours. This is cleared periodically to capture potential
    * IAP public key changes.
    */
-  //  @Scheduled(fixedDelay = 18000000L)
   void clearKeyCache() {
     log.debug("Clearing IAP public key cache.");
     keyCache.clear();

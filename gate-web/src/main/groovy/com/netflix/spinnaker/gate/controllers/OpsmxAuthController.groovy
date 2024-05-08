@@ -55,14 +55,6 @@ class OpsmxAuthController {
       log.warn "Malformed redirect URL: $to\n${ExceptionUtils.getStackTrace(malEx)}"
       return false
     }
-
-//    log.info([
-//      "validateDeckRedirect(${to})",
-//      "toUrl(host: ${toURL.host}, port: ${toURL.port})",
-//      "deckBaseUrl(host: ${deckBaseUrl.host}, port: ${deckBaseUrl.port})",
-//      "redirectHostPattern(${redirectHostPattern?.pattern()})"
-//    ].join(" - ")
-//    )
     return true
   }
 }

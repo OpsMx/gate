@@ -56,7 +56,6 @@ class DefaultProviderLookupService implements ProviderLookupService, AccountLook
     this.clouddriverService = clouddriverService
   }
 
-//  @Scheduled(fixedDelay = 30000L)
   void refreshCache() {
     try {
       if (gateInstallationMode.equals(GateInstallationModes.common)) {

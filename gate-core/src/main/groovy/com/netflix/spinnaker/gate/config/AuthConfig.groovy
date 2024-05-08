@@ -57,15 +57,6 @@ class AuthConfig {
   @Autowired
   SecurityProperties securityProperties
 
-//  @Autowired
-//  FiatClientConfigurationProperties configProps
-
-//  @Autowired
-//  FiatStatus fiatStatus
-
-//  @Autowired
-//  FiatPermissionEvaluator permissionEvaluator
-
   @Autowired
   RequestMatcherProvider requestMatcherProvider
 
@@ -99,7 +90,6 @@ class AuthConfig {
 
   void configure(HttpSecurity http) throws Exception {
     // @formatter:off
-    log.info("********{Hitting AuthConfig Class}********")
 
     if(isAgentAPIUnauthenticatedAccessEnabled && isSpinnakerWebhooksUnauthenticatedAccessEnabled){
       http.authorizeHttpRequests((authz) ->

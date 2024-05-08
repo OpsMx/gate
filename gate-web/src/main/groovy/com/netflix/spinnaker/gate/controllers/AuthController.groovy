@@ -74,10 +74,7 @@ class AuthController {
     if (!user) {
       return user
     }
-//    def fiatRoles = permissionService.getRoles(user.username)?.collect{ it.name }
-//    if (fiatRoles) {
-//      user.roles = fiatRoles
-//    }
+
     return user
   }
 

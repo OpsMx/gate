@@ -35,7 +35,6 @@ public class ResetAuthenticatedRequestFilter extends HttpFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws IOException, ServletException {
     try {
-      System.out.println(" 1111111 doFilter method 222222222" + request + ":" + response);
       chain.doFilter(request, response);
     } finally {
       AuthenticatedRequest.clear();

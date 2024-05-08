@@ -41,8 +41,7 @@ class OpsmxSessionController {
   @Operation(summary = "get session timeout")
   @GetMapping(value = "/getSessionTimeout")
   Integer getSessionTimeout() {
-    log.info("******** getSession ********")
-    log.info("sessionTimeout : {}" , sessionTimeout)
+    log.debug("sessionTimeout : {}" , sessionTimeout)
     return sessionTimeout
   }
 

@@ -188,7 +188,6 @@ public class GateWebConfig implements WebMvcConfigurer {
   }
 
   public void addViewControllers(ViewControllerRegistry registry) {
-    System.out.println("***hitting login Api***")
     registry.addViewController("/login").setViewName("login")
   }
 }

@@ -132,15 +132,9 @@ public class RequestSheddingFilter extends HttpFilter {
   protected void doFilter(
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws IOException, ServletException {
-    log.info(" 1 doFilter method ******");
-    log.info(
-        " +++Printing : {} , {} ",
-        configService.isEnabled(ENABLED_KEY, false),
-        isDroppable(request));
+
     if (configService.isEnabled(ENABLED_KEY, false) && isDroppable(request)) {
-      log.info(" 2 doFilter method____ ");
       if (shouldDropRequestWithChance()) {
-        log.info(" 3 doFilter method ----");
         log.warn("Dropping low priority request: {}", request.getRequestURI());
         registry.counter(requestsId.withTag("action", "dropped")).increment();
 
@@ -178,9 +172,7 @@ public class RequestSheddingFilter extends HttpFilter {
       response.sendRedirect("/oes/error");
       return;
     }
-    log.info(" 1111111 doFilter method 222222222 {} : {}", request, response);
     chain.doFilter(request, response);
-    log.info(" 3333333 doFilter method 44444444");
   }
 
   private boolean isDroppable(HttpServletRequest request) {

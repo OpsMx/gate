@@ -63,7 +63,6 @@ class ApplicationService {
 
   private AtomicReference<List<Map>> allApplicationsCache = new AtomicReference<>([])
 
-//  @Scheduled(fixedDelayString = '${services.front50.applicationRefreshIntervalMs:5000}')
   void refreshApplicationsCache() {
     try {
       if (gateInstallationMode.equals(GateInstallationModes.common)) {
