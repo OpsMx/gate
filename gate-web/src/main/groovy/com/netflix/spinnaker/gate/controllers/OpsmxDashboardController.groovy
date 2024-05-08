@@ -35,7 +35,6 @@ import jakarta.servlet.http.HttpServletRequest
 @RestController
 @Slf4j
 @ConditionalOnExpression('${services.dashboard.enabled:false}')
-@ComponentScan('com.netflix.spinnaker.gate.services.internal')
 class OpsmxDashboardController {
 /*
  * Copyright 2020 Netflix, Inc.
@@ -53,7 +52,7 @@ class OpsmxDashboardController {
  * limitations under the License.
  */
 
-  @Autowired
+  @Autowired(required = true)
   OpsmxDashboardService opsmxDashboardService
 
   @Autowired
