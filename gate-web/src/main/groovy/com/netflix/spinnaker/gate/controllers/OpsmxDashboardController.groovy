@@ -52,7 +52,6 @@ class OpsmxDashboardController {
  * limitations under the License.
  */
 
-  @Autowired(required = false)
   OpsmxDashboardService opsmxDashboardService
 
   @Autowired
