@@ -240,7 +240,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty("true")
+  @ConditionalOnProperty("services.dashboard.enabled")
   OpsmxDashboardService opsmxDashboardService() {
     createClient "dashboard", OpsmxDashboardService
   }
