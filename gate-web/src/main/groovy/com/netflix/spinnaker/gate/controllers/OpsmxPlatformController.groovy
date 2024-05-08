@@ -57,7 +57,7 @@ class OpsmxPlatformController {
  * limitations under the License.
  */
 
-  @Autowired(required = false)
+  @Autowired
   OpsmxPlatformService opsmxPlatformService
 
   @Autowired

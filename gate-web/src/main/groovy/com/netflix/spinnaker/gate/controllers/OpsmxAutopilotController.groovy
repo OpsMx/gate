@@ -63,10 +63,10 @@ class OpsmxAutopilotController {
  * limitations under the License.
  */
 
-  @Autowired(required = false)
+  @Autowired
   OpsmxAutopilotService opsmxAutopilotService
 
-  @Autowired(required = false)
+  @Autowired
   ApplicationFeatureRbac applicationFeatureRbac
 
   Gson gson = new Gson()

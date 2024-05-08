@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController
 @ConditionalOnExpression('${services.auditservice.enabled:false}')
 class OpsmxAuditServiceController {
 
-  @Autowired(required = false)
+  @Autowired
   OpsmxAuditService opsmxAuditService
 
   @Operation(summary = "Endpoint for audit rest services")

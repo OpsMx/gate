@@ -52,7 +52,7 @@ import retrofit.client.Response
 @ConditionalOnExpression('${services.opsmx.enabled:false}')
 class OpsmxOesController {
 
-  @Autowired(required = false)
+  @Autowired
   OpsmxOesService opsmxOesService
 
   @Autowired

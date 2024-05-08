@@ -234,7 +234,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty("true")
+  @ConditionalOnProperty("services.platform.enabled")
   OpsmxPlatformService opsmxPlatformService() {
     createClient "platform", OpsmxPlatformService
   }
@@ -246,19 +246,19 @@ class GateConfig extends RedisHttpSessionConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty("true")
+  @ConditionalOnProperty("services.visibility.enabled")
   OpsmxVisibilityService opsmxVisibilityService() {
     createClient "visibility", OpsmxVisibilityService
   }
 
   @Bean
-  @ConditionalOnProperty("true")
+  @ConditionalOnProperty("services.auditclient.enabled")
   OpsmxAuditClientService opsmxAuditClientService() {
     createClient "auditclient", OpsmxAuditClientService
   }
 
   @Bean
-  @ConditionalOnProperty("true")
+  @ConditionalOnProperty("services.auditservice.enabled")
   OpsmxAuditService opsmxAuditService() {
     createClient "auditservice", OpsmxAuditService
   }
