@@ -78,7 +78,7 @@ class AuthController {
 //    if (fiatRoles) {
 //      user.roles = fiatRoles
 //    }
-//    return user
+    return user
   }
 
   @Operation(summary = "Get service accounts")
