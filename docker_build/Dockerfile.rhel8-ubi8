@@ -30,6 +30,7 @@ ENV JAVA_HOME=/usr/lib/jvm/jre-11-openjdk
 COPY /docker_build/run.sh /usr/local/bin/run.sh
 RUN  chmod +x /usr/local/bin/run.sh
 COPY /docker_build/gate.yml /opt/spinnaker/config/
+COPY /config/spinnaker.yml /opt/spinnaker/config/
 COPY /docker_build/startup.sh /opsmx/workdir/
 RUN  chmod +x /opsmx/workdir/startup.sh
 
