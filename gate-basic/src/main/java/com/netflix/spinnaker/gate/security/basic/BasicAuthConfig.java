@@ -98,7 +98,6 @@ public class BasicAuthConfig {
         .httpBasic()
         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     authConfig.configure(http);
-    log.info(" added logs in  /login URL Method : {}", http.build());
     return http.build();
   }
 

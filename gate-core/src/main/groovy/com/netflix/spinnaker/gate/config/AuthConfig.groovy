@@ -16,9 +16,7 @@
 
 package com.netflix.spinnaker.gate.config
 
-import com.netflix.spinnaker.fiat.shared.FiatClientConfigurationProperties
-import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator
-import com.netflix.spinnaker.fiat.shared.FiatStatus
+
 import com.netflix.spinnaker.gate.filters.FiatSessionFilter
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.gate.services.ServiceAccountFilterConfigProps
@@ -334,7 +332,6 @@ class AuthConfig {
 
 
     if (ldapEnabled) {
-      log.info("********{Hitting /login Url}********")
       http.formLogin().loginPage("/login").permitAll()
     }
 
