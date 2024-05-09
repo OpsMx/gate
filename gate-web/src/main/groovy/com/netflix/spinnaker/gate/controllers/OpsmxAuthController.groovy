@@ -49,12 +49,14 @@ class OpsmxAuthController {
       toURL = new URL(to)
       hostURL = new URL(from)
       if (!toURL.getHost().equals(hostURL.getHost())) {
+        log.info("Returning False")
         return false
       }
     } catch (MalformedURLException malEx) {
       log.warn "Malformed redirect URL: $to\n${ExceptionUtils.getStackTrace(malEx)}"
       return false
     }
+    log.info("Returning True")
     return true
   }
 }
