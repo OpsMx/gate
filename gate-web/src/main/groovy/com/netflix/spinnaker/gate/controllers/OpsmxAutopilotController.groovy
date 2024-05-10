@@ -490,6 +490,16 @@ class OpsmxAutopilotController {
     return opsmxAutopilotService.deleteAutoResponse6(type, source, source1, source2, source3, source4)
   }
 
+
+  @Operation(summary = "Endpoint for autopilot rest services")
+  @RequestMapping(value = "/api/{version}/global/template", method = RequestMethod.DELETE)
+  Object deleteAutoResponse7(@PathVariable("version") String version,
+                             @RequestParam(value = "templateType") String templateType,
+                             @RequestParam(value = "templateName") String templateName) {
+
+    return opsmxAutopilotService.deleteAutoResponse7(version, templateType, templateName)
+  }
+
   @Operation(summary = "Endpoint for autopilot rest services")
   @RequestMapping(value = "/{type}", method = RequestMethod.POST)
   Object postAutoResponse(@PathVariable("type") String type,

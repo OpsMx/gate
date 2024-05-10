@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "Autopilot", url = "http://oes-autopilot:8090")
+@FeignClient(name = "Autopilot", url = "${services.autopilot.baseUrl}")
 public interface TokenValidationService {
 
   @GetMapping(

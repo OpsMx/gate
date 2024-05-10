@@ -340,7 +340,6 @@ class GateConfig extends RedisHttpSessionConfiguration {
     }
 
     Endpoint endpoint = serviceConfiguration.getServiceEndpoint(serviceName, dynamicName)
-     log.info(" ******Printing Endpoint value : {}", endpoint )
 
     buildService(serviceName, type, endpoint)
   }

@@ -41,7 +41,7 @@ class FiatSessionFilter implements Filter {
   boolean enabled
   @Value('${services.fiat.enabled:false}')
   FiatStatus fiatStatus
-  private List<String> roles;
+
   FiatPermissionEvaluator permissionEvaluator
 
   FiatSessionFilter(boolean enabled,

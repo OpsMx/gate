@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 
 
-@FeignClient(name = "OES", url = 'http://oes-platform:8095')
+@FeignClient(name = "OES", url = '${services.platform.baseUrl}')
 interface OesAuthorizationService {
 
   @PutMapping(value = "/platformservice/v2/usergroups/importAndCache", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -29,7 +29,7 @@ interface OesAuthorizationService {
   ResponseEntity<Map<String, String>> isAuthorizedUser(@PathVariable("username") String username, @RequestParam("permission") String permission, @RequestParam("serviceId") Integer serviceId,
                                                        @RequestParam("pipelineId") Integer pipelineId, @RequestParam("gateId") Integer gateId, @RequestParam("approvalGateId") Integer approvalGateId,
                                                        @RequestParam("approvalGateInstanceId") Integer approvalGateInstanceId, @RequestParam("approvalGatePolicyId") Integer approvalGatePolicyId,
-                                                       @RequestParam("applicationName") String applicationName,@RequestParam("sourceName") String sourceName ,@RequestParam("sourceType") String sourceType ,@RequestHeader(value = "x-spinnaker-user") String userName)
+                                                       @RequestParam("applicationName") String applicationName, @RequestHeader(value = "x-spinnaker-user") String userName)
 
   @GetMapping("platformservice/v1/users/{username}/usergroups")
   ResponseEntity<List<String>> getUserGroupsByUsername(@PathVariable("username") String username, @RequestHeader(value = "x-spinnaker-user") String userName);
