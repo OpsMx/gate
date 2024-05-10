@@ -17,7 +17,6 @@
 package com.opsmx.spinnaker.gate.security.saml;
 
 import com.netflix.spectator.api.Registry;
-import com.netflix.spinnaker.fiat.shared.FiatClientConfigurationProperties;
 import com.netflix.spinnaker.gate.config.AuthConfig;
 import com.netflix.spinnaker.gate.security.AllowedAccountsSupport;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
@@ -78,8 +77,6 @@ public class SamlSecurityConfiguration {
   private RetrySupport retrySupport = new RetrySupport();
 
   @Autowired private AllowedAccountsSupport allowedAccountsSupport;
-
-  @Autowired private FiatClientConfigurationProperties fiatClientConfigurationProperties;
 
   @Autowired private Saml2RelyingPartyProperties relyingPartyProperties;
 
@@ -298,19 +295,13 @@ public class SamlSecurityConfiguration {
       id = id.withTag("success", true).withTag("fallback", "none");
     } catch (Exception e) {
       log.debug(
-          "Unsuccessful SAML authentication (user: {}, roleCount: {}, roles: {}, legacyFallback: {})",
+          "Unsuccessful SAML authentication (user: {}, roleCount: {}, roles: {})",
           username,
           roles.size(),
           roles,
-          fiatClientConfigurationProperties.isLegacyFallback(),
           e);
-      id =
-          id.withTag("success", false)
-              .withTag("fallback", fiatClientConfigurationProperties.isLegacyFallback());
+      id = id.withTag("success", false).withTag("fallback", true);
 
-      if (!fiatClientConfigurationProperties.isLegacyFallback()) {
-        throw e;
-      }
     } finally {
       registry.counter(id).increment();
     }
