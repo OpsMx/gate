@@ -7,6 +7,13 @@ plugins {
 
 allprojects {
   apply plugin: 'io.spinnaker.project'
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
+  tasks.withType( Copy).all {
+    duplicatesStrategy 'exclude'
+  }
 
   group = "io.spinnaker.gate"
 
