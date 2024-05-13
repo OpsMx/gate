@@ -267,7 +267,7 @@ public class SamlSecurityConfiguration {
       log.debug("email extracted from responseToken : {}", email);
       log.debug("roles extracted from responseToken : {}", roles);
 
-      //      loginWithRoles(username, roles);
+      loginWithRoles(username, roles);
 
       return new Saml2UserDetails(authentication, user);
     };

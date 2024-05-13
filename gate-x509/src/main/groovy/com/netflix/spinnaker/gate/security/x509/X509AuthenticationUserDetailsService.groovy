@@ -20,10 +20,6 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 
 import com.netflix.spectator.api.Registry
-import com.netflix.spinnaker.fiat.model.UserPermission
-import com.netflix.spinnaker.fiat.shared.FiatClientConfigurationProperties
-import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator
-import com.netflix.spinnaker.fiat.shared.FiatStatus
 import com.netflix.spinnaker.gate.security.AllowedAccountsSupport
 import com.netflix.spinnaker.gate.services.PermissionService
 import com.netflix.spinnaker.kork.core.RetrySupport
