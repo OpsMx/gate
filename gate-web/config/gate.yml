@@ -3,6 +3,8 @@ server:
   compression:
     enabled: true
 
+fiat:
+  enabled: true
 
 services:
   deck:
