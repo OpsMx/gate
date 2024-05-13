@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "auditservice", url = "${services.auditservice.baseUrl}")
+@FeignClient(name = "auditservice", url = "http://oes-audit-service:8097")
 public interface AuditService {
 
   @PostMapping(

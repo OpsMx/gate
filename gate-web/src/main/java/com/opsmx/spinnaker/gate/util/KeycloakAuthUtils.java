@@ -18,13 +18,13 @@ package com.opsmx.spinnaker.gate.util;
 
 import com.netflix.spinnaker.gate.exceptions.OesRequestException;
 import com.opsmx.spinnaker.gate.model.AuthProviderModel;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
