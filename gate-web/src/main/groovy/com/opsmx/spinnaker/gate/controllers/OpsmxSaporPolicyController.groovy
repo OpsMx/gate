@@ -38,7 +38,7 @@ class OpsmxSaporPolicyController {
   @Autowired
   OpsmxOesService opsmxOesService
 
-  @Autowired
+  @Autowired(required = false)
   ApplicationFeatureRbac applicationFeatureRbac
 
   @Operation(summary = "Endpoint for sapor runtime policy evaluation rest services")
