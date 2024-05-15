@@ -18,24 +18,18 @@ package com.netflix.spinnaker.gate.controllers
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.netflix.spinnaker.gate.config.ServiceConfiguration
-import com.netflix.spinnaker.gate.model.ApprovalGateTriggerResponseModel
 import com.netflix.spinnaker.gate.model.RegisterCanaryResponseModel
 import com.netflix.spinnaker.gate.services.internal.OpsmxAutopilotService
-import com.netflix.spinnaker.gate.services.internal.OpsmxOesService
-import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.opsmx.spinnaker.gate.rbac.ApplicationFeatureRbac
 import groovy.util.logging.Slf4j
 import io.swagger.v3.oas.annotations.Operation
 import org.apache.commons.io.IOUtils
-import org.bouncycastle.cert.ocsp.Req
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
 import retrofit.client.Header
 import retrofit.client.Response
 
@@ -66,7 +60,7 @@ class OpsmxAutopilotController {
   @Autowired
   OpsmxAutopilotService opsmxAutopilotService
 
-  @Autowired
+  @Autowired(required = false)
   ApplicationFeatureRbac applicationFeatureRbac
 
   Gson gson = new Gson()
