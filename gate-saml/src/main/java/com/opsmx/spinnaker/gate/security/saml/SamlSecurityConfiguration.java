@@ -31,6 +31,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.security.saml2.Saml2RelyingPartyProperties;
@@ -114,7 +115,8 @@ public class SamlSecurityConfiguration {
 
   @Bean
   public ProviderManager samlAuthenticationManager(
-      OpenSaml4AuthenticationProvider openSaml4AuthenticationProvider) {
+      @Autowired @Qualifier("openSaml4AuthenticationProvider")
+          OpenSaml4AuthenticationProvider openSaml4AuthenticationProvider) {
     log.info("authenticationProvider: " + openSaml4AuthenticationProvider);
     return new ProviderManager(openSaml4AuthenticationProvider);
   }
@@ -122,7 +124,8 @@ public class SamlSecurityConfiguration {
   @Bean
   public Saml2WebSsoAuthenticationFilter saml2WebSsoAuthenticationFilter(
       RelyingPartyRegistrationRepository relyingPartyRegistrationRepository,
-      AuthenticationManager samlAuthenticationManager) {
+      @Autowired @Qualifier("samlAuthenticationManager")
+          AuthenticationManager samlAuthenticationManager) {
     log.info(
         "ACS endpoint configured : {}",
         relyingPartyProperties.getRegistration().get(registrationId).getAcs().getLocation());
@@ -170,7 +173,7 @@ public class SamlSecurityConfiguration {
       HttpSecurity http,
       RememberMeServices rememberMeServices,
       Saml2WebSsoAuthenticationFilter webSsoAuthenticationFilter,
-      ProviderManager samlAuthenticationManager)
+      @Autowired @Qualifier("samlAuthenticationManager") ProviderManager samlAuthenticationManager)
       throws Exception {
 
     log.info("Configuring SAML Security");
