@@ -106,22 +106,23 @@ public class SamlSecurityConfiguration {
   }
 
   @Bean
-  public OpenSaml4AuthenticationProvider authenticationProvider() {
+  public OpenSaml4AuthenticationProvider openSaml4AuthenticationProvider() {
     var authProvider = new OpenSaml4AuthenticationProvider();
     authProvider.setResponseAuthenticationConverter(extractUserDetails());
     return authProvider;
   }
 
   @Bean
-  public ProviderManager authenticationManager(
-      OpenSaml4AuthenticationProvider authenticationProvider) {
-    return new ProviderManager(authenticationProvider);
+  public ProviderManager samlAuthenticationManager(
+      OpenSaml4AuthenticationProvider openSaml4AuthenticationProvider) {
+    log.info("authenticationProvider: " + openSaml4AuthenticationProvider);
+    return new ProviderManager(openSaml4AuthenticationProvider);
   }
 
   @Bean
   public Saml2WebSsoAuthenticationFilter saml2WebSsoAuthenticationFilter(
       RelyingPartyRegistrationRepository relyingPartyRegistrationRepository,
-      AuthenticationManager authenticationManager) {
+      AuthenticationManager samlAuthenticationManager) {
     log.info(
         "ACS endpoint configured : {}",
         relyingPartyProperties.getRegistration().get(registrationId).getAcs().getLocation());
@@ -141,7 +142,7 @@ public class SamlSecurityConfiguration {
           new Saml2WebSsoAuthenticationFilter(relyingPartyRegistrationRepository);
     }
 
-    saml2WebSsoAuthenticationFilter.setAuthenticationManager(authenticationManager);
+    saml2WebSsoAuthenticationFilter.setAuthenticationManager(samlAuthenticationManager);
     saml2WebSsoAuthenticationFilter.setSecurityContextRepository(
         new HttpSessionSecurityContextRepository());
     saml2WebSsoAuthenticationFilter.setSessionAuthenticationStrategy(
@@ -169,7 +170,7 @@ public class SamlSecurityConfiguration {
       HttpSecurity http,
       RememberMeServices rememberMeServices,
       Saml2WebSsoAuthenticationFilter webSsoAuthenticationFilter,
-      ProviderManager authenticationManager)
+      ProviderManager samlAuthenticationManager)
       throws Exception {
 
     log.info("Configuring SAML Security");
@@ -178,7 +179,7 @@ public class SamlSecurityConfiguration {
 
     http.saml2Login(
             saml2 -> {
-              saml2.authenticationManager(authenticationManager);
+              saml2.authenticationManager(samlAuthenticationManager);
               if (!relyingPartyProperties
                   .getRegistration()
                   .get(registrationId)
