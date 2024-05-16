@@ -31,7 +31,6 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.security.saml2.Saml2RelyingPartyProperties;
@@ -39,7 +38,6 @@ import org.springframework.boot.autoconfigure.session.DefaultCookieSerializerCus
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
@@ -106,26 +104,21 @@ public class SamlSecurityConfiguration {
     return rememberMeServices;
   }
 
-  @Bean
-  public OpenSaml4AuthenticationProvider openSaml4AuthenticationProvider() {
+  private OpenSaml4AuthenticationProvider openSaml4AuthenticationProvider() {
     var authProvider = new OpenSaml4AuthenticationProvider();
     authProvider.setResponseAuthenticationConverter(extractUserDetails());
     return authProvider;
   }
 
-  @Bean
-  public ProviderManager samlAuthenticationManager(
-      @Autowired @Qualifier("openSaml4AuthenticationProvider")
-          OpenSaml4AuthenticationProvider openSaml4AuthenticationProvider) {
+  private ProviderManager samlAuthenticationManager(
+      OpenSaml4AuthenticationProvider openSaml4AuthenticationProvider) {
     log.info("authenticationProvider: " + openSaml4AuthenticationProvider);
     return new ProviderManager(openSaml4AuthenticationProvider);
   }
 
   @Bean
   public Saml2WebSsoAuthenticationFilter saml2WebSsoAuthenticationFilter(
-      RelyingPartyRegistrationRepository relyingPartyRegistrationRepository,
-      @Autowired @Qualifier("samlAuthenticationManager")
-          AuthenticationManager samlAuthenticationManager) {
+      RelyingPartyRegistrationRepository relyingPartyRegistrationRepository) {
     log.info(
         "ACS endpoint configured : {}",
         relyingPartyProperties.getRegistration().get(registrationId).getAcs().getLocation());
@@ -145,7 +138,8 @@ public class SamlSecurityConfiguration {
           new Saml2WebSsoAuthenticationFilter(relyingPartyRegistrationRepository);
     }
 
-    saml2WebSsoAuthenticationFilter.setAuthenticationManager(samlAuthenticationManager);
+    saml2WebSsoAuthenticationFilter.setAuthenticationManager(
+        samlAuthenticationManager(openSaml4AuthenticationProvider()));
     saml2WebSsoAuthenticationFilter.setSecurityContextRepository(
         new HttpSessionSecurityContextRepository());
     saml2WebSsoAuthenticationFilter.setSessionAuthenticationStrategy(
@@ -172,8 +166,7 @@ public class SamlSecurityConfiguration {
   public SecurityFilterChain samlFilterChain(
       HttpSecurity http,
       RememberMeServices rememberMeServices,
-      Saml2WebSsoAuthenticationFilter webSsoAuthenticationFilter,
-      @Autowired @Qualifier("samlAuthenticationManager") ProviderManager samlAuthenticationManager)
+      Saml2WebSsoAuthenticationFilter webSsoAuthenticationFilter)
       throws Exception {
 
     log.info("Configuring SAML Security");
@@ -182,7 +175,8 @@ public class SamlSecurityConfiguration {
 
     http.saml2Login(
             saml2 -> {
-              saml2.authenticationManager(samlAuthenticationManager);
+              saml2.authenticationManager(
+                  samlAuthenticationManager(openSaml4AuthenticationProvider()));
               if (!relyingPartyProperties
                   .getRegistration()
                   .get(registrationId)
