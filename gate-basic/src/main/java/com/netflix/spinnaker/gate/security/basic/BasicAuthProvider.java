@@ -17,12 +17,13 @@ package com.netflix.spinnaker.gate.security.basic;
 
 import com.netflix.spinnaker.gate.services.OesAuthorizationService;
 import com.netflix.spinnaker.gate.services.PermissionService;
-import com.netflix.spinnaker.security.User;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,17 +31,28 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class BasicAuthProvider implements AuthenticationProvider {
 
   private final PermissionService permissionService;
   private final OesAuthorizationService oesAuthorizationService;
 
-  private List<String> roles;
-  private String name;
-  private String password;
+  @Value("${services.platform.enabled:false}")
+  private boolean isPlatformEnabled;
 
+  @Setter private List<String> roles;
+  @Setter private String name;
+  @Setter private String password;
+
+  @Value("${services.fiat.enabled:false}")
+  private Boolean isFiatEnabled;
+
+  @Autowired
   public BasicAuthProvider(
       PermissionService permissionService, OesAuthorizationService oesAuthorizationService) {
     this.permissionService = permissionService;
@@ -56,42 +68,31 @@ public class BasicAuthProvider implements AuthenticationProvider {
     if (!this.name.equals(name) || !this.password.equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
-
     log.debug("roles configured for user: {} are roles: {}", name, roles);
-    User user = new User();
-    user.setEmail(name);
-    user.setUsername(name);
-    user.setRoles(Collections.singletonList("USER"));
 
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
     if (roles != null && !roles.isEmpty() && permissionService != null) {
-      user.setRoles(roles);
-      grantedAuthorities =
-          roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+      grantedAuthorities.addAll(
+          roles.stream()
+              .map(role -> new SimpleGrantedAuthority(role))
+              .collect(Collectors.toList()));
       // Updating roles in fiat service
       permissionService.loginWithRoles(name, roles);
+      log.debug("Platform service enabled value :{}", isPlatformEnabled);
       // Updating roles in platform service
-      oesAuthorizationService.cacheUserGroups(roles, name);
+      if (isPlatformEnabled) {
+        oesAuthorizationService.cacheUserGroups(roles, name);
+      }
+    } else {
+      grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
     }
-
-    return new UsernamePasswordAuthenticationToken(user, password, grantedAuthorities);
+    UserDetails principal = new User(name, password, grantedAuthorities);
+    return new UsernamePasswordAuthenticationToken(principal, password, grantedAuthorities);
   }
 
   @Override
   public boolean supports(Class<?> authentication) {
     return authentication == UsernamePasswordAuthenticationToken.class;
-  }
-
-  public void setRoles(List<String> roles) {
-    this.roles = roles;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
   }
 }

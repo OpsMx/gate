@@ -18,7 +18,7 @@ package com.opsmx.spinnaker.gate.controller;
 
 import com.netflix.spinnaker.security.AuthenticatedRequest;
 import com.opsmx.spinnaker.gate.service.EmbeddedArgoUIService;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

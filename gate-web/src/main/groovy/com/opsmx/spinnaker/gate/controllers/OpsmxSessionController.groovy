@@ -19,7 +19,7 @@ package com.opsmx.spinnaker.gate.controllers
 
 import com.netflix.spinnaker.gate.exceptions.OesRequestException
 import groovy.util.logging.Slf4j
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpSession
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpSession
 
 @RequestMapping("/session")
 @RestController
@@ -38,14 +38,14 @@ class OpsmxSessionController {
   @Value('${server.session.timeout-in-seconds:3600}')
   int sessionTimeout
 
-  @ApiOperation(value = "get session timeout")
+  @Operation(summary = "get session timeout")
   @GetMapping(value = "/getSessionTimeout")
   Integer getSessionTimeout() {
-    log.info("sessionTimeout : {}" , sessionTimeout)
+    log.debug("sessionTimeout : {}" , sessionTimeout)
     return sessionTimeout
   }
 
-  @ApiOperation(value = "extend session by given duration")
+  @Operation(summary = "extend session by given duration")
   @PutMapping(value = "/extendSession")
   void extendSession(@RequestParam("duration") int duration, HttpServletRequest request) {
     if(duration <= 0) {

@@ -28,9 +28,6 @@ class CredentialsService {
   @Autowired
   AccountLookupService accountLookupService
 
-  @Autowired
-  FiatStatus fiatStatus
-
   Collection<String> getAccountNames(Collection<String> userRoles) {
     getAccounts(userRoles, false)*.name
   }

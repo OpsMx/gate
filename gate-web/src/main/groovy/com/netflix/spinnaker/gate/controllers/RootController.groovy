@@ -21,18 +21,27 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse
 
 @Slf4j
 @RestController
 class RootController {
-
+  @Value('${services.deck.base-url:}')
+  URL deckBaseUrl
   @Value('${services.oesui.externalUrl:}')
   String uiBaseUrl
+  @Value('${services.gate:oes-gate}')
+  String gateType
 
   @RequestMapping("/")
   void root(HttpServletResponse response) {
-    log.info("uiBaseUrl : {}", uiBaseUrl)
-    response.sendRedirect(uiBaseUrl + "/application")
+    if(gateType.equalsIgnoreCase("oes-gate")){
+      log.info("uiBaseUrl : {}", uiBaseUrl)
+      response.sendRedirect(uiBaseUrl + "/application")
+    } else {
+      log.info("deckBaseUrl : {}", deckBaseUrl)
+      response.sendRedirect("/applications")
+    }
+
   }
 }

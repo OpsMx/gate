@@ -33,6 +33,7 @@ import org.springframework.scheduling.annotation.EnableAsync
   scanBasePackages = [
     "com.netflix.spinnaker.gate",
     "com.netflix.spinnaker.config",
+    "com.netflix.spinnaker.gate.services.internal",
     "com.opsmx.spinnaker.gate"
   ],
   exclude = [GroovyTemplateAutoConfiguration, GsonAutoConfiguration,
@@ -44,7 +45,6 @@ class Main {
     'netflix.environment': 'test',
     'netflix.account': '${netflix.environment}',
     'netflix.stack': 'test',
-    'spring.config.additional-location': '${user.home}/.spinnaker/',
     'spring.application.name': 'gate',
     'spring.config.name': 'spinnaker,${spring.application.name},feature',
     'spring.profiles.active': '${netflix.environment},local'

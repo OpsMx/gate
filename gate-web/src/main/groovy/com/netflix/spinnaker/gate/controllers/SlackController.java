@@ -20,7 +20,7 @@ import com.netflix.spectator.api.Registry;
 import com.netflix.spinnaker.gate.config.SlackConfigProperties;
 import com.netflix.spinnaker.gate.services.SlackService;
 import com.netflix.spinnaker.kork.core.RetrySupport;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import retrofit.RetrofitError;
@@ -64,13 +63,12 @@ public class SlackController {
     this.registry = registry;
   }
 
-  @ApiOperation("Retrieve a list of public slack channels")
+  @Operation(summary = "Retrieve a list of public slack channels")
   @RequestMapping("/channels")
   public List<Map> getChannels() {
     return slackChannelsCache.get();
   }
 
-  @Scheduled(fixedDelayString = "${slack.channel-refresh-interval-millis:600000}")
   void refreshSlack() {
     try {
       Long startTime = System.nanoTime();

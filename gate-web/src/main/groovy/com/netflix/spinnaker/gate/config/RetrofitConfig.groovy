@@ -44,11 +44,10 @@ class RetrofitConfig {
   OkHttpClient okHttpClient(OkHttp3ClientConfiguration okHttpClientConfig) {
 
     return okHttpClientConfig.create()
-      .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
-      .readTimeout(readTimeout, TimeUnit.MILLISECONDS)
-      .callTimeout(callTimeout, TimeUnit.MILLISECONDS)
-      .writeTimeout(writeTimeout, TimeUnit.MILLISECONDS)
-      .retryOnConnectionFailure(retryOnConnectionFailure)
+      .connectTimeout(connectTimeout != null ? connectTimeout : 0, TimeUnit.MILLISECONDS)
+      .readTimeout(readTimeout != null ? readTimeout : 0, TimeUnit.MILLISECONDS)
+      .callTimeout(callTimeout != null ? callTimeout : 0, TimeUnit.MILLISECONDS)
+      .writeTimeout(writeTimeout != null ? writeTimeout : 0, TimeUnit.MILLISECONDS)
       .build()
   }
 

@@ -18,21 +18,23 @@ package com.netflix.spinnaker.gate.security.basic;
 
 import com.netflix.spinnaker.gate.config.AuthConfig;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
-import com.netflix.spinnaker.gate.services.OesAuthorizationService;
-import com.netflix.spinnaker.gate.services.PermissionService;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
@@ -41,11 +43,10 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @SpinnakerAuthConfig
 @EnableWebSecurity
 @Slf4j
-public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
+public class BasicAuthConfig {
 
-  private final AuthConfig authConfig;
-
-  private final BasicAuthProvider authProvider;
+  @Autowired private final AuthConfig authConfig;
+  @Autowired private final BasicAuthProvider authProvider;
 
   @Autowired DefaultCookieSerializer defaultCookieSerializer;
 
@@ -58,19 +59,16 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
   @Value("${security.user.password:}")
   String password;
 
-  @Autowired PermissionService permissionService;
-
   @Autowired
-  public BasicAuthConfig(
-      AuthConfig authConfig,
-      PermissionService permissionService,
-      OesAuthorizationService oesAuthorizationService) {
+  public BasicAuthConfig(AuthConfig authConfig, BasicAuthProvider authProvider) {
     this.authConfig = authConfig;
-    this.authProvider = new BasicAuthProvider(permissionService, oesAuthorizationService);
+    this.authProvider = authProvider;
   }
 
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  @Bean
+  public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+    AuthenticationManagerBuilder authenticationManagerBuilder =
+        http.getSharedObject(AuthenticationManagerBuilder.class);
     if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
       throw new AuthenticationServiceException(
           "User credentials are not configured properly. Please check username and password are properly configured");
@@ -86,22 +84,36 @@ public class BasicAuthConfig extends WebSecurityConfigurerAdapter {
 
     authProvider.setName(this.name);
     authProvider.setPassword(this.password);
-
-    auth.authenticationProvider(authProvider);
+    authenticationManagerBuilder.authenticationProvider(authProvider);
+    authenticationManagerBuilder.eraseCredentials(false);
+    return authenticationManagerBuilder.build();
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     defaultCookieSerializer.setSameSite(null);
+    http.csrf().disable();
     http.formLogin()
         .and()
         .httpBasic()
         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     authConfig.configure(http);
+    return http.build();
   }
 
-  @Override
-  public void configure(WebSecurity web) throws Exception {
-    authConfig.configure(web);
+  @Bean
+  public WebSecurityCustomizer webSecurityCustomizer() {
+    return (web) -> {
+      try {
+        authConfig.configure(web);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    };
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
 }

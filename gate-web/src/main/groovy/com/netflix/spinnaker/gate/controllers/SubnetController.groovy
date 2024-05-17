@@ -17,9 +17,12 @@
 package com.netflix.spinnaker.gate.controllers
 
 import com.netflix.spinnaker.gate.services.internal.ClouddriverServiceSelector
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/subnets")
@@ -28,7 +31,7 @@ class SubnetController {
   @Autowired
   ClouddriverServiceSelector clouddriverServiceSelector
 
-  @ApiOperation(value = "Retrieve a list of subnets for a given cloud provider", response = List.class)
+  @Operation(summary = "Retrieve a list of subnets for a given cloud provider")
   @RequestMapping(value = "/{cloudProvider}", method = RequestMethod.GET)
   List<Map> allByCloudProvider(@PathVariable String cloudProvider) {
     clouddriverServiceSelector.select().getSubnets(cloudProvider)

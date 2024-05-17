@@ -16,7 +16,6 @@
 
 package com.netflix.spinnaker.gate.services.internal
 
-import io.swagger.models.auth.In
 import retrofit.client.Response
 import retrofit.http.*
 

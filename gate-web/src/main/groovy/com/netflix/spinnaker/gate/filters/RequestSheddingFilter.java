@@ -25,6 +25,12 @@ import com.netflix.spectator.api.Id;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.histogram.PercentileTimer;
 import com.netflix.spinnaker.kork.dynamicconfig.DynamicConfigService;
+import jakarta.annotation.PreDestroy;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -38,12 +44,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import javax.annotation.PreDestroy;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -132,6 +132,7 @@ public class RequestSheddingFilter extends HttpFilter {
   protected void doFilter(
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws IOException, ServletException {
+
     if (configService.isEnabled(ENABLED_KEY, false) && isDroppable(request)) {
       if (shouldDropRequestWithChance()) {
         log.warn("Dropping low priority request: {}", request.getRequestURI());
@@ -171,7 +172,6 @@ public class RequestSheddingFilter extends HttpFilter {
       response.sendRedirect("/oes/error");
       return;
     }
-
     chain.doFilter(request, response);
   }
 

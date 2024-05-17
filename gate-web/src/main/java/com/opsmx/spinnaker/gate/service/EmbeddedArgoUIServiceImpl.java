@@ -29,7 +29,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
 
-  @Autowired OesAuthorizationService oesAuthorizationService;
+  @Autowired(required = false)
+  OesAuthorizationService oesAuthorizationService;
 
   @Value("${jwt.secret}")
   private String secret;

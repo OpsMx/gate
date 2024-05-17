@@ -57,13 +57,12 @@ class ApplicationService {
   @Autowired
   ExecutorService executorService
 
-  @Value('${gate.installation.mode}')
+  @Value('${gate.installation.mode:common}')
   GateInstallationModes gateInstallationMode
 
 
   private AtomicReference<List<Map>> allApplicationsCache = new AtomicReference<>([])
 
-  @Scheduled(fixedDelayString = '${services.front50.applicationRefreshIntervalMs:5000}')
   void refreshApplicationsCache() {
     try {
       if (gateInstallationMode.equals(GateInstallationModes.common)) {
@@ -97,8 +96,8 @@ class ApplicationService {
     }
     List<Map> flat = (List<Map>) all?.flatten()?.toList()
     return mergeApps(flat, serviceConfiguration.getService('front50')).collect {
-      it.attributes
-    } as List<Map>
+      it['attributes']
+    } as List<Map> as List<Map<String, Object>>
   }
 
   List<Map> getAllApplications() {

@@ -54,23 +54,7 @@ class PermissionService {
   static final String HYSTRIX_GROUP = "permission"
 
   @Autowired
-  FiatService fiatService
-
-  @Autowired
-  ExtendedFiatService extendedFiatService
-
-  @Autowired
   ServiceAccountFilterConfigProps serviceAccountFilterConfigProps
-
-  @Autowired
-  @Qualifier("fiatLoginService")
-  Optional<FiatService> fiatLoginService
-
-  @Autowired
-  FiatPermissionEvaluator permissionEvaluator
-
-  @Autowired
-  FiatStatus fiatStatus
 
   boolean isEnabled() {
     return fiatStatus.isEnabled()

@@ -82,9 +82,6 @@ class SpinnakerUserInfoTokenServices implements ResourceServerTokenServices {
   AllowedAccountsSupport allowedAccountsSupport
 
   @Autowired
-  FiatClientConfigurationProperties fiatClientConfigurationProperties
-
-  @Autowired
   Registry registry
 
   @Autowired(required = false)

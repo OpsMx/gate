@@ -24,13 +24,14 @@ import groovy.util.logging.Slf4j
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.web.SecurityFilterChain
 
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -44,15 +45,12 @@ import java.util.concurrent.CopyOnWriteArrayList
 @Slf4j
 @EnableWebSecurity
 @Order(Ordered.LOWEST_PRECEDENCE)
-class AnonymousConfig extends WebSecurityConfigurerAdapter {
+class AnonymousConfig  {
   static String key = "spinnaker-anonymous"
   static String defaultEmail = "anonymous"
 
   @Autowired
   CredentialsService credentialsService
-
-  @Autowired
-  FiatStatus fiatStatus
 
   List<String> anonymousAllowedAccounts = new CopyOnWriteArrayList<>()
 
@@ -70,7 +68,6 @@ class AnonymousConfig extends WebSecurityConfigurerAdapter {
         .disable()
   }
 
-  @Scheduled(fixedDelay = 60000L)
   void updateAnonymousAccounts() {
     if (fiatStatus.isEnabled()) {
       return

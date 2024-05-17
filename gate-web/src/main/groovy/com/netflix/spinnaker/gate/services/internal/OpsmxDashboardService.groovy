@@ -16,7 +16,6 @@
 
 package com.netflix.spinnaker.gate.services.internal
 
-
 import retrofit.http.*
 
 interface OpsmxDashboardService {

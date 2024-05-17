@@ -20,14 +20,14 @@ import com.netflix.spinnaker.gate.config.Headers
 import groovy.util.logging.Slf4j
 import net.logstash.logback.argument.StructuredArguments
 
-import javax.servlet.Filter
-import javax.servlet.FilterChain
-import javax.servlet.FilterConfig
-import javax.servlet.ServletException
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.Filter
+import jakarta.servlet.FilterChain
+import jakarta.servlet.FilterConfig
+import jakarta.servlet.ServletException
+import jakarta.servlet.ServletRequest
+import jakarta.servlet.ServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 
 @Slf4j
 class CorsFilter implements Filter {
@@ -58,6 +58,7 @@ class CorsFilter implements Filter {
     response.setHeader("Access-Control-Allow-Headers", "x-requested-with, content-type, authorization, X-RateLimit-App, X-Spinnaker-Priority, Content-Disposition, Location")
     response.setHeader("Access-Control-Expose-Headers", [Headers.AUTHENTICATION_REDIRECT_HEADER_NAME].join(", "))
     chain.doFilter(req, res)
+
   }
 
   @Override

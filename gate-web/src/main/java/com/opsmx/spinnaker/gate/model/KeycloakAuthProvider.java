@@ -18,6 +18,7 @@ package com.opsmx.spinnaker.gate.model;
 
 import java.util.List;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,7 @@ public class KeycloakAuthProvider {
   private List<Provider> providers;
 
   @Data
+  @EqualsAndHashCode(callSuper = false)
   public static class BaseUIElement {
 
     private String name;
@@ -40,12 +42,14 @@ public class KeycloakAuthProvider {
   }
 
   @Data
+  @EqualsAndHashCode(callSuper = false)
   public static class Provider extends BaseUIElement {
 
     private List<Section> sections;
   }
 
   @Data
+  @EqualsAndHashCode(callSuper = false)
   public static class Section extends BaseUIElement {
 
     private List<InputParameter> inputparameters;
@@ -53,11 +57,13 @@ public class KeycloakAuthProvider {
   }
 
   @Data
+  @EqualsAndHashCode(callSuper = false)
   public static class NestedSection extends BaseUIElement {
     private List<InputParameter> inputparameters;
   }
 
   @Data
+  @EqualsAndHashCode(callSuper = false)
   public static class InputParameter {
     private String name;
     private String display;
