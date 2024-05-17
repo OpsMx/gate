@@ -32,11 +32,11 @@ interface OpsmxOesService {
                                      @Path('source') String source,
                                      @Path('source1') String source1,
                                      @Query('description') String description,
-                                     @Query("isExists") boolean isExists,
+                                     @Query("isExists") Boolean isExists,
                                      @Query("nameSpace") String nameSpace,
                                      @Query("argoCdUrl") String argoCdUrl,
-                                     @Query("rolloutsEnabled") boolean rolloutsEnabled,
-                                     @Query("createdStatus") boolean createdStatus,
+                                     @Query("rolloutsEnabled") Boolean rolloutsEnabled,
+                                     @Query("createdStatus") Boolean createdStatus,
                                      @Query("isdUrl") String isdUrl)
 
   @GET("/oes/accountsConfig/{version}/agents/{agentName}/manifest/apple/automation")
