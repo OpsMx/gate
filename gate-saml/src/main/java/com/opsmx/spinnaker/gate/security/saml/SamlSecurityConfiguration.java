@@ -16,12 +16,10 @@
 
 package com.opsmx.spinnaker.gate.security.saml;
 
-import com.netflix.spectator.api.Registry;
 import com.netflix.spinnaker.gate.config.AuthConfig;
 import com.netflix.spinnaker.gate.security.AllowedAccountsSupport;
 import com.netflix.spinnaker.gate.security.SpinnakerAuthConfig;
-import com.netflix.spinnaker.gate.services.PermissionService;
-import com.netflix.spinnaker.kork.core.RetrySupport;
+import com.netflix.spinnaker.gate.services.OesPermissionService;
 import com.netflix.spinnaker.security.User;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -69,11 +67,7 @@ public class SamlSecurityConfiguration {
 
   @Autowired private Saml2UserAttributeMapping saml2UserAttributeMapping;
 
-  @Autowired private PermissionService permissionService;
-
-  @Autowired private Registry registry;
-
-  private RetrySupport retrySupport = new RetrySupport();
+  @Autowired private OesPermissionService permissionService;
 
   @Autowired private AllowedAccountsSupport allowedAccountsSupport;
 
@@ -265,44 +259,10 @@ public class SamlSecurityConfiguration {
       log.debug("email extracted from responseToken : {}", email);
       log.debug("roles extracted from responseToken : {}", roles);
 
-      loginWithRoles(username, roles);
+      permissionService.loginWithRoles(username, roles);
 
       return new Saml2UserDetails(authentication, user);
     };
-  }
-
-  private void loginWithRoles(String username, List<String> roles) {
-
-    var id = registry.createId("fiat.login").withTag("type", "saml");
-
-    try {
-      retrySupport.retry(
-          () -> {
-            permissionService.loginWithRoles(username, roles);
-            return null;
-          },
-          5,
-          2000,
-          Boolean.FALSE);
-
-      log.debug(
-          "Successful SAML authentication (user: {}, roleCount: {}, roles: {})",
-          username,
-          roles.size(),
-          roles);
-      id = id.withTag("success", true).withTag("fallback", "none");
-    } catch (Exception e) {
-      log.debug(
-          "Unsuccessful SAML authentication (user: {}, roleCount: {}, roles: {})",
-          username,
-          roles.size(),
-          roles,
-          e);
-      id = id.withTag("success", false).withTag("fallback", true);
-
-    } finally {
-      registry.counter(id).increment();
-    }
   }
 
   @Bean
