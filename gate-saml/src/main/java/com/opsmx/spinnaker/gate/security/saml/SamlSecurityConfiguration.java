@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 OpsMx, Inc.
+ * Copyright 2024 OpsMx, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,7 +106,6 @@ public class SamlSecurityConfiguration {
 
   private ProviderManager samlAuthenticationManager(
       OpenSaml4AuthenticationProvider openSaml4AuthenticationProvider) {
-    log.info("authenticationProvider: " + openSaml4AuthenticationProvider);
     return new ProviderManager(openSaml4AuthenticationProvider);
   }
 
@@ -189,8 +188,6 @@ public class SamlSecurityConfiguration {
 
   private Converter<OpenSaml4AuthenticationProvider.ResponseToken, Saml2UserDetails>
       extractUserDetails() {
-
-    log.debug("**Extracting user details**");
 
     Converter<OpenSaml4AuthenticationProvider.ResponseToken, Saml2Authentication> delegate =
         OpenSaml4AuthenticationProvider.createDefaultResponseAuthenticationConverter();
