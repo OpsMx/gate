@@ -21,7 +21,6 @@ class OesPermissionService {
 
   static final String defaultGroup = "anonymous"
 
-  @Override
   void loginWithRoles(String userId, Collection<String> roles) {
     if (isOesAuthorizationServiceEnabled){
       try {
