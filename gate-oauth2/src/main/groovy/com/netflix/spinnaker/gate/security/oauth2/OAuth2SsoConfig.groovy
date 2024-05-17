@@ -52,7 +52,7 @@ import jakarta.servlet.http.HttpServletResponse
 @EnableConfigurationProperties
 // Note the 4 single-quotes below - this is a raw groovy string, because SpEL and groovy
 // string syntax overlap!
-@ConditionalOnExpression(''''${security.oauth2.client.client-id:}'!=""''')
+@ConditionalOnExpression('${security.oauth2.enabled:false}')
 class OAuth2SsoConfig {
 
   @Autowired

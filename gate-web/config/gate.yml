@@ -3,8 +3,6 @@ server:
   compression:
     enabled: true
 
-fiat:
-  enabled: true
 
 services:
   deck:
@@ -50,7 +48,6 @@ services:
     enabled: false
   fiat:
     enabled: false
-    baseUrl: http://localhost:7003
   flapjack:
     enabled: false
   igor:

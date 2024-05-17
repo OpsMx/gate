@@ -41,8 +41,7 @@ public class DatasourceCachingServiceImpl implements DashboardCachingService {
 
   @Autowired private DatasourceCaching datasourceCaching;
 
-  @Autowired(required = false)
-  private DashboardClient dashboardClient;
+  @Autowired private DashboardClient dashboardClient;
 
   @Override
   public void cacheResponse(Object response, String userName) {

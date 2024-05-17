@@ -72,22 +72,20 @@ public class BasicAuthProvider implements AuthenticationProvider {
 
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-    if (isFiatEnabled) {
-      if (roles != null && !roles.isEmpty() && permissionService != null) {
-        grantedAuthorities.addAll(
-            roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role))
-                .collect(Collectors.toList()));
-        // Updating roles in fiat service
-        permissionService.loginWithRoles(name, roles);
-        log.info("Platform service enabled value :{}", isPlatformEnabled);
-        // Updating roles in platform service
-        if (isPlatformEnabled) {
-          oesAuthorizationService.cacheUserGroups(roles, name);
-        }
-      } else {
-        grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
+    if (roles != null && !roles.isEmpty() && permissionService != null) {
+      grantedAuthorities.addAll(
+          roles.stream()
+              .map(role -> new SimpleGrantedAuthority(role))
+              .collect(Collectors.toList()));
+      // Updating roles in fiat service
+      permissionService.loginWithRoles(name, roles);
+      log.info("Platform service enabled value :{}", isPlatformEnabled);
+      // Updating roles in platform service
+      if (isPlatformEnabled) {
+        oesAuthorizationService.cacheUserGroups(roles, name);
       }
+    } else {
+      grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
     }
     UserDetails principal = new User(name, password, grantedAuthorities);
     return new UsernamePasswordAuthenticationToken(principal, password, grantedAuthorities);

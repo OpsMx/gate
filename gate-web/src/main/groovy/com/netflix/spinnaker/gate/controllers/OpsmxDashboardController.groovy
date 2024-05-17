@@ -43,7 +43,7 @@ class OpsmxDashboardController {
   @Autowired
   DashboardCachingServiceBeanFactory dashboardCachingServiceBeanFactory
 
-  @Value('oes')
+  @Value('${gate.installation.mode}')
   GateInstallationModes gateInstallationMode
 
   @Operation(summary = "Endpoint for dashboard rest services")

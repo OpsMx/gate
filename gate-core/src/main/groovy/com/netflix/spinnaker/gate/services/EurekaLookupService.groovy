@@ -46,12 +46,8 @@ class EurekaLookupService {
   @Autowired
   ServiceConfiguration serviceConfiguration
 
-  @Bean
-  public OkHttpClient okHttpClient() {
-    return new OkHttpClient.Builder()
-      .connectTimeout(10, TimeUnit.SECONDS) // Adjust timeout duration as needed
-      .build();
-  }
+  @Autowired
+  OkHttpClient okHttpClient
 
   @PostConstruct
   void init() {

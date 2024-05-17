@@ -48,7 +48,7 @@ class DefaultProviderLookupService implements ProviderLookupService, AccountLook
 
   private final AtomicReference<List<AccountDetails>> accountsCache = new AtomicReference<>([])
 
-  @Value('oes')
+  @Value('${gate.installation.mode}')
   GateInstallationModes gateInstallationMode
 
   @Autowired
@@ -56,6 +56,7 @@ class DefaultProviderLookupService implements ProviderLookupService, AccountLook
     this.clouddriverService = clouddriverService
   }
 
+  @Scheduled(fixedDelay = 30000L)
   void refreshCache() {
     try {
       if (gateInstallationMode.equals(GateInstallationModes.common)) {
