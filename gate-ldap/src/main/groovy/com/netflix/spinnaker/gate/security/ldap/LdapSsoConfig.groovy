@@ -109,7 +109,6 @@ class LdapSsoConfig {
     defaultCookieSerializer.setSameSite(null)
     http.formLogin()
     if (loginProps.mode == null || loginProps.mode.equalsIgnoreCase("session")) {
-      log.info("********{Hitting SecurityFilterChain Method}********")
       authConfig.configure(http)
       http.addFilterBefore(new BasicAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter)
       http.csrf().disable();

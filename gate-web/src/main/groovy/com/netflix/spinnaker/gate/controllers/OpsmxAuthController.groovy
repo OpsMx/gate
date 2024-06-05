@@ -35,8 +35,6 @@ class OpsmxAuthController {
   @Operation(summary = "Redirect to Deck")
   @RequestMapping(value = "/redirectauto", method = RequestMethod.GET)
   void redirectAuto(HttpServletRequest request, HttpServletResponse response, @RequestParam String to) {
-    log.info("to url : {}", to)
-    log.info("Printing Request URL : {}",request.getRequestURL().toString())
     validAutoRedirect(to,request.getRequestURL().toString()) ?
       response.sendRedirect(to) :
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Requested redirect address not recognized.")
@@ -49,14 +47,12 @@ class OpsmxAuthController {
       toURL = new URL(to)
       hostURL = new URL(from)
       if (!toURL.getHost().equals(hostURL.getHost())) {
-        log.info("Returning False")
         return false
       }
     } catch (MalformedURLException malEx) {
       log.warn "Malformed redirect URL: $to\n${ExceptionUtils.getStackTrace(malEx)}"
       return false
     }
-    log.info("Returning True")
     return true
   }
 }
