@@ -33,17 +33,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class BasicAuthProvider implements AuthenticationProvider {
 
   private final PermissionService permissionService;
   private final OesAuthorizationService oesAuthorizationService;
-
-  @Value("${services.platform.enabled:false}")
-  private boolean isPlatformEnabled;
 
   @Setter private List<String> roles;
   @Setter private String name;
@@ -68,7 +63,8 @@ public class BasicAuthProvider implements AuthenticationProvider {
     if (!this.name.equals(name) || !this.password.equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
-    log.info("roles configured for user: {} are roles: {}", name, roles);
+
+    log.debug("roles configured for user: {} are roles: {}", name, roles);
 
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
@@ -79,11 +75,11 @@ public class BasicAuthProvider implements AuthenticationProvider {
               .collect(Collectors.toList()));
       // Updating roles in fiat service
       permissionService.loginWithRoles(name, roles);
-      log.info("Platform service enabled value :{}", isPlatformEnabled);
       // Updating roles in platform service
       log.info("Platform service printing  roles :{}", roles);
       oesAuthorizationService.cacheUserGroups(roles, name);
     } else {
+      log.info("********Executing Else part********");
       grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
     }
     UserDetails principal = new User(name, password, grantedAuthorities);
