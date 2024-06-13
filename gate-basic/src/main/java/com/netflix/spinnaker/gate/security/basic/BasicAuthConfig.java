@@ -108,7 +108,8 @@ public class BasicAuthConfig {
     http.cors().and().csrf().disable();
     http.formLogin()
         .and()
-        .authenticationManager(authManager(http))
+      .authenticationProvider(authProvider)
+//        .authenticationManager(authManager(http))
         .httpBasic()
         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     authConfig.configure(http);
