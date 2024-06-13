@@ -68,7 +68,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
     if (!this.name.equals(name) || !this.password.equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
-    log.debug("roles configured for user: {} are roles: {}", name, roles);
+    log.info("roles configured for user: {} are roles: {}", name, roles);
 
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
               .collect(Collectors.toList()));
       // Updating roles in fiat service
       permissionService.loginWithRoles(name, roles);
-      log.debug("Platform service enabled value :{}", isPlatformEnabled);
+      log.info("Platform service enabled value :{}", isPlatformEnabled);
       // Updating roles in platform service
       if (isPlatformEnabled) {
         oesAuthorizationService.cacheUserGroups(roles, name);

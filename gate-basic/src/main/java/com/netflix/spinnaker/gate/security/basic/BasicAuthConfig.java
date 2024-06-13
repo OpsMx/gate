@@ -81,7 +81,7 @@ public class BasicAuthConfig {
       authProvider.setRoles(
           Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList()));
     }
-
+    log.info("User --> "+this.name+"Password --> "+this.password);
     authProvider.setName(this.name);
     authProvider.setPassword("{noop}".concat(this.password));
     authenticationManagerBuilder.authenticationProvider(authProvider);
