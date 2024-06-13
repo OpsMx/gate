@@ -86,7 +86,8 @@ public class BasicAuthConfig {
     log.info("User --> "+this.name+"Password Bcrypt--> "+(new BCryptPasswordEncoder()).encode(this.password));
     log.info("User --> "+this.name+"Password NoopPassword--> "+(NoOpPasswordEncoder.getInstance()).encode(this.password));
     authProvider.setName(this.name);
-    authProvider.setPassword((new BCryptPasswordEncoder()).encode(this.password));
+//    authProvider.setPassword((new BCryptPasswordEncoder()).encode(this.password));
+    authProvider.setPassword(this.password);
     authenticationManagerBuilder.authenticationProvider(authProvider);
     authenticationManagerBuilder.eraseCredentials(false);
     return authenticationManagerBuilder.build();
@@ -117,6 +118,8 @@ public class BasicAuthConfig {
 
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    var passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    passwordEncoder.setDefaultPasswordEncoderForMatches(NoOpPasswordEncoder.getInstance());
+    return passwordEncoder;
   }
 }
