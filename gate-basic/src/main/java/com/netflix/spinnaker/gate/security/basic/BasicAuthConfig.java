@@ -105,7 +105,7 @@ public class BasicAuthConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     defaultCookieSerializer.setSameSite(null);
-    http.csrf().disable();
+    http.cors().and().csrf().disable();
     http.formLogin()
         .and()
         .httpBasic()

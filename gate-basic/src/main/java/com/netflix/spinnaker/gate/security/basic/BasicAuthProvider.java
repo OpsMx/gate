@@ -62,9 +62,11 @@ public class BasicAuthProvider implements AuthenticationProvider {
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     String name = authentication.getName();
+    log.info("User entered --> "+name);
     String password =
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
 
+    log.info("Password entered --> "+password);
     if (!this.name.equals(name) || !this.password.equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
