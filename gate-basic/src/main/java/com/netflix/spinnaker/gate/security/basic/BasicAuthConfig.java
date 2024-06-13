@@ -83,7 +83,7 @@ public class BasicAuthConfig {
     }
     log.info("User --> "+this.name+"Password --> "+this.password);
     authProvider.setName(this.name);
-    authProvider.setPassword("{noop}".concat(this.password));
+    authProvider.setPassword(passwordEncoder().encode(this.password));
     authenticationManagerBuilder.authenticationProvider(authProvider);
     authenticationManagerBuilder.eraseCredentials(false);
     return authenticationManagerBuilder.build();
