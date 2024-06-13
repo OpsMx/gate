@@ -117,6 +117,7 @@ public class BasicAuthConfig {
 
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  return CustomPasswordEncoderFactory.createDelegatingPasswordEncoder();
   }
 }
