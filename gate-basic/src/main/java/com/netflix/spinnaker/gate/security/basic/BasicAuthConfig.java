@@ -65,7 +65,8 @@ public class BasicAuthConfig {
     this.authProvider = authProvider;
   }
 
-  private AuthenticationManager authManager(HttpSecurity http) throws Exception {
+  @Bean
+  public AuthenticationManager authManager(HttpSecurity http) throws Exception {
     AuthenticationManagerBuilder authenticationManagerBuilder =
         http.getSharedObject(AuthenticationManagerBuilder.class);
     if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
