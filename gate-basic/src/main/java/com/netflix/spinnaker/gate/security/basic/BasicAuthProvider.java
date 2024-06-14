@@ -78,7 +78,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
               .map(role -> new SimpleGrantedAuthority(role))
               .collect(Collectors.toList()));
       // Updating roles in fiat service
-      permissionService.loginWithRoles(name, roles);
+//      permissionService.loginWithRoles(name, roles);
       log.debug("Platform service enabled value :{}", isPlatformEnabled);
       // Updating roles in platform service
       if (isPlatformEnabled) {
