@@ -71,10 +71,14 @@ class AuthController {
   @Operation(summary = "Get user")
   @RequestMapping(value = "/user", method = RequestMethod.GET)
   User user(@Parameter(hidden = true) @SpinnakerUser User user) {
+    log.info("user called " + user)
     if (!user) {
+      log.info("! user ")
       return user
     }
-
+    List<String> roles = new ArrayList<>();
+    roles.add("admin")
+    user.roles = roles
     return user
   }
 

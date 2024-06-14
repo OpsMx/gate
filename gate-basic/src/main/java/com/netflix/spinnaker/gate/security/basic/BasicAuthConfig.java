@@ -32,7 +32,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -81,8 +84,18 @@ public class BasicAuthConfig {
       authProvider.setRoles(
           Stream.of(roles.split(",")).map(String::trim).collect(Collectors.toList()));
     }
-
+    log.info(
+        "User --> "
+            + this.name
+            + "Password Bcrypt--> "
+            + (new BCryptPasswordEncoder()).encode(this.password));
+    log.info(
+        "User --> "
+            + this.name
+            + "Password NoopPassword--> "
+            + (NoOpPasswordEncoder.getInstance()).encode(this.password));
     authProvider.setName(this.name);
+    //    authProvider.setPassword((new BCryptPasswordEncoder()).encode(this.password));
     authProvider.setPassword(this.password);
     authenticationManagerBuilder.authenticationProvider(authProvider);
     authenticationManagerBuilder.eraseCredentials(false);
@@ -92,9 +105,11 @@ public class BasicAuthConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     defaultCookieSerializer.setSameSite(null);
-    http.csrf().disable();
+    http.cors().and().csrf().disable();
     http.formLogin()
         .and()
+      .authenticationProvider(authProvider)
+//        .authenticationManager(authManager(http))
         .httpBasic()
         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     authConfig.configure(http);
@@ -114,6 +129,9 @@ public class BasicAuthConfig {
 
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    var passwordEncoder =
+        (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    passwordEncoder.setDefaultPasswordEncoderForMatches(NoOpPasswordEncoder.getInstance());
+    return passwordEncoder;
   }
 }

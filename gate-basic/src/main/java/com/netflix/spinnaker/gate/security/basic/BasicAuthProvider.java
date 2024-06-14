@@ -62,13 +62,15 @@ public class BasicAuthProvider implements AuthenticationProvider {
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     String name = authentication.getName();
+    log.info("User entered --> "+name);
     String password =
         authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
 
+    log.info("Password entered --> "+password);
     if (!this.name.equals(name) || !this.password.equals(password)) {
       throw new BadCredentialsException("Invalid username/password combination");
     }
-    log.debug("roles configured for user: {} are roles: {}", name, roles);
+    log.info("roles configured for user: {} are roles: {}", name, roles);
 
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
@@ -78,8 +80,8 @@ public class BasicAuthProvider implements AuthenticationProvider {
               .map(role -> new SimpleGrantedAuthority(role))
               .collect(Collectors.toList()));
       // Updating roles in fiat service
-      permissionService.loginWithRoles(name, roles);
-      log.debug("Platform service enabled value :{}", isPlatformEnabled);
+//      permissionService.loginWithRoles(name, roles);
+      log.info("Platform service enabled value :{}", isPlatformEnabled);
       // Updating roles in platform service
       if (isPlatformEnabled) {
         oesAuthorizationService.cacheUserGroups(roles, name);
