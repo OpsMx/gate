@@ -65,8 +65,7 @@ public class BasicAuthConfig {
     this.authProvider = authProvider;
   }
 
-  @Bean
-  public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+  private AuthenticationManager authManager(HttpSecurity http) throws Exception {
     AuthenticationManagerBuilder authenticationManagerBuilder =
         http.getSharedObject(AuthenticationManagerBuilder.class);
     if (name == null || name.isEmpty() || password == null || password.isEmpty()) {
@@ -95,7 +94,7 @@ public class BasicAuthConfig {
     http.csrf().disable();
     http.formLogin()
         .and()
-        //        .authenticationManager(authManager(http))
+        .authenticationManager(authManager(http))
         .httpBasic()
         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     authConfig.configure(http);
