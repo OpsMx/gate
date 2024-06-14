@@ -16,7 +16,6 @@
 package com.netflix.spinnaker.gate.security.basic;
 
 import com.netflix.spinnaker.gate.services.OesAuthorizationService;
-import com.netflix.spinnaker.gate.services.PermissionService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +38,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class BasicAuthProvider implements AuthenticationProvider {
 
-  private final PermissionService permissionService;
   private final OesAuthorizationService oesAuthorizationService;
 
   @Value("${services.platform.enabled:false}")
@@ -53,9 +51,7 @@ public class BasicAuthProvider implements AuthenticationProvider {
   private Boolean isFiatEnabled;
 
   @Autowired
-  public BasicAuthProvider(
-      PermissionService permissionService, OesAuthorizationService oesAuthorizationService) {
-    this.permissionService = permissionService;
+  public BasicAuthProvider(OesAuthorizationService oesAuthorizationService) {
     this.oesAuthorizationService = oesAuthorizationService;
   }
 
@@ -72,14 +68,13 @@ public class BasicAuthProvider implements AuthenticationProvider {
 
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-    if (roles != null && !roles.isEmpty() && permissionService != null) {
+    if (roles != null && !roles.isEmpty() && isPlatformEnabled) {
       grantedAuthorities.addAll(
           roles.stream()
               .map(role -> new SimpleGrantedAuthority(role))
               .collect(Collectors.toList()));
-      // Updating roles in fiat service
-      permissionService.loginWithRoles(name, roles);
       log.debug("Platform service enabled value :{}", isPlatformEnabled);
+
       // Updating roles in platform service
       if (isPlatformEnabled) {
         oesAuthorizationService.cacheUserGroups(roles, name);
