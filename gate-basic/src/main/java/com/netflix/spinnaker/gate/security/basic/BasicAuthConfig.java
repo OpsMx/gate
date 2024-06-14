@@ -94,7 +94,7 @@ public class BasicAuthConfig {
     http.csrf().disable();
     http.formLogin()
         .and()
-        .authenticationManager(authManager(http))
+        //        .authenticationManager(authManager(http))
         .httpBasic()
         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
     authConfig.configure(http);
