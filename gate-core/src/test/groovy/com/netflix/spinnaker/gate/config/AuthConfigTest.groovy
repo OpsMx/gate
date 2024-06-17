@@ -47,7 +47,7 @@ class AuthConfigTest extends Specification {
     def httpSecurity = new HttpSecurity(
       Mock(ObjectPostProcessor),
       Mock(AuthenticationManagerBuilder),
-      new HashMap<Class<?>, Object>()
+      new HashMap<Class<?, Object>>()
     )
 
     when:
@@ -85,7 +85,7 @@ class AuthConfigTest extends Specification {
     def httpSecurity = new HttpSecurity(
       Mock(ObjectPostProcessor),
       Mock(AuthenticationManagerBuilder),
-      new HashMap<Class<?>, Object>()
+      new HashMap<Class<?, Object>>()
     )
 
     when:
