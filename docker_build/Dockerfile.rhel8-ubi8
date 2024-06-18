@@ -14,7 +14,8 @@ RUN adduser opsmx \
     && usermod -aG wheel opsmx \
     && mkdir -p /opsmx/workdir/logs \
     && mkdir -p /opt/spinnaker/config \
-    && mkdir -p /opt/spinnaker/plugins
+    && mkdir -p /opt/spinnaker/plugins \
+    && mkdir -p /opt/gate/plugins
 
 # Install procps(ps)
 RUN yum install -y procps nginx net-tools wget
