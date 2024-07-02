@@ -39,8 +39,8 @@ public class EmbeddedArgoUIController {
     String location = embeddedArgoUIService.getBounceEndpoint(username, argoid, path);
     response.setStatus(302);
     response.setHeader("Location", location);
-    log.debug(
-        "Successfully generated token and redirecting to path {} where argoid is : {} and username is {}",
+    log.info(
+        "********Successfully generated token and redirecting to path {} where argoid is : {} and username is {}",
         path,
         argoid,
         username);

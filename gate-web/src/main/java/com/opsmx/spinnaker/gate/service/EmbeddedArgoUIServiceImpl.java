@@ -62,6 +62,7 @@ public class EmbeddedArgoUIServiceImpl implements EmbeddedArgoUIService {
             .setIssuedAt(currentDate)
             .setIssuer("isd")
             .compact();
+    System.out.println("End of bounceUrl");
     return bounceUrl + "?token=" + token;
   }
 }
