@@ -267,7 +267,7 @@ class PipelineController {
   HttpEntity invokePipelineConfigViaEcho(@PathVariable("application") String application,
                                          @PathVariable("pipelineNameOrId") String pipelineNameOrId,
                                          @RequestBody(required = false) Map trigger) {
-    log.info("Execution request submitted.")
+    log.info("Execution request submitted for appName: {} and pl name: {}", application, pipelineNameOrId)
     trigger = trigger ?: [:]
     AuthenticatedRequest.setApplication(application)
     try {
