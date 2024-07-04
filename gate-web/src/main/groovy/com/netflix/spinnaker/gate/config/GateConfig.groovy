@@ -70,6 +70,8 @@ import org.springframework.http.converter.json.AbstractJackson2HttpMessageConver
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer
+import org.springframework.security.web.firewall.DefaultHttpFirewall
+import org.springframework.security.web.firewall.HttpFirewall
 import org.springframework.session.data.redis.config.ConfigureRedisAction
 import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration
 import org.springframework.util.CollectionUtils
@@ -517,5 +519,10 @@ class GateConfig extends RedisHttpSessionConfiguration {
     expressionHandler.setPermissionEvaluator(
       new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
     return expressionHandler;
+  }
+
+  @Bean
+  HttpFirewall defaultHttpFirewall() {
+    return new DefaultHttpFirewall();
   }
 }
