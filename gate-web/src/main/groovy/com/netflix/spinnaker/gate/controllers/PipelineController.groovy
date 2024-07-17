@@ -17,6 +17,7 @@
 
 package com.netflix.spinnaker.gate.controllers
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.netflix.spinnaker.gate.services.PipelineService
 import com.netflix.spinnaker.gate.services.TaskService
@@ -101,9 +102,19 @@ class PipelineController {
   @ApiOperation(value = "Save a pipeline definition")
   @PostMapping('')
   void savePipeline(
-    @RequestBody Map pipeline,
+    @RequestBody String inputPipeline,
     @RequestParam(value = "staleCheck", required = false, defaultValue = "false")
       Boolean staleCheck) {
+    log.info("Start of the Pipeline Save ")
+    log.info("Input Pipeline Save :{}",inputPipeline)
+    Map pipeline = null;
+    try {
+      pipeline = mapper.readValue(theStringToParse, new TypeReference<Map<String, Object>>() {
+      });
+    } catch (IOException e) {
+      log.info("End of the Pipeline Save ")
+      throw new PipelineException("Exception launched while trying to parse Pipeline.", e);
+    }
     def operation = [
       description: (String) "Save pipeline '${pipeline.get("name") ?: "Unknown"}'",
       application: pipeline.get('application'),
@@ -121,10 +132,12 @@ class PipelineController {
 
     if (!"SUCCEEDED".equalsIgnoreCase(resultStatus)) {
       String exception = result.variables.find { it.key == "exception" }?.value?.details?.errors?.getAt(0)
+      log.info("End of the Pipeline Save ")
       throw new PipelineException(
         exception ?: "Pipeline save operation did not succeed: ${result.get("id", "unknown task id")} (status: ${resultStatus})"
       )
     }
+    log.info("End of the Pipeline Save ")
   }
 
   @ApiOperation(value = "Rename a pipeline definition")
