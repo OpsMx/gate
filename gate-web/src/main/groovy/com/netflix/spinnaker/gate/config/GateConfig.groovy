@@ -28,6 +28,7 @@ import com.netflix.spinnaker.config.PluginsAutoConfiguration
 import com.netflix.spinnaker.config.okhttp3.OkHttpClientProvider
 import com.netflix.spinnaker.fiat.shared.FiatClientConfigurationProperties
 import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator
+import com.netflix.spinnaker.fiat.shared.FiatPipelineRbacConfigurationProperties
 import com.netflix.spinnaker.fiat.shared.FiatService
 import com.netflix.spinnaker.fiat.shared.FiatStatus
 import com.netflix.spinnaker.filters.AuthenticatedRequestFilter
@@ -504,18 +505,18 @@ class GateConfig extends RedisHttpSessionConfiguration {
   FiatPermissionEvaluator fiatPermissionEvaluator(FiatStatus fiatStatus,
                                                   Registry registry,
                                                   FiatService fiatService,
-                                                  FiatClientConfigurationProperties fiatClientConfigurationProperties) {
-    return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
+                                                  FiatClientConfigurationProperties fiatClientConfigurationProperties, FiatPipelineRbacConfigurationProperties fiatPipelineRbacConfigurationProperties) {
+    return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus, fiatPipelineRbacConfigurationProperties)
   }
   @Bean
   static MethodSecurityExpressionHandler expressionHandler(
     Registry registry,
     FiatService fiatService,
     FiatClientConfigurationProperties configProps,
-    FiatStatus fiatStatus) {
+    FiatStatus fiatStatus, FiatPipelineRbacConfigurationProperties fiatPipelineRbacConfigurationProperties) {
     var expressionHandler = new DefaultMethodSecurityExpressionHandler();
     expressionHandler.setPermissionEvaluator(
-      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
+      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus, fiatPipelineRbacConfigurationProperties));
     return expressionHandler;
   }
 }
