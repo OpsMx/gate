@@ -497,26 +497,26 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Bean
   FiatStatus fiatStatus(DynamicConfigService dynamicConfigService,
                         Registry registry,
-                        FiatClientConfigurationProperties fiatClientConfigurationProperties) {
-    return new FiatStatus(registry, dynamicConfigService, fiatClientConfigurationProperties)
+                        FiatClientConfigurationProperties fiatClientConfigurationProperties, FiatPipelineRbacConfigurationProperties fiatPipelineRbacConfigurationProperties) {
+    return new FiatStatus(registry, dynamicConfigService, fiatClientConfigurationProperties, fiatPipelineRbacConfigurationProperties)
   }
 
   @Bean
   FiatPermissionEvaluator fiatPermissionEvaluator(FiatStatus fiatStatus,
                                                   Registry registry,
                                                   FiatService fiatService,
-                                                  FiatClientConfigurationProperties fiatClientConfigurationProperties, FiatPipelineRbacConfigurationProperties fiatPipelineRbacConfigurationProperties) {
-    return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus, fiatPipelineRbacConfigurationProperties)
+                                                  FiatClientConfigurationProperties fiatClientConfigurationProperties) {
+    return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
   }
   @Bean
   static MethodSecurityExpressionHandler expressionHandler(
     Registry registry,
     FiatService fiatService,
     FiatClientConfigurationProperties configProps,
-    FiatStatus fiatStatus, FiatPipelineRbacConfigurationProperties fiatPipelineRbacConfigurationProperties) {
+    FiatStatus fiatStatus) {
     var expressionHandler = new DefaultMethodSecurityExpressionHandler();
     expressionHandler.setPermissionEvaluator(
-      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus, fiatPipelineRbacConfigurationProperties));
+      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
     return expressionHandler;
   }
 }
