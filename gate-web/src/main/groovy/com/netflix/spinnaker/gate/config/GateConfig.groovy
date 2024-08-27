@@ -189,6 +189,12 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
   @Bean
   @ConditionalOnProperty("services.keel.enabled")
+  OpsmxNotificationsAlertservice opsmxNotificationsAlertservice(OkHttpClientProvider clientProvider) {
+    createClient "notification", OpsmxNotificationsAlertservice
+  }
+
+  @Bean
+  @ConditionalOnProperty("services.keel.enabled")
   KeelService keelService(OkHttpClientProvider clientProvider) {
     createClient "keel", KeelService
   }
