@@ -15,7 +15,7 @@ services:
   visibility:
     baseUrl: http://localhost:8096
     enabled: true
-  notificationAlert:
+  notifications:
     baseUrl: http://localhost:8099
     enabled: true
   auditservice:
