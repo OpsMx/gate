@@ -24,7 +24,7 @@ interface OpsmxNotificationsAlertservice {
   Object postNotificationServiceResponse1(@Path('type') String type,
                                           @Body Object data)
 
-  @PUT("/notifications/{type}")
+  @PUT("/notifications/{type}/{id}")
   Object putNotificationServiceResponse2(@Path('type') String type,
                                          @Path('id') String id,
                                           @Body Object data)
