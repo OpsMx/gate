@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 
 
@@ -44,6 +46,7 @@ class OpsmxNotificationsAlertController {
   @RequestMapping(value = "/{type}", method = RequestMethod.POST)
   Object postNotificationServiceResponse1(@PathVariable("type") String type,
                                           @RequestBody(required = false) Object data) {
+    println "Received a POST request for notification type: ${type} with data: ${data}"
     return opsmxNotificationsAlertservice.postNotificationServiceResponse1(type, data)
   }
 
@@ -52,12 +55,14 @@ class OpsmxNotificationsAlertController {
   Object putNotificationServiceResponse1(@PathVariable("type") String type,
                                          @PathVariable("id") String id,
                                           @RequestBody(required = false) Object data) {
+    println "Received a PUT request for notification type: ${type} with data: ${data}"
     return opsmxNotificationsAlertservice.putNotificationServiceResponse2(type,id, data)
   }
 
   @Operation(summary = "Endpoint for notification services")
   @RequestMapping(value = "/{type}", method = RequestMethod.GET)
   Object getNotificationServiceResponse1(@PathVariable("type") String type) {
+    println "Received a GET request for notification type: ${type} "
     return  opsmxNotificationsAlertservice.getNotificationServiceResponse3(type)
   }
 
@@ -65,6 +70,7 @@ class OpsmxNotificationsAlertController {
   @RequestMapping(value = "/{type}/{id}", method = RequestMethod.DELETE)
   Object deleteNotificationServiceResponse1(@PathVariable("type") String type,
                                             @PathVariable("id") String id) {
+    println "Received a DELETE request for notification type: ${type} with data: ${data}"
     return opsmxNotificationsAlertservice.deleteNotificationServiceResponse4(type,id)
   }
 
