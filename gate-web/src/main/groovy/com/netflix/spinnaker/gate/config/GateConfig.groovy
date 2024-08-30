@@ -189,7 +189,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Bean
   @ConditionalOnProperty("services.notifications.enabled")
   OpsmxNotificationsAlertservice opsmxNotificationsAlertservice(OkHttpClientProvider clientProvider) {
-    createClient "notification", OpsmxNotificationsAlertservice
+    createClient "notifications", OpsmxNotificationsAlertservice
   }
 
   @Bean
