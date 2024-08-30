@@ -16,7 +16,7 @@ services:
     baseUrl: http://localhost:8096
     enabled: true
   notificationAlert:
-    baseUrl: http://localhost:8098
+    baseUrl: http://localhost:8099
     enabled: true
   auditservice:
     baseUrl: http://localhost:8097

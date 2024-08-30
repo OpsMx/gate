@@ -20,20 +20,20 @@ import retrofit.http.*
 
 interface OpsmxNotificationsAlertservice {
 
-  @POST("/notification/{type}")
+  @POST("/notifications/{type}")
   Object postNotificationServiceResponse1(@Path('type') String type,
                                           @Body Object data)
 
-  @PUT("/notification/{type}")
+  @PUT("/notifications/{type}")
   Object putNotificationServiceResponse2(@Path('type') String type,
+                                         @Path('id') String id,
                                           @Body Object data)
 
-  @GET("/notification/{type}")
+  @GET("/notifications/{type}")
   Object getNotificationServiceResponse3(@Path('type') String type)
 
-  @DELETE("/notification/{id}")
-  Object deleteNotificationServiceResponse4(@Path('id') String type,
-                                            @Body Object data)
-
+  @DELETE("/notifications/{type}/{id}")
+  Object deleteNotificationServiceResponse4(@Path('type') String type,
+                                            @Path('id') String id)
 
 }

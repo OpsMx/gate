@@ -48,7 +48,6 @@ import com.opsmx.spinnaker.gate.services.OpsmxAuditClientService
 import com.opsmx.spinnaker.gate.services.OpsmxAuditService
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
-import org.apache.camel.spi.annotations.Component
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
