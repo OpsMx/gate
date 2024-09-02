@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.http.HttpHeaders
 import retrofit.client.Response
 import org.apache.commons.io.IOUtils
@@ -171,6 +172,41 @@ class OpsmxAuditClientServiceController {
     Response response = opsmxAuditClientService.downloadCSVFile(version, username, source, isTreeView, isLatest, pageNo, size, noOfDays)
     log.info("response for the insgiths endpoint:" + response.getHeaders())
     if (response.getBody()!=null) {
+      InputStream inputStream = response.getBody().in()
+      try {
+        byte[] csvFile = IOUtils.toByteArray(inputStream)
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.parseMediaType("text/csv"));
+        headers.add("Content-Disposition", response.getHeaders().stream().filter({ header -> header.getName().trim().equalsIgnoreCase("Content-Disposition") }).collect(Collectors.toList()).get(0).value)
+        return ResponseEntity.ok().headers(headers).body(csvFile)
+      } finally {
+        if (inputStream != null) {
+          inputStream.close()
+        }
+      }
+    }
+    return ResponseEntity.status(response.getStatus()).build()
+  }
+
+  @Operation(summary = "Endpoint for platform rest services")
+  @RequestMapping(value = "/{version}/{type}/{source}", method = RequestMethod.POST)
+  Object postAuditClientResponse1(@PathVariable("version") String version,
+                               @PathVariable("type") String type,
+                               @PathVariable("source") String source,
+                               @RequestBody(required = false) Object data) {
+
+    return opsmxAuditClientService.postAuditClientResponse1(version, type, source, data)
+  }
+
+  @Operation(summary = "Endpoint for platform rest services")
+  @RequestMapping(value = "/{version}/{type}/{source}/download", method = RequestMethod.POST)
+  Object downloadCSVFileSystemAudit(@PathVariable("version") String version,
+                                  @PathVariable("type") String type,
+                                  @PathVariable("source") String source,
+                                  @RequestBody(required = false) Object data) {
+    Response response = opsmxAuditClientService.downloadCSVFile2(version, type, source, data)
+    log.info("response for the system audit endpoint:" + response.getHeaders())
+    if (response.getBody()!= null) {
       InputStream inputStream = response.getBody().in()
       try {
         byte[] csvFile = IOUtils.toByteArray(inputStream)

@@ -19,7 +19,9 @@ package com.opsmx.spinnaker.gate.services
 import org.springframework.web.bind.annotation.RequestParam
 import retrofit.client.Response
 import retrofit.http.GET
+import retrofit.http.POST
 import retrofit.http.Path
+import retrofit.http.Body
 import retrofit.http.Query
 
 interface OpsmxAuditClientService {
@@ -137,4 +139,16 @@ interface OpsmxAuditClientService {
                                          @Query('search') String search,
                                          @Query("noOfDays") String noOfDays,
                                          @Query('limit') Integer limit)
+
+  @POST("/auditclientservice/{version}/{type}/{source}")
+  Object postAuditClientResponse1(@Path('version') String version,
+                               @Path('type') String type,
+                               @Path('source') String source,
+                               @Body Object data)
+
+  @POST("/auditclientservice/{version}/{type}/{source}/download")
+  Response downloadCSVFile2(@Path('version') String version,
+                         @Path('type') String type,
+                         @Path('source') String source,
+                          @Body Object data)
 }
