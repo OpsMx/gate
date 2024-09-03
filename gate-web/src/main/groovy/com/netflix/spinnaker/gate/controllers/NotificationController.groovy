@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 @CompileStatic
-@RequestMapping("/notifications")
+@RequestMapping("/notification") // Changed  notifications to notification
 @RestController
 class NotificationController {
   @Autowired
