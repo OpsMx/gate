@@ -48,7 +48,7 @@ public class PipelineIdRbacInterceptor implements HandlerInterceptor {
       throws Exception {
     try {
       log.info(
-          "Request intercepted for authorizing if the user is having enough access to perform the action");
+          "Request intercepted for authorizing if the user is having enough access to perform the action ******PipelineIdRbacInterceptor*****");
       String origin = request.getHeader(HttpHeaders.ORIGIN);
       if (origin != null && customGatePlugins.contains(origin)) {
         return true;
