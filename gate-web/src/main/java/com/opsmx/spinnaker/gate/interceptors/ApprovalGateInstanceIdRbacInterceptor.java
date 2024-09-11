@@ -38,7 +38,7 @@ public class ApprovalGateInstanceIdRbacInterceptor implements HandlerInterceptor
 
     try {
       log.info(
-          "Request intercepted for authorizing if the user is having enough access to perform the action");
+          "Request intercepted for authorizing if the user is having enough access to perform the action  ******ApprovalGateInstanceIdRbacInterceptor*****");
       applicationFeatureRbac.authorizeUserForApprovalGateInstanceId(
           request.getUserPrincipal().getName(), request.getRequestURI(), request.getMethod());
     } catch (NumberFormatException nfe) {

@@ -46,7 +46,7 @@ public class FeatureVisibilityRbacInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
-    log.info("request intercepted to authorize if the user is having feature visibility");
+    log.info("request intercepted to authorize if the user is having feature visibility-------FeatureVisibilityRbacInterceptor******");
     String origin = request.getHeader(HttpHeaders.ORIGIN);
     if (origin != null && customGatePlugins.contains(origin)) {
       return true;
