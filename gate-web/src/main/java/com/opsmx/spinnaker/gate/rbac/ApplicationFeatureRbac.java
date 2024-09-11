@@ -769,11 +769,11 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForApprovalGateTrigger(HttpServletRequest request) {
 
     log.debug("validating the user for ApprovalGateTrigger");
+    String username = readXSpinnakerUserFromHeader(request);
     if (isAdmin()) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
-    String username = readXSpinnakerUserFromHeader(request);
     String endpointUrl = request.getRequestURI();
 
     Integer approvalGateId = getApprovalGateId(endpointUrl);
@@ -811,12 +811,12 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForPolicyGateTrigger(HttpServletRequest request, Object input) {
 
     log.debug("validating the user for ApprovalGateTrigger");
+
+    String username = readXSpinnakerUserFromHeader(request);
     if (isAdmin()) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
-
-    String username = readXSpinnakerUserFromHeader(request);
     String endpointUrl = request.getRequestURI();
 
     String inputStr = gson.toJson(input);
@@ -865,11 +865,11 @@ public class ApplicationFeatureRbac {
       HttpServletRequest request, Object input) {
 
     log.debug("validating the user for ApprovalGateTrigger");
+    String username = readXSpinnakerUserFromHeader(request);
     if (isAdmin()) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
-    String username = readXSpinnakerUserFromHeader(request);
     String endpointUrl = request.getRequestURI();
 
     String inputStr = gson.toJson(input);
