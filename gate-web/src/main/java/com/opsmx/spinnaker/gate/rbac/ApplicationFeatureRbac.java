@@ -73,16 +73,11 @@ public class ApplicationFeatureRbac {
     populateCustomGateTriggerEndpoints();
   }
 
-  public boolean isAdmin() {
-    return permissionService.isAdmin(
-      AuthenticatedRequest.getSpinnakerUser().orElse("anonymous"));
-  }
-
   public void authorizeUserForFeatureVisibility(String userName) {
 
     Boolean isFeatureVisibility;
     log.debug("validating the user for FeatureVisibility");
-    if (isAdmin()) {
+    if (permissionService.isAdmin(userName)) {
       log.info("{} user is admin,Hence not validating with ISD", userName);
       return;
     }
@@ -102,7 +97,7 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForApplicationId(
     String username, String endpointUrl, String httpMethod) {
     log.debug("validating the user for ApplicationId");
-    if (isAdmin()) {
+    if (permissionService.isAdmin(userName)) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
@@ -195,7 +190,7 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForServiceId(String username, String endpointUrl, String httpMethod) {
 
     log.debug("validating the user for ServiceId");
-    if (isAdmin()) {
+    if (permissionService.isAdmin(username)) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
@@ -286,7 +281,7 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForPipelineId(String username, String endpointUrl, String httpMethod) {
 
     log.debug("validating the user for PipelineId");
-    if (isAdmin()) {
+    if (permissionService.isAdmin(username)) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
@@ -379,7 +374,7 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForGateId(String username, String endpointUrl, String httpMethod) {
 
     log.debug("validating the user for GateId");
-    if (isAdmin()) {
+    if (permissionService.isAdmin(username)) {
       log.info("{} user is admin, Hence not validating with ISD", username);
       return;
     }
@@ -476,7 +471,7 @@ public class ApplicationFeatureRbac {
       String username, String endpointUrl, String httpMethod) {
 
     log.debug("validating the user for GateId");
-    if (isAdmin()) {
+    if (permissionService.isAdmin(username)) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
@@ -568,7 +563,7 @@ public class ApplicationFeatureRbac {
       String username, String endpointUrl, String httpMethod) {
 
     log.debug("validating the user for ApprovalGateInstanceId");
-    if (isAdmin()) {
+    if (permissionService.isAdmin(username)) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
@@ -662,7 +657,7 @@ public class ApplicationFeatureRbac {
       String username, String endpointUrl, String httpMethod) {
 
     log.debug("validating the user for ApprovalPolicyId");
-    if (isAdmin()) {
+    if (permissionService.isAdmin(username)) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
@@ -770,7 +765,8 @@ public class ApplicationFeatureRbac {
 
     log.debug("validating the user for ApprovalGateTrigger");
     String username = readXSpinnakerUserFromHeader(request);
-    if (isAdmin()) {
+    if (permissionService.isAdmin(username)) {
+
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
@@ -813,7 +809,7 @@ public class ApplicationFeatureRbac {
     log.debug("validating the user for ApprovalGateTrigger");
 
     String username = readXSpinnakerUserFromHeader(request);
-    if (isAdmin()) {
+    if (permissionService.isAdmin(username)) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
@@ -866,7 +862,7 @@ public class ApplicationFeatureRbac {
 
     log.debug("validating the user for ApprovalGateTrigger");
     String username = readXSpinnakerUserFromHeader(request);
-    if (isAdmin()) {
+    if (permissionService.isAdmin(username)) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
