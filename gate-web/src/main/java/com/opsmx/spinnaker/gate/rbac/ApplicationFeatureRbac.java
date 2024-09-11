@@ -97,7 +97,7 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForApplicationId(
     String username, String endpointUrl, String httpMethod) {
     log.debug("validating the user for ApplicationId");
-    if (permissionService.isAdmin(userName)) {
+    if (permissionService.isAdmin(username)) {
       log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
