@@ -35,16 +35,16 @@ public class ApprovalPolicyIdInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
-
+    log.debug("***********Start of the preHandle -- ApprovalPolicyIdInterceptor");
     try {
       log.info(
-          "Request intercepted for authorizing if the user is having enough access to perform the action *****ApprovalPolicyIdInterceptor*****");
+          "Request intercepted for authorizing if the user is having enough access to perform the action ");
       applicationFeatureRbac.authorizeUserForApprovalPolicyId(
           request.getUserPrincipal().getName(), request.getRequestURI(), request.getMethod());
     } catch (NumberFormatException nfe) {
       log.debug("Ignoring the rbac check as it threw number format exception");
     }
-
+    log.debug("***********End of the preHandle -- ApprovalPolicyIdInterceptor");
     return true;
   }
 }

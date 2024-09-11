@@ -30,13 +30,14 @@ public class OesServiceInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
-
+    log.debug("***********Start of the preHandle -- OesServiceInterceptor");
     if (request.getHeader("apiKey") == null
         || request.getHeader("apiKey").isBlank()
         || !request.getHeader("apiKey").equals(apiKey)) {
 
       throw new InvalidApiKeyException("Access forbidden. Invalid API key");
     }
+    log.debug("***********End of the preHandle -- OesServiceInterceptor");
     return true;
   }
 }
