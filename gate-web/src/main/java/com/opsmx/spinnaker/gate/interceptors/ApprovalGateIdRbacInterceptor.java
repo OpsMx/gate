@@ -35,7 +35,7 @@ public class ApprovalGateIdRbacInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
-    log.debug("***********Start of the preHandle -- ApprovalGateIdRbacInterceptor");
+    log.debug("Start of the preHandle -- ApprovalGateIdRbacInterceptor");
     try {
       log.info(
           "Request intercepted for authorizing if the user is having enough access to perform the action");
@@ -44,7 +44,7 @@ public class ApprovalGateIdRbacInterceptor implements HandlerInterceptor {
     } catch (NumberFormatException nfe) {
       log.debug("Ignoring the rbac check as it threw number format exception");
     }
-    log.debug("***********End of the preHandle -- ApprovalGateIdRbacInterceptor");
+    log.debug("End of the preHandle -- ApprovalGateIdRbacInterceptor");
     return true;
   }
 }
