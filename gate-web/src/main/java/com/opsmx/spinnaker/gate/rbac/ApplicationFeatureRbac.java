@@ -44,7 +44,7 @@ public class ApplicationFeatureRbac {
 
   @Autowired private OesAuthorizationService oesAuthorizationService;
 
-  @Autowired PermissionService permissionService;
+  @Autowired private PermissionService permissionService;
 
   public static final List<String> runtime_access = new ArrayList<>();
   public static final List<String> applicationFeatureRbacEndpoints = new ArrayList<>();
