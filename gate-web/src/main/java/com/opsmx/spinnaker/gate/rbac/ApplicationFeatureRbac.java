@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.netflix.spinnaker.gate.model.PermissionModel;
 import com.netflix.spinnaker.gate.services.OesAuthorizationService;
+import com.netflix.spinnaker.gate.services.PermissionService;
 import com.opsmx.spinnaker.gate.enums.PermissionEnum;
 import com.opsmx.spinnaker.gate.enums.RbacFeatureType;
 import com.opsmx.spinnaker.gate.exception.AccessForbiddenException;
@@ -42,6 +43,8 @@ import org.springframework.stereotype.Component;
 public class ApplicationFeatureRbac {
 
   @Autowired private OesAuthorizationService oesAuthorizationService;
+
+  @Autowired private PermissionService permissionService;
 
   public static final List<String> runtime_access = new ArrayList<>();
   public static final List<String> applicationFeatureRbacEndpoints = new ArrayList<>();
@@ -71,7 +74,12 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForFeatureVisibility(String userName) {
 
     Boolean isFeatureVisibility;
-
+    log.debug("Start of the authorizeUserForFeatureVisibility");
+    log.debug("validating the user for FeatureVisibility");
+    if (permissionService.isAdmin(userName)) {
+      log.info("{} is admin, Hence not validating with ISD", userName);
+      return;
+    }
     isFeatureVisibility =
         Boolean.parseBoolean(
             oesAuthorizationService
@@ -83,11 +91,17 @@ public class ApplicationFeatureRbac {
       throw new AccessForbiddenException(
           "You do not have permission for the feature type : " + RbacFeatureType.APP.description);
     }
+    log.debug("End of the authorizeUserForFeatureVisibility");
   }
 
   public void authorizeUserForApplicationId(
       String username, String endpointUrl, String httpMethod) {
-
+    log.debug("Start of the authorizeUserForApplicationId");
+    log.debug("validating the user for ApplicationId");
+    if (permissionService.isAdmin(username)) {
+      log.info("{} is admin, Hence not validating with ISD", username);
+      return;
+    }
     HttpMethod method = HttpMethod.valueOf(httpMethod);
     Integer applicationId = getApplicationId(endpointUrl);
     PermissionModel permission;
@@ -149,6 +163,7 @@ public class ApplicationFeatureRbac {
         }
         break;
     }
+    log.debug("End of the authorizeUserForApplicationId");
   }
 
   private Integer getApplicationId(String endpoint) {
@@ -176,6 +191,12 @@ public class ApplicationFeatureRbac {
 
   public void authorizeUserForServiceId(String username, String endpointUrl, String httpMethod) {
 
+    log.debug("Start of the authorizeUserForServiceId");
+    log.debug("validating the user for ServiceId");
+    if (permissionService.isAdmin(username)) {
+      log.info("{} is admin, Hence not validating with ISD", username);
+      return;
+    }
     HttpMethod method = HttpMethod.valueOf(httpMethod);
     Integer serviceId = getServiceId(endpointUrl);
     Boolean isAuthorized;
@@ -241,6 +262,7 @@ public class ApplicationFeatureRbac {
         }
         break;
     }
+    log.debug("End of the authorizeUserForServiceId");
   }
 
   private Integer getServiceId(String endpoint) {
@@ -262,6 +284,12 @@ public class ApplicationFeatureRbac {
 
   public void authorizeUserForPipelineId(String username, String endpointUrl, String httpMethod) {
 
+    log.debug("Start of the authorizeUserForPipelineId");
+    log.debug("validating the user for PipelineId");
+    if (permissionService.isAdmin(username)) {
+      log.info("{} is admin, Hence not validating with ISD", username);
+      return;
+    }
     HttpMethod method = HttpMethod.valueOf(httpMethod);
     Integer pipelineId = getPipelineId(endpointUrl);
     Boolean isAuthorized;
@@ -329,6 +357,7 @@ public class ApplicationFeatureRbac {
         }
         break;
     }
+    log.debug("End of the authorizeUserForPipelineId");
   }
 
   private Integer getPipelineId(String endpoint) {
@@ -350,6 +379,12 @@ public class ApplicationFeatureRbac {
 
   public void authorizeUserForGateId(String username, String endpointUrl, String httpMethod) {
 
+    log.debug("Start of the authorizeUserForGateId");
+    log.debug("validating the user for GateId");
+    if (permissionService.isAdmin(username)) {
+      log.info("{} is admin, Hence not validating with ISD", username);
+      return;
+    }
     HttpMethod method = HttpMethod.valueOf(httpMethod);
     Integer gateId = getGateId(endpointUrl);
     Boolean isAuthorized;
@@ -414,6 +449,7 @@ public class ApplicationFeatureRbac {
         }
         break;
     }
+    log.debug("End of the authorizeUserForGateId");
   }
 
   private Integer getGateId(String endpoint) {
@@ -442,6 +478,12 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForApprovalGateId(
       String username, String endpointUrl, String httpMethod) {
 
+    log.debug("Start of the authorizeUserForApprovalGateId");
+    log.debug("validating the user for GateId");
+    if (permissionService.isAdmin(username)) {
+      log.info("{} is admin, Hence not validating with ISD", username);
+      return;
+    }
     HttpMethod method = HttpMethod.valueOf(httpMethod);
     Integer approvalGateId = getApprovalGateId(endpointUrl);
     Boolean isAuthorized;
@@ -510,6 +552,7 @@ public class ApplicationFeatureRbac {
         }
         break;
     }
+    log.debug("End of the authorizeUserForApprovalGateId");
   }
 
   private Integer getApprovalGateId(String endpoint) {
@@ -529,6 +572,12 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForApprovalGateInstanceId(
       String username, String endpointUrl, String httpMethod) {
 
+    log.debug("Start of the authorizeUserForApprovalGateInstanceId");
+    log.debug("validating the user for ApprovalGateInstanceId");
+    if (permissionService.isAdmin(username)) {
+      log.info("{} is admin, Hence not validating with ISD", username);
+      return;
+    }
     HttpMethod method = HttpMethod.valueOf(httpMethod);
     Integer approvalGateInstanceId = getApprovalGateInstanceId(endpointUrl);
     Boolean isAuthorized;
@@ -599,6 +648,7 @@ public class ApplicationFeatureRbac {
         }
         break;
     }
+    log.debug("End of the authorizeUserForApprovalGateInstanceId");
   }
 
   private Integer getApprovalGateInstanceId(String endpoint) {
@@ -618,6 +668,12 @@ public class ApplicationFeatureRbac {
   public void authorizeUserForApprovalPolicyId(
       String username, String endpointUrl, String httpMethod) {
 
+    log.debug("Start of the authorizeUserForApprovalPolicyId");
+    log.debug("validating the user for ApprovalPolicyId");
+    if (permissionService.isAdmin(username)) {
+      log.info("{} is admin, Hence not validating with ISD", username);
+      return;
+    }
     HttpMethod method = HttpMethod.valueOf(httpMethod);
     Integer approvalPolicyId = getApprovalPolicyId(endpointUrl);
     Boolean isAuthorized;
@@ -688,6 +744,7 @@ public class ApplicationFeatureRbac {
         }
         break;
     }
+    log.debug("End of the authorizeUserForApprovalPolicyId");
   }
 
   private Integer getApprovalPolicyId(String endpoint) {
@@ -720,7 +777,13 @@ public class ApplicationFeatureRbac {
 
   public void authorizeUserForApprovalGateTrigger(HttpServletRequest request) {
 
+    log.debug("Start of the authorizeUserForApprovalGateTrigger");
+    log.debug("validating the user for ApprovalGateTrigger");
     String username = readXSpinnakerUserFromHeader(request);
+    if (permissionService.isAdmin(username)) {
+      log.info("{} is admin, Hence not validating with ISD", username);
+      return;
+    }
     String endpointUrl = request.getRequestURI();
 
     Integer approvalGateId = getApprovalGateId(endpointUrl);
@@ -753,11 +816,19 @@ public class ApplicationFeatureRbac {
               + RbacFeatureType.APP.description
               + TO_PERFORM_THIS_OPERATION);
     }
+    log.debug("End of the authorizeUserForApprovalGateTrigger");
   }
 
   public void authorizeUserForPolicyGateTrigger(HttpServletRequest request, Object input) {
 
+    log.debug("Start of the authorizeUserForPolicyGateTrigger");
+    log.debug("validating the user for ApprovalGateTrigger");
+
     String username = readXSpinnakerUserFromHeader(request);
+    if (permissionService.isAdmin(username)) {
+      log.info("{} is admin, Hence not validating with ISD", username);
+      return;
+    }
     String endpointUrl = request.getRequestURI();
 
     String inputStr = gson.toJson(input);
@@ -800,12 +871,19 @@ public class ApplicationFeatureRbac {
               + RbacFeatureType.APP.description
               + TO_PERFORM_THIS_OPERATION);
     }
+    log.debug("End of the authorizeUserForPolicyGateTrigger");
   }
 
   public void authorizeUserForVerificationAndTestVerificationGateTrigger(
       HttpServletRequest request, Object input) {
 
+    log.debug("Start of the authorizeUserForVerificationAndTestVerificationGateTrigger");
+    log.debug("validating the user for ApprovalGateTrigger");
     String username = readXSpinnakerUserFromHeader(request);
+    if (permissionService.isAdmin(username)) {
+      log.info("{} is admin, Hence not validating with ISD", username);
+      return;
+    }
     String endpointUrl = request.getRequestURI();
 
     String inputStr = gson.toJson(input);
@@ -845,6 +923,7 @@ public class ApplicationFeatureRbac {
               + RbacFeatureType.APP.description
               + TO_PERFORM_THIS_OPERATION);
     }
+    log.debug("End of the authorizeUserForVerificationAndTestVerificationGateTrigger");
   }
 
   private static void populateDashboardServiceApis() {
