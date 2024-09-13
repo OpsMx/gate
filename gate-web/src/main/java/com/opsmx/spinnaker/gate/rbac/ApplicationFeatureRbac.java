@@ -124,7 +124,6 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForApplicationId");
         break;
 
       case "PUT":
@@ -162,9 +161,9 @@ public class ApplicationFeatureRbac {
                     + TO_PERFORM_THIS_OPERATION);
           }
         }
-        log.debug("End of the authorizeUserForApplicationId");
         break;
     }
+    log.debug("End of the authorizeUserForApplicationId");
   }
 
   private Integer getApplicationId(String endpoint) {
@@ -231,7 +230,6 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForServiceId");
         break;
 
       case "PUT":
@@ -262,9 +260,9 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForServiceId");
         break;
     }
+    log.debug("End of the authorizeUserForServiceId");
   }
 
   private Integer getServiceId(String endpoint) {
@@ -325,7 +323,6 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForPipelineId");
         break;
 
       case "PUT":
@@ -358,9 +355,9 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForPipelineId");
         break;
     }
+    log.debug("End of the authorizeUserForPipelineId");
   }
 
   private Integer getPipelineId(String endpoint) {
@@ -421,7 +418,6 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForGateId");
         break;
 
       case "PUT":
@@ -451,9 +447,9 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForGateId");
         break;
     }
+    log.debug("End of the authorizeUserForGateId");
   }
 
   private Integer getGateId(String endpoint) {
@@ -522,7 +518,6 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForApprovalGateId");
         break;
 
       case "PUT":
@@ -555,9 +550,9 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForApprovalGateId");
         break;
     }
+    log.debug("End of the authorizeUserForApprovalGateId");
   }
 
   private Integer getApprovalGateId(String endpoint) {
@@ -619,7 +614,6 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForApprovalGateInstanceId");
         break;
 
       case "PUT":
@@ -652,9 +646,9 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForApprovalGateInstanceId");
         break;
     }
+    log.debug("End of the authorizeUserForApprovalGateInstanceId");
   }
 
   private Integer getApprovalGateInstanceId(String endpoint) {
@@ -716,7 +710,6 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForApprovalPolicyId");
         break;
 
       case "PUT":
@@ -749,9 +742,9 @@ public class ApplicationFeatureRbac {
                   + RbacFeatureType.APP.description
                   + TO_PERFORM_THIS_OPERATION);
         }
-        log.debug("End of the authorizeUserForApprovalPolicyId");
         break;
     }
+    log.debug("End of the authorizeUserForApprovalPolicyId");
   }
 
   private Integer getApprovalPolicyId(String endpoint) {
