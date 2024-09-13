@@ -37,7 +37,7 @@ public class CustomGatesTriggerRbacInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
-
+    log.debug("***********Start of the preHandle -- CustomGatesTriggerRbacInterceptor");
     Optional.ofNullable(request.getHeader("x-spinnaker-user"))
         .orElseThrow(
             () -> new XSpinnakerUserHeaderMissingException("x-spinnaker-user header missing"));
@@ -50,7 +50,7 @@ public class CustomGatesTriggerRbacInterceptor implements HandlerInterceptor {
     } catch (NumberFormatException nfe) {
       log.debug("Ignoring the rbac check as it threw number format exception");
     }
-
+    log.debug("***********End of the preHandle -- CustomGatesTriggerRbacInterceptor");
     return true;
   }
 }

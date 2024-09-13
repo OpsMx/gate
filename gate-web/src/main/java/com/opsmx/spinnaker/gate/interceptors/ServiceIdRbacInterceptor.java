@@ -35,6 +35,7 @@ public class ServiceIdRbacInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
+    log.debug("***********Start of the preHandle -- ServiceIdRbacInterceptor");
     try {
       log.info(
           "Request intercepted for authorizing if the user is having enough access to perform the action");
@@ -43,7 +44,7 @@ public class ServiceIdRbacInterceptor implements HandlerInterceptor {
     } catch (NumberFormatException nfe) {
       log.debug("Ignoring the rbac check as it threw number format exception");
     }
-
+    log.debug("***********End of the preHandle -- ServiceIdRbacInterceptor");
     return true;
   }
 }
