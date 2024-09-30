@@ -229,7 +229,7 @@ public class ApplicationFeatureRbac {
         int statusCode = response.getStatusCodeValue();
 
         if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
-          log.info("is authorized for the service Id GET API: {}, {}", serviceId, isAuthorized);
+          log.info("Authorized user for the service Id GET API with status code: {}, {}", serviceId, statusCode);
         }else if (isAuthorized == null || !isAuthorized || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
@@ -319,7 +319,7 @@ public class ApplicationFeatureRbac {
         int statusCode = response.getStatusCodeValue();
 
         if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
-          log.info("is authorized for the pipeline Id GET API: {}, {}", pipelineId, isAuthorized);
+          log.info("authorized user for the pipeline Id GET API with status code: {}, {}", pipelineId, statusCode);
         }else if (isAuthorized == null || !isAuthorized || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
@@ -412,7 +412,7 @@ public class ApplicationFeatureRbac {
         int statusCode = response.getStatusCodeValue();
 
         if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
-          log.info("is authorized for the gate Id GET API: {}, {}", gateId, isAuthorized);
+          log.info("authorized user for the gate Id GET API with staus code: {}, {}", gateId, statusCode);
         }else if (isAuthorized == null || !isAuthorized || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
@@ -509,7 +509,7 @@ public class ApplicationFeatureRbac {
         int statusCode = response.getStatusCodeValue();
 
         if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
-          log.info("is authorized for the approval gate Id GET API: {}, {}", approvalGateId, isAuthorized);
+          log.info("authorized user for the approval gate Id GET API: {}, {}", approvalGateId, statusCode);
         }else if (isAuthorized == null || !isAuthorized || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
             YOU_DO_NOT_HAVE
@@ -601,9 +601,9 @@ public class ApplicationFeatureRbac {
         int statusCode = response.getStatusCodeValue();
 
         if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
-          log.info("is authorized for the approval gate instance Id GET API: {}, {}",
+          log.info("authorized user for the approval gate instance Id GET API: {}, {}",
             approvalGateInstanceId,
-            isAuthorized);
+            statusCode);
         }else if (isAuthorized == null || !isAuthorized || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
@@ -695,9 +695,9 @@ public class ApplicationFeatureRbac {
         int statusCode = response.getStatusCodeValue();
 
         if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
-          log.info("is authorized for the approval policy Id GET API: {}, {}",
+          log.info("authorized user for the approval policy Id GET API with staus code: {}, {}",
             approvalPolicyId,
-            isAuthorized);
+            statusCode);
         }else if (isAuthorized == null || !isAuthorized || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
@@ -801,9 +801,9 @@ public class ApplicationFeatureRbac {
     int statusCode = response.getStatusCodeValue();
 
     if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
-      log.info("is authorized for the approval custom gate trigger Id GET API: {}, {}",
+      log.info("authorized user for the approval custom gate trigger Id GET API with status code: {}, {}",
         approvalGateId,
-        isAuthorized);
+        statusCode);
     }else if (isAuthorized == null || !isAuthorized || statusCode == HttpStatus.FORBIDDEN.value()) {
       throw new AccessForbiddenException(
         YOU_DO_NOT_HAVE
@@ -859,7 +859,7 @@ public class ApplicationFeatureRbac {
     int statusCode = response.getStatusCodeValue();
 
     if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
-      log.info("is authorized for the policy gate Id GET API: {}", isAuthorized);
+      log.info("authorized user for the policy gate Id GET API with status code: {}, {}", isAuthorized, statusCode);
     }else if (isAuthorized == null || !isAuthorized || statusCode == HttpStatus.FORBIDDEN.value()) {
       throw new AccessForbiddenException(
           YOU_DO_NOT_HAVE
@@ -910,7 +910,7 @@ public class ApplicationFeatureRbac {
     int statusCode = response.getStatusCodeValue();
 
     if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
-      log.info("is authorized for the verification gate Id GET API: {}", isAuthorized);
+      log.info("is authorized for the verification gate Id GET API with status code: {}, {}", isAuthorized, statusCode);
     }else if (isAuthorized == null || !isAuthorized || statusCode == HttpStatus.FORBIDDEN.value()) {
       throw new AccessForbiddenException(
           YOU_DO_NOT_HAVE
