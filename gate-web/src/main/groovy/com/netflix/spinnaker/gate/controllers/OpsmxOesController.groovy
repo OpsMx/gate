@@ -25,6 +25,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.server.ResponseStatusException
+
 import java.util.stream.Collectors
 
 import com.netflix.spinnaker.gate.config.ServiceConfiguration
@@ -324,7 +326,7 @@ class OpsmxOesController {
 
     if (!obj.isSuccessful()) {
       def error = obj.body().string();
-      throw new OesRequestException(error)
+      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, error)
     } else{
       return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
     }
@@ -373,7 +375,7 @@ class OpsmxOesController {
     if (!obj.isSuccessful()) {
       def error = obj.body().string();
       log.error("Failed to setup the Spinnaker : {}", error)
-      throw new OesRequestException(error)
+      throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, error)
     } else{
       return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
     }
