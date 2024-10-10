@@ -21,6 +21,7 @@ import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -286,15 +287,15 @@ class OpsmxOesController {
 
   @Operation(summary = "Add or Update spinnaker cloudprovider account configured in Spinnaker" )
   @RequestMapping(value = "/accountsConfig/{version}/spinnaker/addOrUpdateCloudProviderAccount", method = RequestMethod.POST)
-  Object addOrUpdateVersionSpinnakerCloudProver(@PathVariable("version") String version, @RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
+  ResponseEntity<Object> addOrUpdateVersionSpinnakerCloudProver(@PathVariable("version") String version, @RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
     String filename = files ? files.getOriginalFilename() : ''
-    return addOrUpdateSpinnakerCloudProverAccount(files, postData.get("postData"), version)
+    return new ResponseEntity<>(addOrUpdateSpinnakerCloudProverAccount(files, postData.get("postData"), version), HttpStatus.OK)
   }
 
   @Operation(summary = "Add or Update Spinnaker x509")
   @RequestMapping(value = "/accountsConfig/{version}/spinnakerX509", method = RequestMethod.POST)
-  Object addOrUpdateSpinnakerSetupV1(@PathVariable("version") String version, @RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
-	return createOrUpdateSpinnaker(files, postData.get("postData"), version)
+  ResponseEntity<Object> addOrUpdateSpinnakerSetupV1(@PathVariable("version") String version, @RequestParam MultipartFile files, @RequestParam Map<String, String> postData) {
+	return new ResponseEntity<>(createOrUpdateSpinnaker(files, postData.get("postData"), version), HttpStatus.OK)
   }
 
   private Object addOrUpdateSpinnakerCloudProverAccount(MultipartFile files, String data, String version) {
