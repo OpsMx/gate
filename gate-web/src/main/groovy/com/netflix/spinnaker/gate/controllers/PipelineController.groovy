@@ -117,9 +117,10 @@ class PipelineController {
 
     if (!"SUCCEEDED".equalsIgnoreCase(resultStatus)) {
       String exception = result.variables.find { it.key == "exception" }?.value?.details?.errors?.getAt(0)
-      throw new PipelineException(
-        exception ?: "Pipeline save operation did not succeed: ${result.get("id", "unknown task id")} (status: ${resultStatus})"
-      )
+      if (!exception) {
+        exception = "Pipeline save operation did not succeed Task ID: ${result.get("id", "unknown task id")}, Status: ${resultStatus}"
+      }
+      throw new PipelineException(exception)
     }
   }
 
