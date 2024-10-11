@@ -22,6 +22,7 @@ import com.netflix.spinnaker.gate.controllers.OpsmxDashboardController
 import com.netflix.spinnaker.gate.controllers.OpsmxOesController
 import com.netflix.spinnaker.gate.controllers.OpsmxPlatformController
 import com.netflix.spinnaker.gate.controllers.OpsmxVisibilityController
+import com.netflix.spinnaker.gate.controllers.PipelineController
 import com.opsmx.spinnaker.gate.controllers.OpsmxAuditClientServiceController
 import com.opsmx.spinnaker.gate.controllers.OpsmxAuditServiceController
 import com.opsmx.spinnaker.gate.controllers.OpsmxSaporPolicyController
@@ -69,6 +70,25 @@ class RetrofitErrorHandler {
     }
     ErrorResponseModel defaultErrorResponse = populateDefaultErrorResponseModel()
     return new ResponseEntity<Object>(defaultErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
+  }
+
+  // New method to handle PipelineException
+  @ExceptionHandler(PipelineController.PipelineException)
+  @ResponseBody
+  public ResponseEntity<Map<String, Object>> handlePipelineException(PipelineController.PipelineException ex) {
+    Map<String, Object> response = new HashMap<>();
+    response.put("error", "Pipeline Save Error");
+    response.put("message", ex.getMessage());
+    response.put("status", HttpStatus.BAD_REQUEST.value());
+    response.put("timestamp", System.currentTimeMillis());
+
+    // Include additional attributes if available
+    if (ex.additionalAttributes != null && !ex.additionalAttributes.isEmpty()) {
+      response.put("additionalAttributes", ex.additionalAttributes);
+    }
+
+    log.error("PipelineException occurred: {}", ex.getMessage(), ex);
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 
 
