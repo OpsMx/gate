@@ -111,6 +111,10 @@ public class SamlSecurityConfiguration {
   @Bean
   public OpenSaml4AuthenticationProvider authenticationProvider() {
     var authProvider = new OpenSaml4AuthenticationProvider();
+    authProvider.setAssertionValidator(
+        OpenSaml4AuthenticationProvider.createDefaultAssertionValidator());
+    authProvider.setResponseValidator(
+        OpenSaml4AuthenticationProvider.createDefaultResponseValidator());
     authProvider.setResponseAuthenticationConverter(extractUserDetails());
     return authProvider;
   }
@@ -158,7 +162,8 @@ public class SamlSecurityConfiguration {
       acsLocation =
           new URI(
               relyingPartyProperties.getRegistration().get(registrationId).getAcs().getLocation());
-      loginProcessingUrl = acsLocation.getPath().replace(registrationId, "{registrationId}");
+      loginProcessingUrl =
+          "{baseUrl}" + acsLocation.getPath().replace(registrationId, "{registrationId}");
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     } catch (Exception e) {
