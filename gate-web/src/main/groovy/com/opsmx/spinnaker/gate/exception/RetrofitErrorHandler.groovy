@@ -38,7 +38,7 @@ import retrofit.RetrofitError
 @Slf4j
 @ControllerAdvice(basePackageClasses = [OpsmxSaporPolicyController.class, OpsmxAutopilotController.class,
 OpsmxAuditClientServiceController.class, OpsmxDashboardController.class, OpsmxPlatformController.class,
-OpsmxOesController.class, OpsmxVisibilityController.class, OpsmxAuditServiceController.class])
+OpsmxOesController.class, OpsmxVisibilityController.class, OpsmxAuditServiceController.class, PipelineController.class])
 class RetrofitErrorHandler {
 
   static final Gson gson = new Gson()
@@ -72,17 +72,15 @@ class RetrofitErrorHandler {
     return new ResponseEntity<Object>(defaultErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
   }
 
-  // New method to handle PipelineException
   @ExceptionHandler(PipelineController.PipelineException)
   @ResponseBody
-  public ResponseEntity<Map<String, Object>> handlePipelineException(PipelineController.PipelineException ex) {
+  ResponseEntity<Map<String, Object>> handlePipelineException(PipelineController.PipelineException ex) {
     Map<String, Object> response = new HashMap<>();
     response.put("error", "Pipeline Save Error");
     response.put("message", ex.getMessage());
     response.put("status", HttpStatus.BAD_REQUEST.value());
     response.put("timestamp", System.currentTimeMillis());
 
-    // Include additional attributes if available
     if (ex.additionalAttributes != null && !ex.additionalAttributes.isEmpty()) {
       response.put("additionalAttributes", ex.additionalAttributes);
     }

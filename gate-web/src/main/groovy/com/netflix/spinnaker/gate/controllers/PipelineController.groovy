@@ -116,17 +116,13 @@ class PipelineController {
     String resultStatus = result.get("status")
 
     if (!"SUCCEEDED".equalsIgnoreCase(resultStatus)) {
-      log.error("Pipeline save operation failed. Result: {}", result)
+      log.debug("Pipeline save operation failed. Result: {}", result)
 
-      String exception = result.variables.find { it['key'] == "exception" }?.value?.details?.errors?.getAt(0)
-
-      if (!exception) {
-        exception = "Pipeline save operation did not succeed Task ID: ${result.get('id', 'unknown task id')}, Status: ${resultStatus}"
-      }
-      log.error("Throwing PipelineException: {}", exception)
-      throw new PipelineException(exception)
+      String exception = result.variables.find { it.key == "exception" }?.value?.details?.errors?.getAt(0)
+      throw new PipelineException(
+        exception ?: "Pipeline save operation did not succeed: ${result.get("id", "unknown task id")} (status: ${resultStatus})"
+      )
     }
-
   }
 
   @Operation(summary = "Rename a pipeline definition")
