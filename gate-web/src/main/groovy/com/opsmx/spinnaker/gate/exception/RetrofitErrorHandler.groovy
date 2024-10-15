@@ -43,15 +43,17 @@ class RetrofitErrorHandler {
 
   static final Gson gson = new Gson()
 
-  @ExceptionHandler([RetrofitError.class])
+  @ExceptionHandler([RetrofitError.class, PipelineController.PipelineException.class])
   @ResponseBody ResponseEntity<Object> handleRetrofitError(RetrofitError retrofitError){
     if (retrofitError!=null){
-      log.warn("Exception occurred in OES downstream services : {}", retrofitError.getMessage())
+      log.warn("Exception occurred in OES downstream services : {}", retrofitError.getBody())
       if (retrofitError.getKind() == RetrofitError.Kind.NETWORK){
+        log.warn("Retrofit Exception occurred of kind NETwork : {}", retrofitError.getBody())
         ErrorResponseModel networkErrorResponse = populateNetworkErrorResponse(retrofitError)
         return new ResponseEntity<Object>(networkErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
       }
       if (retrofitError.getResponse()!=null && retrofitError.getResponse().getStatus() > 0){
+        log.warn("Exception occurred in  : {}", retrofitError.getBody())
         if (retrofitError.getResponse().getBody() !=null){
           InputStream inputStream = null
           try {
@@ -72,7 +74,7 @@ class RetrofitErrorHandler {
     return new ResponseEntity<Object>(defaultErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
   }
 
-  @ExceptionHandler(PipelineController.PipelineException)
+  /*@ExceptionHandler(PipelineController.PipelineException)
   @ResponseBody
   ResponseEntity<Map<String, Object>> handlePipelineException(PipelineController.PipelineException ex) {
     Map<String, Object> response = new HashMap<>();
@@ -87,7 +89,7 @@ class RetrofitErrorHandler {
 
     log.error("PipelineException occurred: {}", ex.getMessage(), ex);
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-  }
+  }*/
 
 
   private ErrorResponseModel populateDefaultErrorResponseModel() {
