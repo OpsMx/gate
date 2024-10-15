@@ -43,7 +43,7 @@ class RetrofitErrorHandler {
 
   static final Gson gson = new Gson()
 
-  @ExceptionHandler([RetrofitError.class, PipelineController.PipelineException.class])
+  /*@ExceptionHandler([RetrofitError.class, PipelineController.PipelineException.class])
   @ResponseBody ResponseEntity<Object> handleRetrofitError(RetrofitError retrofitError){
     if (retrofitError!=null){
       log.warn("Exception occurred in OES downstream services : {}", retrofitError.getBody())
@@ -72,7 +72,7 @@ class RetrofitErrorHandler {
     }
     ErrorResponseModel defaultErrorResponse = populateDefaultErrorResponseModel()
     return new ResponseEntity<Object>(defaultErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
-  }
+  }*/
 
   /*@ExceptionHandler(PipelineController.PipelineException)
   @ResponseBody
@@ -108,5 +108,45 @@ class RetrofitErrorHandler {
     errorResponseModel.setTimeStampMillis(System.currentTimeMillis())
     errorResponseModel.setUrl(retrofitError.getUrl())
     return errorResponseModel
+  }
+
+  @ExceptionHandler({RetrofitError.class PipelineController.PipelineException.class})
+  @ResponseBody
+  ResponseEntity<Map<String, Object>> handleMultipleExceptions(Exception ex) {
+    Map<String, Object> response = new HashMap<>();
+    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR; // Default status
+
+    if (ex instanceof RetrofitError) {
+
+      RetrofitError retrofitError = (RetrofitError) ex;
+      if (retrofitError.getKind() == RetrofitError.Kind.NETWORK) {
+        response.put("errorType", "Network Error");
+        response.put("message", retrofitError.getMessage());
+        status = HttpStatus.INTERNAL_SERVER_ERROR;
+      } else if (retrofitError.getResponse() != null && retrofitError.getResponse().getStatus() > 0) {
+        status = HttpStatus.valueOf(retrofitError.getResponse().getStatus());
+        try (InputStream inputStream = retrofitError.getResponse().getBody().in()) {
+          String errorResponse = new String(IOUtils.toByteArray(inputStream));
+          response.putAll(gson.fromJson(errorResponse, Map.class));
+        } catch (Exception ignored) {
+          // Unable to parse the response body
+          response.put("message", "Failed to read response body");
+        }
+      } else
+        ErrorResponseModel defaultErrorResponse = populateDefaultErrorResponseModel()
+    } else if (ex instanceof PipelineController.PipelineException) {
+      // Handle PipelineException
+      PipelineController.PipelineException pipelineException = (PipelineController.PipelineException) ex;
+      response.put("errorType", "Pipeline Error");
+      response.put("message", pipelineException.getMessage());
+      response.putAll(pipelineException.getAdditionalAttributes());
+      status = HttpStatus.BAD_REQUEST;
+    }
+
+    // Add common response attributes
+    response.put("timestamp", System.currentTimeMillis());
+    response.put("status", status.value());
+
+    return new ResponseEntity<>(response, status);
   }
 }
