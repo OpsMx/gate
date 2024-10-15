@@ -23,6 +23,7 @@ import com.netflix.spinnaker.gate.controllers.OpsmxOesController
 import com.netflix.spinnaker.gate.controllers.OpsmxPlatformController
 import com.netflix.spinnaker.gate.controllers.OpsmxVisibilityController
 import com.netflix.spinnaker.gate.controllers.PipelineController
+import com.netflix.spinnaker.gate.exceptions.OesRequestException
 import com.opsmx.spinnaker.gate.controllers.OpsmxAuditClientServiceController
 import com.opsmx.spinnaker.gate.controllers.OpsmxAuditServiceController
 import com.opsmx.spinnaker.gate.controllers.OpsmxSaporPolicyController
@@ -110,7 +111,7 @@ class RetrofitErrorHandler {
     return errorResponseModel
   }
 
-  @ExceptionHandler([RetrofitError, PipelineController.PipelineException])
+  @ExceptionHandler([RetrofitError, PipelineController.PipelineException, OesRequestException])
   @ResponseBody
   ResponseEntity<Map<String, Object>> handleMultipleExceptions(Exception ex) {
     Map<String, Object> response = [:] // Groovy map initialization
@@ -136,7 +137,7 @@ class RetrofitErrorHandler {
         // Populate default error response
         response.putAll(populateDefaultErrorResponseModel())
       }
-    } else if (ex instanceof PipelineController.PipelineException) {
+    } else if (ex instanceof PipelineController.PipelineException || ex instanceof OesRequestException) {
       // Handle PipelineException
       def pipelineException = (PipelineController.PipelineException) ex
       response.errorType = "Pipeline Error"
