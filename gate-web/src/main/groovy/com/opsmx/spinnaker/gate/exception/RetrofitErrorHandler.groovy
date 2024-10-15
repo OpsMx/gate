@@ -110,43 +110,46 @@ class RetrofitErrorHandler {
     return errorResponseModel
   }
 
-  @ExceptionHandler({RetrofitError.class PipelineController.PipelineException.class})
+  @ExceptionHandler([RetrofitError, PipelineController.PipelineException])
   @ResponseBody
   ResponseEntity<Map<String, Object>> handleMultipleExceptions(Exception ex) {
-    Map<String, Object> response = new HashMap<>();
-    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR; // Default status
+    Map<String, Object> response = [:] // Groovy map initialization
+    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR // Default status
 
     if (ex instanceof RetrofitError) {
-
-      RetrofitError retrofitError = (RetrofitError) ex;
-      if (retrofitError.getKind() == RetrofitError.Kind.NETWORK) {
-        response.put("errorType", "Network Error");
-        response.put("message", retrofitError.getMessage());
-        status = HttpStatus.INTERNAL_SERVER_ERROR;
-      } else if (retrofitError.getResponse() != null && retrofitError.getResponse().getStatus() > 0) {
-        status = HttpStatus.valueOf(retrofitError.getResponse().getStatus());
-        try (InputStream inputStream = retrofitError.getResponse().getBody().in()) {
-          String errorResponse = new String(IOUtils.toByteArray(inputStream));
-          response.putAll(gson.fromJson(errorResponse, Map.class));
+      def retrofitError = (RetrofitError) ex
+      if (retrofitError.kind == RetrofitError.Kind.NETWORK) {
+        response.errorType = "Network Error"
+        response.message = retrofitError.message
+        status = HttpStatus.INTERNAL_SERVER_ERROR
+      } else if (retrofitError.response && retrofitError.response.status > 0) {
+        status = HttpStatus.valueOf(retrofitError.response.status)
+        try {
+          InputStream inputStream = retrofitError.response.body.in()
+          String errorResponse = new String(IOUtils.toByteArray(inputStream))
+          response.putAll(gson.fromJson(errorResponse, Map))
         } catch (Exception ignored) {
           // Unable to parse the response body
-          response.put("message", "Failed to read response body");
+          response.message = "Failed to read response body"
         }
-      } else
-        ErrorResponseModel defaultErrorResponse = populateDefaultErrorResponseModel()
+      } else {
+        // Populate default error response
+        response.putAll(populateDefaultErrorResponseModel())
+      }
     } else if (ex instanceof PipelineController.PipelineException) {
       // Handle PipelineException
-      PipelineController.PipelineException pipelineException = (PipelineController.PipelineException) ex;
-      response.put("errorType", "Pipeline Error");
-      response.put("message", pipelineException.getMessage());
-      response.putAll(pipelineException.getAdditionalAttributes());
-      status = HttpStatus.BAD_REQUEST;
+      def pipelineException = (PipelineController.PipelineException) ex
+      response.errorType = "Pipeline Error"
+      response.message = pipelineException.message
+      response.putAll(pipelineException.additionalAttributes)
+      status = HttpStatus.BAD_REQUEST
     }
 
     // Add common response attributes
-    response.put("timestamp", System.currentTimeMillis());
-    response.put("status", status.value());
+    response.timestamp = System.currentTimeMillis()
+    response.status = status.value()
 
-    return new ResponseEntity<>(response, status);
+    return new ResponseEntity<>(response, status)
   }
+
 }
