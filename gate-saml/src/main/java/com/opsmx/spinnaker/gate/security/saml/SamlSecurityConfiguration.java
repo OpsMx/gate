@@ -50,10 +50,6 @@ import org.springframework.security.saml2.provider.service.authentication.OpenSa
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
-import org.springframework.security.saml2.provider.service.web.DefaultRelyingPartyRegistrationResolver;
-import org.springframework.security.saml2.provider.service.web.RelyingPartyRegistrationResolver;
-import org.springframework.security.saml2.provider.service.web.authentication.OpenSaml4AuthenticationRequestResolver;
-import org.springframework.security.saml2.provider.service.web.authentication.Saml2AuthenticationRequestResolver;
 import org.springframework.security.saml2.provider.service.web.authentication.Saml2WebSsoAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
@@ -115,10 +111,10 @@ public class SamlSecurityConfiguration {
   @Bean
   public OpenSaml4AuthenticationProvider authenticationProvider() {
     var authProvider = new OpenSaml4AuthenticationProvider();
-    /*authProvider.setAssertionValidator(
+    authProvider.setAssertionValidator(
         OpenSaml4AuthenticationProvider.createDefaultAssertionValidator());
     authProvider.setResponseValidator(
-        OpenSaml4AuthenticationProvider.createDefaultResponseValidator());*/
+        OpenSaml4AuthenticationProvider.createDefaultResponseValidator());
     authProvider.setResponseAuthenticationConverter(extractUserDetails());
     return authProvider;
   }
@@ -127,18 +123,6 @@ public class SamlSecurityConfiguration {
   public ProviderManager authenticationManager(
       OpenSaml4AuthenticationProvider authenticationProvider) {
     return new ProviderManager(authenticationProvider);
-  }
-
-  @Bean
-  public Saml2AuthenticationRequestResolver authenticationRequestResolver(
-      RelyingPartyRegistrationRepository registrations) {
-    RelyingPartyRegistrationResolver registrationResolver =
-        new DefaultRelyingPartyRegistrationResolver(registrations);
-    OpenSaml4AuthenticationRequestResolver authenticationRequestResolver =
-        new OpenSaml4AuthenticationRequestResolver(registrationResolver);
-    authenticationRequestResolver.setAuthnRequestCustomizer(
-        (context) -> context.getAuthnRequest().setForceAuthn(true));
-    return authenticationRequestResolver;
   }
 
   @Bean
@@ -169,7 +153,6 @@ public class SamlSecurityConfiguration {
         new HttpSessionSecurityContextRepository());
     saml2WebSsoAuthenticationFilter.setSessionAuthenticationStrategy(
         new ChangeSessionIdAuthenticationStrategy());
-
     return saml2WebSsoAuthenticationFilter;
   }
 
