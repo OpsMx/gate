@@ -39,12 +39,12 @@ import retrofit.RetrofitError
 @Slf4j
 @ControllerAdvice(basePackageClasses = [OpsmxSaporPolicyController.class, OpsmxAutopilotController.class,
 OpsmxAuditClientServiceController.class, OpsmxDashboardController.class, OpsmxPlatformController.class,
-OpsmxOesController.class, OpsmxVisibilityController.class, OpsmxAuditServiceController.class, PipelineController.class])
+OpsmxOesController.class, OpsmxVisibilityController.class, OpsmxAuditServiceController.class])
 class RetrofitErrorHandler {
 
   static final Gson gson = new Gson()
 
-  /*@ExceptionHandler([RetrofitError.class, PipelineController.PipelineException.class])
+  @ExceptionHandler([RetrofitError])
   @ResponseBody ResponseEntity<Object> handleRetrofitError(RetrofitError retrofitError){
     if (retrofitError!=null){
       log.warn("Exception occurred in OES downstream services : {}", retrofitError.getBody())
@@ -73,9 +73,9 @@ class RetrofitErrorHandler {
     }
     ErrorResponseModel defaultErrorResponse = populateDefaultErrorResponseModel()
     return new ResponseEntity<Object>(defaultErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
-  }*/
+  }
 
-  /*@ExceptionHandler(PipelineController.PipelineException)
+  @ExceptionHandler(PipelineController.PipelineException)
   @ResponseBody
   ResponseEntity<Map<String, Object>> handlePipelineException(PipelineController.PipelineException ex) {
     Map<String, Object> response = new HashMap<>();
@@ -90,7 +90,25 @@ class RetrofitErrorHandler {
 
     log.error("PipelineException occurred: {}", ex.getMessage(), ex);
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-  }*/
+  }
+
+  @ExceptionHandler(OesRequestException)
+  @ResponseBody
+  ResponseEntity<Map<String, Object>> handleOesRequestException(OesRequestException ex) {
+    Map<String, Object> response = new HashMap<>()  // Groovy map initialization
+    response.error = "OES Request Error"
+    response.message = ex.message
+    response.status = HttpStatus.BAD_REQUEST.value()
+    response.timestamp = System.currentTimeMillis()
+
+    if (ex.additionalAttributes != null && !ex.additionalAttributes.isEmpty()) {
+      response.put("additionalAttributes", ex.additionalAttributes);
+    }
+
+    log.error("PipelineException occurred: {}", ex.getMessage(), ex);
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  }
+
 
 
   private ErrorResponseModel populateDefaultErrorResponseModel() {
@@ -111,7 +129,9 @@ class RetrofitErrorHandler {
     return errorResponseModel
   }
 
-  @ExceptionHandler([RetrofitError, PipelineController.PipelineException, OesRequestException])
+
+
+  /*@ExceptionHandler([RetrofitError, PipelineController.PipelineException, OesRequestException])
   @ResponseBody
   ResponseEntity<Map<String, Object>> handleMultipleExceptions(Exception ex) {
     Map<String, Object> response = [:] // Groovy map initialization
@@ -151,6 +171,6 @@ class RetrofitErrorHandler {
     response.status = status.value()
 
     return new ResponseEntity<>(response, status)
-  }
+  }*/
 
 }
