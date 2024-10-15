@@ -100,12 +100,7 @@ class RetrofitErrorHandler {
     response.message = ex.message
     response.status = HttpStatus.BAD_REQUEST.value()
     response.timestamp = System.currentTimeMillis()
-
-    if (ex.additionalAttributes != null && !ex.additionalAttributes.isEmpty()) {
-      response.put("additionalAttributes", ex.additionalAttributes);
-    }
-
-    log.error("PipelineException occurred: {}", ex.getMessage(), ex);
+    log.error("OesRequest Exception occurred: {}", ex.getMessage(), ex);
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 
