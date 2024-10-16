@@ -207,12 +207,15 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
 
   @Bean
+  @ConditionalOnProperty("services.front50.enabled")
   Front50Service front50Service() {
     createClient "front50", Front50Service
   }
-
+//why bean creation is done without considering properties
   @Bean
+  @ConditionalOnProperty("services.clouddriver.enabled")
   ClouddriverService clouddriverService() {
+    log.info("clouddriverService bean Created without considering properties");
     createClient "clouddriver", ClouddriverService
   }
 
