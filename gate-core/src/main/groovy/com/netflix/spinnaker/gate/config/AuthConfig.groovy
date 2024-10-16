@@ -633,10 +633,10 @@ class AuthConfig {
     void onLogoutSuccess(HttpServletRequest request,
                          HttpServletResponse response,
                          Authentication authentication) throws IOException, ServletException {
-      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      /*Authentication auth = SecurityContextHolder.getContext().getAuthentication();
       if (auth != null){
         new SecurityContextLogoutHandler().logout(request, response, auth);
-      }
+      }*/
       def username = (authentication?.getPrincipal() as User)?.username
       if (username) {
         permissionService.logout(username)
