@@ -78,34 +78,32 @@ class RetrofitErrorHandler {
   @ExceptionHandler(PipelineController.PipelineException)
   @ResponseBody
   ResponseEntity<Map<String, Object>> handlePipelineException(PipelineController.PipelineException ex) {
-    Map<String, Object> response = [:]
-    response.put("error", "Pipeline Save Error")
-    response.put("message", ex.message)
-    response.put("status", HttpStatus.BAD_REQUEST.value())
-    response.put("timestamp", System.currentTimeMillis())
-    log.error("Pipeline Exception occurred: {}", ex.getMessage(), ex);
+    log.error("PipelineException occurred: {}", ex.message, ex)
+    Map<String, Object> response = createResponseMap(ex, "Pipeline Save Error")
 
     if (ex.additionalAttributes) {
       response.put("additionalAttributes", ex.additionalAttributes)
     }
-
-    log.error("PipelineException occurred: {}", ex.message, ex)
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST)
   }
-
 
   @ExceptionHandler(OesRequestException)
   @ResponseBody
   ResponseEntity<Map<String, Object>> handleOesRequestException(OesRequestException ex) {
+    log.error("OesRequestException occurred: {}", ex.message, ex)
+    Map<String, Object> response = createResponseMap(ex, "OES Request Exception")
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST)
+  }
+
+  private Map<String, Object> createResponseMap(Exception ex, String errorMessage) {
     Map<String, Object> response = [:]
-    response.put("error", "OES Request Exception")
+    response.put("error", errorMessage)
     response.put("message", ex.message)
     response.put("status", HttpStatus.BAD_REQUEST.value())
     response.put("timestamp", System.currentTimeMillis())
-    log.error("OesRequest Exception occurred: {}", ex.getMessage(), ex);
-    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-  }
 
+    return response
+  }
 
 
   private ErrorResponseModel populateDefaultErrorResponseModel() {
