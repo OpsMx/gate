@@ -52,7 +52,7 @@ class DefaultProviderLookupService implements ProviderLookupService, AccountLook
   GateInstallationModes gateInstallationMode
 
   @Autowired
-  DefaultProviderLookupService(ClouddriverService clouddriverService) {
+  DefaultProviderLookupService(@Autowired(required = false)ClouddriverService clouddriverService) {
     this.clouddriverService = clouddriverService
   }
 
@@ -60,7 +60,7 @@ class DefaultProviderLookupService implements ProviderLookupService, AccountLook
   void refreshCache() {
     try {
       if (gateInstallationMode.equals(GateInstallationModes.common)) {
-        def accounts = AuthenticatedRequest.allowAnonymous { clouddriverService.getAccountDetails() }
+        def accounts = AuthenticatedRequest.allowAnonymous { clouddriverService != null ? clouddriverService.getAccountDetails() : null }
         //migration support, prefer permissions configuration, translate requiredGroupMembership
         // (for credentialsservice in non fiat mode) into permissions collection.
         //
