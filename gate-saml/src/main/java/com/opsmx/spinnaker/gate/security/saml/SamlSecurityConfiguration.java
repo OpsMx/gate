@@ -321,6 +321,11 @@ public class SamlSecurityConfiguration {
 
   @Bean
   public DefaultCookieSerializerCustomizer cookieSerializerCustomizer() {
-    return cookieSerializer -> cookieSerializer.setSameSite(null);
+    return cookieSerializer -> {
+      // Default of sameSite = "Lax" breaks SAML; setting to None with secure cookies here
+      cookieSerializer.setSameSite("None");
+      cookieSerializer.setUseSecureCookie(true);
+      cookieSerializer.setUseHttpOnlyCookie(true);
+    };
   }
 }
