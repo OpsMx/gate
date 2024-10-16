@@ -51,7 +51,7 @@ class DefaultProviderLookupService implements ProviderLookupService, AccountLook
   @Value('${gate.installation.mode:common}')
   GateInstallationModes gateInstallationMode
 
-  @Autowired
+
   DefaultProviderLookupService(@Autowired(required = false)ClouddriverService clouddriverService) {
     this.clouddriverService = clouddriverService
   }
