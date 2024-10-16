@@ -20,6 +20,7 @@ import com.netflix.spinnaker.gate.services.appengine.StorageAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/storage")
 @Deprecated
+@ConditionalOnProperty(
+    name = "services.clouddriver.enabled",
+    havingValue = "true",
+    matchIfMissing = false)
 public class StorageAccountController {
 
   @Autowired private StorageAccountService storageAccountService;
