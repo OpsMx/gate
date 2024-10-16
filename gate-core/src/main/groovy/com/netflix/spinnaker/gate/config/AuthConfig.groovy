@@ -38,6 +38,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
 import org.springframework.stereotype.Component
 
@@ -632,6 +633,10 @@ class AuthConfig {
     void onLogoutSuccess(HttpServletRequest request,
                          HttpServletResponse response,
                          Authentication authentication) throws IOException, ServletException {
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      if (auth != null){
+        new SecurityContextLogoutHandler().logout(request, response, auth);
+      }
       def username = (authentication?.getPrincipal() as User)?.username
       if (username) {
         permissionService.logout(username)
