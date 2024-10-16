@@ -50,6 +50,7 @@ import com.netflix.spinnaker.kork.web.selector.SelectableService
 import com.netflix.spinnaker.kork.web.selector.ServiceSelector
 import com.netflix.spinnaker.okhttp.OkHttp3MetricsInterceptor
 import com.netflix.spinnaker.okhttp.OkHttpClientConfigurationProperties
+import com.opsmx.spinnaker.gate.services.NoOpClouddriverService
 import com.opsmx.spinnaker.gate.services.OpsmxAuditClientService
 import com.opsmx.spinnaker.gate.services.OpsmxAuditService
 import groovy.transform.CompileStatic
@@ -210,8 +211,15 @@ class GateConfig extends RedisHttpSessionConfiguration {
   Front50Service front50Service() {
     createClient "front50", Front50Service
   }
+  @Bean
+  @Primary
+  @ConditionalOnProperty(name = "services.clouddriver.enabled", havingValue = "false")
+  public ClouddriverService noOpClouddriverService() {
+    return new NoOpClouddriverService();
+  }
 
   @Bean
+  @ConditionalOnProperty(name = "services.clouddriver.enabled", havingValue = "true")
   ClouddriverService clouddriverService() {
     createClient "clouddriver", ClouddriverService
   }
