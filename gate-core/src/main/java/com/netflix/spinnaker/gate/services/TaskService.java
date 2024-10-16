@@ -41,7 +41,7 @@ public class TaskService {
   @Autowired
   public TaskService(
       OrcaServiceSelector orcaServiceSelector,
-      ClouddriverServiceSelector clouddriverServiceSelector,
+      @Autowired(required = false) ClouddriverServiceSelector clouddriverServiceSelector,
       TaskServiceProperties taskServiceProperties) {
     this.orcaServiceSelector = orcaServiceSelector;
     this.clouddriverServiceSelector = clouddriverServiceSelector;

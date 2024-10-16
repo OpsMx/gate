@@ -35,7 +35,7 @@ class ProjectService {
   @Autowired
   OrcaServiceSelector orcaServiceSelector
 
-  @Autowired
+  @Autowired(required = false)
   ClouddriverServiceSelector clouddriverServiceSelector
 
   List<Map> getAll() {

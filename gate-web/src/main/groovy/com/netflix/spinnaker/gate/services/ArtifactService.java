@@ -37,7 +37,8 @@ public class ArtifactService {
 
   @Autowired
   public ArtifactService(
-      ClouddriverServiceSelector clouddriverServiceSelector, Optional<IgorService> igorService) {
+      @Autowired(required = false) ClouddriverServiceSelector clouddriverServiceSelector,
+      Optional<IgorService> igorService) {
     this.clouddriverServiceSelector = clouddriverServiceSelector;
     this.igorService = igorService;
   }

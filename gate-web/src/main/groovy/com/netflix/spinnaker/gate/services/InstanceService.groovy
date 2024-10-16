@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component
 class InstanceService {
   private static final String GROUP = "instances"
 
-  @Autowired
+  @Autowired(required = false)
   ClouddriverServiceSelector clouddriverServiceSelector
 
   @Autowired

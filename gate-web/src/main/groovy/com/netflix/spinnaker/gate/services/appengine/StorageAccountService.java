@@ -26,10 +26,7 @@ import org.springframework.stereotype.Component;
 @CompileStatic
 @Component
 @Deprecated
-@ConditionalOnProperty(
-    name = "services.clouddriver.enabled",
-    havingValue = "true",
-    matchIfMissing = false)
+@ConditionalOnProperty("services.clouddriver.enabled")
 public class StorageAccountService {
 
   private static final String GROUP = "storageAccount";

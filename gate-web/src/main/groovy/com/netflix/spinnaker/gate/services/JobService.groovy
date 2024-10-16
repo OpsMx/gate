@@ -28,7 +28,7 @@ import retrofit.RetrofitError
 @Component
 class JobService {
 
-  @Autowired
+  @Autowired(required = false)
   ClouddriverServiceSelector clouddriverServiceSelector
 
   @Autowired

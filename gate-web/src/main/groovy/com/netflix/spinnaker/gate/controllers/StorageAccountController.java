@@ -29,10 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/storage")
 @Deprecated
-@ConditionalOnProperty(
-    name = "services.clouddriver.enabled",
-    havingValue = "true",
-    matchIfMissing = false)
+@ConditionalOnProperty("services.clouddriver.enabled")
 public class StorageAccountController {
 
   @Autowired private StorageAccountService storageAccountService;

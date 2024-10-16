@@ -18,9 +18,11 @@ package com.netflix.spinnaker.gate.services
 
 import com.netflix.spinnaker.gate.services.internal.ClouddriverService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
 @Component
+@ConditionalOnProperty("services.clouddriver.enabled")
 class EcsServerGroupEventsService {
 
   ClouddriverService clouddriver

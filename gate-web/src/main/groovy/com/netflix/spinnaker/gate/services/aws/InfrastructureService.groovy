@@ -29,7 +29,7 @@ class InfrastructureService {
 
   private static final String GROUP = "infrastructure"
 
-  @Autowired
+  @Autowired(required = false)
   ClouddriverServiceSelector clouddriverServiceSelector
 
   List<Map> getInstanceTypes(String selectorKey = null) {

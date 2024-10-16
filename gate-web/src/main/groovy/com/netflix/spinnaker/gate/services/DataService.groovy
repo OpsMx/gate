@@ -19,10 +19,12 @@ package com.netflix.spinnaker.gate.services
 import com.netflix.spinnaker.gate.services.internal.ClouddriverServiceSelector
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
 @CompileStatic
 @Component
+@ConditionalOnProperty("services.clouddriver.enabled")
 class DataService {
 
   @Autowired

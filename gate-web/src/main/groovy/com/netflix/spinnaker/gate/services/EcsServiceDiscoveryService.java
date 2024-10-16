@@ -19,9 +19,11 @@ import com.netflix.spinnaker.gate.services.internal.ClouddriverService;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnProperty("services.clouddriver.enabled")
 public class EcsServiceDiscoveryService {
 
   private ClouddriverService clouddriver;
