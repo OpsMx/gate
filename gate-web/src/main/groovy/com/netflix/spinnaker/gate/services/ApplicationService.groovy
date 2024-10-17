@@ -126,20 +126,20 @@ class ApplicationService {
   }
 
   List<Map> getApplicationHistory(String name, int maxResults) {
-    return front50Service.getApplicationHistory(name, maxResults)
+    return front50Service.orElseThrow(() -> new IllegalStateException("Front50Service is not available")).getApplicationHistory(name, maxResults)
   }
 
   List<Map> getPipelineConfigsForApplication(String app) {
-    return front50Service.getPipelineConfigsForApplication(app, true)
+    return front50Service.orElseThrow(() -> new IllegalStateException("Front50Service is not available")).getPipelineConfigsForApplication(app, true)
   }
 
   Map getPipelineConfigForApplication(String app, String pipelineNameOrId) {
-    return front50Service.getPipelineConfigsForApplication(app, true)
+    return front50Service.orElseThrow(() -> new IllegalStateException("Front50Service is not available")).getPipelineConfigsForApplication(app, true)
       .find { it.name == pipelineNameOrId || it.id == pipelineNameOrId }
   }
 
   List<Map> getStrategyConfigsForApplication(String app) {
-    return front50Service.getStrategyConfigs(app)
+    return front50Service.orElseThrow(() -> new IllegalStateException("Front50Service is not available")).getStrategyConfigs(app)
   }
 
   private Collection<Callable<List<Map>>> buildApplicationListRetrievers(boolean expandClusterNames) {
@@ -242,8 +242,8 @@ class ApplicationService {
     private final AtomicReference<List<Map>> allApplicationsCache
     private final Object principal
 
-    Front50ApplicationListRetriever(Front50Service front50, AtomicReference<List<Map>> allApplicationsCache) {
-      this.front50 = front50
+    Front50ApplicationListRetriever(Optional<Front50Service> front50, AtomicReference<List<Map>> allApplicationsCache) {
+      this.front50 = front50.get()
       this.allApplicationsCache = allApplicationsCache
       this.principal = SecurityContextHolder.context?.authentication?.principal
     }
@@ -276,7 +276,7 @@ class ApplicationService {
     private final Object principal
 
     Front50ApplicationRetriever(String name,
-                                Front50Service front50,
+                                Optional<Front50Service> front50,
                                 AtomicReference<List<Map>> allApplicationsCache) {
       this.name = name
       this.front50 = front50
