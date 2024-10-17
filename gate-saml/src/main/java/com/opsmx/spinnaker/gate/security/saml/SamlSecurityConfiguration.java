@@ -39,7 +39,6 @@ import org.springframework.boot.autoconfigure.session.DefaultCookieSerializerCus
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
@@ -127,12 +126,17 @@ public class SamlSecurityConfiguration {
 
   @Bean
   public Saml2WebSsoAuthenticationFilter saml2WebSsoAuthenticationFilter(
-      RelyingPartyRegistrationRepository relyingPartyRegistrationRepository,
-      AuthenticationManager authenticationManager) {
+      RelyingPartyRegistrationRepository relyingPartyRegistrationRepository) {
     log.info(
         "ACS endpoint configured : {}",
         relyingPartyProperties.getRegistration().get(registrationId).getAcs().getLocation());
     Saml2WebSsoAuthenticationFilter saml2WebSsoAuthenticationFilter;
+    var authProvider = new OpenSaml4AuthenticationProvider();
+    authProvider.setAssertionValidator(
+        OpenSaml4AuthenticationProvider.createDefaultAssertionValidator());
+    authProvider.setResponseValidator(
+        OpenSaml4AuthenticationProvider.createDefaultResponseValidator());
+    authProvider.setResponseAuthenticationConverter(extractUserDetails());
     if (!relyingPartyProperties
         .getRegistration()
         .get(registrationId)
@@ -148,7 +152,7 @@ public class SamlSecurityConfiguration {
           new Saml2WebSsoAuthenticationFilter(relyingPartyRegistrationRepository);
     }
 
-    saml2WebSsoAuthenticationFilter.setAuthenticationManager(authenticationManager);
+    saml2WebSsoAuthenticationFilter.setAuthenticationManager(new ProviderManager(authProvider));
     saml2WebSsoAuthenticationFilter.setSecurityContextRepository(
         new HttpSessionSecurityContextRepository());
     saml2WebSsoAuthenticationFilter.setSessionAuthenticationStrategy(
@@ -176,17 +180,11 @@ public class SamlSecurityConfiguration {
       RememberMeServices rememberMeServices,
       Saml2WebSsoAuthenticationFilter webSsoAuthenticationFilter)
       throws Exception {
-    var authProvider = new OpenSaml4AuthenticationProvider();
-    authProvider.setAssertionValidator(
-        OpenSaml4AuthenticationProvider.createDefaultAssertionValidator());
-    authProvider.setResponseValidator(
-        OpenSaml4AuthenticationProvider.createDefaultResponseValidator());
-    authProvider.setResponseAuthenticationConverter(extractUserDetails());
+
     log.info("Configuring SAML Security");
     authConfig.configure(http);
     http.saml2Login(
             saml2 -> {
-              saml2.authenticationManager(new ProviderManager(authProvider));
               if (!relyingPartyProperties
                   .getRegistration()
                   .get(registrationId)
