@@ -279,7 +279,7 @@ class ApplicationService {
                                 Optional<Front50Service> front50,
                                 AtomicReference<List<Map>> allApplicationsCache) {
       this.name = name
-      this.front50 = front50
+      this.front50 = front50.get()
       this.allApplicationsCache = allApplicationsCache
       this.principal = SecurityContextHolder.context?.authentication?.principal
     }
