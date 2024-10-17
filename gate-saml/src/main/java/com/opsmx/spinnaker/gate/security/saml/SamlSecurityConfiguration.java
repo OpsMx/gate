@@ -50,9 +50,6 @@ import org.springframework.security.saml2.provider.service.authentication.OpenSa
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
-import org.springframework.security.saml2.provider.service.web.DefaultRelyingPartyRegistrationResolver;
-import org.springframework.security.saml2.provider.service.web.authentication.OpenSaml4AuthenticationRequestResolver;
-import org.springframework.security.saml2.provider.service.web.authentication.Saml2AuthenticationRequestResolver;
 import org.springframework.security.saml2.provider.service.web.authentication.Saml2WebSsoAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
@@ -177,8 +174,7 @@ public class SamlSecurityConfiguration {
   public SecurityFilterChain samlFilterChain(
       HttpSecurity http,
       RememberMeServices rememberMeServices,
-      Saml2WebSsoAuthenticationFilter webSsoAuthenticationFilter,
-      RelyingPartyRegistrationRepository relyingPartyRegistrationRepository)
+      Saml2WebSsoAuthenticationFilter webSsoAuthenticationFilter)
       throws Exception {
     var authProvider = new OpenSaml4AuthenticationProvider();
     authProvider.setAssertionValidator(
@@ -187,15 +183,10 @@ public class SamlSecurityConfiguration {
         OpenSaml4AuthenticationProvider.createDefaultResponseValidator());
     authProvider.setResponseAuthenticationConverter(extractUserDetails());
     log.info("Configuring SAML Security");
-    DefaultRelyingPartyRegistrationResolver relyingPartyRegistrationResolver =
-        new DefaultRelyingPartyRegistrationResolver(relyingPartyRegistrationRepository);
     authConfig.configure(http);
-    Saml2AuthenticationRequestResolver saml2AuthenticationRequestResolver =
-        new OpenSaml4AuthenticationRequestResolver(relyingPartyRegistrationResolver);
     http.saml2Login(
             saml2 -> {
               saml2.authenticationManager(new ProviderManager(authProvider));
-              saml2.authenticationRequestResolver(saml2AuthenticationRequestResolver);
               if (!relyingPartyProperties
                   .getRegistration()
                   .get(registrationId)
