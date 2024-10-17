@@ -211,7 +211,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Bean
   @Primary
   @ConditionalOnProperty(name = "services.front50.enabled", havingValue = "false")
-  public Front50Service noOpFront50Service() {
+   Front50Service noOpFront50Service() {
     createClient "front50", NoOpFront50Service;
   }
 
@@ -223,13 +223,15 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Bean
   @Primary
   @ConditionalOnProperty(name = "services.clouddriver.enabled", havingValue = "false")
-  public ClouddriverService noOpClouddriverService() {
+   ClouddriverService noOpClouddriverService() {
+    log.info("NoOpClouddriverService created")
     createClient "clouddriver", NoOpClouddriverService;
   }
 
   @Bean
   @ConditionalOnProperty(name = "services.clouddriver.enabled", havingValue = "true")
   ClouddriverService clouddriverService() {
+    log.info("NoOpClouddriverService NOT created")
     createClient "clouddriver", ClouddriverService
   }
 

@@ -23,6 +23,11 @@ import java.util.Map;
 import retrofit.client.Response;
 
 public class NoOpClouddriverService implements ClouddriverService {
+
+  public NoOpClouddriverService() {
+    System.out.println("NoOpClouddriverService created");
+  }
+
   @Override
   public List<Account> getAccounts() {
     return List.of();
