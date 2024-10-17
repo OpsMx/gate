@@ -22,17 +22,16 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
 @Component
-@ConditionalOnProperty("services.clouddriver.enabled")
 class RoleService {
 
   ClouddriverService clouddriver;
 
   @Autowired
-  RoleService(ClouddriverService clouddriver) {
+  RoleService(@Autowired(required = false)ClouddriverService clouddriver) {
     this.clouddriver = clouddriver
   }
 
   List getRoles(String provider) {
-    clouddriver.getRoles(provider)
+    this.clouddriver != null ? clouddriver.getRoles(provider) : [];
   }
 }
