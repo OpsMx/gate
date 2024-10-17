@@ -314,10 +314,10 @@ class ApplicationService {
     private final AtomicReference<List<Map>> allApplicationsCache
     private final boolean expandClusterNames
 
-    ClouddriverApplicationListRetriever(ClouddriverService clouddriver,
+    ClouddriverApplicationListRetriever(Optional<ClouddriverService> clouddriver,
                                         AtomicReference<List<Map>> allApplicationsCache,
                                         boolean expandClusterNames) {
-      this.clouddriver = clouddriver
+      this.clouddriver = clouddriver.get();
       this.allApplicationsCache = allApplicationsCache
       this.expandClusterNames = expandClusterNames
       this.principal = SecurityContextHolder.context?.authentication?.principal
@@ -350,9 +350,9 @@ class ApplicationService {
     private final Object principal
 
 
-    ClouddriverApplicationRetriever(String name, ClouddriverService clouddriver) {
+    ClouddriverApplicationRetriever(String name, Optional<ClouddriverService> clouddriver) {
       this.name = name
-      this.clouddriver = clouddriver
+      this.clouddriver = clouddriver.get()
       this.principal = SecurityContextHolder.context?.authentication?.principal
     }
 
