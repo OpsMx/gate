@@ -22,6 +22,8 @@ import com.netflix.spinnaker.gate.controllers.OpsmxDashboardController
 import com.netflix.spinnaker.gate.controllers.OpsmxOesController
 import com.netflix.spinnaker.gate.controllers.OpsmxPlatformController
 import com.netflix.spinnaker.gate.controllers.OpsmxVisibilityController
+import com.netflix.spinnaker.gate.controllers.PipelineController
+import com.netflix.spinnaker.gate.exceptions.OesRequestException
 import com.opsmx.spinnaker.gate.controllers.OpsmxAuditClientServiceController
 import com.opsmx.spinnaker.gate.controllers.OpsmxAuditServiceController
 import com.opsmx.spinnaker.gate.controllers.OpsmxSaporPolicyController
@@ -45,12 +47,14 @@ class RetrofitErrorHandler {
   @ExceptionHandler([RetrofitError.class])
   @ResponseBody ResponseEntity<Object> handleRetrofitError(RetrofitError retrofitError){
     if (retrofitError!=null){
-      log.warn("Exception occurred in OES downstream services : {}", retrofitError.getMessage())
+      log.warn("Exception occurred in OES downstream services : {}", retrofitError.getBody())
       if (retrofitError.getKind() == RetrofitError.Kind.NETWORK){
+        log.warn("Retrofit Exception occurred of kind Network : {}", retrofitError.getBody())
         ErrorResponseModel networkErrorResponse = populateNetworkErrorResponse(retrofitError)
         return new ResponseEntity<Object>(networkErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
       }
       if (retrofitError.getResponse()!=null && retrofitError.getResponse().getStatus() > 0){
+        log.warn("Exception occurred in  : {}", retrofitError.getBody())
         if (retrofitError.getResponse().getBody() !=null){
           InputStream inputStream = null
           try {
@@ -69,6 +73,36 @@ class RetrofitErrorHandler {
     }
     ErrorResponseModel defaultErrorResponse = populateDefaultErrorResponseModel()
     return new ResponseEntity<Object>(defaultErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
+  }
+
+  @ExceptionHandler(PipelineController.PipelineException)
+  @ResponseBody
+  ResponseEntity<Map<String, Object>> handlePipelineException(PipelineController.PipelineException ex) {
+    log.error("PipelineException occurred: {}", ex.message, ex)
+    Map<String, Object> response = createResponseMap(ex, "Pipeline Save Error")
+
+    if (ex.additionalAttributes) {
+      response.put("additionalAttributes", ex.additionalAttributes)
+    }
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST)
+  }
+
+  @ExceptionHandler(OesRequestException)
+  @ResponseBody
+  ResponseEntity<Map<String, Object>> handleOesRequestException(OesRequestException ex) {
+    log.error("OesRequestException occurred: {}", ex.message, ex)
+    Map<String, Object> response = createResponseMap(ex, "OES Request Exception")
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST)
+  }
+
+  private Map<String, Object> createResponseMap(Exception ex, String errorMessage) {
+    Map<String, Object> response = [:]
+    response.put("error", errorMessage)
+    response.put("message", ex.message)
+    response.put("status", HttpStatus.BAD_REQUEST.value())
+    response.put("timestamp", System.currentTimeMillis())
+
+    return response
   }
 
 
