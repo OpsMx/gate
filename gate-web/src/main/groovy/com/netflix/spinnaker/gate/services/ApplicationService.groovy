@@ -49,7 +49,7 @@ class ApplicationService {
   ServiceConfiguration serviceConfiguration
 
   @Autowired
-  ClouddriverService clouddriverService
+  Optional<ClouddriverService>  clouddriverService
 
   @Autowired
   Front50Service front50Service
