@@ -52,7 +52,7 @@ class ApplicationService {
   Optional<ClouddriverService>  clouddriverService
 
   @Autowired
-  Front50Service front50Service
+  Optional<Front50Service> front50Service
 
   @Autowired
   ExecutorService executorService
