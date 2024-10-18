@@ -106,6 +106,9 @@ class GateConfig extends RedisHttpSessionConfiguration {
   String retrofitLogLevel
   @Autowired
   RequestInterceptor spinnakerRequestInterceptor
+  @Value('${services.clouddriver.enabled}')
+  boolean  cloudDriverStatus
+
 
   @Autowired
   void setServiceClientProvider(ServiceClientProvider serviceClientProvider) {
@@ -116,6 +119,8 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Autowired
   GateConfig(@Value('${server.session.timeout-in-seconds:3600}') int maxInactiveIntervalInSeconds) {
     super.setMaxInactiveIntervalInSeconds(maxInactiveIntervalInSeconds)
+    log.info(cloudDriverStatus.toString())
+    log.info("clouddriver status read")
   }
 
   /**
@@ -322,7 +327,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
       List<ServiceSelector> selectors = []
       endpoints.each { sourceApp, url ->
-        def service = buildService("clouddriver",  ClouddriverService, newFixedEndpoint(url))
+        def service = buildService("clouddriver",  NoOpClouddriverService, newFixedEndpoint(url))
         selectors << new ByUserOriginSelector(service, 2, ['origin': (Object) sourceApp])
       }
 
