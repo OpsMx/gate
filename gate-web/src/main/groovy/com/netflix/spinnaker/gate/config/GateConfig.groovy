@@ -220,10 +220,10 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Bean
   Front50Service front50Service() {
     if(front50Status) {
-      createClient "front50", Front50Service
+      return createClient( "front50", Front50Service)
     }
     else{
-      createClient "front50", NoOpFront50Service;
+      return createClient ("front50", NoOpFront50Service);
     }
   }
 
@@ -232,11 +232,11 @@ class GateConfig extends RedisHttpSessionConfiguration {
   ClouddriverService clouddriverService() {
     if(cloudDriverStatus){
       log.info("NoOpClouddriverService NOT created")
-      createClient "clouddriver", ClouddriverService
+      return createClient( "clouddriver", ClouddriverService)
     }
     else{
       log.info("NoOpClouddriverService created")
-      createClient "clouddriver", NoOpClouddriverService;
+      return createClient ("clouddriver", NoOpClouddriverService)
     }
   }
 
