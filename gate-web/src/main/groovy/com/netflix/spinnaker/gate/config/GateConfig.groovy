@@ -224,7 +224,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
        createClient "front50", Front50Service
     }
     else{
-       createClient "front50", NoOpFront50Service, null , true
+      return new NoOpFront50Service()
     }
   }
 
@@ -238,7 +238,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
     }
     else{
       log.info("NoOpClouddriverService created")
-       createClient "clouddriver", NoOpClouddriverService, null, true
+      return new NoOpClouddriverService()
     }
   }
 
@@ -304,7 +304,6 @@ class GateConfig extends RedisHttpSessionConfiguration {
   }
 
   @Bean
-  @Primary
   ClouddriverServiceSelector  clouddriverServiceSelector(ClouddriverService defaultClouddriverService,
                                                         DynamicConfigService dynamicConfigService,
                                                         RequestContextProvider contextProvider
@@ -329,7 +328,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
       List<ServiceSelector> selectors = []
       endpoints.each { sourceApp, url ->
-        def service = buildService("clouddriver",cloudDriverStatus ? ClouddriverService : NoOpClouddriverService  , newFixedEndpoint(url))
+        def service = buildService("clouddriver",ClouddriverService  , newFixedEndpoint(url))
         selectors << new ByUserOriginSelector(service, 2, ['origin': (Object) sourceApp])
       }
       if(cloudDriverStatus){
@@ -343,11 +342,8 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
     }
 
-    SelectableService selectableService = createClientSelector("clouddriver", cloudDriverStatus ? ClouddriverService : NoOpClouddriverService)
-    if(cloudDriverStatus){
-      return new ClouddriverServiceSelector(selectableService, dynamicConfigService, contextProvider)
-    }
-    return new NoOpClouddriverServiceSelector(selectableService, dynamicConfigService, contextProvider)
+    SelectableService selectableService = createClientSelector("clouddriver",  ClouddriverService )
+    return new ClouddriverServiceSelector(selectableService, dynamicConfigService, contextProvider)
   }
 
   //---- semi-optional components:
