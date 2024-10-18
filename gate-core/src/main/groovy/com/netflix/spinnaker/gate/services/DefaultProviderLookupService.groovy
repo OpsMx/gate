@@ -53,6 +53,7 @@ class DefaultProviderLookupService implements ProviderLookupService, AccountLook
 
   @Autowired
   DefaultProviderLookupService(ClouddriverService clouddriverService) {
+    log.info("Which bean used here")
     this.clouddriverService = clouddriverService
   }
 
