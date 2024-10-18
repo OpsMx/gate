@@ -108,6 +108,8 @@ class GateConfig extends RedisHttpSessionConfiguration {
   RequestInterceptor spinnakerRequestInterceptor
   @Value('${services.clouddriver.enabled}')
   boolean  cloudDriverStatus
+  @Value('${services.front50.enabled}')
+  boolean  front50Status
 
 
   @Autowired
@@ -213,31 +215,29 @@ class GateConfig extends RedisHttpSessionConfiguration {
     createClient "fiat", FiatService,  "login", true
   }
 
-  @Bean
-  @Primary
-  @ConditionalOnProperty(name = "services.front50.enabled", havingValue = "false")
-   Front50Service noOpFront50Service() {
-    createClient "front50", NoOpFront50Service;
-  }
+
 
   @Bean
-  @ConditionalOnProperty(name = "services.front50.enabled", havingValue = "true")
   Front50Service front50Service() {
-    createClient "front50", Front50Service
-  }
-  @Bean
-  @Primary
-  @ConditionalOnProperty(name = "services.clouddriver.enabled", havingValue = "false")
-   ClouddriverService noOpClouddriverService() {
-    log.info("NoOpClouddriverService created")
-    createClient "clouddriver", NoOpClouddriverService;
+    if(front50Status) {
+      createClient "front50", Front50Service
+    }
+    else{
+      createClient "front50", NoOpFront50Service;
+    }
   }
 
+
   @Bean
-  @ConditionalOnProperty(name = "services.clouddriver.enabled", havingValue = "true")
   ClouddriverService clouddriverService() {
-    log.info("NoOpClouddriverService NOT created")
-    createClient "clouddriver", ClouddriverService
+    if(cloudDriverStatus){
+      log.info("NoOpClouddriverService NOT created")
+      createClient "clouddriver", ClouddriverService
+    }
+    else{
+      log.info("NoOpClouddriverService created")
+      createClient "clouddriver", NoOpClouddriverService;
+    }
   }
 
   @Bean
@@ -300,10 +300,9 @@ class GateConfig extends RedisHttpSessionConfiguration {
   OpsmxSsdOpaService  ssdOpa() {
     createClient "ssdopaservice", OpsmxSsdOpaService
   }
+
   @Bean
-  @Primary
-  @ConditionalOnProperty(name = "services.clouddriver.enabled", havingValue = "false")
-  ClouddriverServiceSelector  noOpClouddriverService(ClouddriverService defaultClouddriverService,
+  ClouddriverServiceSelector  clouddriverServiceSelector(ClouddriverService defaultClouddriverService,
                                                         DynamicConfigService dynamicConfigService,
                                                         RequestContextProvider contextProvider
   ) {
@@ -327,54 +326,25 @@ class GateConfig extends RedisHttpSessionConfiguration {
 
       List<ServiceSelector> selectors = []
       endpoints.each { sourceApp, url ->
-        def service = buildService("clouddriver",  NoOpClouddriverService, newFixedEndpoint(url))
+        def service = buildService("clouddriver",cloudDriverStatus ? ClouddriverService : NoOpClouddriverService  , newFixedEndpoint(url))
         selectors << new ByUserOriginSelector(service, 2, ['origin': (Object) sourceApp])
       }
+      if(cloudDriverStatus){
+        return new ClouddriverServiceSelector(
+          new SelectableService(selectors ), dynamicConfigService, contextProvider)
+      }
+      else{
+        return new NoOpClouddriverServiceSelector(
+          new SelectableService(selectors ), dynamicConfigService, contextProvider)
+      }
 
-      return new NoOpClouddriverServiceSelector(
-        new SelectableService(selectors ), dynamicConfigService, contextProvider)
     }
 
-    SelectableService selectableService = createClientSelector("clouddriver", ClouddriverService)
+    SelectableService selectableService = createClientSelector("clouddriver", cloudDriverStatus ? ClouddriverService : NoOpClouddriverService)
+    if(cloudDriverStatus){
+      return new ClouddriverServiceSelector(selectableService, dynamicConfigService, contextProvider)
+    }
     return new NoOpClouddriverServiceSelector(selectableService, dynamicConfigService, contextProvider)
-  }
-
-  @Bean
-  @ConditionalOnProperty(name = "services.clouddriver.enabled", havingValue = "true")
-  ClouddriverServiceSelector clouddriverServiceSelector(ClouddriverService defaultClouddriverService,
-                                                        DynamicConfigService dynamicConfigService,
-                                                        RequestContextProvider contextProvider
-  ) {
-    if (serviceConfiguration.getService("clouddriver").getConfig().containsKey("dynamicEndpoints")) {
-      def endpoints = (Map<String, String>) serviceConfiguration.getService("clouddriver").getConfig().get("dynamicEndpoints")
-      // translates the following config:
-      //   dynamicEndpoints:
-      //     deck: url
-
-      // into a SelectableService that would be produced by an equivalent config:
-      //   baseUrl: url
-      //   config:
-      //     selectorClass: com.netflix.spinnaker.kork.web.selector.ByUserOriginSelector
-      //     priority: 2
-      //     origin: deck
-
-      def defaultSelector = new DefaultServiceSelector(
-        defaultClouddriverService,
-        1,
-        null)
-
-      List<ServiceSelector> selectors = []
-      endpoints.each { sourceApp, url ->
-        def service = buildService("clouddriver",  ClouddriverService, newFixedEndpoint(url))
-        selectors << new ByUserOriginSelector(service, 2, ['origin': (Object) sourceApp])
-      }
-
-      return new ClouddriverServiceSelector(
-        new SelectableService(selectors ), dynamicConfigService, contextProvider)
-    }
-
-    SelectableService selectableService = createClientSelector("clouddriver", ClouddriverService)
-    return new ClouddriverServiceSelector(selectableService, dynamicConfigService, contextProvider)
   }
 
   //---- semi-optional components:
