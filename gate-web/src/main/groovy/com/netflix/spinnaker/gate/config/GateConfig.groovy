@@ -224,7 +224,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
        createClient "front50", Front50Service
     }
     else{
-       createClient "front50", NoOpFront50Service
+       createClient "front50", NoOpFront50Service, null , true
     }
   }
 
@@ -238,7 +238,7 @@ class GateConfig extends RedisHttpSessionConfiguration {
     }
     else{
       log.info("NoOpClouddriverService created")
-       createClient "clouddriver", NoOpClouddriverService
+       createClient "clouddriver", NoOpClouddriverService, null, true
     }
   }
 
