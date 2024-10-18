@@ -221,10 +221,10 @@ class GateConfig extends RedisHttpSessionConfiguration {
   @Primary
   Front50Service front50Service() {
     if(front50Status) {
-      return createClient( "front50", Front50Service)
+       createClient "front50", Front50Service
     }
     else{
-      return createClient ("front50", NoOpFront50Service);
+       createClient "front50", NoOpFront50Service
     }
   }
 
@@ -234,11 +234,11 @@ class GateConfig extends RedisHttpSessionConfiguration {
   ClouddriverService clouddriverService() {
     if(cloudDriverStatus){
       log.info("NoOpClouddriverService NOT created")
-      return createClient( "clouddriver", ClouddriverService)
+       createClient "clouddriver", ClouddriverService
     }
     else{
       log.info("NoOpClouddriverService created")
-      return createClient ("clouddriver", NoOpClouddriverService)
+       createClient "clouddriver", NoOpClouddriverService
     }
   }
 
@@ -418,11 +418,16 @@ class GateConfig extends RedisHttpSessionConfiguration {
                              String dynamicName = null,
                              boolean forceEnabled = false) {
     Service service = serviceConfiguration.getService(serviceName)
+    log.info("client creation service information")
+    log.info(service.toString())
+    log.info(service.enabled.toString())
+
     if (service == null) {
       throw new IllegalArgumentException("Unknown service ${serviceName} requested of type ${type}")
     }
 
     if (!service.enabled && !forceEnabled) {
+      log.info("no client creation done here")
       return null
     }
 
