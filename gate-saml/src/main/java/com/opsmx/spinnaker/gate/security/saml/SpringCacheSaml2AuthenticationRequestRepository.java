@@ -19,15 +19,18 @@ package com.opsmx.spinnaker.gate.security.saml;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.security.saml2.core.Saml2ParameterNames;
 import org.springframework.security.saml2.provider.service.authentication.AbstractSaml2AuthenticationRequest;
 import org.springframework.security.saml2.provider.service.web.Saml2AuthenticationRequestRepository;
+import org.springframework.stereotype.Repository;
 
-// @Repository
-// @RequiredArgsConstructor
-// @Slf4j
+@Repository
+@RequiredArgsConstructor
+@Slf4j
 public class SpringCacheSaml2AuthenticationRequestRepository
     implements Saml2AuthenticationRequestRepository<AbstractSaml2AuthenticationRequest> {
   private final Cache cache = new ConcurrentMapCache("authentication-requests");
