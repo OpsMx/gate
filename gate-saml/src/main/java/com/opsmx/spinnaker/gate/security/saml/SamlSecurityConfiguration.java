@@ -49,6 +49,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.saml2.provider.service.authentication.OpenSaml4AuthenticationProvider;
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
+import org.springframework.security.saml2.provider.service.registration.InMemoryRelyingPartyRegistrationRepository;
+import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistration;
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
 import org.springframework.security.saml2.provider.service.web.authentication.Saml2WebSsoAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -119,6 +121,14 @@ public class SamlSecurityConfiguration {
   public ProviderManager authenticationManager(
       OpenSaml4AuthenticationProvider authenticationProvider) {
     return new ProviderManager(authenticationProvider);
+  }
+
+  @Bean
+  RelyingPartyRegistrationRepository registrations(RelyingPartyRegistration registrations) {
+    log.debug(
+        "assertionConsumerServiceLocation :{}",
+        registrations.getAssertionConsumerServiceLocation());
+    return new InMemoryRelyingPartyRegistrationRepository(registrations);
   }
 
   @Bean
