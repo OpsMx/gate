@@ -18,6 +18,8 @@ package com.opsmx.spinnaker.gate.rbac;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.netflix.spinnaker.fiat.model.Authorization;
+import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator;
 import com.netflix.spinnaker.gate.model.PermissionModel;
 import com.netflix.spinnaker.gate.services.OesAuthorizationService;
 import com.netflix.spinnaker.gate.services.PermissionService;
@@ -27,14 +29,13 @@ import com.opsmx.spinnaker.gate.exception.AccessForbiddenException;
 import com.opsmx.spinnaker.gate.exception.InvalidResourceIdException;
 import com.opsmx.spinnaker.gate.exception.XSpinnakerUserHeaderMissingException;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -45,6 +46,8 @@ public class ApplicationFeatureRbac {
   @Autowired private OesAuthorizationService oesAuthorizationService;
 
   @Autowired private PermissionService permissionService;
+
+  @Autowired private FiatPermissionEvaluator permissionEvaluator;
 
   public static final List<String> runtime_access = new ArrayList<>();
   public static final List<String> applicationFeatureRbacEndpoints = new ArrayList<>();
@@ -77,19 +80,24 @@ public class ApplicationFeatureRbac {
     log.debug("Start of the authorizeUserForFeatureVisibility");
     log.debug("validating the user for FeatureVisibility");
     if (permissionService.isAdmin(userName)) {
-      log.info("{} is admin, Hence not validating with ISD", userName);
+      log.info("{} user is admin, Hence not validating with ISD", userName);
       return;
     }
-    isFeatureVisibility =
-        Boolean.parseBoolean(
-            oesAuthorizationService
-                .isFeatureVisibility(userName, RbacFeatureType.APP.name(), userName)
-                .getBody()
-                .get("isEnabled"));
-    log.info("is feature visibility enabled : {}", isFeatureVisibility);
-    if (!isFeatureVisibility) {
+
+    ResponseEntity<Map<String, String>> response =
+        oesAuthorizationService.isFeatureVisibility(userName, RbacFeatureType.APP.name(), userName);
+    int statusCode = response.getStatusCodeValue();
+    isFeatureVisibility = Boolean.parseBoolean(response.getBody().get("isEnabled"));
+
+    if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
+      log.info("Feature visibility check ended with status code: {}", statusCode);
+    } else if (statusCode == HttpStatus.FORBIDDEN.value() || !isFeatureVisibility) {
+      log.warn(
+          "Access forbidden for user {} on feature type {}",
+          userName,
+          RbacFeatureType.APP.description);
       throw new AccessForbiddenException(
-          "You do not have permission for the feature type : " + RbacFeatureType.APP.description);
+          "You do not have permission for the feature type: " + RbacFeatureType.APP.description);
     }
     log.debug("End of the authorizeUserForFeatureVisibility");
   }
@@ -99,7 +107,7 @@ public class ApplicationFeatureRbac {
     log.debug("Start of the authorizeUserForApplicationId");
     log.debug("validating the user for ApplicationId");
     if (permissionService.isAdmin(username)) {
-      log.info("{} is admin, Hence not validating with ISD", username);
+      log.info("{} user is admin,Hence not validating with ISD", username);
       return;
     }
     HttpMethod method = HttpMethod.valueOf(httpMethod);
@@ -110,13 +118,23 @@ public class ApplicationFeatureRbac {
 
     switch (method.name()) {
       case "GET":
-        permission =
-            oesAuthorizationService
-                .fetchPermissions(username, RbacFeatureType.APP.name(), applicationId, username)
-                .getBody();
-        log.info("permissions for the GET API : {}", permission);
-        if (permission == null
-            || !permission.getPermissions().contains(PermissionEnum.view.name())) {
+        ResponseEntity<PermissionModel> response =
+            oesAuthorizationService.fetchPermissions(
+                username, RbacFeatureType.APP.name(), applicationId, username);
+        int statusCode = response.getStatusCodeValue();
+        permission = response.getBody();
+
+        if ((statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value())
+            && permissionEvaluator.hasPermission(
+                username, applicationId, RbacFeatureType.APP.name(), Authorization.EXECUTE)) {
+          log.info(
+              "Authorized user for Application ID with status code :{}, {}",
+              applicationId,
+              statusCode);
+          log.info("permissions for the GET API : {}", permission);
+        } else if (permission == null
+            || !permission.getPermissions().contains(PermissionEnum.view.name())
+            || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
                   + PermissionEnum.view.name()
@@ -205,24 +223,29 @@ public class ApplicationFeatureRbac {
 
     switch (method.name()) {
       case "GET":
-        isAuthorized =
-            Boolean.parseBoolean(
-                oesAuthorizationService
-                    .isAuthorizedUser(
-                        username,
-                        PermissionEnum.view.name(),
-                        serviceId,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        username)
-                    .getBody()
-                    .get("isEnabled"));
-        log.info("is authorized for the service Id GET API: {}, {}", serviceId, isAuthorized);
-        if (isAuthorized == null || !isAuthorized) {
+        ResponseEntity<Map<String, String>> response =
+            oesAuthorizationService.isAuthorizedUser(
+                username,
+                PermissionEnum.view.name(),
+                serviceId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                username);
+        isAuthorized = Boolean.parseBoolean(response.getBody().get("isEnabled"));
+        int statusCode = response.getStatusCodeValue();
+
+        if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
+          log.info(
+              "Authorized user for the service Id GET API with status code: {}, {}",
+              serviceId,
+              statusCode);
+        } else if (isAuthorized == null
+            || !isAuthorized
+            || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
                   + PermissionEnum.view.name()
@@ -298,24 +321,29 @@ public class ApplicationFeatureRbac {
 
     switch (method.name()) {
       case "GET":
-        isAuthorized =
-            Boolean.parseBoolean(
-                oesAuthorizationService
-                    .isAuthorizedUser(
-                        username,
-                        PermissionEnum.view.name(),
-                        null,
-                        pipelineId,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        username)
-                    .getBody()
-                    .get("isEnabled"));
-        log.info("is authorized for the pipeline Id GET API: {}, {}", pipelineId, isAuthorized);
-        if (isAuthorized == null || !isAuthorized) {
+        ResponseEntity<Map<String, String>> response =
+            oesAuthorizationService.isAuthorizedUser(
+                username,
+                PermissionEnum.view.name(),
+                null,
+                pipelineId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                username);
+        isAuthorized = Boolean.parseBoolean(response.getBody().get("isEnabled"));
+        int statusCode = response.getStatusCodeValue();
+
+        if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
+          log.info(
+              "authorized user for the pipeline Id GET API with status code: {}, {}",
+              pipelineId,
+              statusCode);
+        } else if (isAuthorized == null
+            || !isAuthorized
+            || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
                   + PermissionEnum.view.name()
@@ -393,24 +421,29 @@ public class ApplicationFeatureRbac {
 
     switch (method.name()) {
       case "GET":
-        isAuthorized =
-            Boolean.parseBoolean(
-                oesAuthorizationService
-                    .isAuthorizedUser(
-                        username,
-                        PermissionEnum.view.name(),
-                        null,
-                        null,
-                        gateId,
-                        null,
-                        null,
-                        null,
-                        null,
-                        username)
-                    .getBody()
-                    .get("isEnabled"));
-        log.info("is authorized for the gate Id GET API: {}, {}", gateId, isAuthorized);
-        if (isAuthorized == null || !isAuthorized) {
+        ResponseEntity<Map<String, String>> response =
+            oesAuthorizationService.isAuthorizedUser(
+                username,
+                PermissionEnum.view.name(),
+                null,
+                null,
+                gateId,
+                null,
+                null,
+                null,
+                null,
+                username);
+        isAuthorized = Boolean.parseBoolean(response.getBody().get("isEnabled"));
+        int statusCode = response.getStatusCodeValue();
+
+        if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
+          log.info(
+              "authorized user for the gate Id GET API with staus code: {}, {}",
+              gateId,
+              statusCode);
+        } else if (isAuthorized == null
+            || !isAuthorized
+            || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
                   + PermissionEnum.view.name()
@@ -492,25 +525,29 @@ public class ApplicationFeatureRbac {
 
     switch (method.name()) {
       case "GET":
-        isAuthorized =
-            Boolean.parseBoolean(
-                oesAuthorizationService
-                    .isAuthorizedUser(
-                        username,
-                        PermissionEnum.view.name(),
-                        null,
-                        null,
-                        null,
-                        approvalGateId,
-                        null,
-                        null,
-                        null,
-                        username)
-                    .getBody()
-                    .get("isEnabled"));
-        log.info(
-            "is authorized for the approval gate Id GET API: {}, {}", approvalGateId, isAuthorized);
-        if (isAuthorized == null || !isAuthorized) {
+        ResponseEntity<Map<String, String>> response =
+            oesAuthorizationService.isAuthorizedUser(
+                username,
+                PermissionEnum.view.name(),
+                null,
+                null,
+                null,
+                approvalGateId,
+                null,
+                null,
+                null,
+                username);
+        isAuthorized = Boolean.parseBoolean(response.getBody().get("isEnabled"));
+        int statusCode = response.getStatusCodeValue();
+
+        if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
+          log.info(
+              "authorized user for the approval gate Id GET API: {}, {}",
+              approvalGateId,
+              statusCode);
+        } else if (isAuthorized == null
+            || !isAuthorized
+            || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
                   + PermissionEnum.view.name()
@@ -586,27 +623,29 @@ public class ApplicationFeatureRbac {
 
     switch (method.name()) {
       case "GET":
-        isAuthorized =
-            Boolean.parseBoolean(
-                oesAuthorizationService
-                    .isAuthorizedUser(
-                        username,
-                        PermissionEnum.view.name(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        approvalGateInstanceId,
-                        null,
-                        null,
-                        username)
-                    .getBody()
-                    .get("isEnabled"));
-        log.info(
-            "is authorized for the approval gate instance Id GET API: {}, {}",
-            approvalGateInstanceId,
-            isAuthorized);
-        if (isAuthorized == null || !isAuthorized) {
+        ResponseEntity<Map<String, String>> response =
+            oesAuthorizationService.isAuthorizedUser(
+                username,
+                PermissionEnum.view.name(),
+                null,
+                null,
+                null,
+                null,
+                approvalGateInstanceId,
+                null,
+                null,
+                username);
+        isAuthorized = Boolean.parseBoolean(response.getBody().get("isEnabled"));
+        int statusCode = response.getStatusCodeValue();
+
+        if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
+          log.info(
+              "authorized user for the approval gate instance Id GET API: {}, {}",
+              approvalGateInstanceId,
+              statusCode);
+        } else if (isAuthorized == null
+            || !isAuthorized
+            || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
                   + PermissionEnum.view.name()
@@ -682,27 +721,29 @@ public class ApplicationFeatureRbac {
 
     switch (method.name()) {
       case "GET":
-        isAuthorized =
-            Boolean.parseBoolean(
-                oesAuthorizationService
-                    .isAuthorizedUser(
-                        username,
-                        PermissionEnum.view.name(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        approvalPolicyId,
-                        null,
-                        username)
-                    .getBody()
-                    .get("isEnabled"));
-        log.info(
-            "is authorized for the approval policy Id GET API: {}, {}",
-            approvalPolicyId,
-            isAuthorized);
-        if (isAuthorized == null || !isAuthorized) {
+        ResponseEntity<Map<String, String>> response =
+            oesAuthorizationService.isAuthorizedUser(
+                username,
+                PermissionEnum.view.name(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                approvalPolicyId,
+                null,
+                username);
+        isAuthorized = Boolean.parseBoolean(response.getBody().get("isEnabled"));
+        int statusCode = response.getStatusCodeValue();
+
+        if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
+          log.info(
+              "authorized user for the approval policy Id GET API with staus code: {}, {}",
+              approvalPolicyId,
+              statusCode);
+        } else if (isAuthorized == null
+            || !isAuthorized
+            || statusCode == HttpStatus.FORBIDDEN.value()) {
           throw new AccessForbiddenException(
               YOU_DO_NOT_HAVE
                   + PermissionEnum.view.name()
@@ -791,24 +832,29 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    isAuthorized =
-        Boolean.parseBoolean(
-            oesAuthorizationService
-                .isAuthorizedUser(
-                    username,
-                    PermissionEnum.runtime_access.name(),
-                    null,
-                    null,
-                    null,
-                    approvalGateId,
-                    null,
-                    null,
-                    null,
-                    username)
-                .getBody()
-                .get("isEnabled"));
+    ResponseEntity<Map<String, String>> response =
+        oesAuthorizationService.isAuthorizedUser(
+            username,
+            PermissionEnum.runtime_access.name(),
+            null,
+            null,
+            null,
+            approvalGateId,
+            null,
+            null,
+            null,
+            username);
+    isAuthorized = Boolean.parseBoolean(response.getBody().get("isEnabled"));
+    int statusCode = response.getStatusCodeValue();
 
-    if (isAuthorized == null || !isAuthorized) {
+    if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
+      log.info(
+          "authorized user for the approval custom gate trigger Id GET API with status code: {}, {}",
+          approvalGateId,
+          statusCode);
+    } else if (isAuthorized == null
+        || !isAuthorized
+        || statusCode == HttpStatus.FORBIDDEN.value()) {
       throw new AccessForbiddenException(
           YOU_DO_NOT_HAVE
               + PermissionEnum.runtime_access.name()
@@ -846,24 +892,29 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    isAuthorized =
-        Boolean.parseBoolean(
-            oesAuthorizationService
-                .isAuthorizedUser(
-                    username,
-                    PermissionEnum.runtime_access.name(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    appName,
-                    username)
-                .getBody()
-                .get("isEnabled"));
+    ResponseEntity<Map<String, String>> response =
+        oesAuthorizationService.isAuthorizedUser(
+            username,
+            PermissionEnum.runtime_access.name(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            appName,
+            username);
+    isAuthorized = Boolean.parseBoolean(response.getBody().get("isEnabled"));
+    int statusCode = response.getStatusCodeValue();
 
-    if (isAuthorized == null || !isAuthorized) {
+    if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
+      log.info(
+          "authorized user for the policy gate Id GET API with status code: {}, {}",
+          isAuthorized,
+          statusCode);
+    } else if (isAuthorized == null
+        || !isAuthorized
+        || statusCode == HttpStatus.FORBIDDEN.value()) {
       throw new AccessForbiddenException(
           YOU_DO_NOT_HAVE
               + PermissionEnum.runtime_access.name()
@@ -898,24 +949,29 @@ public class ApplicationFeatureRbac {
 
     log.info("authorizing the endpoint : {}", endpointUrl);
 
-    isAuthorized =
-        Boolean.parseBoolean(
-            oesAuthorizationService
-                .isAuthorizedUser(
-                    username,
-                    PermissionEnum.runtime_access.name(),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    appName,
-                    username)
-                .getBody()
-                .get("isEnabled"));
+    ResponseEntity<Map<String, String>> response =
+        oesAuthorizationService.isAuthorizedUser(
+            username,
+            PermissionEnum.runtime_access.name(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            appName,
+            username);
+    isAuthorized = Boolean.parseBoolean(response.getBody().get("isEnabled"));
+    int statusCode = response.getStatusCodeValue();
 
-    if (isAuthorized == null || !isAuthorized) {
+    if (statusCode == HttpStatus.NOT_FOUND.value() || statusCode == HttpStatus.OK.value()) {
+      log.info(
+          "is authorized for the verification gate Id GET API with status code: {}, {}",
+          isAuthorized,
+          statusCode);
+    } else if (isAuthorized == null
+        || !isAuthorized
+        || statusCode == HttpStatus.FORBIDDEN.value()) {
       throw new AccessForbiddenException(
           YOU_DO_NOT_HAVE
               + PermissionEnum.runtime_access.name()
