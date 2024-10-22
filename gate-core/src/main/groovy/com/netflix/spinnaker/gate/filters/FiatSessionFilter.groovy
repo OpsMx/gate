@@ -58,10 +58,11 @@ class FiatSessionFilter implements Filter {
   @Override
   void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     UserPermission.View fiatPermission = null
+    log.info("************Start of the Fiat session filter - ************************")
 
     if (fiatStatus.isEnabled() && this.enabled) {
       String user = AuthenticatedRequest.getSpinnakerUser().orElse(null)
-      log.debug("Fiat session filter - found user: ${user}")
+      log.info("Fiat session filter - found user: ${user}")
 
       if (user != null) {
         fiatPermission = permissionEvaluator.getPermission(user)
@@ -88,13 +89,16 @@ class FiatSessionFilter implements Filter {
     }
 
     try {
+      log.info("******************Continue to execute other Filters ***************")
       chain.doFilter(request, response)
     } finally {
+      log.info("******************Checking Invalidating fallback permissions ***************")
       if (fiatPermission != null && fiatPermission.isLegacyFallback()) {
         log.info("Invalidating fallback permissions for ${fiatPermission.name}")
         permissionEvaluator.invalidatePermission(fiatPermission.name)
       }
     }
+    log.info("************End of the Fiat session filter - ************************")
   }
 
   @Override
