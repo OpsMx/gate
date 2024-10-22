@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 
 
-@FeignClient(name = "OES", url = '${services.platform.baseUrl}')
+@FeignClient(name = "OES", url = '${services.platform.baseUrl}', dismiss404 = true)
 interface OesAuthorizationService {
 
   @PutMapping(value = "/platformservice/v2/usergroups/importAndCache", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
