@@ -39,6 +39,7 @@ public class SpringCacheSaml2AuthenticationRequestRepository
   public AbstractSaml2AuthenticationRequest loadAuthenticationRequest(HttpServletRequest request) {
     log.debug("********* loadAuthenticationRequest ********************");
     String relayState = request.getParameter(Saml2ParameterNames.RELAY_STATE);
+    log.debug("********* relayState : {}", relayState);
     return this.cache.get(relayState, AbstractSaml2AuthenticationRequest.class);
   }
 
@@ -48,7 +49,9 @@ public class SpringCacheSaml2AuthenticationRequestRepository
       HttpServletRequest request,
       HttpServletResponse response) {
     log.debug("********* saveAuthenticationRequest ********************");
-    String relayState = request.getParameter(Saml2ParameterNames.RELAY_STATE);
+    String relayState = authenticationRequest.getRelayState();
+    log.debug("********* relayState : {}", relayState);
+    // String relayState = request.getParameter(Saml2ParameterNames.RELAY_STATE);
     this.cache.put(relayState, authenticationRequest);
   }
 
@@ -57,6 +60,7 @@ public class SpringCacheSaml2AuthenticationRequestRepository
       HttpServletRequest request, HttpServletResponse response) {
     log.debug("********* removeAuthenticationRequest ********************");
     String relayState = request.getParameter(Saml2ParameterNames.RELAY_STATE);
+    log.debug("********* relayState : {}", relayState);
     AbstractSaml2AuthenticationRequest authenticationRequest =
         this.cache.get(relayState, AbstractSaml2AuthenticationRequest.class);
     if (authenticationRequest == null) {
