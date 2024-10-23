@@ -53,7 +53,7 @@ class OpsmxSessionController {
     if(duration <= 0) {
       throw new OesRequestException("Invalid duration passed. Session cant be extended.")
     }
-    HttpSession session = request.getSession(false)
+    HttpSession session = request.getSession()
     log.info("*****************is session New :{}",session.isNew());
     log.info("*****************existing session age :{}",session.getMaxInactiveInterval());
     log.info("*****************Extend session duration :{}",duration);
