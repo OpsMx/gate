@@ -48,12 +48,18 @@ class OpsmxSessionController {
   @Operation(summary = "extend session by given duration")
   @PutMapping(value = "/extendSession")
   void extendSession(@RequestParam("duration") int duration, HttpServletRequest request) {
+    log.info("*****************Start of the extend session of OpsmxSessionController*****");
+    log.info("*****************Extend session duration :{}",duration);
     if(duration <= 0) {
       throw new OesRequestException("Invalid duration passed. Session cant be extended.")
     }
     HttpSession session = request.getSession()
+    log.info("*****************is session New :{}",session.isNew());
+    log.info("*****************existing session age :{}",session.getMaxInactiveInterval());
+    log.info("*****************Extend session duration :{}",duration);
     session.setMaxInactiveInterval(duration)
     log.debug("Session timeout is overridden by {} seconds" , duration)
+    log.info("*****************End of the extend session of OpsmxSessionController*****");
   }
 
 }

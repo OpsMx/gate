@@ -16,6 +16,9 @@
 
 package com.opsmx.spinnaker.gate.security.saml;
 
+import static org.springframework.security.saml2.core.Saml2ErrorCodes.INVALID_ASSERTION;
+import static org.springframework.security.saml2.core.Saml2ErrorCodes.INVALID_IN_RESPONSE_TO;
+
 import com.netflix.spectator.api.Registry;
 import com.netflix.spinnaker.fiat.shared.FiatClientConfigurationProperties;
 import com.netflix.spinnaker.gate.config.AuthConfig;
@@ -28,7 +31,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +51,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.saml2.core.Saml2Error;
+import org.springframework.security.saml2.core.Saml2ResponseValidatorResult;
 import org.springframework.security.saml2.provider.service.authentication.OpenSaml4AuthenticationProvider;
 import org.springframework.security.saml2.provider.service.authentication.Saml2AuthenticatedPrincipal;
 import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
@@ -90,6 +97,12 @@ public class SamlSecurityConfiguration {
   public static final String defaultFilterUrl =
       "{baseUrl}" + Saml2WebSsoAuthenticationFilter.DEFAULT_FILTER_PROCESSES_URI;
 
+  @Value("${spring.security.saml2.validation.inresponseto:false}")
+  private boolean ignoreInResponseToValidation;
+
+  @Value("${spring.security.saml2.validation.assertion:false}")
+  private boolean ignoreAssertionValidation;
+
   @Bean
   public UserDetailsService userDetailsService() {
     return username -> {
@@ -112,6 +125,14 @@ public class SamlSecurityConfiguration {
   public OpenSaml4AuthenticationProvider authenticationProvider() {
     var authProvider = new OpenSaml4AuthenticationProvider();
     authProvider.setResponseAuthenticationConverter(extractUserDetails());
+    log.debug("ignoreAssertionValidation :{}", ignoreAssertionValidation);
+    if (ignoreAssertionValidation) {
+      authProvider.setAssertionValidator(removeAssertionError());
+    }
+    log.debug("ignoreInResponseToValidation :{}", ignoreInResponseToValidation);
+    if (ignoreInResponseToValidation) {
+      authProvider.setResponseValidator(removeInResonseToError());
+    }
     return authProvider;
   }
 
@@ -121,18 +142,12 @@ public class SamlSecurityConfiguration {
     return new ProviderManager(authenticationProvider);
   }
 
-  /*  @Bean
-  RelyingPartyRegistrationRepository registrations(RelyingPartyRegistration registrations) {
-    log.debug(
-        "assertionConsumerServiceLocation :{}",
-        registrations.getAssertionConsumerServiceLocation());
-    return new InMemoryRelyingPartyRegistrationRepository(registrations);
-  }*/
-
   @Bean
   public Saml2WebSsoAuthenticationFilter saml2WebSsoAuthenticationFilter(
       RelyingPartyRegistrationRepository relyingPartyRegistrationRepository,
-      AuthenticationManager authenticationManager) {
+      AuthenticationManager authenticationManager,
+      SpringCacheSaml2AuthenticationRequestRepository
+          springCacheSaml2AuthenticationRequestRepository) {
     log.info(
         "ACS endpoint configured : {}",
         relyingPartyProperties.getRegistration().get(registrationId).getAcs().getLocation());
@@ -157,6 +172,8 @@ public class SamlSecurityConfiguration {
         new HttpSessionSecurityContextRepository());
     saml2WebSsoAuthenticationFilter.setSessionAuthenticationStrategy(
         new ChangeSessionIdAuthenticationStrategy());
+    saml2WebSsoAuthenticationFilter.setAuthenticationRequestRepository(
+        springCacheSaml2AuthenticationRequestRepository);
 
     return saml2WebSsoAuthenticationFilter;
   }
@@ -281,6 +298,54 @@ public class SamlSecurityConfiguration {
       loginWithRoles(username, roles);
 
       return new Saml2UserDetails(authentication, user);
+    };
+  }
+
+  private Converter<OpenSaml4AuthenticationProvider.AssertionToken, Saml2ResponseValidatorResult>
+      removeAssertionError() {
+    log.debug("**remove assertion error from  Saml2ResponseValidatorResult Errors**");
+    Converter<OpenSaml4AuthenticationProvider.AssertionToken, Saml2ResponseValidatorResult>
+        delegate = OpenSaml4AuthenticationProvider.createDefaultAssertionValidator();
+    return assertionToken -> {
+      log.debug("responseToken : {}", assertionToken.getToken().getSaml2Response());
+      Saml2ResponseValidatorResult result = delegate.convert(assertionToken);
+      result
+          .getErrors()
+          .forEach(
+              error ->
+                  log.debug(
+                      " error code :{} and description :{}",
+                      error.getErrorCode(),
+                      error.getDescription()));
+      Collection<Saml2Error> errors =
+          result.getErrors().stream()
+              .filter((error) -> !error.getErrorCode().equals(INVALID_ASSERTION))
+              .collect(Collectors.toList());
+      return Saml2ResponseValidatorResult.failure(errors);
+    };
+  }
+
+  private Converter<OpenSaml4AuthenticationProvider.ResponseToken, Saml2ResponseValidatorResult>
+      removeInResonseToError() {
+    log.debug("**remove InResonseTo error from  Saml2ResponseValidatorResult Errors**");
+    Converter<OpenSaml4AuthenticationProvider.ResponseToken, Saml2ResponseValidatorResult>
+        delegate = OpenSaml4AuthenticationProvider.createDefaultResponseValidator();
+    return responseToken -> {
+      log.debug("responseToken : {}", responseToken.getToken().getSaml2Response());
+      Saml2ResponseValidatorResult result = delegate.convert(responseToken);
+      result
+          .getErrors()
+          .forEach(
+              error ->
+                  log.debug(
+                      " error code :{} and description :{}",
+                      error.getErrorCode(),
+                      error.getDescription()));
+      Collection<Saml2Error> errors =
+          result.getErrors().stream()
+              .filter((error) -> !error.getErrorCode().equals(INVALID_IN_RESPONSE_TO))
+              .collect(Collectors.toList());
+      return Saml2ResponseValidatorResult.failure(errors);
     };
   }
 
