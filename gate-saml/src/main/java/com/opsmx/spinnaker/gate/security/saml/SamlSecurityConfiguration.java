@@ -100,9 +100,6 @@ public class SamlSecurityConfiguration {
   @Value("${spring.security.saml2.validation.inresponseto:false}")
   private boolean ignoreInResponseToValidation;
 
-  @Value("${spring.security.saml2.validation.assertion:false}")
-  private boolean ignoreAssertionValidation;
-
   @Bean
   public UserDetailsService userDetailsService() {
     return username -> {
@@ -123,16 +120,15 @@ public class SamlSecurityConfiguration {
 
   @Bean
   public OpenSaml4AuthenticationProvider authenticationProvider() {
+
     var authProvider = new OpenSaml4AuthenticationProvider();
     authProvider.setResponseAuthenticationConverter(extractUserDetails());
-    log.debug("ignoreAssertionValidation :{}", ignoreAssertionValidation);
-    if (ignoreAssertionValidation) {
-      authProvider.setAssertionValidator(removeAssertionError());
-    }
     log.debug("ignoreInResponseToValidation :{}", ignoreInResponseToValidation);
     if (ignoreInResponseToValidation) {
+      authProvider.setAssertionValidator(removeAssertionError());
       authProvider.setResponseValidator(removeInResonseToError());
     }
+
     return authProvider;
   }
 
