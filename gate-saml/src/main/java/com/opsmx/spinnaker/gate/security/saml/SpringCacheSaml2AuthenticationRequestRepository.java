@@ -19,28 +19,45 @@ package com.opsmx.spinnaker.gate.security.saml;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
-import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.saml2.core.Saml2ParameterNames;
 import org.springframework.security.saml2.provider.service.authentication.AbstractSaml2AuthenticationRequest;
 import org.springframework.security.saml2.provider.service.web.Saml2AuthenticationRequestRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.session.config.SessionRepositoryCustomizer;
+import org.springframework.session.data.redis.config.annotation.SpringSessionRedisConnectionFactory;
+import org.springframework.stereotype.Component;
 
-@Repository
-@RequiredArgsConstructor
+@Component
 @Slf4j
 public class SpringCacheSaml2AuthenticationRequestRepository
     implements Saml2AuthenticationRequestRepository<AbstractSaml2AuthenticationRequest> {
-  private final Cache cache = new ConcurrentMapCache("authentication-requests");
+  // private final Cache cache = new ConcurrentMapCache("authentication-requests");
+  private RedisConnectionFactory redisConnectionFactory;
+
+  private RedisSerializer<Object> defaultRedisSerializer;
+  private RedisTemplate<String, Object> redisTemplate;
+  private List<SessionRepositoryCustomizer<T>> sessionRepositoryCustomizers;
+
+  private ClassLoader classLoader;
+
+  public SpringCacheSaml2AuthenticationRequestRepository() {
+    RedisTemplate<String, Object> redisTemplate = createRedisTemplate();
+  }
 
   @Override
   public AbstractSaml2AuthenticationRequest loadAuthenticationRequest(HttpServletRequest request) {
     log.debug("********* loadAuthenticationRequest ********************");
     String relayState = request.getParameter(Saml2ParameterNames.RELAY_STATE);
     log.debug("********* relayState : {}", relayState);
-    return this.cache.get(relayState, AbstractSaml2AuthenticationRequest.class);
+    return this.redisTemplate.get(relayState, AbstractSaml2AuthenticationRequest.class);
   }
 
   @Override
@@ -68,5 +85,41 @@ public class SpringCacheSaml2AuthenticationRequestRepository
     }
     this.cache.evict(relayState);
     return authenticationRequest;
+  }
+
+  protected RedisTemplate<String, Object> createRedisTemplate() {
+    RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    redisTemplate.setKeySerializer(new StringRedisSerializer());
+    redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+    if (getDefaultRedisSerializer() != null) {
+      redisTemplate.setDefaultSerializer(getDefaultRedisSerializer());
+    }
+    redisTemplate.setConnectionFactory(getRedisConnectionFactory());
+    redisTemplate.setBeanClassLoader(this.classLoader);
+    redisTemplate.afterPropertiesSet();
+    return redisTemplate;
+  }
+
+  @Autowired(required = false)
+  @Qualifier("springSessionDefaultRedisSerializer")
+  public void setDefaultRedisSerializer(RedisSerializer<Object> defaultRedisSerializer) {
+    this.defaultRedisSerializer = defaultRedisSerializer;
+  }
+
+  protected RedisSerializer<Object> getDefaultRedisSerializer() {
+    return this.defaultRedisSerializer;
+  }
+
+  @Autowired
+  public void setRedisConnectionFactory(
+      @SpringSessionRedisConnectionFactory
+          ObjectProvider<RedisConnectionFactory> springSessionRedisConnectionFactory,
+      ObjectProvider<RedisConnectionFactory> redisConnectionFactory) {
+    this.redisConnectionFactory =
+        springSessionRedisConnectionFactory.getIfAvailable(redisConnectionFactory::getObject);
+  }
+
+  protected RedisConnectionFactory getRedisConnectionFactory() {
+    return this.redisConnectionFactory;
   }
 }
