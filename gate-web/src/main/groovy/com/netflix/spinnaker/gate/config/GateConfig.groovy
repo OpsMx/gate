@@ -20,18 +20,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext
 import com.netflix.spectator.api.Registry
 import com.netflix.spinnaker.config.DefaultServiceEndpoint
 import com.netflix.spinnaker.config.OkHttp3ClientConfiguration
 import com.netflix.spinnaker.config.PluginsAutoConfiguration
 import com.netflix.spinnaker.config.okhttp3.OkHttpClientProvider
 import com.netflix.spinnaker.fiat.shared.FiatClientConfigurationProperties
-import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator
-import com.netflix.spinnaker.fiat.shared.FiatService
-import com.netflix.spinnaker.fiat.shared.FiatStatus
 import com.netflix.spinnaker.filters.AuthenticatedRequestFilter
-import com.netflix.spinnaker.gate.config.PostConnectionConfiguringJedisConnectionFactory.ConnectionPostProcessor
 import com.netflix.spinnaker.gate.converters.JsonHttpMessageConverter
 import com.netflix.spinnaker.gate.converters.YamlHttpMessageConverter
 import com.netflix.spinnaker.gate.filters.RequestLoggingFilter
@@ -54,6 +49,7 @@ import com.opsmx.spinnaker.gate.services.OpsmxAuditClientService
 import com.opsmx.spinnaker.gate.services.OpsmxAuditService
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import jakarta.servlet.Filter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -67,8 +63,6 @@ import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.core.Ordered
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter
-import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
-import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer
 import org.springframework.session.data.redis.config.ConfigureRedisAction
 import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration
@@ -78,7 +72,6 @@ import redis.clients.jedis.JedisPool
 import retrofit.Endpoint
 import retrofit.RequestInterceptor
 
-import jakarta.servlet.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -184,27 +177,6 @@ class GateConfig extends RedisHttpSessionConfiguration {
   OrcaServiceSelector orcaServiceSelector(RequestContextProvider contextProvider) {
     return new OrcaServiceSelector(createClientSelector("orca", OrcaService), contextProvider)
   }
-
-  @Bean
-  @Primary
-  FiatService fiatService() {
-    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-    createClient "fiat", FiatService, null, true
-  }
-
-  @Bean
-  ExtendedFiatService extendedFiatService() {
-    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-    createClient "fiat", ExtendedFiatService,  null, true
-  }
-
-  @Bean
-  @ConditionalOnProperty("services.fiat.config.dynamic-endpoints.login")
-  FiatService fiatLoginService() {
-    // always create the fiat service even if 'services.fiat.enabled' is 'false' (it can be enabled dynamically)
-    createClient "fiat", FiatService,  "login", true
-  }
-
 
   @Bean
   Front50Service front50Service() {
@@ -491,31 +463,5 @@ class GateConfig extends RedisHttpSessionConfiguration {
      */
     frb.order = Ordered.HIGHEST_PRECEDENCE + 2
     return frb
-  }
-
-  @Bean
-  FiatStatus fiatStatus(DynamicConfigService dynamicConfigService,
-                        Registry registry,
-                        FiatClientConfigurationProperties fiatClientConfigurationProperties) {
-    return new FiatStatus(registry, dynamicConfigService, fiatClientConfigurationProperties)
-  }
-
-  @Bean
-  FiatPermissionEvaluator fiatPermissionEvaluator(FiatStatus fiatStatus,
-                                                  Registry registry,
-                                                  FiatService fiatService,
-                                                  FiatClientConfigurationProperties fiatClientConfigurationProperties) {
-    return new FiatPermissionEvaluator(registry, fiatService, fiatClientConfigurationProperties, fiatStatus)
-  }
-  @Bean
-  static MethodSecurityExpressionHandler expressionHandler(
-    Registry registry,
-    FiatService fiatService,
-    FiatClientConfigurationProperties configProps,
-    FiatStatus fiatStatus) {
-    var expressionHandler = new DefaultMethodSecurityExpressionHandler();
-    expressionHandler.setPermissionEvaluator(
-      new FiatPermissionEvaluator(registry, fiatService, configProps, fiatStatus));
-    return expressionHandler;
   }
 }
