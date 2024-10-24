@@ -18,12 +18,9 @@ package com.netflix.spinnaker.gate.services
 
 import com.netflix.spinnaker.fiat.model.UserPermission
 import com.netflix.spinnaker.fiat.model.resources.Role
-import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator
 import com.netflix.spinnaker.fiat.shared.FiatService
-import com.netflix.spinnaker.fiat.shared.FiatStatus
 import com.netflix.spinnaker.gate.retrofit.UpstreamBadRequest
 import com.netflix.spinnaker.gate.security.SpinnakerUser
-import com.netflix.spinnaker.gate.services.internal.ExtendedFiatService
 import com.netflix.spinnaker.kork.core.RetrySupport
 import com.netflix.spinnaker.kork.exceptions.SpinnakerException
 import com.netflix.spinnaker.kork.exceptions.SystemException
@@ -32,10 +29,10 @@ import com.netflix.spinnaker.security.User
 import groovy.transform.PackageScope
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.http.HttpStatus
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import retrofit.RetrofitError
 
@@ -43,8 +40,6 @@ import javax.annotation.Nonnull
 import java.time.Duration
 
 import static com.netflix.spinnaker.gate.retrofit.UpstreamBadRequest.classifyError
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 
 @Slf4j
 @Component
@@ -54,23 +49,7 @@ class PermissionService {
   static final String HYSTRIX_GROUP = "permission"
 
   @Autowired
-  FiatService fiatService
-
-  @Autowired
-  ExtendedFiatService extendedFiatService
-
-  @Autowired
   ServiceAccountFilterConfigProps serviceAccountFilterConfigProps
-
-  @Autowired
-  @Qualifier("fiatLoginService")
-  Optional<FiatService> fiatLoginService
-
-  @Autowired
-  FiatPermissionEvaluator permissionEvaluator
-
-  @Autowired
-  FiatStatus fiatStatus
 
   boolean isEnabled() {
     return fiatStatus.isEnabled()
@@ -158,10 +137,10 @@ class PermissionService {
 
   List<String> getServiceAccountsForApplication(@SpinnakerUser User user, @Nonnull String application) {
     if (!serviceAccountFilterConfigProps.enabled ||
-        !user ||
-        !application ||
-        !fiatStatus.enabled ||
-        serviceAccountFilterConfigProps.matchAuthorizations.isEmpty()) {
+      !user ||
+      !application ||
+      !fiatStatus.enabled ||
+      serviceAccountFilterConfigProps.matchAuthorizations.isEmpty()) {
       return getServiceAccounts(user);
     }
 
