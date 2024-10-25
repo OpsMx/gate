@@ -19,7 +19,6 @@ package com.opsmx.spinnaker.gate.security.saml;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.saml2.core.Saml2ParameterNames;
 import org.springframework.security.saml2.provider.service.authentication.AbstractSaml2AuthenticationRequest;
 import org.springframework.security.saml2.provider.service.web.Saml2AuthenticationRequestRepository;
-import org.springframework.session.config.SessionRepositoryCustomizer;
 import org.springframework.session.data.redis.config.annotation.SpringSessionRedisConnectionFactory;
 import org.springframework.stereotype.Component;
 
@@ -39,25 +37,23 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class SpringCacheSaml2AuthenticationRequestRepository
     implements Saml2AuthenticationRequestRepository<AbstractSaml2AuthenticationRequest> {
-  // private final Cache cache = new ConcurrentMapCache("authentication-requests");
+  RedisTemplate<String, Object> redisTemplate;
+  private static final String STRING_KEY_PREFIX = "spring:saml2:SAML2_AUTHN_REQUEST:";
   private RedisConnectionFactory redisConnectionFactory;
-
   private RedisSerializer<Object> defaultRedisSerializer;
-  private RedisTemplate<String, Object> redisTemplate;
-  private List<SessionRepositoryCustomizer<T>> sessionRepositoryCustomizers;
-
   private ClassLoader classLoader;
 
   public SpringCacheSaml2AuthenticationRequestRepository() {
-    RedisTemplate<String, Object> redisTemplate = createRedisTemplate();
+    redisTemplate = createRedisTemplate();
   }
 
   @Override
   public AbstractSaml2AuthenticationRequest loadAuthenticationRequest(HttpServletRequest request) {
     log.debug("********* loadAuthenticationRequest ********************");
     String relayState = request.getParameter(Saml2ParameterNames.RELAY_STATE);
-    log.debug("********* relayState : {}", relayState);
-    return this.redisTemplate.get(relayState, AbstractSaml2AuthenticationRequest.class);
+    getLogRelayState(relayState);
+    return (AbstractSaml2AuthenticationRequest)
+        this.redisTemplate.opsForValue().get(STRING_KEY_PREFIX + relayState);
   }
 
   @Override
@@ -67,9 +63,8 @@ public class SpringCacheSaml2AuthenticationRequestRepository
       HttpServletResponse response) {
     log.debug("********* saveAuthenticationRequest ********************");
     String relayState = authenticationRequest.getRelayState();
-    log.debug("********* relayState : {}", relayState);
-    // String relayState = request.getParameter(Saml2ParameterNames.RELAY_STATE);
-    this.cache.put(relayState, authenticationRequest);
+    getLogRelayState(relayState);
+    this.redisTemplate.opsForValue().set(STRING_KEY_PREFIX + relayState, authenticationRequest);
   }
 
   @Override
@@ -77,13 +72,12 @@ public class SpringCacheSaml2AuthenticationRequestRepository
       HttpServletRequest request, HttpServletResponse response) {
     log.debug("********* removeAuthenticationRequest ********************");
     String relayState = request.getParameter(Saml2ParameterNames.RELAY_STATE);
-    log.debug("********* relayState : {}", relayState);
-    AbstractSaml2AuthenticationRequest authenticationRequest =
-        this.cache.get(relayState, AbstractSaml2AuthenticationRequest.class);
+    getLogRelayState(relayState);
+    AbstractSaml2AuthenticationRequest authenticationRequest = loadAuthenticationRequest(request);
     if (authenticationRequest == null) {
       return null;
     }
-    this.cache.evict(relayState);
+    this.redisTemplate.opsForValue().getAndDelete(STRING_KEY_PREFIX + relayState);
     return authenticationRequest;
   }
 
@@ -108,6 +102,10 @@ public class SpringCacheSaml2AuthenticationRequestRepository
 
   protected RedisSerializer<Object> getDefaultRedisSerializer() {
     return this.defaultRedisSerializer;
+  }
+
+  private void getLogRelayState(String relayState) {
+    log.debug("********* relayState : {}", relayState);
   }
 
   @Autowired
