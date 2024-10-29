@@ -42,7 +42,7 @@ public class SpringCacheSaml2AuthenticationRequestRepository
 
   private static final String STRING_KEY_PREFIX = "spring:saml2:SAML2_AUTHN_REQUEST:";
 
-  @Autowired private RedisConnectionFactory redisConnectionFactory;
+  private RedisConnectionFactory redisConnectionFactory;
   private RedisSerializer<Object> defaultRedisSerializer;
   private ClassLoader classLoader;
   private RedisTemplate<String, Object> redisTemplate = createRedisTemplate();
@@ -90,7 +90,7 @@ public class SpringCacheSaml2AuthenticationRequestRepository
     if (getDefaultRedisSerializer() != null) {
       redisTemplate.setDefaultSerializer(getDefaultRedisSerializer());
     }
-    redisTemplate.setConnectionFactory(redisConnectionFactory);
+    redisTemplate.setConnectionFactory(getRedisConnectionFactory());
     redisTemplate.setBeanClassLoader(this.classLoader);
     redisTemplate.afterPropertiesSet();
     log.debug(
