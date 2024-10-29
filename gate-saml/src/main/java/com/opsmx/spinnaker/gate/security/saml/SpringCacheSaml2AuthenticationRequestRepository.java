@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -34,15 +33,15 @@ import org.springframework.security.saml2.provider.service.web.Saml2Authenticati
 import org.springframework.session.data.redis.config.annotation.SpringSessionRedisConnectionFactory;
 import org.springframework.stereotype.Component;
 
-@Configuration(proxyBeanMethods = false)
 @Component
 @Slf4j
 public class SpringCacheSaml2AuthenticationRequestRepository
     implements Saml2AuthenticationRequestRepository<AbstractSaml2AuthenticationRequest> {
-  RedisTemplate<String, Object> redisTemplate;
+  private RedisTemplate<String, Object> redisTemplate;
   private static final String STRING_KEY_PREFIX = "spring:saml2:SAML2_AUTHN_REQUEST:";
-  private RedisConnectionFactory redisConnectionFactory;
-  private RedisSerializer<Object> defaultRedisSerializer;
+
+  @Autowired private RedisConnectionFactory redisConnectionFactory;
+  @Autowired private RedisSerializer<Object> defaultRedisSerializer;
   private ClassLoader classLoader;
 
   public SpringCacheSaml2AuthenticationRequestRepository() {
@@ -83,7 +82,7 @@ public class SpringCacheSaml2AuthenticationRequestRepository
     return authenticationRequest;
   }
 
-  protected RedisTemplate<String, Object> createRedisTemplate() {
+  public RedisTemplate<String, Object> createRedisTemplate() {
     RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
     redisTemplate.setKeySerializer(new StringRedisSerializer());
     redisTemplate.setHashKeySerializer(new StringRedisSerializer());
@@ -102,7 +101,7 @@ public class SpringCacheSaml2AuthenticationRequestRepository
     this.defaultRedisSerializer = defaultRedisSerializer;
   }
 
-  protected RedisSerializer<Object> getDefaultRedisSerializer() {
+  public RedisSerializer<Object> getDefaultRedisSerializer() {
     return this.defaultRedisSerializer;
   }
 
@@ -119,7 +118,7 @@ public class SpringCacheSaml2AuthenticationRequestRepository
         springSessionRedisConnectionFactory.getIfAvailable(redisConnectionFactory::getObject);
   }
 
-  protected RedisConnectionFactory getRedisConnectionFactory() {
+  public RedisConnectionFactory getRedisConnectionFactory() {
     return this.redisConnectionFactory;
   }
 }
