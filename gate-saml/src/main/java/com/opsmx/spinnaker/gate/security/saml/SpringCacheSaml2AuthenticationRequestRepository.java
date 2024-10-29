@@ -20,16 +20,18 @@ package com.opsmx.spinnaker.gate.security.saml;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.saml2.core.Saml2ParameterNames;
 import org.springframework.security.saml2.provider.service.authentication.AbstractSaml2AuthenticationRequest;
 import org.springframework.security.saml2.provider.service.web.Saml2AuthenticationRequestRepository;
+import org.springframework.session.data.redis.config.annotation.SpringSessionRedisConnectionFactory;
 import org.springframework.stereotype.Component;
 
 @Configuration
@@ -37,12 +39,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class SpringCacheSaml2AuthenticationRequestRepository
     implements Saml2AuthenticationRequestRepository<AbstractSaml2AuthenticationRequest> {
-  private RedisTemplate<String, Object> redisTemplate = createRedisTemplate();
+
   private static final String STRING_KEY_PREFIX = "spring:saml2:SAML2_AUTHN_REQUEST:";
 
-  @Autowired private JedisConnectionFactory redisConnectionFactory;
+  @Autowired private RedisConnectionFactory redisConnectionFactory;
   private RedisSerializer<Object> defaultRedisSerializer;
   private ClassLoader classLoader;
+  private RedisTemplate<String, Object> redisTemplate = createRedisTemplate();
 
   @Override
   public AbstractSaml2AuthenticationRequest loadAuthenticationRequest(HttpServletRequest request) {
@@ -113,7 +116,7 @@ public class SpringCacheSaml2AuthenticationRequestRepository
     log.debug("********* relayState : {}", relayState);
   }
 
-  /* @Autowired
+  @Autowired
   public void setRedisConnectionFactory(
       @SpringSessionRedisConnectionFactory
           ObjectProvider<RedisConnectionFactory> springSessionRedisConnectionFactory,
@@ -122,11 +125,12 @@ public class SpringCacheSaml2AuthenticationRequestRepository
         "*********setRedisConnectionFactory - SpringCacheSaml2AuthenticationRequestRepository ********************");
     this.redisConnectionFactory =
         springSessionRedisConnectionFactory.getIfAvailable(redisConnectionFactory::getObject);
-  }*/
+  }
 
-  /*  public JedisConnectionFactory getRedisConnectionFactory() {
+  public RedisConnectionFactory getRedisConnectionFactory() {
     log.debug(
         "*********getRedisConnectionFactory - SpringCacheSaml2AuthenticationRequestRepository ********************");
+    log.debug("************redisConnectionFactory : {}", redisConnectionFactory);
     return this.redisConnectionFactory;
-  }*/
+  }
 }
