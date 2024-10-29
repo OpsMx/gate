@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -33,6 +34,7 @@ import org.springframework.security.saml2.provider.service.web.Saml2Authenticati
 import org.springframework.session.data.redis.config.annotation.SpringSessionRedisConnectionFactory;
 import org.springframework.stereotype.Component;
 
+@Configuration(proxyBeanMethods = false)
 @Component
 @Slf4j
 public class SpringCacheSaml2AuthenticationRequestRepository
