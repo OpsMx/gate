@@ -14,9 +14,9 @@ dependencies{
   implementation 'org.springframework:spring-context'
   implementation 'org.springframework.session:spring-session-core'
   implementation "org.springframework.session:spring-session-data-redis"
-/*  implementation 'org.springframework.data:spring-data-redis:3.0.8'
+  implementation 'org.springframework.data:spring-data-redis:3.0.8'
   implementation 'org.springframework.data:spring-data-commons:3.0.8'
-  implementation 'org.springframework.data:spring-data-keyvalue:3.0.8'*/
+  implementation 'org.springframework.data:spring-data-keyvalue:3.0.8'
   implementation 'org.springframework.boot:spring-boot-autoconfigure'
   implementation("org.owasp.esapi:esapi:2.5.2.0")
   implementation("org.bouncycastle:bcprov-ext-jdk15on:1.70")
