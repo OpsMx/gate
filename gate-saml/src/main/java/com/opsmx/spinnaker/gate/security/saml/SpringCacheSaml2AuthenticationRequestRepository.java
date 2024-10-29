@@ -37,16 +37,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class SpringCacheSaml2AuthenticationRequestRepository
     implements Saml2AuthenticationRequestRepository<AbstractSaml2AuthenticationRequest> {
-  private RedisTemplate<String, Object> redisTemplate;
+  private RedisTemplate<String, Object> redisTemplate = createRedisTemplate();
   private static final String STRING_KEY_PREFIX = "spring:saml2:SAML2_AUTHN_REQUEST:";
 
   @Autowired private RedisConnectionFactory redisConnectionFactory;
   @Autowired private RedisSerializer<Object> defaultRedisSerializer;
   private ClassLoader classLoader;
-
-  public SpringCacheSaml2AuthenticationRequestRepository() {
-    redisTemplate = createRedisTemplate();
-  }
 
   @Override
   public AbstractSaml2AuthenticationRequest loadAuthenticationRequest(HttpServletRequest request) {
