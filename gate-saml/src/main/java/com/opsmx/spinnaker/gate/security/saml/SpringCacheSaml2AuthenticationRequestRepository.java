@@ -22,7 +22,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -45,7 +44,17 @@ public class SpringCacheSaml2AuthenticationRequestRepository
   private RedisConnectionFactory redisConnectionFactory;
   private RedisSerializer<Object> defaultRedisSerializer;
   private ClassLoader classLoader;
-  private RedisTemplate<String, Object> redisTemplate = createRedisTemplate();
+  private RedisTemplate<String, Object> redisTemplate;
+
+  public SpringCacheSaml2AuthenticationRequestRepository(
+      RedisSerializer<Object> defaultRedisSerializer,
+      @SpringSessionRedisConnectionFactory
+          ObjectProvider<RedisConnectionFactory> springSessionRedisConnectionFactory,
+      ObjectProvider<RedisConnectionFactory> redisConnectionFactory) {
+    setDefaultRedisSerializer(defaultRedisSerializer);
+    setRedisConnectionFactory(springSessionRedisConnectionFactory, redisConnectionFactory);
+    redisTemplate = createRedisTemplate();
+  }
 
   @Override
   public AbstractSaml2AuthenticationRequest loadAuthenticationRequest(HttpServletRequest request) {
@@ -98,8 +107,8 @@ public class SpringCacheSaml2AuthenticationRequestRepository
     return redisTemplate;
   }
 
-  @Autowired(required = false)
-  @Qualifier("springSessionDefaultRedisSerializer")
+  // @Autowired(required = false)
+  // @Qualifier("springSessionDefaultRedisSerializer")
   public void setDefaultRedisSerializer(RedisSerializer<Object> defaultRedisSerializer) {
     log.debug(
         "*********setDefaultRedisSerializer - SpringCacheSaml2AuthenticationRequestRepository ********************");
