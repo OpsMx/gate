@@ -22,7 +22,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -33,7 +34,7 @@ import org.springframework.security.saml2.provider.service.web.Saml2Authenticati
 import org.springframework.session.data.redis.config.annotation.SpringSessionRedisConnectionFactory;
 import org.springframework.stereotype.Component;
 
-@Configuration
+@ConditionalOnExpression("${spring.security.saml2.enabled:false}")
 @Component
 @Slf4j
 public class SpringCacheSaml2AuthenticationRequestRepository
@@ -42,16 +43,18 @@ public class SpringCacheSaml2AuthenticationRequestRepository
   private static final String STRING_KEY_PREFIX = "spring:saml2:SAML2_AUTHN_REQUEST:";
 
   private RedisConnectionFactory redisConnectionFactory;
+
+  @Autowired(required = false)
+  @Qualifier("springSessionDefaultRedisSerializer")
   private RedisSerializer<Object> defaultRedisSerializer;
+
   private ClassLoader classLoader;
   private RedisTemplate<String, Object> redisTemplate;
 
   public SpringCacheSaml2AuthenticationRequestRepository(
-      RedisSerializer<Object> defaultRedisSerializer,
       @SpringSessionRedisConnectionFactory
           ObjectProvider<RedisConnectionFactory> springSessionRedisConnectionFactory,
       ObjectProvider<RedisConnectionFactory> redisConnectionFactory) {
-    setDefaultRedisSerializer(defaultRedisSerializer);
     setRedisConnectionFactory(springSessionRedisConnectionFactory, redisConnectionFactory);
     redisTemplate = createRedisTemplate();
   }
