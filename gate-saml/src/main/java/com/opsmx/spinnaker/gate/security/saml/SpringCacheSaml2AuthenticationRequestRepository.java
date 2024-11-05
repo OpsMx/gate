@@ -89,7 +89,7 @@ public class SpringCacheSaml2AuthenticationRequestRepository
     if (authenticationRequest == null) {
       return null;
     }
-    this.redisTemplate.opsForValue().getAndDelete(STRING_KEY_PREFIX + relayState);
+    this.redisTemplate.delete(STRING_KEY_PREFIX + relayState);
     return authenticationRequest;
   }
 
