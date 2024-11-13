@@ -1,5 +1,5 @@
 FROM registry.access.redhat.com/ubi8/ubi:latest
-MAINTAINER OpsMx
+LABEL MAINTAINER OpsMx
 
 # Disable old version and uninstalling
 RUN dnf module disable nginx php -y
