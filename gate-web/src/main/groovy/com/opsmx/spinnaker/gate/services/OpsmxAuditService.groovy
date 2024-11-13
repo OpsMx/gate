@@ -17,7 +17,9 @@
 package com.opsmx.spinnaker.gate.services
 
 import retrofit.http.Body
+import retrofit.http.GET
 import retrofit.http.POST
+import retrofit.http.PUT
 import retrofit.http.Path
 
 interface OpsmxAuditService {
@@ -30,5 +32,11 @@ interface OpsmxAuditService {
                                @Body Object data)
 
   @POST("/auditservice/v1/acctEnvMapping")
-  Object saveAcctEnvMapping(@Body Object data)
+  Object saveAccountEnvironmentMapping(@Body Object data)
+
+  @PUT("/auditservice/v1/acctEnvMapping")
+  Object updateAccountEnvironmentMapping(@Body Object data)
+
+  @GET("/auditservice/v1/acctEnvMapping")
+  Object getAllAccountEnvironmentMappings()
 }

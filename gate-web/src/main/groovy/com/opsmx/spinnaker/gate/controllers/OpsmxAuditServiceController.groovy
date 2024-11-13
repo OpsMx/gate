@@ -47,10 +47,24 @@ class OpsmxAuditServiceController {
     return opsmxAuditService.postAuditService1(version, type, source, source1, data)
   }
 
-  @Operation(summary = "Endpoint for audit account environment mapping services")
+  @Operation(summary = "Rest api for audit save account environment mapping")
   @RequestMapping(value = "/v1/acctEnvMapping", method = RequestMethod.POST)
   Object saveAcctEnvMapping(@RequestBody Object data) {
 
-    return opsmxAuditService.saveAcctEnvMapping(data)
+    return opsmxAuditService.saveAccountEnvironmentMapping(data)
+  }
+
+  @Operation(summary = "Rest api for updating an account environment mapping")
+  @RequestMapping(value = "/v1/acctEnvMapping", method = RequestMethod.PUT)
+  Object updateAcctEnvMapping(@RequestBody Object data) {
+
+    return opsmxAuditService.updateAccountEnvironmentMapping(data)
+  }
+
+  @Operation(summary = "Rest api for fetching all account environment mapping records")
+  @RequestMapping(value = "/v1/acctEnvMapping", method = RequestMethod.GET)
+  Object getAllAcctEnvMappings() {
+
+    return opsmxAuditService.getAllAccountEnvironmentMappings();
   }
 }
