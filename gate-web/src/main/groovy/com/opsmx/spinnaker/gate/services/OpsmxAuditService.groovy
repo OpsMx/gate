@@ -29,6 +29,6 @@ interface OpsmxAuditService {
                                @Path('source1') String source1,
                                @Body Object data)
 
-  @POST("/auditservice/{version}/acctEnvMapping")
+  @POST("/auditservice/v1/acctEnvMapping")
   Object saveAcctEnvMapping(@Body Object data)
 }

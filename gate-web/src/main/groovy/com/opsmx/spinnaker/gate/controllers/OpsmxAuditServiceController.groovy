@@ -48,7 +48,7 @@ class OpsmxAuditServiceController {
   }
 
   @Operation(summary = "Endpoint for audit account environment mapping services")
-  @RequestMapping(value = "/{version}/acctEnvMapping", method = RequestMethod.POST)
+  @RequestMapping(value = "/v1/acctEnvMapping", method = RequestMethod.POST)
   Object saveAcctEnvMapping(@RequestBody Object data) {
 
     return opsmxAuditService.saveAcctEnvMapping(data)
