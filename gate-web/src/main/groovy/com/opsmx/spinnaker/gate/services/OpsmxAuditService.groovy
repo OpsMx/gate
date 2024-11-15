@@ -39,4 +39,7 @@ interface OpsmxAuditService {
 
   @GET("/auditservice/v1/acctEnvMapping")
   Object getAllAccountEnvironmentMappings()
+
+  @POST("/auditservice/v1/acctEnvMapping/bulkimport")
+  Object saveBulkImportMappings(@Body Object data)
 }
