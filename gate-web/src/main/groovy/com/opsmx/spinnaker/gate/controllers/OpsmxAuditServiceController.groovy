@@ -25,6 +25,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
+import java.nio.charset.StandardCharsets
+
 @Slf4j
 @RestController
 @RequestMapping("/auditservice")
@@ -67,11 +69,17 @@ class OpsmxAuditServiceController {
     return opsmxAuditService.getAllAccountEnvironmentMappings();
   }
 
+  @Operation(summary = "Rest api for fetching account environment mapping record with id")
+  @RequestMapping(value = "/v1/acctEnvMapping/{id}", method = RequestMethod.GET)
+  Object getAcctEnvMappingWithId(@PathVariable("id") Integer id) {
+    return opsmxAuditService.getAccountEnvironmentMappingWithId(id);
+  }
+
+
   @Operation(summary = "Rest api for bulk import of account environment mappings")
   @RequestMapping(value = "/v1/acctEnvMapping/bulkimport", method = RequestMethod.POST)
   String bulkImportAcctEnvironmentMappings(@RequestParam("file") MultipartFile data) {
-    String processedData = processBulkImportMappings(data);
-    return opsmxAuditService.saveBulkImportMappings(processedData);
+    return opsmxAuditService.saveBulkImportMappings(data);
   }
 
   @Operation(summary = "Rest api for fetching importing account environment mapping records")
@@ -82,8 +90,13 @@ class OpsmxAuditServiceController {
   }
 
   private String processBulkImportMappings(MultipartFile data) {
-    String content = new String(data.getBytes());
-    System.out.println(" content is : " + content)
-    return content;
+    try {
+      String content = data.bytes.toString(StandardCharsets.UTF_8)
+      log.debug("File content received: ${content}")
+      return content
+    } catch (IOException e) {
+      log.error("Error reading file: ${e.message}", e)
+      throw new RuntimeException("Error processing file", e)
+    }
   }
 }

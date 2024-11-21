@@ -16,6 +16,7 @@
 
 package com.opsmx.spinnaker.gate.services
 
+import org.springframework.web.multipart.MultipartFile
 import retrofit.http.Body
 import retrofit.http.GET
 import retrofit.http.POST
@@ -40,6 +41,9 @@ interface OpsmxAuditService {
   @GET("/auditservice/v1/acctEnvMapping")
   Object getAllAccountEnvironmentMappings()
 
+  @GET("/auditservice/v1/acctEnvMapping/{id}")
+  Object getAccountEnvironmentMappingWithId(@Path('id') Integer id)
+
   @POST("/auditservice/v1/acctEnvMapping/bulkimport")
-  Object saveBulkImportMappings(@Body Object data)
+  Object saveBulkImportMappings(@Body MultipartFile data)
 }
