@@ -56,7 +56,7 @@ class OpsmxAuditServiceController {
   }
 
   @Operation(summary = "Rest api for updating an account environment mapping")
-  @RequestMapping(value = "/v1/acctEnvMapping", method = RequestMethod.PUT)
+  @RequestMapping(value = "/v1/acctEnvMapping/", method = RequestMethod.PUT)
   Object updateAcctEnvMapping(@RequestBody Object data) {
 
     return opsmxAuditService.updateAccountEnvironmentMapping(data)
@@ -79,7 +79,8 @@ class OpsmxAuditServiceController {
   @Operation(summary = "Rest api for bulk import of account environment mappings")
   @RequestMapping(value = "/v1/acctEnvMapping/bulkimport", method = RequestMethod.POST)
   String bulkImportAcctEnvironmentMappings(@RequestParam("file") MultipartFile data) {
-    return opsmxAuditService.saveBulkImportMappings(data);
+    String processedData = processBulkImportMappings(data);
+    return opsmxAuditService.saveBulkImportMappings(processedData);
   }
 
   @Operation(summary = "Rest api for fetching importing account environment mapping records")
@@ -89,14 +90,13 @@ class OpsmxAuditServiceController {
     return opsmxAuditService.getAllAccountEnvironmentMappings();
   }
 
-  private String processBulkImportMappings(MultipartFile data) {
+  private static String processBulkImportMappings(MultipartFile data) {
     try {
-      String content = data.bytes.toString(StandardCharsets.UTF_8)
-      log.debug("File content received: ${content}")
-      return content
+      // Convert multipart file json content to String using UTF-8 encoding
+      return new String(data.bytes, StandardCharsets.UTF_8)
     } catch (IOException e) {
-      log.error("Error reading file: ${e.message}", e)
-      throw new RuntimeException("Error processing file", e)
+      throw new RuntimeException("Failed to read JSON content", e)
     }
   }
+
 }

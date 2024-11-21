@@ -45,5 +45,5 @@ interface OpsmxAuditService {
   Object getAccountEnvironmentMappingWithId(@Path('id') Integer id)
 
   @POST("/auditservice/v1/acctEnvMapping/bulkimport")
-  Object saveBulkImportMappings(@Body MultipartFile data)
+  Object saveBulkImportMappings(@Body String data)
 }
