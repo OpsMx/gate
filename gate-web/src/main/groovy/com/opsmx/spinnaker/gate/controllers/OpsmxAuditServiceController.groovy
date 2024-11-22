@@ -19,12 +19,21 @@ package com.opsmx.spinnaker.gate.controllers
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.netflix.spinnaker.gate.config.ServiceConfiguration
+import com.netflix.spinnaker.gate.exceptions.OesRequestException
+import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.opsmx.spinnaker.gate.services.OpsmxAuditService
 import groovy.util.logging.Slf4j
 import io.swagger.v3.oas.annotations.Operation
+import okhttp3.Headers
+import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okio.Buffer
+import okio.BufferedSink
+import okio.Okio
+import okio.Source
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.*
@@ -90,15 +99,10 @@ class OpsmxAuditServiceController {
   @Operation(summary = "Rest api for bulk import of account environment mappings")
   @RequestMapping(value = "/v1/acctEnvMapping/bulkimport", method = RequestMethod.POST, consumes = "multipart/form-data")
   String bulkImportAcctEnvironmentMappings(@RequestParam("file") MultipartFile data) {
-    /*String processedData = processBulkImportMappings(data);
-    return opsmxAuditService.saveBulkImportMappings(processedData);*/
     try {
       byte[] fileBytes = data.bytes
-
       verifyJsonFormat(fileBytes)
-
-      // Upload to AuditService
-      return uploadToAuditService(fileBytes)
+      return uploadToAuditService(data)
     } catch (Exception e) {
       throw new RuntimeException("Failed to process file: ${e.message}", e)
     }
@@ -116,31 +120,61 @@ class OpsmxAuditServiceController {
     }
   }
 
-  private String uploadToAuditService(byte[] fileBytes) {
-    def request = new Request.Builder()
-      .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/auditservice/v1/acctEnvMapping/bulkimport")
-      .post(RequestBody.create(fileBytes, MediaType.parse("application/json")))
-      .build()
-
-    try {
+  private String uploadToAuditService(MultipartFile data) {
+    def obj = AuthenticatedRequest.propagate {
+      def request = new Request.Builder()
+        .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"auditservice/v1/acctEnvMapping/bulkimport")
+        .post(uploadFileOkHttp(data))
+        .build()
       def response = okHttpClient.newCall(request).execute()
-      if (!response.isSuccessful()) {
-        String reason = response.body()?.string() ?: "Unknown reason: ${response.code()}"
-        throw new RuntimeException("Failed to upload environment mappings: $reason")
-      }
-      return response.body()?.string() ?: "Success"
-    } catch (IOException e) {
-      throw new RuntimeException("Error during file upload to AuditService", e)
+      return response
+    }.call() as okhttp3.Response
+
+    if (!obj.isSuccessful()) {
+      def error = obj.body().string();
+      log.error("Failed to setup the Spinnaker : {}", error)
+      throw new OesRequestException(error)
+    } else{
+      return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
     }
   }
 
-  private static String processBulkImportMappings(MultipartFile data) {
-    try {
-      // Convert multipart file json content to String using UTF-8 encoding
-      return new String(data.bytes, StandardCharsets.UTF_8)
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to read JSON content", e)
-    }
+  private okhttp3.RequestBody uploadFileOkHttp(MultipartFile multiPartfile) throws IOException {
+
+    String fileName = multiPartfile.getOriginalFilename();
+    MultipartBody.Builder builder = new MultipartBody.Builder();
+    builder.setType(MultipartBody.FORM);
+    builder.addFormDataPart("file", fileName, new okhttp3.RequestBody() {
+      @Override
+      public MediaType contentType() {
+        return MediaType.parse("application/octet-stream");
+      }
+
+      @Override
+      public void writeTo(BufferedSink sink) throws IOException {
+        try {
+          Source source = Okio.source(multiPartfile.getInputStream());
+          Buffer buf = new Buffer();
+
+          long totalRead = 0;
+          long totalSize = multiPartfile.getSize();
+          long remaining = totalSize;
+
+          for (long readCount; (readCount = source.read(buf, 32000)) != -1;) {
+
+            totalRead += readCount;
+            remaining -= readCount;
+
+            sink.write(buf, readCount);
+            sink.flush();
+
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    });
+    return builder.build();
   }
 
 }
