@@ -95,6 +95,12 @@ class OpsmxAuditServiceController {
     return opsmxAuditService.getAccountEnvironmentMappingWithId(id);
   }
 
+  @Operation(summary = "Rest api for deleting account environment mapping record with id")
+  @RequestMapping(value = "/v1/acctEnvMapping/{id}", method = RequestMethod.DELETE)
+  Object deleteAcctEnvMapping(@PathVariable("id") Integer id) {
+    return opsmxAuditService.deleteAccountEnvironmentMappingWithId(id);
+  }
+
 
   @Operation(summary = "Rest api for bulk import of account environment mappings")
   @RequestMapping(value = "/v1/acctEnvMapping/bulkimport", method = RequestMethod.POST, consumes = "multipart/form-data")
@@ -110,7 +116,7 @@ class OpsmxAuditServiceController {
   private String uploadToAuditService(MultipartFile data) {
     def obj = AuthenticatedRequest.propagate {
       def request = new Request.Builder()
-        .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"auditservice/v1/acctEnvMapping/bulkimport")
+        .url(serviceConfiguration.getServiceEndpoint("auditservice").url +"/auditservice/v1/acctEnvMapping/bulkimport")
         .post(uploadFileOkHttp(data))
         .build()
       def response = okHttpClient.newCall(request).execute()

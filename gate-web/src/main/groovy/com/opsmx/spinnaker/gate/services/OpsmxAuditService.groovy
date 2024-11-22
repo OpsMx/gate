@@ -18,6 +18,7 @@ package com.opsmx.spinnaker.gate.services
 
 import org.springframework.web.multipart.MultipartFile
 import retrofit.http.Body
+import retrofit.http.DELETE
 import retrofit.http.GET
 import retrofit.http.POST
 import retrofit.http.PUT
@@ -46,4 +47,7 @@ interface OpsmxAuditService {
 
   @POST("/auditservice/v1/acctEnvMapping/bulkimport")
   Object saveBulkImportMappings(@Body String data)
+
+  @DELETE("/auditservice/v1/acctEnvMapping/{id}")
+  Object deleteAccountEnvironmentMappingWithId(@Path('id') Integer id)
 }
