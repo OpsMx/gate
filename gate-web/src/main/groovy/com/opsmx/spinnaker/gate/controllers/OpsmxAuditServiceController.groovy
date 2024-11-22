@@ -16,10 +16,15 @@
 
 package com.opsmx.spinnaker.gate.controllers
 
-
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.netflix.spinnaker.gate.config.ServiceConfiguration
 import com.opsmx.spinnaker.gate.services.OpsmxAuditService
 import groovy.util.logging.Slf4j
 import io.swagger.v3.oas.annotations.Operation
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.web.bind.annotation.*
@@ -35,6 +40,12 @@ class OpsmxAuditServiceController {
 
   @Autowired
   OpsmxAuditService opsmxAuditService
+
+  @Autowired
+  ServiceConfiguration serviceConfiguration
+
+  @Autowired
+  OkHttpClient okHttpClient
 
 
   @Operation(summary = "Endpoint for audit rest services")
@@ -77,17 +88,50 @@ class OpsmxAuditServiceController {
 
 
   @Operation(summary = "Rest api for bulk import of account environment mappings")
-  @RequestMapping(value = "/v1/acctEnvMapping/bulkimport", method = RequestMethod.POST)
+  @RequestMapping(value = "/v1/acctEnvMapping/bulkimport", method = RequestMethod.POST, consumes = "multipart/form-data")
   String bulkImportAcctEnvironmentMappings(@RequestParam("file") MultipartFile data) {
-    String processedData = processBulkImportMappings(data);
-    return opsmxAuditService.saveBulkImportMappings(processedData);
+    /*String processedData = processBulkImportMappings(data);
+    return opsmxAuditService.saveBulkImportMappings(processedData);*/
+    try {
+      byte[] fileBytes = data.bytes
+
+      verifyJsonFormat(fileBytes)
+
+      // Upload to AuditService
+      return uploadToAuditService(fileBytes)
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to process file: ${e.message}", e)
+    }
   }
 
-  @Operation(summary = "Rest api for fetching importing account environment mapping records")
-  @RequestMapping(value = "/v1/acctEnvMapping/import", method = RequestMethod.GET)
-  Object importAccountsFromSpinnaker() {
+  private static void verifyJsonFormat(byte[] fileBytes) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper()
+      JsonNode jsonNode = objectMapper.readTree(fileBytes)
+      if (!jsonNode) {
+        throw new IllegalArgumentException("Invalid JSON format: content is empty or null")
+      }
+    } catch (Exception e) {
+      throw new RuntimeException("Invalid JSON format in file", e)
+    }
+  }
 
-    return opsmxAuditService.getAllAccountEnvironmentMappings();
+  private String uploadToAuditService(byte[] fileBytes) {
+    def request = new Request.Builder()
+      .url(serviceConfiguration.getServiceEndpoint("opsmx").url +"/auditservice/v1/acctEnvMapping/bulkimport")
+      .post(RequestBody.create(fileBytes, MediaType.parse("application/json")))
+      .build()
+
+    try {
+      def response = okHttpClient.newCall(request).execute()
+      if (!response.isSuccessful()) {
+        String reason = response.body()?.string() ?: "Unknown reason: ${response.code()}"
+        throw new RuntimeException("Failed to upload environment mappings: $reason")
+      }
+      return response.body()?.string() ?: "Success"
+    } catch (IOException e) {
+      throw new RuntimeException("Error during file upload to AuditService", e)
+    }
   }
 
   private static String processBulkImportMappings(MultipartFile data) {
