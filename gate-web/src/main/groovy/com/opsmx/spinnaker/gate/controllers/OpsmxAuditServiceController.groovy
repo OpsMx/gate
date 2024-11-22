@@ -100,25 +100,12 @@ class OpsmxAuditServiceController {
   @RequestMapping(value = "/v1/acctEnvMapping/bulkimport", method = RequestMethod.POST, consumes = "multipart/form-data")
   String bulkImportAcctEnvironmentMappings(@RequestParam("file") MultipartFile data) {
     try {
-      byte[] fileBytes = data.bytes
-      verifyJsonFormat(fileBytes)
       return uploadToAuditService(data)
     } catch (Exception e) {
       throw new RuntimeException("Failed to process file: ${e.message}", e)
     }
   }
 
-  private static void verifyJsonFormat(byte[] fileBytes) {
-    try {
-      ObjectMapper objectMapper = new ObjectMapper()
-      JsonNode jsonNode = objectMapper.readTree(fileBytes)
-      if (!jsonNode) {
-        throw new IllegalArgumentException("Invalid JSON format: content is empty or null")
-      }
-    } catch (Exception e) {
-      throw new RuntimeException("Invalid JSON format in file", e)
-    }
-  }
 
   private String uploadToAuditService(MultipartFile data) {
     def obj = AuthenticatedRequest.propagate {
