@@ -76,10 +76,10 @@ class OpsmxAuditServiceController {
   }
 
   @Operation(summary = "Rest api for updating an account environment mapping")
-  @RequestMapping(value = "/v1/acctEnvMapping/", method = RequestMethod.PUT)
-  Object updateAcctEnvMapping(@RequestBody Object data) {
+  @RequestMapping(value = "/v1/acctEnvMapping/{id}", method = RequestMethod.PUT)
+  Object updateAcctEnvMapping(@PathVariable("id") Integer id, @RequestBody Object data) {
 
-    return opsmxAuditService.updateAccountEnvironmentMapping(data)
+    return opsmxAuditService.updateAccountEnvironmentMapping(id, data)
   }
 
   @Operation(summary = "Rest api for fetching all account environment mapping records")

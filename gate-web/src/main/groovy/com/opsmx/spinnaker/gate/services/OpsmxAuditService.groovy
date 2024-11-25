@@ -37,7 +37,8 @@ interface OpsmxAuditService {
   Object saveAccountEnvironmentMapping(@Body Object data)
 
   @PUT("/auditservice/v1/acctEnvMapping")
-  Object updateAccountEnvironmentMapping(@Body Object data)
+  Object updateAccountEnvironmentMapping(@Path('id') Integer id,
+                                         @Body Object data)
 
   @GET("/auditservice/v1/acctEnvMapping")
   Object getAllAccountEnvironmentMappings()
