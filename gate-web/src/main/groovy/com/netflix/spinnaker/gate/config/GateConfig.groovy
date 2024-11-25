@@ -121,7 +121,8 @@ class GateConfig extends RedisHttpSessionConfiguration {
    */
   @Bean
   JedisPool jedis(@Value('${redis.connection:redis://localhost:6379}') String connection,
-                  @Value('${redis.timeout:2000}') int timeout) {
+                  @Value('${redis.timeout:2000}') int timeout,
+                  @Value('${redis.certificate_location:#{null}}') String certFilePath) {
     return new JedisPool(new URI(connection), timeout)
   }
 

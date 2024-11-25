@@ -1,11 +1,16 @@
 package com.netflix.spinnaker.gate.config;
 
 import com.google.common.base.Splitter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.net.URI;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +45,13 @@ public class PostConnectionConfiguringJedisConnectionFactory extends JedisConnec
 
   private volatile boolean ranConfigureRedisAction;
 
+  private String password = "keyStorePass";
+
   @Autowired
   public PostConnectionConfiguringJedisConnectionFactory(
       @Value("${redis.connection:redis://localhost:6379}") String connectionUri,
       @Value("${redis.timeout:2000}") int timeout,
+      @Value(value = "${redis.certificate_location:#{null}}") String certFilePath,
       @ConnectionPostProcessor Optional<ConfigureRedisAction> configureRedisAction) {
 
     this.configureRedisAction =
@@ -63,6 +71,31 @@ public class PostConnectionConfiguringJedisConnectionFactory extends JedisConnec
 
     if (redisUri.getScheme().equals("rediss")) {
       setUseSsl(true);
+      String jksFilePath = "/opsmx/conf/redis-truststore.jks";
+      String alias = "redis-truststore"; // An alias to identify the certificate in the keystore
+      char[] password = this.password.toCharArray(); // Keystore password
+
+      try {
+        CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+        FileInputStream certInputStream = new FileInputStream(certFilePath);
+        Certificate certificate = certificateFactory.generateCertificate(certInputStream);
+        certInputStream.close();
+
+        KeyStore keyStore = KeyStore.getInstance("JKS");
+        keyStore.load(null, password);
+        keyStore.setCertificateEntry(alias, certificate);
+
+        FileOutputStream jksOutputStream = new FileOutputStream(jksFilePath);
+        keyStore.store(jksOutputStream, password);
+        jksOutputStream.close();
+
+        System.out.println("Certificate has been added to the KeyStore successfully.");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      System.setProperty("javax.net.ssl.trustStore", "/opsmx/conf/redis-truststore.jks");
+      System.setProperty("javax.net.ssl.trustStorePassword", this.password);
     }
   }
 
