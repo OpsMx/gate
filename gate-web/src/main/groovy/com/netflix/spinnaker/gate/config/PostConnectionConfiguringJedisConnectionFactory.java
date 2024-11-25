@@ -13,6 +13,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Component;
  *
  * <p>This Redis pool is used for Spring Boot's session management, not for the rate limit storage.
  */
+@Slf4j
 @Component
 public class PostConnectionConfiguringJedisConnectionFactory extends JedisConnectionFactory {
 
@@ -52,7 +54,7 @@ public class PostConnectionConfiguringJedisConnectionFactory extends JedisConnec
       @Value("${redis.connection:redis://localhost:6379}") String connectionUri,
       @Value("${redis.timeout:2000}") int timeout,
       @Value(value = "${redis.certificate_location:#{null}}") String certFilePath,
-      @ConnectionPostProcessor Optional<ConfigureRedisAction> configureRedisAction) {
+      @ConnectionPostProcessor Optional<ConfigureRedisAction> configureRedisAction) throws Exception {
 
     this.configureRedisAction =
         configureRedisAction.orElse(new ConfigureNotifyKeyspaceEventsAction());
@@ -75,23 +77,31 @@ public class PostConnectionConfiguringJedisConnectionFactory extends JedisConnec
       String alias = "redis-truststore"; // An alias to identify the certificate in the keystore
       char[] password = this.password.toCharArray(); // Keystore password
 
+      FileInputStream certInputStream = null;
+      FileOutputStream jksOutputStream = null;
+
+      /**
+       * If SSL is used then below steps add the certificate necessary for connection to redis as a
+       * java keystore and then add java keystore file's path as a system property for use in
+       * connection.
+       */
       try {
         CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-        FileInputStream certInputStream = new FileInputStream(certFilePath);
+        certInputStream = new FileInputStream(certFilePath);
         Certificate certificate = certificateFactory.generateCertificate(certInputStream);
-        certInputStream.close();
 
         KeyStore keyStore = KeyStore.getInstance("JKS");
         keyStore.load(null, password);
         keyStore.setCertificateEntry(alias, certificate);
-
-        FileOutputStream jksOutputStream = new FileOutputStream(jksFilePath);
+        jksOutputStream = new FileOutputStream(jksFilePath);
         keyStore.store(jksOutputStream, password);
-        jksOutputStream.close();
 
-        System.out.println("Certificate has been added to the KeyStore successfully.");
+        log.info("Certificate has been added to the KeyStore successfully.");
       } catch (Exception e) {
-        e.printStackTrace();
+        throw e;
+      } finally {
+        certInputStream.close();
+        jksOutputStream.close();
       }
 
       System.setProperty("javax.net.ssl.trustStore", "/opsmx/conf/redis-truststore.jks");
