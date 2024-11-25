@@ -195,4 +195,9 @@ interface OpsmxOesService {
   Object evaluateStaticPolicy(@Path('version') String version,
                               @Body Object data)
 
+  @POST("/accEnvMapping/import")
+  Object importAccountEnvironmentMappings()
+
+
+
 }
