@@ -225,41 +225,41 @@ class OpsmxAuditClientServiceController {
   }
 
   @Operation(summary = "Rest api for audit save account environment mapping")
-  @RequestMapping(value = "/v1/acctEnvMapping", method = RequestMethod.POST)
+  @RequestMapping(value = "/v3/acctEnvMapping", method = RequestMethod.POST)
   Object saveAcctEnvMapping(@RequestBody Object data) {
 
     return opsmxAuditClientService.saveAccountEnvironmentMapping(data)
   }
 
   @Operation(summary = "Rest api for updating an account environment mapping")
-  @RequestMapping(value = "/v1/acctEnvMapping/{id}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/v3/acctEnvMapping/{id}", method = RequestMethod.PUT)
   Object updateAcctEnvMapping(@PathVariable("id") Integer id, @RequestBody Object data) {
 
     return opsmxAuditClientService.updateAccountEnvironmentMapping(id, data)
   }
 
   @Operation(summary = "Rest api for fetching all account environment mapping records")
-  @RequestMapping(value = "/v1/acctEnvMapping", method = RequestMethod.GET)
+  @RequestMapping(value = "/v3/acctEnvMapping", method = RequestMethod.GET)
   Object getAllAcctEnvMappings() {
 
     return opsmxAuditClientService.getAllAccountEnvironmentMappings();
   }
 
   @Operation(summary = "Rest api for fetching account environment mapping record with id")
-  @RequestMapping(value = "/v1/acctEnvMapping/{id}", method = RequestMethod.GET)
+  @RequestMapping(value = "/v3/acctEnvMapping/{id}", method = RequestMethod.GET)
   Object getAcctEnvMappingWithId(@PathVariable("id") Integer id) {
     return opsmxAuditClientService.getAccountEnvironmentMappingWithId(id);
   }
 
   @Operation(summary = "Rest api for deleting account environment mapping record with id")
-  @RequestMapping(value = "/v1/acctEnvMapping/{id}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "/v3/acctEnvMapping/{id}", method = RequestMethod.DELETE)
   Object deleteAcctEnvMapping(@PathVariable("id") Integer id) {
     return opsmxAuditClientService.deleteAccountEnvironmentMappingWithId(id);
   }
 
 
   @Operation(summary = "Rest api for bulk import of account environment mappings")
-  @RequestMapping(value = "/v1/acctEnvMapping/bulkimport", method = RequestMethod.POST, consumes = "multipart/form-data")
+  @RequestMapping(value = "/v3/acctEnvMapping/bulkimport", method = RequestMethod.POST, consumes = "multipart/form-data")
   String bulkImportAcctEnvironmentMappings(@RequestParam("file") MultipartFile data) {
     try {
       return uploadToAuditService(data)
