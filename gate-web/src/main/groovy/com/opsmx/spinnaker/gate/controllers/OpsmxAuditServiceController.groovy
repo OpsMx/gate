@@ -16,14 +16,16 @@
 
 package com.opsmx.spinnaker.gate.controllers
 
-
 import com.opsmx.spinnaker.gate.services.OpsmxAuditService
 import groovy.util.logging.Slf4j
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
-import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RestController
 
 @Slf4j
 @RestController
@@ -33,7 +35,6 @@ class OpsmxAuditServiceController {
 
   @Autowired
   OpsmxAuditService opsmxAuditService
-
 
   @Operation(summary = "Endpoint for audit rest services")
   @RequestMapping(value = "/{version}/{type}/{source}/{source1}", method = RequestMethod.POST)
@@ -46,44 +47,4 @@ class OpsmxAuditServiceController {
     return opsmxAuditService.postAuditService1(version, type, source, source1, data)
   }
 
-  @Operation(summary = "Rest api for audit save account environment mapping")
-  @RequestMapping(value = "/v1/acctEnvMapping", method = RequestMethod.POST)
-  Object saveAcctEnvMapping(@RequestBody Object data) {
-
-    return opsmxAuditService.saveAccountEnvironmentMapping(data)
-  }
-
-  @Operation(summary = "Rest api for updating an account environment mapping")
-  @RequestMapping(value = "/v1/acctEnvMapping", method = RequestMethod.PUT)
-  Object updateAcctEnvMapping(@RequestBody Object data) {
-
-    return opsmxAuditService.updateAccountEnvironmentMapping(data)
-  }
-
-  @Operation(summary = "Rest api for fetching all account environment mapping records")
-  @RequestMapping(value = "/v1/acctEnvMapping", method = RequestMethod.GET)
-  Object getAllAcctEnvMappings() {
-
-    return opsmxAuditService.getAllAccountEnvironmentMappings();
-  }
-
-  @Operation(summary = "Rest api for bulk import of account environment mappings")
-  @RequestMapping(value = "/v1/acctEnvMapping/bulkimport", method = RequestMethod.POST)
-  String bulkImportAcctEnvironmentMappings(@RequestParam("file") MultipartFile data) {
-    String processedData = processBulkImportMappings(data);
-    return opsmxAuditService.saveBulkImportMappings(processedData);
-  }
-
-  @Operation(summary = "Rest api for fetching importing account environment mapping records")
-  @RequestMapping(value = "/v1/acctEnvMapping/import", method = RequestMethod.GET)
-  Object importAccountsFromSpinnaker() {
-
-    return opsmxAuditService.getAllAccountEnvironmentMappings();
-  }
-
-  private String processBulkImportMappings(MultipartFile data) {
-    String content = new String(data.getBytes());
-    System.out.println(" content is : " + content)
-    return content;
-  }
 }
