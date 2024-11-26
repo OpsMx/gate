@@ -272,7 +272,7 @@ class OpsmxAuditClientServiceController {
   private String uploadToAuditService(MultipartFile data) {
     def obj = AuthenticatedRequest.propagate {
       def request = new Request.Builder()
-        .url(serviceConfiguration.getServiceEndpoint("auditservice").url +"/auditservice/v1/acctEnvMapping/bulkimport")
+        .url(serviceConfiguration.getServiceEndpoint("auditclient").url +"/auditclientservice/v3/acctEnvMapping/bulkimport")
         .post(uploadFileOkHttp(data))
         .build()
       def response = okHttpClient.newCall(request).execute()
