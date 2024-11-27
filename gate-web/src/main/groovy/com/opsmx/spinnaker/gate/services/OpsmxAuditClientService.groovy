@@ -148,6 +148,9 @@ interface OpsmxAuditClientService {
   @GET("/auditclientservice/v3/acctEnvMapping")
   Object getAllAccountEnvironmentMappings()
 
+  @GET("/auditclientservice/v3/env")
+  Object getAllUniqueEnvironments()
+
   @GET("/auditclientservice/v3/acctEnvMapping/{id}")
   Object getAccountEnvironmentMappingWithId(@Path('id') Integer id)
 
