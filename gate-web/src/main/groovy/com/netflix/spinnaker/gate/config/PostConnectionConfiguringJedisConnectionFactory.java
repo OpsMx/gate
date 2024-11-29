@@ -54,7 +54,8 @@ public class PostConnectionConfiguringJedisConnectionFactory extends JedisConnec
       @Value("${redis.connection:redis://localhost:6379}") String connectionUri,
       @Value("${redis.timeout:2000}") int timeout,
       @Value(value = "${redis.certificate_location:#{null}}") String certFilePath,
-      @ConnectionPostProcessor Optional<ConfigureRedisAction> configureRedisAction) throws Exception {
+      @ConnectionPostProcessor Optional<ConfigureRedisAction> configureRedisAction)
+      throws Exception {
 
     this.configureRedisAction =
         configureRedisAction.orElse(new ConfigureNotifyKeyspaceEventsAction());
