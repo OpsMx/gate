@@ -551,4 +551,11 @@ class OpsmxOesController {
       return ResponseEntity.ok().headers(headers).body(manifestFile)
     }
   }
+
+  @Operation(summary = "Rest api for fetching importing account environment mapping records")
+  @RequestMapping(value = "/acctEnvMapping/import", method = RequestMethod.POST)
+  Object importAccountsFromSpinnaker() {
+
+    return opsmxOesService.importAccountEnvironmentMappings();
+  }
 }

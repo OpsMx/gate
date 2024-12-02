@@ -16,13 +16,8 @@
 
 package com.opsmx.spinnaker.gate.services
 
-import org.springframework.web.bind.annotation.RequestParam
 import retrofit.client.Response
 import retrofit.http.GET
-import retrofit.http.Body
-import retrofit.http.DELETE
-import retrofit.http.POST
-import retrofit.http.PUT
 import retrofit.http.Path
 import retrofit.http.Query
 
@@ -138,19 +133,13 @@ interface OpsmxAuditClientService {
                                          @Query('days') Integer days,
                                          @Query('filterBy') String filterBy)
 
-  @POST("/auditclientservice/v3/acctEnvMapping")
-  Object saveAccountEnvironmentMapping(@Body Object data)
-
-  @PUT("/auditclientservice/v3/acctEnvMapping/{id}")
-  Object updateAccountEnvironmentMapping(@Path('id') Integer id,
-                                         @Body Object data)
-
   @GET("/auditclientservice/v3/acctEnvMapping")
   Object getAllAccountEnvironmentMappings()
 
   @GET("/auditclientservice/v3/acctEnvMapping/{id}")
   Object getAccountEnvironmentMappingWithId(@Path('id') Integer id)
 
-  @DELETE("/auditclientservice/v3/acctEnvMapping/{id}")
-  Object deleteAccountEnvironmentMappingWithId(@Path('id') Integer id)
+  @GET("/auditclientservice/v3/env")
+  Object getAllUniqueEnvironments()
+
 }

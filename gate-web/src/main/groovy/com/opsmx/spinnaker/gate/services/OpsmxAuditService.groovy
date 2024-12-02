@@ -17,7 +17,9 @@
 package com.opsmx.spinnaker.gate.services
 
 import retrofit.http.Body
+import retrofit.http.DELETE
 import retrofit.http.POST
+import retrofit.http.PUT
 import retrofit.http.Path
 
 interface OpsmxAuditService {
@@ -29,4 +31,13 @@ interface OpsmxAuditService {
                                @Path('source1') String source1,
                                @Body Object data)
 
+  @POST("/auditservice/v1/acctEnvMapping")
+  Object saveAccountEnvironmentMapping(@Body Object data)
+
+  @PUT("/auditservice/v1/acctEnvMapping/{id}")
+  Object updateAccountEnvironmentMapping(@Path('id') Integer id,
+                                         @Body Object data)
+
+  @DELETE("/auditservice/v1/acctEnvMapping/{id}")
+  Object deleteAccountEnvironmentMappingWithId(@Path('id') Integer id)
 }
