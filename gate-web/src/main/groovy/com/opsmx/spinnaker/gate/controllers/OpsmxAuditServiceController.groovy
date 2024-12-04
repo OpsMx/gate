@@ -132,6 +132,7 @@ class OpsmxAuditServiceController {
           }
         } catch (Exception e) {
           e.printStackTrace();
+          throw new OesRequestException("Failed to upload multipart file to audit service");
         }
       }
     });
