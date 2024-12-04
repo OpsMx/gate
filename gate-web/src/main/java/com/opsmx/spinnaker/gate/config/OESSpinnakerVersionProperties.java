@@ -26,5 +26,5 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties("oes")
 public class OESSpinnakerVersionProperties {
-    private String spinnakerVersion="";
+  private String spinnakerVersion = "";
 }

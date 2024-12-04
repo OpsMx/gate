@@ -214,4 +214,22 @@ class OpsmxAuditClientServiceController {
     return ResponseEntity.status(response.getStatus()).build()
   }
 
+  @Operation(summary = "Rest api for fetching all account environment mapping records")
+  @RequestMapping(value = "/v3/acctEnvMapping", method = RequestMethod.GET)
+  Object getAllAcctEnvMappings() {
+    return opsmxAuditClientService.getAllAccountEnvironmentMappings();
+  }
+  @Operation(summary = "Rest api for fetching account environment mapping record with id")
+  @RequestMapping(value = "/v3/acctEnvMapping/{id}", method = RequestMethod.GET)
+  Object getAcctEnvMappingWithId(@PathVariable("id") Integer id) {
+    return opsmxAuditClientService.getAccountEnvironmentMappingWithId(id);
+  }
+  @Operation(summary = "Rest api for fetching all unique environment records")
+  @RequestMapping(value = "/v3/env", method = RequestMethod.GET)
+  Object getAllUniqueEnv() {
+
+    return opsmxAuditClientService.getAllUniqueEnvironments();
+  }
+
+
 }

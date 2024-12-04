@@ -16,7 +16,6 @@
 
 package com.opsmx.spinnaker.gate.services
 
-import org.springframework.web.bind.annotation.RequestParam
 import retrofit.client.Response
 import retrofit.http.GET
 import retrofit.http.Path
@@ -133,4 +132,14 @@ interface OpsmxAuditClientService {
                                          @Query('endTime') Long endTime,
                                          @Query('days') Integer days,
                                          @Query('filterBy') String filterBy)
+
+  @GET("/auditclientservice/v3/acctEnvMapping")
+  Object getAllAccountEnvironmentMappings()
+
+  @GET("/auditclientservice/v3/acctEnvMapping/{id}")
+  Object getAccountEnvironmentMappingWithId(@Path('id') Integer id)
+
+  @GET("/auditclientservice/v3/env")
+  Object getAllUniqueEnvironments()
+
 }

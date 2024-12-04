@@ -30,13 +30,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/oes")
 public class OESSpinnakerVersionController {
-    @Autowired(required = false)
-    private OESSpinnakerVersionProperties oesSpinnakerVersionProperties;
+  @Autowired(required = false)
+  private OESSpinnakerVersionProperties oesSpinnakerVersionProperties;
 
-    @GetMapping(value = "/spinnakerVersion", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getOESSpinnakerVersion() {
-        log.debug("Get OES Spinnaker Version API invoked");
-        return new ResponseEntity<>(oesSpinnakerVersionProperties.getSpinnakerVersion(), HttpStatus.OK);
-    }
-
+  @GetMapping(value = "/spinnakerVersion", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> getOESSpinnakerVersion() {
+    log.debug("Get OES Spinnaker Version API invoked");
+    return new ResponseEntity<>(oesSpinnakerVersionProperties.getSpinnakerVersion(), HttpStatus.OK);
+  }
 }
