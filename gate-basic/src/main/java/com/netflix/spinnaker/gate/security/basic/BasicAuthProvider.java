@@ -17,6 +17,7 @@ package com.netflix.spinnaker.gate.security.basic;
 
 import com.netflix.spinnaker.gate.services.OesAuthorizationService;
 import com.netflix.spinnaker.gate.services.PermissionService;
+import com.netflix.spinnaker.security.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,8 +32,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -84,7 +83,11 @@ public class BasicAuthProvider implements AuthenticationProvider {
     } else {
       grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
     }
-    UserDetails principal = new User(name, password, grantedAuthorities);
+    User principal = new User();
+    principal.setUsername(name);
+    principal.setEmail(name);
+    principal.setRoles(roles);
+
     return new UsernamePasswordAuthenticationToken(principal, password, grantedAuthorities);
   }
 
