@@ -20,6 +20,7 @@ import com.netflix.spinnaker.gate.config.ServiceConfiguration
 import com.netflix.spinnaker.gate.exceptions.OesRequestException
 import com.netflix.spinnaker.security.AuthenticatedRequest
 import com.opsmx.spinnaker.gate.services.OpsmxAuditService
+import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import io.swagger.v3.oas.annotations.Operation
 import okhttp3.MultipartBody
@@ -100,13 +101,27 @@ class OpsmxAuditServiceController {
       return response
     }.call() as okhttp3.Response
     if (!obj.isSuccessful()) {
-      def error = obj.body().string();
-      log.error("Failed to upload multipart file to audit service : {}", error)
-      throw new OesRequestException(error)
-    } else{
-      return obj.body()?.string() ?: "Unknown reason: " + obj.code() as Object
+      def errorBody = obj.body()?.string()
+      log.error("Failed to upload multipart file to audit service: {}", errorBody)
+      def errorMessage = parseErrorMessage(errorBody, obj.code)
+
+      throw new OesRequestException(errorMessage)
+    } else {
+      return obj.body()?.string() ?: "Unknown reason: ${obj.code}" as Object
     }
   }
+
+  private String parseErrorMessage(String errorBody, int statusCode) {
+    try {
+      def errorJson = new JsonSlurper().parseText(errorBody)
+      def message = errorJson.message ?: "An error occurred while processing the request."
+      return message
+    } catch (Exception e) {
+      log.warn("Failed to parse error response: {}", e.message)
+      return errorBody
+    }
+  }
+
   private okhttp3.RequestBody uploadFileOkHttp(MultipartFile multiPartfile) throws IOException {
     String fileName = multiPartfile.getOriginalFilename();
     MultipartBody.Builder builder = new MultipartBody.Builder();
